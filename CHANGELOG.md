@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- RDPMC (reading the CPU's performance counters) gives 0 instead of an invalid-instruction fault, as there are no counters emulated; on the console it never faults, and programs that read them (the XDK's FastCPU sample) crashed. From xemu's open pull request 2987 (EqUiNoX-Labs) (NNshi).
 - R: Racing Evolution draws at native resolution whatever Internal Resolution Scale says, in standalone xemu too, until the scale is changed while it runs. With a scale above 1x the core now sets the same scale again once, 2 seconds after the game has started, which makes its surfaces again at that scale (NNshi).
 - Savestates: with APU DSP Emulation on, the sound after a load was now and then garbled until the state was loaded again. The APU started running again while the state was still being loaded, its DSPs on their state from before the load writing into the loaded RAM; it now stays paused until the game runs again (NNshi).
 - Vulkan: a texture the CPU writes to after a draw of the same frame has sampled it is checked again at its next bind; the change showed only from the next frame on. Fixes the missing bloom in Jade Empire. From parallel-xbox (32caea67) (NNshi).

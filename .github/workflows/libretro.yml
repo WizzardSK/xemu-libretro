@@ -90,7 +90,6 @@ jobs:
             -Dlibretro=true
         env:
           AR: ${{ env.CROSSAR }}
-          CFLAGS: -lIphlpapi -lCrypt32
 
       - name: Build
         run: ninja -C build xemu_libretro.dll 2>&1 | tail -200

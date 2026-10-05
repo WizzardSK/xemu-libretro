@@ -135,12 +135,15 @@ jobs:
             libglib2.0-dev libx11-dev libegl-dev libgl-dev glslang-dev spirv-tools patchelf \
             libpipewire-0.3-dev
 
+      # The core is a shared library, so QEMU's static libraries that go into
+      # it have to be position independent (b_staticpic).
       - name: Configure
         run: |
           ./configure \
             --extra-cflags="-DXBOX=1 -Wno-error" \
             --target-list=i386-softmmu \
-            -Dlibretro=true -Dpipewire=disabled
+            -Dlibretro=true -Dpipewire=disabled \
+            -Db_staticpic=true
         env:
           LIBRARY_PATH: /usr/lib/${{ matrix.arch }}-linux-gnu
 

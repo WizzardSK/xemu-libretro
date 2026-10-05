@@ -2404,8 +2404,16 @@ if vulkan.found()
       )
   endif
 
+  # A libretro core is a shared library, so on hosts with PIC the static
+  # libraries of these CMake subprojects that go into it need it too.
+  libretro_cmake_pic = get_option('libretro') and host_os != 'windows'
+
   volk_opts = cmake.subproject_options()
   volk_opts.add_cmake_defines({'VOLK_STATIC_DEFINES': 'VK_NO_PROTOTYPES'})
+  if libretro_cmake_pic
+    volk_opts.add_cmake_defines({'CMAKE_POSITION_INDEPENDENT_CODE': 'ON'})
+    volk_opts.set_override_option('b_staticpic', 'true')
+  endif
   if host_os == 'windows'
     volk_opts.append_compile_args('c', '-DVK_USE_PLATFORM_WIN32_KHR=1')
   endif
@@ -2417,6 +2425,10 @@ if vulkan.found()
 
   spirv_reflect_opts = cmake.subproject_options()
   spirv_reflect_opts.add_cmake_defines({'SPIRV_REFLECT_STATIC_LIB': 'ON'})
+  if libretro_cmake_pic
+    spirv_reflect_opts.add_cmake_defines({'CMAKE_POSITION_INDEPENDENT_CODE': 'ON'})
+    spirv_reflect_opts.set_override_option('b_staticpic', 'true')
+  endif
   spirv_reflect_subproj = cmake.subproject('SPIRV-Reflect', options: spirv_reflect_opts)
   spirv_reflect = declare_dependency(include_directories: spirv_reflect_subproj.include_directories('spirv-reflect-static'),
                                      link_with: spirv_reflect_subproj.target('spirv-reflect-static'),

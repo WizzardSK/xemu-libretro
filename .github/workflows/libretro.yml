@@ -71,6 +71,15 @@ jobs:
           [ -f libSPIRV-Tools.a ] || cp libSPIRV-Tools-static.a libSPIRV-Tools.a
           ls -la
 
+      # meson's find_library(static: true) only searches the compiler's own
+      # library directories, and a cross gcc takes neither -L nor LIBRARY_PATH
+      # for that, so the libraries go into the toolchain's own lib directory.
+      - name: Put glslang where the cross compiler looks
+        run: |
+          libdir=$(dirname "$(${CROSSPREFIX}gcc -print-file-name=libkernel32.a)")
+          echo "toolchain lib dir: $libdir"
+          cp -a /opt/glslang/lib/*.a "$libdir/"
+
       - name: Configure
         run: |
           ./configure \
@@ -82,14 +91,9 @@ jobs:
         env:
           AR: ${{ env.CROSSAR }}
           CFLAGS: -lIphlpapi -lCrypt32
-          # meson's find_library(static: true) searches the compiler's own
-          # library directories, not -L; gcc adds LIBRARY_PATH to those
-          LIBRARY_PATH: /opt/glslang/lib
 
       - name: Build
         run: ninja -C build xemu_libretro.dll 2>&1 | tail -200
-        env:
-          LIBRARY_PATH: /opt/glslang/lib
 
       - name: Collect
         run: |

@@ -121,7 +121,8 @@ jobs:
           filter: blob:none
           submodules: false
 
-      # upstream's build dependencies (debian/control), with libcurl on
+      # upstream's build dependencies (debian/control; pipewire for the SDL3
+      # subproject, which wants its headers), with libcurl on
       # OpenSSL rather than GnuTLS - the soname frontends' runtimes carry -
       # and glslang/SPIRV-Tools as the static libraries the libretro build
       # links
@@ -131,7 +132,8 @@ jobs:
           sudo apt-get -qy install ninja-build python3-pip python3-tomli python3-yaml python3-venv \
             libepoxy-dev libpixman-1-dev libsdl2-dev libsamplerate0-dev zlib1g-dev libssl-dev \
             libpcap-dev libslirp-dev libvulkan-dev libusb-1.0-0-dev libcurl4-openssl-dev \
-            libglib2.0-dev libx11-dev libegl-dev libgl-dev glslang-dev spirv-tools patchelf
+            libglib2.0-dev libx11-dev libegl-dev libgl-dev glslang-dev spirv-tools patchelf \
+            libpipewire-0.3-dev
 
       - name: Configure
         run: |

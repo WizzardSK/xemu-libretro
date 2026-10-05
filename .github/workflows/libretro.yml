@@ -23,10 +23,14 @@ jobs:
       CROSSPREFIX: x86_64-w64-mingw32.static-
       CROSSAR: x86_64-w64-mingw32.static-gcc-ar
     steps:
+      # No submodules: they are QEMU's firmware sources (edk2, u-boot and the
+      # like), none of which xemu builds; its dependencies come as meson wraps.
+      # The history is for the version string (git describe), without blobs.
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          submodules: recursive
+          filter: blob:none
+          submodules: false
 
       - name: Mark the checkout safe for git
         run: git config --global --add safe.directory '*'

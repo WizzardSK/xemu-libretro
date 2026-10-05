@@ -4635,10 +4635,11 @@ foreach target : target_dirs
       elif host_os == 'darwin'
         libretro_suffix = 'dylib'
       else
-        # Only retro_* are the core's interface; everything else stays inside,
-        # so the core does not bind to, or interpose on, the frontend's own
-        # glib, SDL or GL symbols.
-        libretro_link_args += ['-Wl,-Bsymbolic', '-Wl,--exclude-libs,ALL']
+        # Only retro_* are the core's interface (ui/libretro.map); everything
+        # else stays inside, so the core does not bind to, or interpose on,
+        # the frontend's own glib, SDL or GL symbols.
+        libretro_link_args += ['-Wl,-Bsymbolic', '-Wl,--exclude-libs,ALL',
+          '-Wl,--version-script=' + meson.current_source_dir() / 'ui' / 'libretro.map']
         libretro_suffix = 'so'
       endif
       xemu_libretro = shared_library('xemu_libretro',

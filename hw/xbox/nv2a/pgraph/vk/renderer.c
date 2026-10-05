@@ -233,11 +233,28 @@ void nv2a_get_vk_display_info(void **out_handle, int *out_width, int *out_height
 #ifdef WIN32
     *out_handle = (void*)r->display.handle;
 #else
-    *out_handle = NULL;
+    // Which image it is - the memory is new for each one - since an fd
+    // number can come back after the frontend has closed it. The fd itself
+    // is taken separately, once, with nv2a_take_vk_display_fd().
+    *out_handle = (void*)(uintptr_t)r->display.memory;
 #endif
     *out_width = r->display.width;
     *out_height = r->display.height;
 }
+
+#ifndef WIN32
+int nv2a_take_vk_display_fd(void)
+{
+    NV2AState *d = g_nv2a;
+    if (!d || !d->pgraph.vk_renderer_state) {
+        return -1;
+    }
+    PGRAPHVkDisplayState *disp = &d->pgraph.vk_renderer_state->display;
+    int fd = disp->frontend_fd_plus1 - 1;
+    disp->frontend_fd_plus1 = 0;
+    return fd;
+}
+#endif
 #endif
 
 static PGRAPHRenderer pgraph_vk_renderer = {

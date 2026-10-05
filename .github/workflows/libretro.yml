@@ -1,14 +1,13 @@
 name: Build libretro core
 
-# The core is xemu_libretro.dll, built with -Dlibretro=true. The libretro
-# support was written and tested for Windows, so that is what this builds:
-# cross-compiled in the same MXE toolchain image upstream xemu uses for its
-# Windows releases.
+# The core, built with -Dlibretro=true: xemu_libretro.dll for Windows,
+# cross-compiled in the MXE toolchain image upstream xemu uses for its Windows
+# releases, and xemu_libretro.so for Linux x86_64 and aarch64.
 
 on:
   workflow_dispatch:
   push:
-    branches: [libretro]
+    branches: [libretro, linux-port]
 
 jobs:
   windows-x86_64:
@@ -104,3 +103,61 @@ jobs:
         with:
           name: xemu_libretro-windows-x86_64
           path: dist/xemu_libretro.dll
+
+  linux:
+    name: Linux ${{ matrix.arch }}
+    runs-on: ubuntu-24.04${{ matrix.arch == 'aarch64' && '-arm' || '' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64, aarch64]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          submodules: false
+
+      # upstream's build dependencies (debian/control), with libcurl on
+      # OpenSSL rather than GnuTLS - the soname frontends' runtimes carry -
+      # and glslang/SPIRV-Tools as the static libraries the libretro build
+      # links
+      - name: Install dependencies
+        run: |
+          sudo apt-get -qy update
+          sudo apt-get -qy install ninja-build python3-pip python3-tomli python3-yaml python3-venv \
+            libepoxy-dev libpixman-1-dev libsdl2-dev libsamplerate0-dev zlib1g-dev libssl-dev \
+            libpcap-dev libslirp-dev libvulkan-dev libusb-1.0-0-dev libcurl4-openssl-dev \
+            libglib2.0-dev libx11-dev libegl-dev libgl-dev glslang-dev spirv-tools patchelf
+
+      - name: Configure
+        run: |
+          ./configure \
+            --extra-cflags="-DXBOX=1 -Wno-error" \
+            --target-list=i386-softmmu \
+            -Dlibretro=true -Dpipewire=disabled
+        env:
+          LIBRARY_PATH: /usr/lib/${{ matrix.arch }}-linux-gnu
+
+      - name: Build
+        run: ninja -C build xemu_libretro.so 2>&1 | tail -200
+
+      # libslirp and libpcap are not in every frontend's runtime (Flatpak
+      # RetroArch's, for one), so they go next to the core, found through
+      # $ORIGIN.
+      - name: Collect
+        run: |
+          mkdir -p dist
+          cp build/xemu_libretro.so dist/
+          strip --strip-unneeded dist/xemu_libretro.so
+          patchelf --set-rpath '$ORIGIN' dist/xemu_libretro.so
+          for lib in libslirp.so.0 libpcap.so.0.8; do
+            cp -L "/usr/lib/${{ matrix.arch }}-linux-gnu/$lib" dist/
+          done
+          ls -la dist
+          readelf -d dist/xemu_libretro.so | grep -E 'NEEDED|RUNPATH'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xemu_libretro-linux-${{ matrix.arch }}
+          path: dist/

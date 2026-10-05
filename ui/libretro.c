@@ -22,7 +22,7 @@
 #include <epoxy/gl.h>
 
 #include "libretro.h"
-#ifndef VK_USE_PLATFORM_WIN32_KHR
+#if defined(_WIN32) && !defined(VK_USE_PLATFORM_WIN32_KHR)
 #define VK_USE_PLATFORM_WIN32_KHR
 #endif
 #include "libretro_vulkan.h"
@@ -135,8 +135,10 @@ enum {
 static volatile int snapshot_request = SNAPSHOT_NONE;
 static volatile bool snapshot_done = false;
 static volatile bool snapshot_result = false;
-static HANDLE snapshot_request_event = NULL;  /* signal emu thread */
-static HANDLE snapshot_done_event = NULL;     /* signal RA thread */
+/* The emu thread posts it when it has handled a snapshot request. QEMU's
+ * semaphore rather than a Win32 event, so it builds everywhere. */
+static QemuSemaphore snapshot_done_sem;
+static bool snapshot_sem_initialized = false;
 
 /* ========================================================================= */
 /* Core option values                                                        */
@@ -485,7 +487,11 @@ static bool ra_vk_import_display(void *ext_handle, int width, int height)
     /* Create VkImage on RA's device with external memory import */
     VkExternalMemoryImageCreateInfo ext_img_ci = {
         .sType = VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_IMAGE_CREATE_INFO,
+#ifdef _WIN32
         .handleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT,
+#else
+        .handleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT,
+#endif
     };
 
     VkImageCreateInfo img_ci = {
@@ -513,11 +519,27 @@ static bool ra_vk_import_display(void *ext_handle, int width, int height)
     ra_vkGetImageMemoryRequirements(dev, ra_vk_image, &mem_reqs);
 
     /* Import the external memory handle */
+#ifdef _WIN32
     VkImportMemoryWin32HandleInfoKHR import_info = {
         .sType = VK_STRUCTURE_TYPE_IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR,
         .handleType = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT,
         .handle = (HANDLE)ext_handle,
     };
+#else
+    /* ext_handle only says which image this is; the fd is taken now, and a
+     * successful import makes it the driver's to close. */
+    const int import_fd = nv2a_take_vk_display_fd();
+    if (import_fd < 0) {
+        ra_vkDestroyImage(dev, ra_vk_image, NULL);
+        ra_vk_image = VK_NULL_HANDLE;
+        return false;
+    }
+    VkImportMemoryFdInfoKHR import_info = {
+        .sType = VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR,
+        .handleType = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT,
+        .fd = import_fd,
+    };
+#endif
 
     VkMemoryAllocateInfo alloc_info = {
         .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
@@ -529,6 +551,9 @@ static bool ra_vk_import_display(void *ext_handle, int width, int height)
 
     res = ra_vkAllocateMemory(dev, &alloc_info, NULL, &ra_vk_memory);
     if (res != VK_SUCCESS) {
+#ifndef _WIN32
+        close(import_fd); /* still ours: the import failed */
+#endif
         ra_vkDestroyImage(dev, ra_vk_image, NULL);
         ra_vk_image = VK_NULL_HANDLE;
         return false;
@@ -567,6 +592,167 @@ static bool ra_vk_import_display(void *ext_handle, int width, int height)
 
     return true;
 }
+
+/* ========================================================================= */
+/* Vulkan device negotiation                                                 */
+/* ========================================================================= */
+
+/*
+ * The frontend's device is where xemu's display image is imported, which
+ * takes VK_KHR_external_memory and its platform half - _fd here, _win32 on
+ * Windows. A device RetroArch makes for itself has neither enabled, and an
+ * import into it is then not defined (Mesa ignores it and the picture stays
+ * black), so the core makes the device: RetroArch's required extensions,
+ * layers and features, plus those two where the GPU has them.
+ */
+static bool xemu_vk_has_ext(const VkExtensionProperties *props, uint32_t count, const char *name)
+{
+    for (uint32_t i = 0; i < count; i++) {
+        if (!strcmp(props[i].extensionName, name)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool xemu_vk_create_device(struct retro_vulkan_context *context,
+    VkInstance instance, VkPhysicalDevice gpu, VkSurfaceKHR surface,
+    PFN_vkGetInstanceProcAddr gipa,
+    const char **required_exts, unsigned num_required_exts,
+    const char **required_layers, unsigned num_required_layers,
+    const VkPhysicalDeviceFeatures *required_features)
+{
+#define XEMU_VK_LOAD(name) PFN_##name p_##name = (PFN_##name)gipa(instance, #name)
+    XEMU_VK_LOAD(vkEnumeratePhysicalDevices);
+    XEMU_VK_LOAD(vkGetPhysicalDeviceQueueFamilyProperties);
+    XEMU_VK_LOAD(vkGetPhysicalDeviceSurfaceSupportKHR);
+    XEMU_VK_LOAD(vkEnumerateDeviceExtensionProperties);
+    XEMU_VK_LOAD(vkCreateDevice);
+    XEMU_VK_LOAD(vkGetDeviceProcAddr);
+#undef XEMU_VK_LOAD
+    if (!p_vkEnumeratePhysicalDevices || !p_vkGetPhysicalDeviceQueueFamilyProperties ||
+        !p_vkEnumerateDeviceExtensionProperties || !p_vkCreateDevice || !p_vkGetDeviceProcAddr) {
+        return false;
+    }
+
+    if (gpu == VK_NULL_HANDLE) {
+        uint32_t n = 1;
+        if (p_vkEnumeratePhysicalDevices(instance, &n, &gpu) < 0 || n == 0) {
+            return false;
+        }
+    }
+
+    /* One queue for graphics, compute and, if there is a surface, present */
+    uint32_t qcount = 0;
+    p_vkGetPhysicalDeviceQueueFamilyProperties(gpu, &qcount, NULL);
+    VkQueueFamilyProperties *qprops = g_new0(VkQueueFamilyProperties, qcount);
+    p_vkGetPhysicalDeviceQueueFamilyProperties(gpu, &qcount, qprops);
+    uint32_t family = UINT32_MAX;
+    for (uint32_t i = 0; i < qcount && family == UINT32_MAX; i++) {
+        const VkQueueFlags want = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT;
+        if ((qprops[i].queueFlags & want) != want) {
+            continue;
+        }
+        VkBool32 present = VK_TRUE;
+        if (surface != VK_NULL_HANDLE && p_vkGetPhysicalDeviceSurfaceSupportKHR) {
+            p_vkGetPhysicalDeviceSurfaceSupportKHR(gpu, i, surface, &present);
+        }
+        if (present) {
+            family = i;
+        }
+    }
+    g_free(qprops);
+    if (family == UINT32_MAX) {
+        LRLOG_ERROR("[xemu] Vulkan: no queue family for graphics, compute and present\n");
+        return false;
+    }
+
+    uint32_t ecount = 0;
+    p_vkEnumerateDeviceExtensionProperties(gpu, NULL, &ecount, NULL);
+    VkExtensionProperties *eprops = g_new0(VkExtensionProperties, ecount);
+    p_vkEnumerateDeviceExtensionProperties(gpu, NULL, &ecount, eprops);
+
+    static const char *const own_exts[] = {
+        VK_KHR_EXTERNAL_MEMORY_EXTENSION_NAME,
+#ifdef _WIN32
+        VK_KHR_EXTERNAL_MEMORY_WIN32_EXTENSION_NAME,
+#else
+        VK_KHR_EXTERNAL_MEMORY_FD_EXTENSION_NAME,
+#endif
+    };
+    const char **exts = g_new0(const char *, num_required_exts + G_N_ELEMENTS(own_exts));
+    uint32_t nexts = 0;
+    for (unsigned i = 0; i < num_required_exts; i++) {
+        exts[nexts++] = required_exts[i];
+    }
+    for (unsigned i = 0; i < G_N_ELEMENTS(own_exts); i++) {
+        bool listed = false;
+        for (uint32_t j = 0; j < nexts; j++) {
+            listed |= !strcmp(exts[j], own_exts[i]);
+        }
+        if (listed) {
+            continue;
+        }
+        if (xemu_vk_has_ext(eprops, ecount, own_exts[i])) {
+            exts[nexts++] = own_exts[i];
+        } else {
+            LRLOG_WARN("[xemu] Vulkan: the GPU has no %s; the picture cannot be shared\n", own_exts[i]);
+        }
+    }
+    g_free(eprops);
+
+    const float priority = 1.0f;
+    VkDeviceQueueCreateInfo queue_ci = {
+        .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+        .queueFamilyIndex = family,
+        .queueCount = 1,
+        .pQueuePriorities = &priority,
+    };
+    VkPhysicalDeviceFeatures features = {0};
+    if (required_features) {
+        features = *required_features;
+    }
+    VkDeviceCreateInfo device_ci = {
+        .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+        .queueCreateInfoCount = 1,
+        .pQueueCreateInfos = &queue_ci,
+        .enabledLayerCount = num_required_layers,
+        .ppEnabledLayerNames = required_layers,
+        .enabledExtensionCount = nexts,
+        .ppEnabledExtensionNames = exts,
+        .pEnabledFeatures = &features,
+    };
+    VkDevice device = VK_NULL_HANDLE;
+    VkResult res = p_vkCreateDevice(gpu, &device_ci, NULL, &device);
+    g_free(exts);
+    if (res != VK_SUCCESS) {
+        LRLOG_ERROR("[xemu] Vulkan: vkCreateDevice failed (%d)\n", res);
+        return false;
+    }
+
+    PFN_vkGetDeviceQueue p_vkGetDeviceQueue =
+        (PFN_vkGetDeviceQueue)p_vkGetDeviceProcAddr(device, "vkGetDeviceQueue");
+    VkQueue queue = VK_NULL_HANDLE;
+    p_vkGetDeviceQueue(device, family, 0, &queue);
+
+    context->gpu = gpu;
+    context->device = device;
+    context->queue = queue;
+    context->queue_family_index = family;
+    context->presentation_queue = queue;
+    context->presentation_queue_family_index = family;
+    LRLOG_INFO("[xemu] Vulkan: device created for the frontend, queue family %u, %u extensions\n",
+               family, nexts);
+    return true;
+}
+
+static const struct retro_hw_render_context_negotiation_interface_vulkan xemu_vk_negotiation = {
+    RETRO_HW_RENDER_CONTEXT_NEGOTIATION_INTERFACE_VULKAN,
+    RETRO_HW_RENDER_CONTEXT_NEGOTIATION_INTERFACE_VULKAN_VERSION,
+    NULL, /* get_application_info: the frontend's default */
+    xemu_vk_create_device,
+    NULL, /* destroy_device: nothing of our own on the device */
+};
 
 /* ========================================================================= */
 /* Context callbacks                                                         */
@@ -882,7 +1068,7 @@ static void *emu_thread_func(void *opaque)
 
             snapshot_result = ok;
             snapshot_done = true;
-            if (snapshot_done_event) SetEvent(snapshot_done_event);
+            if (snapshot_sem_initialized) qemu_sem_post(&snapshot_done_sem);
         }
     }
 
@@ -1192,6 +1378,8 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
     use_vulkan = want_vulkan;
     if (use_vulkan) {
         LRLOG_INFO("[xemu] Using Vulkan HW rendering\n");
+        environ_cb(RETRO_ENVIRONMENT_SET_HW_RENDER_CONTEXT_NEGOTIATION_INTERFACE,
+                   (void *)&xemu_vk_negotiation);
     } else {
         LRLOG_INFO("[xemu] Using OpenGL HW rendering\n");
         environ_cb(RETRO_ENVIRONMENT_SET_HW_SHARED_CONTEXT, NULL);
@@ -1434,11 +1622,12 @@ struct libretro_savestate_header {
 
 static bool snapshot_dispatch(int request_type, int timeout_ms)
 {
-    if (!snapshot_request_event) {
-        snapshot_request_event = CreateEvent(NULL, FALSE, FALSE, NULL);
+    if (!snapshot_sem_initialized) {
+        qemu_sem_init(&snapshot_done_sem, 0);
+        snapshot_sem_initialized = true;
     }
-    if (!snapshot_done_event) {
-        snapshot_done_event = CreateEvent(NULL, FALSE, FALSE, NULL);
+    /* A post from a request that timed out would end this wait at once */
+    while (qemu_sem_timedwait(&snapshot_done_sem, 0) == 0) {
     }
 
     snapshot_done = false;
@@ -1446,8 +1635,7 @@ static bool snapshot_dispatch(int request_type, int timeout_ms)
     snapshot_request = request_type;
 
     /* Wait for the emu thread to process it */
-    DWORD result = WaitForSingleObject(snapshot_done_event, timeout_ms);
-    if (result == WAIT_TIMEOUT) {
+    if (qemu_sem_timedwait(&snapshot_done_sem, timeout_ms) != 0) {
         LRLOG_INFO("[xemu] snapshot dispatch: timeout after %dms\n", timeout_ms);
         snapshot_request = SNAPSHOT_NONE;
         return false;

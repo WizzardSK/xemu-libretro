@@ -4619,6 +4619,15 @@ foreach target : target_dirs
       libretro_link_args = link_args
       if host_os == 'windows'
         libretro_link_args += ['-liphlpapi', '-static', '-static-libgcc', '-static-libstdc++']
+        libretro_suffix = 'dll'
+      elif host_os == 'darwin'
+        libretro_suffix = 'dylib'
+      else
+        # Only retro_* are the core's interface; everything else stays inside,
+        # so the core does not bind to, or interpose on, the frontend's own
+        # glib, SDL or GL symbols.
+        libretro_link_args += ['-Wl,-Bsymbolic', '-Wl,--exclude-libs,ALL']
+        libretro_suffix = 'so'
       endif
       xemu_libretro = shared_library('xemu_libretro',
         files('system/main.c'),
@@ -4629,7 +4638,7 @@ foreach target : target_dirs
         link_depends: [block_syms, qemu_syms],
         link_args: libretro_link_args,
         name_prefix: '',
-        name_suffix: 'dll',
+        name_suffix: libretro_suffix,
       )
       emulators += {'xemu_libretro': xemu_libretro}
     else

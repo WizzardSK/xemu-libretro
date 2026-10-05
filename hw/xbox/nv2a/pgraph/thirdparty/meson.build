@@ -3,6 +3,11 @@ nv2a_vsh_cpu_opts.add_cmake_defines({
   'CMAKE_OSX_ARCHITECTURES': cmake_macos_arch,
   'nv2a_vsh_cpu_UNIT_TEST': 'OFF',
   })
+# In a Linux libretro core, a shared library, this goes in position independent
+if get_option('libretro') and host_os != 'windows'
+  nv2a_vsh_cpu_opts.add_cmake_defines({'CMAKE_POSITION_INDEPENDENT_CODE': 'ON'})
+  nv2a_vsh_cpu_opts.set_override_option('b_staticpic', 'true')
+endif
 nv2a_vsh_cpu_subproj = cmake.subproject('nv2a_vsh_cpu', options: nv2a_vsh_cpu_opts)
 nv2a_vsh_cpu = declare_dependency(include_directories: nv2a_vsh_cpu_subproj.include_directories('nv2a_vsh_emulator'),
                                   link_with: [

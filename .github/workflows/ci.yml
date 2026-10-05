@@ -5,6 +5,8 @@ on:
   push:
     branches-ignore:
       - master
+      # Its own workflow builds the libretro core (libretro.yml).
+      - libretro
     tags-ignore:
       - "v*"
 

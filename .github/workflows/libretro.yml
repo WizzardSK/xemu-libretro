@@ -1,0 +1,97 @@
+name: Build libretro core
+
+# The core is xemu_libretro.dll, built with -Dlibretro=true. The libretro
+# support was written and tested for Windows, so that is what this builds:
+# cross-compiled in the same MXE toolchain image upstream xemu uses for its
+# Windows releases.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [libretro]
+
+jobs:
+  windows-x86_64:
+    name: Windows x86_64
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/xemu-project/xemu-win64-toolchain-gcc:sha-18018f1
+    defaults:
+      run:
+        shell: bash
+    env:
+      CROSSPREFIX: x86_64-w64-mingw32.static-
+      CROSSAR: x86_64-w64-mingw32.static-gcc-ar
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Mark the checkout safe for git
+        run: git config --global --add safe.directory '*'
+
+      # The libretro build links glslang and SPIRV-Tools statically
+      # (cc.find_library(..., static: true) in meson.build), and the MXE image
+      # has neither, so they are built here into its prefix, where the cross
+      # compiler finds them.
+      - name: Cache glslang
+        id: glslang-cache
+        uses: actions/cache@v4
+        with:
+          path: /opt/glslang
+          key: glslang-15.4.0-mxe-gcc-sha-18018f1
+
+      - name: Build glslang and SPIRV-Tools
+        if: steps.glslang-cache.outputs.cache-hit != 'true'
+        run: |
+          git clone --quiet --depth 1 -b 15.4.0 https://github.com/KhronosGroup/glslang.git /tmp/glslang
+          cd /tmp/glslang
+          python3 update_glslang_sources.py
+          ${CROSSPREFIX}cmake -S . -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=/opt/glslang \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DENABLE_OPT=ON \
+            -DENABLE_GLSLANG_BINARIES=OFF \
+            -DGLSLANG_TESTS=OFF \
+            -DBUILD_TESTING=OFF \
+            -DSPIRV_SKIP_TESTS=ON \
+            -DSPIRV_SKIP_EXECUTABLES=ON \
+            -DSPIRV_TOOLS_BUILD_STATIC=ON
+          cmake --build build -j"$(nproc)"
+          cmake --install build
+          # SPIRV-Tools installs its static library as SPIRV-Tools-static when
+          # it builds both kinds; the build looks for SPIRV-Tools.
+          cd /opt/glslang/lib
+          [ -f libSPIRV-Tools.a ] || cp libSPIRV-Tools-static.a libSPIRV-Tools.a
+          ls -la
+
+      - name: Configure
+        run: |
+          ./configure \
+            --extra-cflags="-DXBOX=1 -Wno-error -I/opt/glslang/include" \
+            --extra-ldflags="-L/opt/glslang/lib" \
+            --target-list=i386-softmmu \
+            --cross-prefix=$CROSSPREFIX --static \
+            -Dlibretro=true
+        env:
+          AR: ${{ env.CROSSAR }}
+          CFLAGS: -lIphlpapi -lCrypt32
+
+      - name: Build
+        run: ninja -C build xemu_libretro.dll 2>&1 | tail -200
+
+      - name: Collect
+        run: |
+          mkdir -p dist
+          cp build/xemu_libretro.dll dist/
+          ${CROSSPREFIX}strip --strip-unneeded dist/xemu_libretro.dll
+          ls -la dist
+          # What it needs at load time: Windows' own DLLs and nothing else.
+          ${CROSSPREFIX}objdump -p dist/xemu_libretro.dll | grep 'DLL Name' | sort -u
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xemu_libretro-windows-x86_64
+          path: dist/xemu_libretro.dll

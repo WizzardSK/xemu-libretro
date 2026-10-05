@@ -82,9 +82,14 @@ jobs:
         env:
           AR: ${{ env.CROSSAR }}
           CFLAGS: -lIphlpapi -lCrypt32
+          # meson's find_library(static: true) searches the compiler's own
+          # library directories, not -L; gcc adds LIBRARY_PATH to those
+          LIBRARY_PATH: /opt/glslang/lib
 
       - name: Build
         run: ninja -C build xemu_libretro.dll 2>&1 | tail -200
+        env:
+          LIBRARY_PATH: /opt/glslang/lib
 
       - name: Collect
         run: |

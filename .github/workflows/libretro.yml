@@ -7,7 +7,7 @@ name: Build libretro core
 on:
   workflow_dispatch:
   push:
-    branches: [libretro, linux-port]
+    branches: [libretro, linux-port, android]
 
 jobs:
   windows-x86_64:
@@ -168,4 +168,87 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: xemu_libretro-linux-${{ matrix.arch }}
+          path: dist/
+
+  # After X-OG Mobile's recipe (Ashnar2602/X-OG_Mobile): glib, pixman and
+  # libsamplerate from vcpkg's Android triplets, the NDK's clang, and QEMU's
+  # configure with what Android has no use for left out. The renderer is
+  # Vulkan, through the frontend's context.
+  android:
+    name: Android ${{ matrix.abi }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - abi: arm64-v8a
+            triplet: arm64-android
+            cpu: aarch64
+            clang: aarch64-linux-android29
+          - abi: x86_64
+            triplet: x64-android
+            cpu: x86_64
+            clang: x86_64-linux-android29
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          submodules: false
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get -qy update
+          sudo apt-get -qy install ninja-build python3-pip python3-tomli python3-yaml python3-venv \
+            glslang-dev glslang-tools spirv-tools pkg-config
+          echo "NDK=$ANDROID_NDK_LATEST_HOME" >> $GITHUB_ENV
+          echo "ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME" >> $GITHUB_ENV
+
+      - name: Cache vcpkg packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/vcpkg/archives
+          key: vcpkg-android-${{ matrix.triplet }}-v1
+
+      - name: vcpkg
+        run: |
+          "$VCPKG_INSTALLATION_ROOT/vcpkg" install --triplet=${{ matrix.triplet }} \
+            glib pixman libsamplerate libepoxy
+          echo "PREFIX=$VCPKG_INSTALLATION_ROOT/installed/${{ matrix.triplet }}" >> $GITHUB_ENV
+
+      - name: Configure
+        run: |
+          T=$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin
+          export PKG_CONFIG_LIBDIR=$PREFIX/lib/pkgconfig PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
+          export AR=$T/llvm-ar RANLIB=$T/llvm-ranlib NM=$T/llvm-nm STRIP=$T/llvm-strip
+          ./configure \
+            --cross-prefix= \
+            --cc=$T/${{ matrix.clang }}-clang --cxx=$T/${{ matrix.clang }}-clang++ \
+            --host-cc=cc --cpu=${{ matrix.cpu }} \
+            --target-list=i386-softmmu \
+            --disable-werror --disable-rust --disable-docs --disable-tools --disable-guest-agent \
+            --disable-gtk --disable-sdl --disable-sdl-image --disable-vnc --disable-spice --disable-curses \
+            --disable-virglrenderer --disable-libusb --disable-usb-redir --disable-curl \
+            --disable-gnutls --disable-nettle --disable-gcrypt --disable-bzip2 --disable-zstd --disable-lzo \
+            --disable-libnfs --disable-libiscsi --disable-linux-aio --disable-linux-io-uring \
+            --disable-slirp --disable-pa --disable-pipewire --disable-alsa --disable-jack --disable-oss \
+            --disable-sndio --audio-drv-list= \
+            --extra-cflags="-DXBOX=1 -I$PREFIX/include -Wno-error" \
+            --extra-ldflags="-L$PREFIX/lib" \
+            -Dlibretro=true -Db_staticpic=true
+
+      - name: Build
+        run: ninja -k 0 -C build xemu_libretro.so 2>&1 | tail -300
+
+      - name: Collect
+        run: |
+          mkdir -p dist
+          cp build/xemu_libretro.so dist/xemu_libretro_android.so
+          $NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-unneeded dist/xemu_libretro_android.so
+          ls -la dist
+          $NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf -d dist/xemu_libretro_android.so | grep NEEDED
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xemu_libretro-android-${{ matrix.abi }}
           path: dist/

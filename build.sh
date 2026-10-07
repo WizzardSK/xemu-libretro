@@ -202,7 +202,7 @@ case "$platform" in # Adjust compilation options based on platform
     Darwin)
         echo "Compiling for MacOS for $target_arch..."
         if [ "$target_arch" == "arm64" ]; then
-            macos_min_ver=13.7.4
+            macos_min_ver=14.0
         elif [ "$target_arch" == "x86_64" ]; then
             macos_min_ver=12.7.5
         else
@@ -227,9 +227,6 @@ case "$platform" in # Adjust compilation options based on platform
         export LDFLAGS="${LDFLAGS} \
                         -arch ${target_arch} \
                         -isysroot ${sdk}"
-        if [ "$target_arch" == "x86_64" ]; then
-            sys_cflags='-march=ivybridge'
-        fi
         sys_ldflags='-headerpad_max_install_names'
         export PKG_CONFIG_LIBDIR="${lib_prefix}/lib/pkgconfig"
         opts="$opts --disable-cocoa --cross-prefix="

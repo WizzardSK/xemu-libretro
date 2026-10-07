@@ -1,1 +1,1 @@
-subdir('dsp')
+subdir('ptimer')

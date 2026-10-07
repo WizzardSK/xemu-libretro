@@ -102,15 +102,30 @@ typedef struct MCPXAPUState {
     uint32_t regs[0x20000];
 
     int ep_frame_div;
-    int sleep_acc_us;
+    int frame_work_acc_us;
     int frame_count;
-    int64_t frame_count_time_ms;
+    int64_t frame_count_time_us;
     int64_t next_frame_time_us;
+
+    struct {
+        struct {
+            int backoff, ok, speedup;
+        } pacing;
+        struct {
+            int64_t last_us;
+            int64_t min_us, max_us, sum_us;
+            int count;
+        } deviation;
+        int queued_bytes_min, queued_bytes_max;
+        int64_t queued_bytes_sum;
+        int queued_bytes_count;
+    } throttle;
 
     struct {
         McpxApuDebugMonitorPoint point;
         int16_t frame_buf[256][2]; // 1 EP frame (0x400 bytes)
         SDL_AudioStream *stream;
+        int queued_bytes_low, queued_bytes_high;
     } monitor;
 } MCPXAPUState;
 

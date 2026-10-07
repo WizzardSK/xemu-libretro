@@ -1,11 +1,6 @@
 if vulkan.found()
 
-vk_deps = [volk, libglslang, vma, vulkan, spirv_reflect, gloffscreen]
-if not get_option('libretro')
-  vk_deps += [sdl]
-endif
-
-specific_ss.add([vk_deps,
+specific_ss.add([volk, libglslang, vma, vulkan, spirv_reflect, 
 	files(
 		'blit.c',
 		'buffer.c',

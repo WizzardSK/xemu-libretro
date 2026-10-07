@@ -233,7 +233,7 @@ jobs:
             --disable-libnfs --disable-libiscsi --disable-linux-aio --disable-linux-io-uring \
             --disable-slirp --disable-pa --disable-pipewire --disable-alsa --disable-jack --disable-oss \
             --disable-sndio --audio-drv-list= \
-            --extra-cflags="-DXBOX=1 -I$PREFIX/include -Wno-error" \
+            --extra-cflags="-DXBOX=1 -Wno-error" \
             --extra-ldflags="-L$PREFIX/lib" \
             -Dlibretro=true -Db_staticpic=true
 

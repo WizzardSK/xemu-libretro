@@ -62,7 +62,7 @@ else
   system_ss.add(files('tap.c', 'tap-stub.c'))
 endif
 
-system_ss.add([libpcap, files('pcap.c')])
+system_ss.add(when: libpcap, if_true: files('pcap.c'), if_false: files('pcap-stub.c'))
 
 if have_vhost_net_vdpa
   system_ss.add(when: 'CONFIG_VIRTIO_NET', if_true: files('vhost-vdpa.c'), if_false: files('vhost-vdpa-stub.c'))

@@ -343,7 +343,9 @@ int main(void) { return 0; }
 EOF
 }
 
-if check_define __linux__ ; then
+if check_define __ANDROID__ ; then
+  host_os=android
+elif check_define __linux__ ; then
   host_os=linux
 elif check_define _WIN32 ; then
   host_os=windows

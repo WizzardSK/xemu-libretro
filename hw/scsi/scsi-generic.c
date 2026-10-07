@@ -29,6 +29,13 @@
 #include <scsi/sg.h>
 #include "scsi/constants.h"
 
+#ifndef SG_ERR_DRIVER_TIMEOUT
+#define SG_ERR_DRIVER_TIMEOUT 0x06
+#endif
+#ifndef SG_ERR_DRIVER_SENSE
+#define SG_ERR_DRIVER_SENSE 0x08
+#endif
+
 #ifndef MAX_UINT
 #define MAX_UINT ((unsigned int)-1)
 #endif

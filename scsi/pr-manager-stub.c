@@ -16,6 +16,17 @@
 #include "qapi/qapi-types-block.h"
 #include "qapi/qapi-commands-block.h"
 
+bool pr_manager_is_connected(PRManager *pr_mgr)
+{
+    return false;
+}
+
+int coroutine_fn pr_manager_execute(PRManager *pr_mgr, AioContext *ctx, int fd,
+                                    struct sg_io_hdr *hdr)
+{
+    return -ENOTSUP;
+}
+
 PRManager *pr_manager_lookup(const char *id, Error **errp)
 {
     /* The classes do not exist at all!  */

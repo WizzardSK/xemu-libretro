@@ -16,7 +16,10 @@ nv2a_vsh_cpu = declare_dependency(include_directories: nv2a_vsh_cpu_subproj.incl
                                     nv2a_vsh_cpu_subproj.target('nv2a_vsh_disassembler'),
                                     ])
 
-if get_option('libretro')
+if host_os == 'android'
+  # Vulkan only there: no GL renderer for gloffscreen to serve
+  libgloffscreen = static_library('libgloffscreen', sources: files('gloffscreen/common.c'))
+elif get_option('libretro')
   libgloffscreen = static_library('libgloffscreen',
                             sources: files('gloffscreen/common.c', 'gloffscreen/gloffscreen_libretro.c'),
                             c_args: ['-DLIBRETRO=1'],

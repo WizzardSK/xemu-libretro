@@ -536,6 +536,8 @@ if host_os == 'windows'
   supported_backends += ['windows']
 elif host_os == 'emscripten'
   supported_backends += ['wasm']
+elif host_os == 'android' and cpu == 'aarch64'
+  supported_backends += ['android-aarch64']
 else
   if host_os != 'darwin' and cc.links(ucontext_probe)
     supported_backends += ['ucontext']
@@ -864,6 +866,9 @@ coref = []
 iokit = []
 pvg = not_found
 emulator_link_args = []
+if host_os == 'android'
+  emulator_link_args += ['-landroid', '-llog']
+endif
 midl = not_found
 widl = not_found
 pathcch = not_found
@@ -1397,7 +1402,7 @@ endif
 spice_headers = spice.partial_dependency(compile_args: true, includes: true)
 
 rt = not_found
-if host_os != 'windows'
+if host_os != 'windows' and host_os != 'android'
   have_shm_open = cc.has_function('shm_open')
   if not have_shm_open
     rt = cc.find_library('rt', required: true)
@@ -1462,10 +1467,13 @@ if not get_option('blkio').auto() or have_block
                      method: 'pkg-config',
                      required: get_option('blkio'))
 endif
-curl = dependency('libcurl', version: '>=7.29.0',
-                  method: 'pkg-config',
-                  required: false)
-if not curl.found()
+curl = not_found
+if not get_option('curl').disabled()
+  curl = dependency('libcurl', version: '>=7.29.0',
+                    method: 'pkg-config',
+                    required: get_option('curl'))
+endif
+if not curl.found() and not get_option('curl').disabled()
   if host_os == 'windows'
     curl_platform_opts = ['schannel=enabled', 'sspi=enabled']
   elif host_os == 'darwin'
@@ -1862,10 +1870,13 @@ if not get_option('coreaudio').auto() or (host_os == 'darwin' and have_system)
                          required: get_option('coreaudio'))
 endif
 
-epoxy = dependency('epoxy', required: true)
+epoxy = not_found
+if not get_option('opengl').disabled()
+  epoxy = dependency('epoxy', required: get_option('opengl'))
+endif
 
 opengl = not_found
-if not get_option('opengl').auto() or have_system or have_vhost_user_gpu
+if not get_option('opengl').disabled() and (not get_option('opengl').auto() or have_system or have_vhost_user_gpu)
   # FIXME: Use meson's 'gl' dep
   if host_os == 'darwin'
     opengl_libs=['-framework', 'OpenGL']
@@ -2371,6 +2382,9 @@ if host_os == 'windows'
   vulkan = declare_dependency(compile_args: ['-DVK_USE_PLATFORM_WIN32_KHR'])
 elif host_os == 'linux'
   vulkan = dependency('vulkan')
+elif host_os == 'android'
+  vulkan = declare_dependency(compile_args: ['-DVK_USE_PLATFORM_ANDROID_KHR'],
+                              link_args: ['-lvulkan'])
 endif
 
 if vulkan.found()
@@ -2393,7 +2407,11 @@ if vulkan.found()
   if not libglslang.found()
     # FIXME: Get spirv-tools to enable opt.
     glslang_opts = cmake.subproject_options()
-    glslang_opts.add_cmake_defines({'ENABLE_OPT': false, 'ENABLE_HLSL': false})
+    glslang_opts.add_cmake_defines({
+      'ENABLE_OPT': false,
+      'ENABLE_HLSL': false,
+      'CMAKE_POSITION_INDEPENDENT_CODE': 'ON',
+    })
     glslang_subpro = cmake.subproject('glslang', options: glslang_opts)
     libglslang = declare_dependency(link_with: [
           glslang_subpro.target('glslang'),
@@ -2435,7 +2453,9 @@ if vulkan.found()
                                      dependencies: vulkan)
 endif
 
-if host_os == 'windows'
+if host_os == 'android'
+  libpcap = not_found
+elif host_os == 'windows'
   libpcap = declare_dependency(include_directories: 'winpcap-loader/include',
                                link_args: ['-lws2_32'])
 else
@@ -2444,31 +2464,37 @@ endif
 
 libsamplerate = dependency('samplerate', method: 'pkg-config', required: true)
 
-imgui_proj = subproject('imgui', required: true,
-                         default_options: [
-                           'default_library=static',
-                           'dx9=disabled',
-                           'dx10=disabled',
-                           'dx11=disabled',
-                           'dx12=disabled',
-                           'metal=disabled',
-                           'opengl=enabled',
-                           'sdl2_renderer=disabled',
-                           'sdl3_renderer=disabled',
-                           'vulkan=disabled',
-                           'webgpu=disabled',
-                           'glfw=disabled',
-                           'sdl2=disabled',
-                           'sdl3=enabled',
-                           'osx=disabled',
-                           'win=disabled',
-                           'allegro5=disabled',
-                        ])
-imgui = imgui_proj.get_variable('imgui_dep')
+# No SDL3 on Android, which imgui is built with here
+if host_os == 'android'
+  imgui = not_found
+  implot = not_found
+else
+  imgui_proj = subproject('imgui', required: true,
+                           default_options: [
+                             'default_library=static',
+                             'dx9=disabled',
+                             'dx10=disabled',
+                             'dx11=disabled',
+                             'dx12=disabled',
+                             'metal=disabled',
+                             'opengl=enabled',
+                             'sdl2_renderer=disabled',
+                             'sdl3_renderer=disabled',
+                             'vulkan=disabled',
+                             'webgpu=disabled',
+                             'glfw=disabled',
+                             'sdl2=disabled',
+                             'sdl3=enabled',
+                             'osx=disabled',
+                             'win=disabled',
+                             'allegro5=disabled',
+                          ])
+  imgui = imgui_proj.get_variable('imgui_dep')
 
-implot_proj = subproject('implot', required: true,
-                         default_options: ['default_library=static'])
-implot = implot_proj.get_variable('implot_dep')
+  implot_proj = subproject('implot', required: true,
+                           default_options: ['default_library=static'])
+  implot = implot_proj.get_variable('implot_dep')
+endif
 
 genconfig_proj = subproject('genconfig', required: true)
 genconfig = genconfig_proj.get_variable('cnode_dep')
@@ -2912,6 +2938,7 @@ config_host_data.set('CONFIG_INOTIFY1', have_inotify_init1)
 
 # has_header_symbol
 config_host_data.set('CONFIG_BLKZONED',
+                     host_os == 'linux' and
                      cc.has_header_symbol('linux/blkzoned.h', 'BLKOPENZONE'))
 config_host_data.set('CONFIG_EPOLL_CREATE1',
                      cc.has_header_symbol('sys/epoll.h', 'epoll_create1'))

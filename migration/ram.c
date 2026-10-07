@@ -66,7 +66,7 @@
 
 #include "hw/boards.h" /* for machine_dump_guest_core() */
 
-#if defined(__linux__)
+#if defined(__linux__) && !defined(__ANDROID__)
 #include "qemu/userfaultfd.h"
 #endif /* defined(__linux__) */
 
@@ -1466,7 +1466,7 @@ static RAMBlock *unqueue_page(RAMState *rs, ram_addr_t *offset)
     return block;
 }
 
-#if defined(__linux__)
+#if defined(__linux__) && !defined(__ANDROID__)
 /**
  * poll_fault_page: try to get next UFFD write fault page and, if pending fault
  *   is found, return RAM block pointer and page offset
@@ -1833,7 +1833,11 @@ bool ram_write_tracking_available(void)
 
 bool ram_write_tracking_compatible(void)
 {
-    g_assert_not_reached();
+    return false;
+}
+
+void ram_write_tracking_prepare(void)
+{
 }
 
 int ram_write_tracking_start(void)

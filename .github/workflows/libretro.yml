@@ -237,8 +237,12 @@ jobs:
             --extra-ldflags="-L$PREFIX/lib" \
             -Dlibretro=true -Db_staticpic=true
 
+      # Every error of the run, which a tail of the output cuts off
       - name: Build
-        run: ninja -k 0 -C build xemu_libretro.so 2>&1 | tail -300
+        run: |
+          ninja -k 0 -C build xemu_libretro.so > ninja.log 2>&1 && exit 0
+          grep -E -B2 -A8 "error:|FAILED:" ninja.log | head -600
+          exit 1
 
       - name: Collect
         run: |

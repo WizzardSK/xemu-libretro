@@ -292,7 +292,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install ninja coreutils vulkan-headers dylibbundler
+          brew install ninja coreutils vulkan-headers
           pip install pyyaml requests tomli
           python3 ./scripts/download-macos-libs.py ${{ matrix.arch }}
 
@@ -324,11 +324,35 @@ jobs:
           strip -x dist/xemu_libretro.dylib
           # The MacPorts libraries (glib, pixman, epoxy, ...) go along in a
           # folder of their own next to the core, as upstream bundles them
-          # into its app
-          dylibbundler -od -b -x dist/xemu_libretro.dylib \
-            -d dist/xemu_libretro_libs -p @loader_path/xemu_libretro_libs/ \
-            -s macos-libs/${{ matrix.arch }}/opt/local/lib
-          codesign -f -s - dist/xemu_libretro_libs/*.dylib dist/xemu_libretro.dylib
+          # into its app. Their install names are under /opt/local/lib, where
+          # nothing is on the runner: they are taken from macos-libs and
+          # pointed at that folder, and so are their own dependencies.
+          src=$PWD/macos-libs/${{ matrix.arch }}/opt/local/lib
+          libs=dist/xemu_libretro_libs
+          mkdir -p $libs
+          todo=dist/xemu_libretro.dylib
+          while [ -n "$todo" ]; do
+            next=""
+            for f in $todo; do
+              for dep in $(otool -L "$f" | awk 'NR>1 && $1 ~ /^\/opt\/local\// {print $1}'); do
+                name=$(basename "$dep")
+                if [ ! -f "$libs/$name" ]; then
+                  cp -L "$src/$name" "$libs/$name"
+                  chmod u+w "$libs/$name"
+                  install_name_tool -id "@loader_path/$name" "$libs/$name"
+                  next="$next $libs/$name"
+                fi
+                if [ "$f" = dist/xemu_libretro.dylib ]; then
+                  install_name_tool -change "$dep" "@loader_path/xemu_libretro_libs/$name" "$f"
+                else
+                  install_name_tool -change "$dep" "@loader_path/$name" "$f"
+                fi
+              done
+            done
+            todo=$next
+          done
+          ls $libs
+          codesign -f -s - $libs/*.dylib dist/xemu_libretro.dylib
           otool -L dist/xemu_libretro.dylib
           lipo -info dist/xemu_libretro.dylib
 

@@ -19,60 +19,20 @@ system_ss.add(files(
 
 subdir('thirdparty')
 
-if get_option('libretro')
-  # Libretro core build: no SDL UI, no imgui, no xemu UI code
-  xemu_ss = ss.source_set()
-  xemu_ss.add(files(
-    'libretro.c',
-    'libretro-settings-stub.c',
-    'libretro-stubs.c',
-    'xemu-widescreen.c',
-  ))
-  xemu_ss.add(when: slirp, if_true: files('xemu-net.c'), if_false: files('xemu-net-stub.c'))
-  if host_os == 'android'
-    xemu_ss.add(files('libretro-gl-stubs.c'))
-  endif
-  xemu_ss.add(opengl, genconfig)
-  system_ss.add_all(xemu_ss)
-else
-  xemu_ss = ss.source_set()
-  xemu_ss.add(files(
-    'xemu-input.c',
-    'xemu-monitor.c',
-    'xemu-net.c',
-    'xemu-settings.cc',
-    'xemu-controllers.cc',
-
-    'xemu.c',
-    'xemu-data.c',
-    'xemu-snapshots.c',
-    'xemu-thumbnail.cc',
-    'xemu-widescreen.c',
-  ))
-
-  if host_os == 'windows'
-    d3d11 = cc.find_library('d3d11', required: true)
-    dxgi = cc.find_library('dxgi', required: true)
-    xemu_ss.add(nvapi, d3d11, dxgi)
-  endif
-
-  subdir('xui')
-
-  if host_os == 'darwin'
-    xemu_cocoa = dependency('appleframeworks', modules: 'Cocoa')
-    xemu_ss.add(xemu_cocoa)
-  endif
-
-  if host_os == 'linux'
-    xemu_ss.add([gtk, files('xemu-os-utils-linux.c')])
-  elif host_os == 'windows'
-    xemu_ss.add(files('xemu-os-utils-windows.c'))
-  elif host_os == 'darwin'
-    xemu_ss.add(files('xemu-os-utils-macos.m'))
-  endif
-  xemu_ss.add(imgui, implot, stb_image, sdl, opengl, fa, fpng, json, fatx, tomlplusplus, genconfig)
-  system_ss.add_all(xemu_ss)
+# The libretro core: the standalone app's SDL and imgui UI is not part of it
+xemu_ss = ss.source_set()
+xemu_ss.add(files(
+  'libretro.c',
+  'libretro-settings-stub.c',
+  'libretro-stubs.c',
+  'xemu-widescreen.c',
+))
+xemu_ss.add(when: slirp, if_true: files('xemu-net.c'), if_false: files('xemu-net-stub.c'))
+if host_os == 'android'
+  xemu_ss.add(files('libretro-gl-stubs.c'))
 endif
+xemu_ss.add(opengl, genconfig)
+system_ss.add_all(xemu_ss)
 
 system_ss.add(when: pixman, if_true: files('console-vc.c'), if_false: files('console-vc-stubs.c'))
 if dbus_display

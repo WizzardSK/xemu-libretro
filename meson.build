@@ -2523,8 +2523,8 @@ endif
 
 libsamplerate = dependency('samplerate', method: 'pkg-config', required: true)
 
-# No SDL3 on Android, which imgui is built with here
-if host_os == 'android'
+# The libretro core has no imgui UI
+if get_option('libretro')
   imgui = not_found
   implot = not_found
 else
@@ -4057,7 +4057,6 @@ subdir('authz')
 subdir('crypto')
 subdir('ui')
 subdir('gdbstub')
-subdir('data')
 subdir('winpcap-loader')
 
 if have_system

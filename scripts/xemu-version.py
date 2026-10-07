@@ -31,9 +31,15 @@ def main():
             with open(commit_file, 'r') as f:
                 xemu_commit = f.read().strip()
     
-    # Get version
+    # Get version: the upstream xemu this core is merged from, as
+    # upstream.version records it ("<version>-<commits since> <commit>"),
+    # updated with each merge of upstream
     xemu_version = ""
-    if os.path.exists(git_dir):
+    upstream_file = os.path.join(source_dir, 'upstream.version')
+    if os.path.exists(upstream_file):
+        with open(upstream_file, 'r') as f:
+            xemu_version = f.read().split()[0]
+    elif os.path.exists(git_dir):
         try:
             result = subprocess.run(['git', 'describe', '--tags', '--match', 'v*'], 
                                    cwd=source_dir, capture_output=True, text=True)

@@ -1,6 +1,6 @@
 if vulkan.found()
 
-specific_ss.add([volk, libglslang, vma, vulkan, spirv_reflect, 
+specific_ss.add([volk, libglslang, vma, vulkan, spirv_reflect, gloffscreen,
 	files(
 		'blit.c',
 		'buffer.c',

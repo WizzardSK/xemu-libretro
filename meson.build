@@ -2457,6 +2457,9 @@ if vulkan.found()
   if not libglslang.found()
     # FIXME: Get spirv-tools to enable opt.
     glslang_opts = cmake.subproject_options()
+  if host_os == 'darwin'
+    glslang_opts.add_cmake_defines({'CMAKE_OSX_ARCHITECTURES': cmake_macos_arch})
+  endif
     glslang_opts.add_cmake_defines({
       'ENABLE_OPT': false,
       'ENABLE_HLSL': false,
@@ -2477,6 +2480,9 @@ if vulkan.found()
   libretro_cmake_pic = get_option('libretro') and host_os != 'windows'
 
   volk_opts = cmake.subproject_options()
+  if host_os == 'darwin'
+    volk_opts.add_cmake_defines({'CMAKE_OSX_ARCHITECTURES': cmake_macos_arch})
+  endif
   volk_opts.add_cmake_defines({'VOLK_STATIC_DEFINES': 'VK_NO_PROTOTYPES'})
   if libretro_cmake_pic
     volk_opts.add_cmake_defines({'CMAKE_POSITION_INDEPENDENT_CODE': 'ON'})
@@ -2502,6 +2508,9 @@ if vulkan.found()
                             dependencies: vulkan)
 
   spirv_reflect_opts = cmake.subproject_options()
+  if host_os == 'darwin'
+    spirv_reflect_opts.add_cmake_defines({'CMAKE_OSX_ARCHITECTURES': cmake_macos_arch})
+  endif
   spirv_reflect_opts.add_cmake_defines({'SPIRV_REFLECT_STATIC_LIB': 'ON'})
   if libretro_cmake_pic
     spirv_reflect_opts.add_cmake_defines({'CMAKE_POSITION_INDEPENDENT_CODE': 'ON'})

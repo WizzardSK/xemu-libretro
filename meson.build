@@ -2439,6 +2439,12 @@ if vulkan.found()
   if host_os == 'windows'
     volk_opts.append_compile_args('c', '-DVK_USE_PLATFORM_WIN32_KHR=1')
   endif
+  # volk's CMake looks for Vulkan's headers itself, and on Android found them in
+  # another NDK's sysroot, whose include directory then came ahead of libc++'s
+  # and broke its wrappers; the NDK in use has them where the compiler looks
+  if host_os == 'android'
+    volk_opts.add_cmake_defines({'VOLK_PULL_IN_VULKAN': 'OFF'})
+  endif
   volk_subproj = cmake.subproject('volk', options: volk_opts)
   volk = declare_dependency(compile_args: ['-DVK_NO_PROTOTYPES'],
                             include_directories: volk_subproj.include_directories('volk'),

@@ -26,9 +26,9 @@ if get_option('libretro')
     'libretro.c',
     'libretro-settings-stub.c',
     'libretro-stubs.c',
-    'xemu-net.c',
     'xemu-widescreen.c',
   ))
+  xemu_ss.add(when: slirp, if_true: files('xemu-net.c'), if_false: files('xemu-net-stub.c'))
   xemu_ss.add(opengl, genconfig)
   system_ss.add_all(xemu_ss)
 else

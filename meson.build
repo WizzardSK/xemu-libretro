@@ -1692,7 +1692,8 @@ if not get_option('brlapi').auto() or have_system
 endif
 
 sdl = not_found
-if not get_option('sdl').auto() or have_system
+# The libretro core has its audio, input and video from the frontend: no SDL
+if not get_option('libretro') and (not get_option('sdl').auto() or have_system)
   sdl = dependency('sdl3', required: false, allow_fallback: false)
   if not sdl.found() and not get_option('sdl').disabled()
     sdl3_cmake_opts = cmake.subproject_options()

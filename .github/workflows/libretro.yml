@@ -79,6 +79,16 @@ jobs:
           echo "toolchain lib dir: $libdir"
           cp -a /opt/glslang/lib/*.a "$libdir/"
 
+      # The DSP JIT's prebuilt library, which meson fetches with curl; the
+      # MXE image has no curl, so it is put where meson looks for it first
+      - name: Fetch the dsp56300 library
+        run: |
+          ver=$(sed -n "s/^project('dsp56300', version: '\(.*\)')/\1/p" subprojects/dsp56300/meson.build)
+          a=dsp56300-$ver-x86_64-pc-windows-gnu.tar.gz
+          python3 -c "import sys, urllib.request; urllib.request.urlretrieve(sys.argv[1], sys.argv[2])" \
+            https://github.com/mborgerson/dsp56300/releases/download/v$ver/$a subprojects/dsp56300/$a
+          ls -la subprojects/dsp56300/
+
       - name: Configure
         run: |
           ./configure \

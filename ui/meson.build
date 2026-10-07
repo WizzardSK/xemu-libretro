@@ -32,6 +32,10 @@ if host_os == 'android'
   xemu_ss.add(files('libretro-gl-stubs.c'))
 endif
 xemu_ss.add(opengl, genconfig)
+# libretro.c talks to the frontend's Vulkan: its headers
+if vulkan.found()
+  xemu_ss.add(vulkan)
+endif
 system_ss.add_all(xemu_ss)
 
 system_ss.add(when: pixman, if_true: files('console-vc.c'), if_false: files('console-vc-stubs.c'))

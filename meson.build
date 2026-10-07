@@ -1884,6 +1884,9 @@ if not get_option('opengl').disabled() and (not get_option('opengl').auto() or h
     opengl_libs=['-lopengl32', '-lgdi32']
   elif host_os == 'linux'
     opengl_libs=['-lGL']
+  elif host_os == 'android'
+    # GLES through epoxy, for the core's GL path; the renderer is Vulkan
+    opengl_libs=['-lEGL', '-lGLESv3']
   else
     error('Unknown GL platform')
   endif

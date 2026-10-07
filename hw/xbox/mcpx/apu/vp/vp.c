@@ -1767,7 +1767,11 @@ static void voice_work_init(MCPXAPUState *d)
 {
     VoiceWorkDispatch *vwd = &d->vp.voice_work_dispatch;
 
+#ifdef LIBRETRO
+    int num_workers = g_config.audio.vp.num_workers ?: (int)g_get_num_processors();
+#else
     int num_workers = g_config.audio.vp.num_workers ?: SDL_GetNumLogicalCPUCores();
+#endif
     vwd->num_workers = MAX(1, MIN(num_workers, MAX_VOICE_WORKERS));
     vwd->workers = g_malloc0_n(vwd->num_workers, sizeof(VoiceWorker));
     vwd->workers_should_exit = false;

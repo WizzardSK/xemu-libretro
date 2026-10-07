@@ -1328,6 +1328,11 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
     /* No GL renderer in the Android build: Vulkan, whatever is preferred */
     want_vulkan = true;
 #endif
+#ifdef __APPLE__
+    /* MoltenVK has no geometry shaders, which the Vulkan renderer needs: GL,
+     * whatever is preferred */
+    want_vulkan = false;
+#endif
 
     /* Setup hardware rendering based on frontend preference */
     memset(&hw_render, 0, sizeof(hw_render));

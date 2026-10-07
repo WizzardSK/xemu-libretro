@@ -23,9 +23,11 @@ elif get_option('libretro')
   libgloffscreen = static_library('libgloffscreen',
                             sources: files('gloffscreen/common.c', 'gloffscreen/gloffscreen_libretro.c'),
                             c_args: ['-DLIBRETRO=1'],
-                            # EGL and GLX through epoxy off Windows; X11 for
-                            # the GLX config query
+                            # CGL on macOS; EGL and GLX through epoxy on the
+                            # other non-Windows hosts, X11 for the GLX config
+                            # query
                             dependencies: host_os == 'windows' ? [] :
+                              host_os == 'darwin' ? [epoxy, opengl] :
                               [epoxy, dependency('x11', required: true)])
 else
   libgloffscreen = static_library('libgloffscreen',

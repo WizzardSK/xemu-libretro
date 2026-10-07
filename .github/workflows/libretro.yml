@@ -282,7 +282,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install ninja coreutils glslang spirv-tools
+          brew install ninja coreutils vulkan-headers dylibbundler
           pip install pyyaml requests tomli
           python3 ./scripts/download-macos-libs.py ${{ matrix.arch }}
 
@@ -312,6 +312,13 @@ jobs:
           mkdir -p dist
           cp build/xemu_libretro.dylib dist/xemu_libretro.dylib
           strip -x dist/xemu_libretro.dylib
+          # The MacPorts libraries (glib, pixman, epoxy, ...) go along in a
+          # folder of their own next to the core, as upstream bundles them
+          # into its app
+          dylibbundler -od -b -x dist/xemu_libretro.dylib \
+            -d dist/xemu_libretro_libs -p @loader_path/xemu_libretro_libs/ \
+            -s macos-libs/${{ matrix.arch }}/opt/local/lib
+          codesign -f -s - dist/xemu_libretro_libs/*.dylib dist/xemu_libretro.dylib
           otool -L dist/xemu_libretro.dylib
           lipo -info dist/xemu_libretro.dylib
 

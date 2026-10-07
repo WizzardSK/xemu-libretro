@@ -266,7 +266,169 @@ void glo_context_destroy(GloContext *context)
     free(context);
 }
 
-#else /* !_WIN32 */
+#elif defined(__APPLE__)
+
+/*
+ * macOS: RetroArch's GL context is a CGL one (NSOpenGLContext underneath),
+ * current when it calls context_reset. The worker contexts are CGL contexts
+ * made from its pixel format and shared with it; they render into FBOs only,
+ * so they need no drawable. With Vulkan in RetroArch there is no context to
+ * share with, and the first one made here, from a 4.1 core pixel format of our
+ * own, takes its place.
+ */
+
+#include <pthread.h>
+#include <time.h>
+#include <OpenGL/OpenGL.h>
+
+struct _GloContext {
+    CGLContextObj ctx;
+};
+
+static CGLContextObj g_cgl_share = NULL;
+static CGLPixelFormatObj g_cgl_pixel_format = NULL;
+
+static volatile bool g_libretro_gl_ready = false;
+static bool g_standalone_gl_mode = false;
+static GloContext *g_standalone_root_ctx = NULL;
+
+static pthread_mutex_t g_ready_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t g_ready_cond = PTHREAD_COND_INITIALIZER;
+static bool g_ready_signalled = false;
+
+static void wait_ready_signal(void)
+{
+    struct timespec deadline;
+    clock_gettime(CLOCK_REALTIME, &deadline);
+    deadline.tv_sec += 30;
+    pthread_mutex_lock(&g_ready_mutex);
+    while (!g_ready_signalled) {
+        if (pthread_cond_timedwait(&g_ready_cond, &g_ready_mutex, &deadline) != 0) {
+            break;
+        }
+    }
+    pthread_mutex_unlock(&g_ready_mutex);
+}
+
+void libretro_gl_init_wait_event(void)
+{
+}
+
+static bool cgl_choose_own_pixel_format(void)
+{
+    const CGLPixelFormatAttribute attribs[] = {
+        kCGLPFAOpenGLProfile, (CGLPixelFormatAttribute)kCGLOGLPVersion_GL4_Core,
+        kCGLPFAAccelerated,
+        kCGLPFAColorSize, (CGLPixelFormatAttribute)24,
+        kCGLPFAAlphaSize, (CGLPixelFormatAttribute)8,
+        (CGLPixelFormatAttribute)0
+    };
+    GLint n = 0;
+    if (CGLChoosePixelFormat(attribs, &g_cgl_pixel_format, &n) != kCGLNoError ||
+        !g_cgl_pixel_format) {
+        fprintf(stderr, "[xemu] gloffscreen: no 4.1 core CGL pixel format\n");
+        g_cgl_pixel_format = NULL;
+        return false;
+    }
+    return true;
+}
+
+void libretro_gl_prepare(void)
+{
+    g_cgl_share = CGLGetCurrentContext();
+    if (g_cgl_share) {
+        g_cgl_pixel_format = CGLRetainPixelFormat(CGLGetPixelFormat(g_cgl_share));
+    } else {
+        fprintf(stderr, "[xemu] gloffscreen: no current GL context from the frontend\n");
+    }
+    g_libretro_gl_ready = true;
+}
+
+void libretro_gl_wake_pfifo(void)
+{
+    pthread_mutex_lock(&g_ready_mutex);
+    g_ready_signalled = true;
+    pthread_cond_broadcast(&g_ready_cond);
+    pthread_mutex_unlock(&g_ready_mutex);
+}
+
+void libretro_gl_wait_for_contexts(void)
+{
+    wait_ready_signal();
+}
+
+void libretro_gl_signal_ready(void)
+{
+    libretro_gl_prepare();
+    libretro_gl_wake_pfifo();
+}
+
+void libretro_gl_set_standalone_mode(void)
+{
+    g_standalone_gl_mode = true;
+    g_cgl_share = NULL;
+    cgl_choose_own_pixel_format();
+    g_libretro_gl_ready = true;
+}
+
+void libretro_gl_wait_ready(void)
+{
+    if (g_libretro_gl_ready) return;
+    wait_ready_signal();
+}
+
+bool libretro_gl_is_ready(void)
+{
+    return g_libretro_gl_ready;
+}
+
+GloContext *glo_context_create(void)
+{
+    GloContext *context = (GloContext *)calloc(1, sizeof(GloContext));
+    assert(context != NULL);
+
+    libretro_gl_wait_ready();
+
+    if (!g_cgl_pixel_format) {
+        free(context);
+        return NULL;
+    }
+    CGLContextObj share = g_cgl_share;
+    if (g_standalone_gl_mode && g_standalone_root_ctx) {
+        share = g_standalone_root_ctx->ctx;
+    }
+    CGLError err = CGLCreateContext(g_cgl_pixel_format, share, &context->ctx);
+    if (err != kCGLNoError || !context->ctx) {
+        fprintf(stderr, "[xemu] gloffscreen: CGLCreateContext failed (%s)\n",
+                CGLErrorString(err));
+        free(context);
+        return NULL;
+    }
+    if (g_standalone_gl_mode && !g_standalone_root_ctx) {
+        g_standalone_root_ctx = context;
+    }
+    return context;
+}
+
+void glo_set_current(GloContext *context)
+{
+    CGLSetCurrentContext(context ? context->ctx : NULL);
+}
+
+void glo_context_destroy(GloContext *context)
+{
+    if (!context) return;
+    if (CGLGetCurrentContext() == context->ctx) {
+        CGLSetCurrentContext(NULL);
+    }
+    CGLReleaseContext(context->ctx);
+    if (context == g_standalone_root_ctx) {
+        g_standalone_root_ctx = NULL;
+    }
+    free(context);
+}
+
+#else /* !_WIN32 && !__APPLE__ */
 
 /*
  * Linux and the other non-Windows hosts. RetroArch's GL context there is EGL

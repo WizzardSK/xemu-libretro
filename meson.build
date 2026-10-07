@@ -2388,11 +2388,24 @@ elif host_os == 'linux'
 elif host_os == 'android'
   vulkan = declare_dependency(compile_args: ['-DVK_USE_PLATFORM_ANDROID_KHR'],
                               link_args: ['-lvulkan'])
+elif host_os == 'darwin' and get_option('libretro')
+  # The core is handed Vulkan's entry points by the frontend (MoltenVK), and
+  # volk loads the rest; only the headers are needed to build it, Homebrew's
+  brew = find_program('brew', required: false)
+  if brew.found()
+    vulkan_headers_dir = run_command(brew, '--prefix', 'vulkan-headers',
+                                     check: false).stdout().strip() / 'include'
+    if fs.exists(vulkan_headers_dir / 'vulkan' / 'vulkan.h')
+      vulkan = declare_dependency(compile_args: ['-DVK_USE_PLATFORM_METAL_EXT',
+                                                 '-I' + vulkan_headers_dir])
+    endif
+  endif
 endif
 
 if vulkan.found()
-  # On Android, from the glslang subproject below: the NDK has no glslang
-  if get_option('libretro') and host_os != 'android'
+  # On Android and macOS, from the glslang subproject below: neither the NDK
+  # nor the MacPorts libraries have it
+  if get_option('libretro') and host_os != 'android' and host_os != 'darwin'
     # For libretro: use static glslang + SPIRV-Tools libraries to avoid shared DLL deps
     libglslang = declare_dependency(
       dependencies: [
@@ -2444,6 +2457,10 @@ if vulkan.found()
   # and broke its wrappers; the NDK in use has them where the compiler looks
   if host_os == 'android'
     volk_opts.add_cmake_defines({'VOLK_PULL_IN_VULKAN': 'OFF'})
+  endif
+  if host_os == 'darwin'
+    volk_opts.add_cmake_defines({'VOLK_PULL_IN_VULKAN': 'OFF'})
+    volk_opts.append_compile_args('c', '-I' + vulkan_headers_dir)
   endif
   volk_subproj = cmake.subproject('volk', options: volk_opts)
   volk = declare_dependency(compile_args: ['-DVK_NO_PROTOTYPES'],

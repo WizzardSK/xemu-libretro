@@ -160,8 +160,8 @@ jobs:
       - name: Build
         run: ninja -C build xemu_libretro.so 2>&1 | tail -200
 
-      # libslirp and libpcap are not in every frontend's runtime (Flatpak
-      # RetroArch's, for one), so they go next to the core, found through
+      # libslirp is not in every frontend's runtime (Flatpak
+      # RetroArch's, for one), so it goes next to the core, found through
       # $ORIGIN.
       - name: Collect
         run: |
@@ -169,7 +169,7 @@ jobs:
           cp build/xemu_libretro.so dist/
           strip --strip-unneeded dist/xemu_libretro.so
           patchelf --set-rpath '$ORIGIN' dist/xemu_libretro.so
-          for lib in libslirp.so.0 libpcap.so.0.8; do
+          for lib in libslirp.so.0; do
             cp -L "/usr/lib/${{ matrix.arch }}-linux-gnu/$lib" dist/
           done
           ls -la dist

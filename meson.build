@@ -2522,7 +2522,10 @@ if vulkan.found()
                                      dependencies: vulkan)
 endif
 
-if host_os == 'android'
+# The libretro core on Linux has NAT networking only, and the libpcap it would
+# have to carry (Ubuntu's) needs libibverbs and libdbus, which most systems
+# lack: the core did not load. pcap-stub.c stands in, as on Android.
+if host_os == 'android' or (get_option('libretro') and host_os == 'linux')
   libpcap = not_found
 elif host_os == 'windows'
   libpcap = declare_dependency(include_directories: 'winpcap-loader/include',

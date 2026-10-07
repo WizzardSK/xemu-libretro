@@ -14,8 +14,12 @@ specific_ss.add(files(
 	'xbox.c',
 	'xbox_pci.c',
 	'xid.c',
-	'xblc.c',
 	'xid-gamepad.c',
 	))
+# The Xbox Live Communicator plays and records through SDL, which the libretro
+# core is built without
+if not get_option('libretro')
+	specific_ss.add(files('xblc.c'))
+endif
 subdir('nv2a')
 subdir('mcpx')

@@ -7,7 +7,7 @@ name: Build libretro core
 on:
   workflow_dispatch:
   push:
-    branches: [libretro, linux-port, android]
+    branches: [libretro, linux-port]
 
 jobs:
   windows-x86_64:

@@ -15,10 +15,13 @@ if debug_vma
     ]
 endif
 
-vma_subproj = cmake.subproject('VulkanMemoryAllocator')
+vma_opts = cmake.subproject_options()
+vma_opts.add_cmake_defines({'CMAKE_POSITION_INDEPENDENT_CODE': 'ON'})
+vma_subproj = cmake.subproject('VulkanMemoryAllocator', options: vma_opts)
 libvma = static_library('vma',
                         sources: 'vma.cc',
                         cpp_args: vma_defns,
+                        pic: true,
                         include_directories: vma_subproj.include_directories('VulkanMemoryAllocator'),
                         dependencies: [vulkan, volk])
 vma = declare_dependency(include_directories: vma_subproj.include_directories('VulkanMemoryAllocator'),

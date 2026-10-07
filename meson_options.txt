@@ -36,7 +36,7 @@ option('trace_file', type: 'string', value: 'trace',
 option('vtune', type : 'string', value : '',
        description: 'Path to VTune directory for profiling')
 option('coroutine_backend', type: 'combo',
-       choices: ['ucontext', 'sigaltstack', 'windows', 'wasm', 'auto'],
+       choices: ['ucontext', 'sigaltstack', 'windows', 'wasm', 'android-aarch64', 'auto'],
        value: 'auto', description: 'coroutine backend to use')
 option('gdb', type: 'string', value: '',
        description: 'Path to GDB')

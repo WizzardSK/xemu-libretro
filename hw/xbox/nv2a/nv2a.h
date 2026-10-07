@@ -29,6 +29,9 @@ void nv2a_release_framebuffer_surface(void);
 /* VK display info for libretro VK HW render interface.
  * Only valid while framebuffer is in use (between get/release calls). */
 void nv2a_get_vk_display_info(void **out_handle, int *out_width, int *out_height);
+#ifndef _WIN32
+int nv2a_take_vk_display_fd(void);
+#endif
 /* Non-blocking: trigger PFIFO to render display image, returns immediately.
  * The display image will be updated asynchronously by the PFIFO thread. */
 void nv2a_trigger_display_render(void);

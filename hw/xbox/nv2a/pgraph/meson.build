@@ -12,7 +12,13 @@ if have_renderdoc
 endif
 subdir('thirdparty')
 subdir('null')
-subdir('gl')
-subdir('glsl')
-subdir('vk')
+if host_os == 'android'
+	# Vulkan only, through the frontend's context
+	subdir('glsl')
+	subdir('vk')
+else
+	subdir('gl')
+	subdir('glsl')
+	subdir('vk')
+endif
 specific_ss.add(nv2a_vsh_cpu)

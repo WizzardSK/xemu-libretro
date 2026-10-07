@@ -142,4 +142,4 @@ elif cpu == 's390x'
   util_ss.add(files('s390x_pci_mmio.c'))
 endif
 util_ss.add(files('sha1.c','rc4.c'))
-util_ss.add([curl, files('http.c')])
+util_ss.add(when: curl, if_true: files('http.c'))

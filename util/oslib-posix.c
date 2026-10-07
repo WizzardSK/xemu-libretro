@@ -47,6 +47,9 @@
 #ifdef CONFIG_LINUX
 #include <sys/syscall.h>
 #endif
+#ifdef __ANDROID__
+#include <asm/unistd.h>
+#endif
 
 #ifdef __FreeBSD__
 #include <sys/thr.h>
@@ -96,7 +99,9 @@ static QemuCond page_cond;
 
 int qemu_get_thread_id(void)
 {
-#if defined(__linux__)
+#if defined(__ANDROID__) && defined(__NR_gettid)
+    return syscall(__NR_gettid);
+#elif defined(__linux__)
     return syscall(SYS_gettid);
 #elif defined(__FreeBSD__)
     /* thread id is up to INT_MAX */
@@ -114,7 +119,9 @@ int qemu_get_thread_id(void)
 
 int qemu_kill_thread(int tid, int sig)
 {
-#if defined(__linux__)
+#if defined(__ANDROID__) && defined(__NR_tgkill)
+    return syscall(__NR_tgkill, getpid(), tid, sig);
+#elif defined(__linux__)
     return syscall(__NR_tgkill, getpid(), tid, sig);
 #elif defined(__FreeBSD__)
     return thr_kill2(getpid(), tid, sig);
@@ -984,6 +991,29 @@ void qemu_close_all_open_fd(const int *skip, unsigned int nskip)
 
 int qemu_shm_alloc(size_t size, Error **errp)
 {
+#ifdef __ANDROID__
+    g_autofree char *path = g_strdup_printf("%s/qemu-shm-XXXXXX",
+                                            g_get_tmp_dir());
+    int fd = mkstemp(path);
+
+    if (fd < 0) {
+        error_setg_errno(errp, errno,
+                         "failed to create temporary shared memory file");
+        return -1;
+    }
+
+    unlink(path);
+
+    if (ftruncate(fd, size) == -1) {
+        error_setg_errno(errp, errno,
+                         "failed to resize temporary shared memory to %zu",
+                         size);
+        close(fd);
+        return -1;
+    }
+
+    return fd;
+#else
     g_autoptr(GString) shm_name = g_string_new(NULL);
     int fd, oflag, cur_sequence;
     static int sequence;
@@ -1032,4 +1062,5 @@ int qemu_shm_alloc(size_t size, Error **errp)
     }
 
     return fd;
+#endif
 }

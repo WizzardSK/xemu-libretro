@@ -100,13 +100,13 @@ void postcopy_thread_create(MigrationIncomingState *mis,
  * across, and efficiently map new pages in, the techniques for doing this
  * are target OS specific.
  */
-#if defined(__linux__)
+#if defined(__linux__) && !defined(__ANDROID__)
 #include <poll.h>
 #include <sys/ioctl.h>
 #include <sys/syscall.h>
 #endif
 
-#if defined(__linux__) && defined(__NR_userfaultfd) && defined(CONFIG_EVENTFD)
+#if defined(__linux__) && !defined(__ANDROID__) && defined(__NR_userfaultfd) && defined(CONFIG_EVENTFD)
 #include <sys/eventfd.h>
 #include <linux/userfaultfd.h>
 

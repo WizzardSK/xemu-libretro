@@ -536,6 +536,8 @@ if host_os == 'windows'
   supported_backends += ['windows']
 elif host_os == 'emscripten'
   supported_backends += ['wasm']
+elif host_os == 'android' and cpu == 'aarch64'
+  supported_backends += ['android-aarch64']
 else
   if host_os != 'darwin' and cc.links(ucontext_probe)
     supported_backends += ['ucontext']
@@ -864,6 +866,9 @@ coref = []
 iokit = []
 pvg = not_found
 emulator_link_args = []
+if host_os == 'android'
+  emulator_link_args += ['-landroid', '-llog']
+endif
 midl = not_found
 widl = not_found
 pathcch = not_found
@@ -1397,7 +1402,7 @@ endif
 spice_headers = spice.partial_dependency(compile_args: true, includes: true)
 
 rt = not_found
-if host_os != 'windows'
+if host_os != 'windows' and host_os != 'android'
   have_shm_open = cc.has_function('shm_open')
   if not have_shm_open
     rt = cc.find_library('rt', required: true)
@@ -1462,10 +1467,13 @@ if not get_option('blkio').auto() or have_block
                      method: 'pkg-config',
                      required: get_option('blkio'))
 endif
-curl = dependency('libcurl', version: '>=7.29.0',
-                  method: 'pkg-config',
-                  required: false)
-if not curl.found()
+curl = not_found
+if not get_option('curl').disabled()
+  curl = dependency('libcurl', version: '>=7.29.0',
+                    method: 'pkg-config',
+                    required: get_option('curl'))
+endif
+if not curl.found() and not get_option('curl').disabled()
   if host_os == 'windows'
     curl_platform_opts = ['schannel=enabled', 'sspi=enabled']
   elif host_os == 'darwin'
@@ -1862,10 +1870,13 @@ if not get_option('coreaudio').auto() or (host_os == 'darwin' and have_system)
                          required: get_option('coreaudio'))
 endif
 
-epoxy = dependency('epoxy', required: true)
+epoxy = not_found
+if not get_option('opengl').disabled()
+  epoxy = dependency('epoxy', required: get_option('opengl'))
+endif
 
 opengl = not_found
-if not get_option('opengl').auto() or have_system or have_vhost_user_gpu
+if not get_option('opengl').disabled() and (not get_option('opengl').auto() or have_system or have_vhost_user_gpu)
   # FIXME: Use meson's 'gl' dep
   if host_os == 'darwin'
     opengl_libs=['-framework', 'OpenGL']
@@ -1873,6 +1884,9 @@ if not get_option('opengl').auto() or have_system or have_vhost_user_gpu
     opengl_libs=['-lopengl32', '-lgdi32']
   elif host_os == 'linux'
     opengl_libs=['-lGL']
+  elif host_os == 'android'
+    # GLES through epoxy, for the core's GL path; the renderer is Vulkan
+    opengl_libs=['-lEGL', '-lGLESv3']
   else
     error('Unknown GL platform')
   endif
@@ -2371,10 +2385,27 @@ if host_os == 'windows'
   vulkan = declare_dependency(compile_args: ['-DVK_USE_PLATFORM_WIN32_KHR'])
 elif host_os == 'linux'
   vulkan = dependency('vulkan')
+elif host_os == 'android'
+  vulkan = declare_dependency(compile_args: ['-DVK_USE_PLATFORM_ANDROID_KHR'],
+                              link_args: ['-lvulkan'])
+elif host_os == 'darwin' and get_option('libretro')
+  # The core is handed Vulkan's entry points by the frontend (MoltenVK), and
+  # volk loads the rest; only the headers are needed to build it, Homebrew's
+  brew = find_program('brew', required: false)
+  if brew.found()
+    vulkan_headers_dir = run_command(brew, '--prefix', 'vulkan-headers',
+                                     check: false).stdout().strip() / 'include'
+    if fs.exists(vulkan_headers_dir / 'vulkan' / 'vulkan.h')
+      vulkan = declare_dependency(compile_args: ['-DVK_USE_PLATFORM_METAL_EXT',
+                                                 '-I' + vulkan_headers_dir])
+    endif
+  endif
 endif
 
 if vulkan.found()
-  if get_option('libretro')
+  # On Android and macOS, from the glslang subproject below: neither the NDK
+  # nor the MacPorts libraries have it
+  if get_option('libretro') and host_os != 'android' and host_os != 'darwin'
     # For libretro: use static glslang + SPIRV-Tools libraries to avoid shared DLL deps
     libglslang = declare_dependency(
       dependencies: [
@@ -2393,7 +2424,11 @@ if vulkan.found()
   if not libglslang.found()
     # FIXME: Get spirv-tools to enable opt.
     glslang_opts = cmake.subproject_options()
-    glslang_opts.add_cmake_defines({'ENABLE_OPT': false, 'ENABLE_HLSL': false})
+    glslang_opts.add_cmake_defines({
+      'ENABLE_OPT': false,
+      'ENABLE_HLSL': false,
+      'CMAKE_POSITION_INDEPENDENT_CODE': 'ON',
+    })
     glslang_subpro = cmake.subproject('glslang', options: glslang_opts)
     libglslang = declare_dependency(link_with: [
           glslang_subpro.target('glslang'),
@@ -2404,10 +2439,28 @@ if vulkan.found()
       )
   endif
 
+  # A libretro core is a shared library, so on hosts with PIC the static
+  # libraries of these CMake subprojects that go into it need it too.
+  libretro_cmake_pic = get_option('libretro') and host_os != 'windows'
+
   volk_opts = cmake.subproject_options()
   volk_opts.add_cmake_defines({'VOLK_STATIC_DEFINES': 'VK_NO_PROTOTYPES'})
+  if libretro_cmake_pic
+    volk_opts.add_cmake_defines({'CMAKE_POSITION_INDEPENDENT_CODE': 'ON'})
+    volk_opts.set_override_option('b_staticpic', 'true')
+  endif
   if host_os == 'windows'
     volk_opts.append_compile_args('c', '-DVK_USE_PLATFORM_WIN32_KHR=1')
+  endif
+  # volk's CMake looks for Vulkan's headers itself, and on Android found them in
+  # another NDK's sysroot, whose include directory then came ahead of libc++'s
+  # and broke its wrappers; the NDK in use has them where the compiler looks
+  if host_os == 'android'
+    volk_opts.add_cmake_defines({'VOLK_PULL_IN_VULKAN': 'OFF'})
+  endif
+  if host_os == 'darwin'
+    volk_opts.add_cmake_defines({'VOLK_PULL_IN_VULKAN': 'OFF'})
+    volk_opts.append_compile_args('c', '-I' + vulkan_headers_dir)
   endif
   volk_subproj = cmake.subproject('volk', options: volk_opts)
   volk = declare_dependency(compile_args: ['-DVK_NO_PROTOTYPES'],
@@ -2417,13 +2470,19 @@ if vulkan.found()
 
   spirv_reflect_opts = cmake.subproject_options()
   spirv_reflect_opts.add_cmake_defines({'SPIRV_REFLECT_STATIC_LIB': 'ON'})
+  if libretro_cmake_pic
+    spirv_reflect_opts.add_cmake_defines({'CMAKE_POSITION_INDEPENDENT_CODE': 'ON'})
+    spirv_reflect_opts.set_override_option('b_staticpic', 'true')
+  endif
   spirv_reflect_subproj = cmake.subproject('SPIRV-Reflect', options: spirv_reflect_opts)
   spirv_reflect = declare_dependency(include_directories: spirv_reflect_subproj.include_directories('spirv-reflect-static'),
                                      link_with: spirv_reflect_subproj.target('spirv-reflect-static'),
                                      dependencies: vulkan)
 endif
 
-if host_os == 'windows'
+if host_os == 'android'
+  libpcap = not_found
+elif host_os == 'windows'
   libpcap = declare_dependency(include_directories: 'winpcap-loader/include',
                                link_args: ['-lws2_32'])
 else
@@ -2432,31 +2491,37 @@ endif
 
 libsamplerate = dependency('samplerate', method: 'pkg-config', required: true)
 
-imgui_proj = subproject('imgui', required: true,
-                         default_options: [
-                           'default_library=static',
-                           'dx9=disabled',
-                           'dx10=disabled',
-                           'dx11=disabled',
-                           'dx12=disabled',
-                           'metal=disabled',
-                           'opengl=enabled',
-                           'sdl2_renderer=disabled',
-                           'sdl3_renderer=disabled',
-                           'vulkan=disabled',
-                           'webgpu=disabled',
-                           'glfw=disabled',
-                           'sdl2=disabled',
-                           'sdl3=enabled',
-                           'osx=disabled',
-                           'win=disabled',
-                           'allegro5=disabled',
-                        ])
-imgui = imgui_proj.get_variable('imgui_dep')
+# No SDL3 on Android, which imgui is built with here
+if host_os == 'android'
+  imgui = not_found
+  implot = not_found
+else
+  imgui_proj = subproject('imgui', required: true,
+                           default_options: [
+                             'default_library=static',
+                             'dx9=disabled',
+                             'dx10=disabled',
+                             'dx11=disabled',
+                             'dx12=disabled',
+                             'metal=disabled',
+                             'opengl=enabled',
+                             'sdl2_renderer=disabled',
+                             'sdl3_renderer=disabled',
+                             'vulkan=disabled',
+                             'webgpu=disabled',
+                             'glfw=disabled',
+                             'sdl2=disabled',
+                             'sdl3=enabled',
+                             'osx=disabled',
+                             'win=disabled',
+                             'allegro5=disabled',
+                          ])
+  imgui = imgui_proj.get_variable('imgui_dep')
 
-implot_proj = subproject('implot', required: true,
-                         default_options: ['default_library=static'])
-implot = implot_proj.get_variable('implot_dep')
+  implot_proj = subproject('implot', required: true,
+                           default_options: ['default_library=static'])
+  implot = implot_proj.get_variable('implot_dep')
+endif
 
 genconfig_proj = subproject('genconfig', required: true)
 genconfig = genconfig_proj.get_variable('cnode_dep')
@@ -2900,6 +2965,7 @@ config_host_data.set('CONFIG_INOTIFY1', have_inotify_init1)
 
 # has_header_symbol
 config_host_data.set('CONFIG_BLKZONED',
+                     host_os == 'linux' and
                      cc.has_header_symbol('linux/blkzoned.h', 'BLKOPENZONE'))
 config_host_data.set('CONFIG_EPOLL_CREATE1',
                      cc.has_header_symbol('sys/epoll.h', 'epoll_create1'))
@@ -4619,6 +4685,16 @@ foreach target : target_dirs
       libretro_link_args = link_args
       if host_os == 'windows'
         libretro_link_args += ['-liphlpapi', '-static', '-static-libgcc', '-static-libstdc++']
+        libretro_suffix = 'dll'
+      elif host_os == 'darwin'
+        libretro_suffix = 'dylib'
+      else
+        # Only retro_* are the core's interface (ui/libretro.map); everything
+        # else stays inside, so the core does not bind to, or interpose on,
+        # the frontend's own glib, SDL or GL symbols.
+        libretro_link_args += ['-Wl,-Bsymbolic', '-Wl,--exclude-libs,ALL',
+          '-Wl,--version-script=' + meson.current_source_dir() / 'ui' / 'libretro.map']
+        libretro_suffix = 'so'
       endif
       xemu_libretro = shared_library('xemu_libretro',
         files('system/main.c'),
@@ -4629,7 +4705,7 @@ foreach target : target_dirs
         link_depends: [block_syms, qemu_syms],
         link_args: libretro_link_args,
         name_prefix: '',
-        name_suffix: 'dll',
+        name_suffix: libretro_suffix,
       )
       emulators += {'xemu_libretro': xemu_libretro}
     else

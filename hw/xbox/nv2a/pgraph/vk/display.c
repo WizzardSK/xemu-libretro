@@ -553,6 +553,12 @@ static void destroy_current_display_image(PGRAPHState *pg)
 #ifdef WIN32
     CloseHandle(d->handle);
     d->handle = 0;
+#elif defined(LIBRETRO)
+    // Not taken by the frontend: nobody else will close it.
+    if (d->frontend_fd_plus1) {
+        close(d->frontend_fd_plus1 - 1);
+        d->frontend_fd_plus1 = 0;
+    }
 #endif
 #endif
 
@@ -705,6 +711,15 @@ static void create_display_image(PGRAPHState *pg, int width, int height)
                         GL_HANDLE_TYPE_OPAQUE_FD_EXT, d->fd);
     assert(glIsMemoryObjectEXT(d->gl_memory_obj));
     assert(glGetError() == GL_NO_ERROR);
+
+#ifdef LIBRETRO
+    int frontend_fd = -1;
+    VK_CHECK(vkGetMemoryFdKHR(r->device, &fd_info, &frontend_fd));
+    if (d->frontend_fd_plus1) {
+        close(d->frontend_fd_plus1 - 1);
+    }
+    d->frontend_fd_plus1 = frontend_fd + 1;
+#endif
 
 #endif // WIN32
 

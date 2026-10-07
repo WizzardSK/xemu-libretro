@@ -1,14 +1,13 @@
 name: Build libretro core
 
-# The core is xemu_libretro.dll, built with -Dlibretro=true. The libretro
-# support was written and tested for Windows, so that is what this builds:
-# cross-compiled in the same MXE toolchain image upstream xemu uses for its
-# Windows releases.
+# The core, built with -Dlibretro=true: xemu_libretro.dll for Windows,
+# cross-compiled in the MXE toolchain image upstream xemu uses for its Windows
+# releases, and xemu_libretro.so for Linux x86_64 and aarch64.
 
 on:
   workflow_dispatch:
   push:
-    branches: [libretro]
+    branches: [libretro, linux-port]
 
 jobs:
   windows-x86_64:
@@ -107,3 +106,223 @@ jobs:
         with:
           name: xemu_libretro-windows-x86_64
           path: dist/xemu_libretro.dll
+
+  linux:
+    name: Linux ${{ matrix.arch }}
+    runs-on: ubuntu-24.04${{ matrix.arch == 'aarch64' && '-arm' || '' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64, aarch64]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          submodules: false
+
+      # upstream's build dependencies (debian/control; pipewire for the SDL3
+      # subproject, which wants its headers), with libcurl on
+      # OpenSSL rather than GnuTLS - the soname frontends' runtimes carry -
+      # and glslang/SPIRV-Tools as the static libraries the libretro build
+      # links
+      - name: Install dependencies
+        run: |
+          sudo apt-get -qy update
+          sudo apt-get -qy install ninja-build python3-pip python3-tomli python3-yaml python3-venv \
+            libepoxy-dev libpixman-1-dev libsdl2-dev libsamplerate0-dev zlib1g-dev libssl-dev \
+            libpcap-dev libslirp-dev libvulkan-dev libusb-1.0-0-dev libcurl4-openssl-dev \
+            libglib2.0-dev libx11-dev libegl-dev libgl-dev glslang-dev spirv-tools patchelf \
+            libpipewire-0.3-dev
+
+      # The core is a shared library, so QEMU's static libraries that go into
+      # it have to be position independent (b_staticpic).
+      - name: Configure
+        run: |
+          ./configure \
+            --extra-cflags="-DXBOX=1 -Wno-error" \
+            --target-list=i386-softmmu \
+            -Dlibretro=true -Dpipewire=disabled \
+            -Db_staticpic=true
+        env:
+          LIBRARY_PATH: /usr/lib/${{ matrix.arch }}-linux-gnu
+
+      - name: Build
+        run: ninja -C build xemu_libretro.so 2>&1 | tail -200
+
+      # libslirp and libpcap are not in every frontend's runtime (Flatpak
+      # RetroArch's, for one), so they go next to the core, found through
+      # $ORIGIN.
+      - name: Collect
+        run: |
+          mkdir -p dist
+          cp build/xemu_libretro.so dist/
+          strip --strip-unneeded dist/xemu_libretro.so
+          patchelf --set-rpath '$ORIGIN' dist/xemu_libretro.so
+          for lib in libslirp.so.0 libpcap.so.0.8; do
+            cp -L "/usr/lib/${{ matrix.arch }}-linux-gnu/$lib" dist/
+          done
+          ls -la dist
+          readelf -d dist/xemu_libretro.so | grep -E 'NEEDED|RUNPATH'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xemu_libretro-linux-${{ matrix.arch }}
+          path: dist/
+
+  # After X-OG Mobile's recipe (Ashnar2602/X-OG_Mobile): glib, pixman and
+  # libsamplerate from vcpkg's Android triplets, the NDK's clang, and QEMU's
+  # configure with what Android has no use for left out. The renderer is
+  # Vulkan, through the frontend's context.
+  android:
+    name: Android ${{ matrix.abi }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - abi: arm64-v8a
+            triplet: arm64-android
+            cpu: aarch64
+            clang: aarch64-linux-android29
+          - abi: x86_64
+            triplet: x64-android
+            cpu: x86_64
+            clang: x86_64-linux-android29
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          submodules: false
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get -qy update
+          sudo apt-get -qy install ninja-build python3-pip python3-tomli python3-yaml python3-venv \
+            glslang-dev glslang-tools spirv-tools pkg-config
+          echo "NDK=$ANDROID_NDK_LATEST_HOME" >> $GITHUB_ENV
+          echo "ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME" >> $GITHUB_ENV
+
+      - name: Cache vcpkg packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/vcpkg/archives
+          key: vcpkg-android-${{ matrix.triplet }}-v1
+
+      - name: vcpkg
+        run: |
+          "$VCPKG_INSTALLATION_ROOT/vcpkg" install --triplet=${{ matrix.triplet }} \
+            glib pixman libsamplerate libepoxy
+          echo "PREFIX=$VCPKG_INSTALLATION_ROOT/installed/${{ matrix.triplet }}" >> $GITHUB_ENV
+
+      - name: Configure
+        run: |
+          T=$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin
+          export PKG_CONFIG_LIBDIR=$PREFIX/lib/pkgconfig PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
+          export AR=$T/llvm-ar RANLIB=$T/llvm-ranlib NM=$T/llvm-nm STRIP=$T/llvm-strip
+          ./configure \
+            --cross-prefix= \
+            --cc=$T/${{ matrix.clang }}-clang --cxx=$T/${{ matrix.clang }}-clang++ \
+            --host-cc=cc --cpu=${{ matrix.cpu }} \
+            --target-list=i386-softmmu \
+            --disable-werror --disable-rust --disable-docs --disable-tools --disable-guest-agent \
+            --disable-gtk --disable-sdl --disable-sdl-image --disable-vnc --disable-spice --disable-curses \
+            --disable-virglrenderer --disable-libusb --disable-usb-redir --disable-curl \
+            --disable-gnutls --disable-nettle --disable-gcrypt --disable-bzip2 --disable-zstd --disable-lzo \
+            --disable-libnfs --disable-libiscsi --disable-linux-aio --disable-linux-io-uring \
+            --disable-slirp --disable-pa --disable-pipewire --disable-alsa --disable-jack --disable-oss \
+            --disable-sndio --audio-drv-list= \
+            --extra-cflags="-DXBOX=1 -Wno-error" \
+            --extra-ldflags="-L$PREFIX/lib" \
+            -Dlibretro=true -Db_staticpic=true
+
+      # Every error of the run, which a tail of the output cuts off
+      - name: Build
+        run: |
+          ninja -k 0 -C build xemu_libretro.so > ninja.log 2>&1 && exit 0
+          grep -E -B2 -A8 "error:|FAILED:" ninja.log | head -600
+          exit 1
+
+      - name: Collect
+        run: |
+          mkdir -p dist
+          cp build/xemu_libretro.so dist/xemu_libretro_android.so
+          $NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-unneeded dist/xemu_libretro_android.so
+          ls -la dist
+          $NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf -d dist/xemu_libretro_android.so | grep NEEDED
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xemu_libretro-android-${{ matrix.abi }}
+          path: dist/
+
+  # As upstream's macOS build (build.sh): the libraries from MacPorts through
+  # scripts/download-macos-libs.py, Apple clang with the SDK and the minimum
+  # versions upstream targets
+  macos:
+    name: macOS ${{ matrix.arch }}
+    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [arm64, x86_64]
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          submodules: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          brew install ninja coreutils vulkan-headers dylibbundler
+          pip install pyyaml requests tomli
+          python3 ./scripts/download-macos-libs.py ${{ matrix.arch }}
+
+      - name: Configure
+        run: |
+          arch=${{ matrix.arch }}
+          if [ "$arch" = arm64 ]; then min=13.7.4; else min=12.7.5; fi
+          sdk=$(xcrun --sdk macosx --show-sdk-path)
+          lib=$PWD/macos-libs/$arch/opt/local
+          export CFLAGS="-arch $arch -target $arch-apple-macos$min -isysroot $sdk -I$lib/include -mmacosx-version-min=$min"
+          export LDFLAGS="-arch $arch -isysroot $sdk"
+          export PKG_CONFIG_LIBDIR="$lib/lib/pkgconfig"
+          ./configure \
+            --extra-cflags="-DXBOX=1 -Wno-error $CFLAGS" \
+            --extra-ldflags="-headerpad_max_install_names" \
+            --target-list=i386-softmmu --disable-cocoa --cross-prefix= \
+            -Dlibretro=true -Db_staticpic=true
+
+      - name: Build
+        run: |
+          ninja -k 0 -C build xemu_libretro.dylib > ninja.log 2>&1 && exit 0
+          grep -E -B2 -A8 "error:|FAILED:" ninja.log | head -600
+          exit 1
+
+      - name: Collect
+        run: |
+          mkdir -p dist
+          cp build/xemu_libretro.dylib dist/xemu_libretro.dylib
+          strip -x dist/xemu_libretro.dylib
+          # The MacPorts libraries (glib, pixman, epoxy, ...) go along in a
+          # folder of their own next to the core, as upstream bundles them
+          # into its app
+          dylibbundler -od -b -x dist/xemu_libretro.dylib \
+            -d dist/xemu_libretro_libs -p @loader_path/xemu_libretro_libs/ \
+            -s macos-libs/${{ matrix.arch }}/opt/local/lib
+          codesign -f -s - dist/xemu_libretro_libs/*.dylib dist/xemu_libretro.dylib
+          otool -L dist/xemu_libretro.dylib
+          lipo -info dist/xemu_libretro.dylib
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xemu_libretro-macos-${{ matrix.arch }}
+          path: dist/

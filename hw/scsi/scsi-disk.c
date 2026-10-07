@@ -48,6 +48,10 @@
 #include <scsi/sg.h>
 #endif
 
+#ifndef SG_ERR_DRIVER_TIMEOUT
+#define SG_ERR_DRIVER_TIMEOUT 0x06
+#endif
+
 #define SCSI_WRITE_SAME_MAX         (512 * KiB)
 #define SCSI_DMA_BUF_SIZE           (128 * KiB)
 #define SCSI_MAX_INQUIRY_LEN        256

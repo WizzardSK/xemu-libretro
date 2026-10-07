@@ -25,12 +25,22 @@
 #ifndef XEMU_INPUT_H
 #define XEMU_INPUT_H
 
+#if defined(LIBRETRO) && !__has_include(<SDL3/SDL.h>)
+/* A libretro core built where SDL is not (Android): this header only names
+ * SDL's types, and nothing in the core calls SDL */
+#include <stdint.h>
+typedef struct SDL_Gamepad SDL_Gamepad;
+typedef struct SDL_Joystick SDL_Joystick;
+typedef uint32_t SDL_JoystickID;
+typedef struct SDL_GUID { uint8_t data[16]; } SDL_GUID;
+typedef union SDL_Event SDL_Event;
+#else
 #include <SDL3/SDL.h>
+#endif
 #include <stdbool.h>
 
 #include "qemu/queue.h"
 #include "xemu-settings.h"
-#include <SDL3/SDL.h>
 
 #define DRIVER_DUKE "usb-xbox-gamepad"
 #define DRIVER_S "usb-xbox-gamepad-s"

@@ -29,6 +29,9 @@ if get_option('libretro')
     'xemu-widescreen.c',
   ))
   xemu_ss.add(when: slirp, if_true: files('xemu-net.c'), if_false: files('xemu-net-stub.c'))
+  if host_os == 'android'
+    xemu_ss.add(files('libretro-gl-stubs.c'))
+  endif
   xemu_ss.add(opengl, genconfig)
   system_ss.add_all(xemu_ss)
 else

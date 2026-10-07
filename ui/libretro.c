@@ -1324,6 +1324,10 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
     LRLOG_INFO("[xemu] Frontend preferred HW render: %u\n", preferred_hw);
 
     bool want_vulkan = (preferred_hw == RETRO_HW_CONTEXT_VULKAN);
+#ifdef __ANDROID__
+    /* No GL renderer in the Android build: Vulkan, whatever is preferred */
+    want_vulkan = true;
+#endif
 
     /* Setup hardware rendering based on frontend preference */
     memset(&hw_render, 0, sizeof(hw_render));

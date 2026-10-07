@@ -256,3 +256,66 @@ jobs:
         with:
           name: xemu_libretro-android-${{ matrix.abi }}
           path: dist/
+
+  # As upstream's macOS build (build.sh): the libraries from MacPorts through
+  # scripts/download-macos-libs.py, Apple clang with the SDK and the minimum
+  # versions upstream targets
+  macos:
+    name: macOS ${{ matrix.arch }}
+    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [arm64, x86_64]
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          submodules: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          brew install ninja coreutils glslang spirv-tools
+          pip install pyyaml requests tomli
+          python3 ./scripts/download-macos-libs.py ${{ matrix.arch }}
+
+      - name: Configure
+        run: |
+          arch=${{ matrix.arch }}
+          if [ "$arch" = arm64 ]; then min=13.7.4; else min=12.7.5; fi
+          sdk=$(xcrun --sdk macosx --show-sdk-path)
+          lib=$PWD/macos-libs/$arch/opt/local
+          export CFLAGS="-arch $arch -target $arch-apple-macos$min -isysroot $sdk -I$lib/include -mmacosx-version-min=$min"
+          export LDFLAGS="-arch $arch -isysroot $sdk"
+          export PKG_CONFIG_LIBDIR="$lib/lib/pkgconfig"
+          ./configure \
+            --extra-cflags="-DXBOX=1 -Wno-error $CFLAGS" \
+            --extra-ldflags="-headerpad_max_install_names" \
+            --target-list=i386-softmmu --disable-cocoa --cross-prefix= \
+            -Dlibretro=true -Db_staticpic=true
+
+      - name: Build
+        run: |
+          ninja -k 0 -C build xemu_libretro.dylib > ninja.log 2>&1 && exit 0
+          grep -E -B2 -A8 "error:|FAILED:" ninja.log | head -600
+          exit 1
+
+      - name: Collect
+        run: |
+          mkdir -p dist
+          cp build/xemu_libretro.dylib dist/xemu_libretro.dylib
+          strip -x dist/xemu_libretro.dylib
+          otool -L dist/xemu_libretro.dylib
+          lipo -info dist/xemu_libretro.dylib
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xemu_libretro-macos-${{ matrix.arch }}
+          path: dist/

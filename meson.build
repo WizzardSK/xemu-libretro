@@ -2391,7 +2391,8 @@ elif host_os == 'android'
 endif
 
 if vulkan.found()
-  if get_option('libretro')
+  # On Android, from the glslang subproject below: the NDK has no glslang
+  if get_option('libretro') and host_os != 'android'
     # For libretro: use static glslang + SPIRV-Tools libraries to avoid shared DLL deps
     libglslang = declare_dependency(
       dependencies: [

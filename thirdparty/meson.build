@@ -17,6 +17,9 @@ endif
 
 vma_opts = cmake.subproject_options()
 vma_opts.add_cmake_defines({'CMAKE_POSITION_INDEPENDENT_CODE': 'ON'})
+if host_os == 'darwin'
+  vma_opts.add_cmake_defines({'CMAKE_OSX_ARCHITECTURES': cmake_macos_arch})
+endif
 vma_subproj = cmake.subproject('VulkanMemoryAllocator', options: vma_opts)
 libvma = static_library('vma',
                         sources: 'vma.cc',

@@ -107,6 +107,7 @@ jobs:
         run: |
           mkdir -p dist
           cp build/xemu_libretro.dll dist/
+          cp ui/xemu_libretro.info dist/
           ${CROSSPREFIX}strip --strip-unneeded dist/xemu_libretro.dll
           ls -la dist
           # What it needs at load time: Windows' own DLLs and nothing else.
@@ -167,6 +168,7 @@ jobs:
         run: |
           mkdir -p dist
           cp build/xemu_libretro.so dist/
+          cp ui/xemu_libretro.info dist/
           strip --strip-unneeded dist/xemu_libretro.so
           patchelf --set-rpath '$ORIGIN' dist/xemu_libretro.so
           for lib in libslirp.so.0; do
@@ -258,6 +260,7 @@ jobs:
         run: |
           mkdir -p dist
           cp build/xemu_libretro.so dist/xemu_libretro_android.so
+          cp ui/xemu_libretro.info dist/
           $NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-unneeded dist/xemu_libretro_android.so
           ls -la dist
           $NDK/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf -d dist/xemu_libretro_android.so | grep NEEDED
@@ -321,6 +324,7 @@ jobs:
         run: |
           mkdir -p dist
           cp build/xemu_libretro.dylib dist/xemu_libretro.dylib
+          cp ui/xemu_libretro.info dist/
           strip -x dist/xemu_libretro.dylib
           # The MacPorts libraries (glib, pixman, epoxy, ...) go along in a
           # folder of their own next to the core, as upstream bundles them

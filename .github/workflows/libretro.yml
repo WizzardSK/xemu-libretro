@@ -6,11 +6,20 @@ name: Build libretro core
 
 on:
   workflow_dispatch:
+    inputs:
+      platforms:
+        description: 'Platforms to build besides Linux, comma-separated (windows, android, macos), or all'
+        type: string
+        default: all
   push:
     branches: [libretro]
 
+# Test builds can be limited to the platforms their testers use: the
+# platforms input (workflow_dispatch) lists them; Linux is always built, as a
+# quick check that it compiles. Pushes and "all" build everything.
 jobs:
   windows-x86_64:
+    if: github.event_name != 'workflow_dispatch' || inputs.platforms == 'all' || contains(inputs.platforms, 'windows')
     name: Windows x86_64
     runs-on: ubuntu-latest
     container:
@@ -187,6 +196,7 @@ jobs:
   # configure with what Android has no use for left out. The renderer is
   # Vulkan, through the frontend's context.
   android:
+    if: github.event_name != 'workflow_dispatch' || inputs.platforms == 'all' || contains(inputs.platforms, 'android')
     name: Android ${{ matrix.abi }}
     runs-on: ubuntu-24.04
     strategy:
@@ -274,6 +284,7 @@ jobs:
   # scripts/download-macos-libs.py, Apple clang with the SDK and the minimum
   # versions upstream targets
   macos:
+    if: github.event_name != 'workflow_dispatch' || inputs.platforms == 'all' || contains(inputs.platforms, 'macos')
     name: macOS ${{ matrix.arch }}
     runs-on: macos-15
     strategy:

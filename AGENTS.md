@@ -39,7 +39,6 @@ This repository builds the libretro core and nothing else. The standalone's part
 - Ask testers for RetroArch's log, and check which build a log came from before drawing conclusions from it.
 - Compare with standalone xemu at the same upstream version before calling something a core bug; when standalone fails the same way, it is upstream's.
 
-
 ## Libretro pitfalls already hit in the other cores
 
 Each of these was a bug in at least one of the cemu, rpcs3, vita3k or xenia cores. Check new code against them before asking testers.

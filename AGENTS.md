@@ -36,7 +36,7 @@ This repository builds the libretro core and nothing else. The standalone's part
 
 ## Testing
 
-- Ask testers for RetroArch's log, and check which build a log came from before drawing conclusions from it.
+- The core logs, at start, its version and the commit of this repository it was built from. Ask testers for RetroArch's log, and check which commit a log came from before drawing conclusions from it.
 - Compare with standalone xemu at the same upstream version before calling something a core bug; when standalone fails the same way, it is upstream's.
 
 ## Libretro pitfalls already hit in the other cores

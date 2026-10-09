@@ -1189,6 +1189,11 @@ RETRO_API void retro_get_system_av_info(struct retro_system_av_info *info)
 RETRO_API void retro_init(void)
 {
     LRLOG_INFO("[xemu] retro_init\n");
+    /* Which commit of this repository the core was built from, so a
+     * tester's log says which build it came from (xemu_commit, from
+     * scripts/xemu-version.py at configure time) */
+    LRLOG_INFO("[xemu] xemu libretro core %s, built from commit %.9s\n",
+               xemu_version, xemu_commit[0] ? xemu_commit : "unknown");
 
     /* Initialize Windows TLS keys for __thread replacements */
 #if defined(LIBRETRO) && defined(_WIN32)

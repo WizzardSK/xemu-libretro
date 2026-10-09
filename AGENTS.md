@@ -19,6 +19,7 @@ This repository builds the libretro core and nothing else. The standalone's part
 - Never resolve a conflict on one of those paths by restoring the file.
 - When upstream changes a build file around one of the removed parts, keep them removed and take the rest of the change.
 - When something new is deleted for the same reason, add its path to `.upstream-excluded` in the same commit.
+- This `AGENTS.md` replaces upstream xemu's own. When a merge conflicts on it, keep this one.
 - After a merge, `upstream.version` names the upstream version merged; the core reports that version, and a new release is built.
 
 ## These files

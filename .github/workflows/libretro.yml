@@ -8,15 +8,15 @@ on:
   workflow_dispatch:
     inputs:
       platforms:
-        description: 'Platforms to build besides Linux, comma-separated (windows, android, macos), or all'
+        description: 'Platforms to build, comma-separated (linux, windows, android, macos), or all'
         type: string
         default: all
   push:
     branches: [libretro]
 
 # Test builds can be limited to the platforms their testers use: the
-# platforms input (workflow_dispatch) lists them; Linux is always built, as a
-# quick check that it compiles. Pushes and "all" build everything.
+# platforms input (workflow_dispatch) lists them. Pushes and "all" build
+# everything.
 jobs:
   windows-x86_64:
     if: github.event_name != 'workflow_dispatch' || inputs.platforms == 'all' || contains(inputs.platforms, 'windows')
@@ -128,6 +128,7 @@ jobs:
           path: dist/xemu_libretro.dll
 
   linux:
+    if: github.event_name != 'workflow_dispatch' || inputs.platforms == 'all' || contains(inputs.platforms, 'linux')
     name: Linux ${{ matrix.arch }}
     runs-on: ubuntu-24.04${{ matrix.arch == 'aarch64' && '-arm' || '' }}
     strategy:

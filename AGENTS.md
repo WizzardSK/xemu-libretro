@@ -1,56 +1,43 @@
-# Instructions for Autonomous Agents & AI Assistants
+# Rules for coding agents
 
-This file provides mandatory instructions and guidelines for autonomous AI agents, coding assistants, and models contributing code or creating pull requests for the xemu project.
+These apply to any AI agent working in this repository (Claude Code reads them through `CLAUDE.md`). They came out of testing the libretro cores with their testers.
 
----
+## Branches and history
 
-## 1. Strict Adherence to Project Standards
+- The `libretro` branch is never deleted, and nothing that rewrites its history is run on it: no force-push, no rebase, no amending or squashing of commits that are already pushed. It is the fork's only long-lived branch.
+- New features and experimental changes go on their own branch, and testers test builds of that branch. When testing is done, the related commits are squashed and merged into `libretro`, so the main branch does not collect commits that were superseded midway.
+- A fix that users of the `libretro` builds need before the branch is merged is cherry-picked into `libretro`, in a way that does not break the later merge of the branch.
 
-All contributions must strictly comply with the guidelines defined in [CONTRIBUTING.md](CONTRIBUTING.md).
+## Merging upstream xemu
 
----
+This repository builds the libretro core and nothing else. The standalone's parts - its UI, packaging, upstream's CI and its contributor docs - were deleted on purpose, and must not come back with a merge. The paths are listed in `.upstream-excluded`.
 
-## 2. Mandatory Agent Declarations
+- Upstream is xemu-project/xemu, branch `master` (remote `upstream`). Only full merges of it, no cherry-picked upstream commits.
+- Right after `git merge` of upstream, before resolving anything else, run:
+  `git rm -r -q --ignore-unmatch --pathspec-from-file=.upstream-excluded`
+  This settles the modify/delete conflicts in favour of the deletion, and it also removes files upstream newly added under those paths, which git would otherwise bring in without any conflict.
+- Never resolve a conflict on one of those paths by restoring the file.
+- When upstream changes a build file around one of the removed parts, keep them removed and take the rest of the change.
+- When something new is deleted for the same reason, add its path to `.upstream-excluded` in the same commit.
+- After a merge, `upstream.version` names the upstream version merged; the core reports that version, and a new release is built.
 
-When submitting code or opening a pull request generated with or assisted by an agent:
+## These files
 
-1. **PR Description Declaration**:
-   - The pull request description **must** include an explicit declaration stating which AI agent and model were used to generate or assist with the change.
-   - Example:
-     ```markdown
-     > **Agent Declaration**: This pull request was created with assistance from [Agent Name / Model Name].
-     ```
+- Only the developer writes to or deletes `AGENTS.md` and `CLAUDE.md`. An agent does not change them on its own; it proposes the change to the developer instead.
 
----
+## Code
 
-## 3. Scoping & Granularity Guidelines
+- Keep comments true. When a change makes a comment describe behaviour that no longer exists, fix or remove the comment in the same commit.
+- Look at the big picture, not just the function being changed. For example, resetting the content and closing it have to release the game's resources through the same path; a reset is an unload and a load.
+- Stop and join threads the way upstream xemu does in its own shutdown, not with methods made up for the libretro port. Ad-hoc ones are what cause shutdown and reset bugs.
+- Every core option has to be connected to something. Do not add an option the core does not read, and remove one that turns out to do nothing. Option defaults follow the standalone's defaults unless there is a reason, written down beside the option.
+- xemu's own `xemu.toml` is not where the core's settings live. If you need a setting, use a core option (the `.opt` file) instead.
 
-To produce high-quality, easily reviewable pull requests, agents must observe the following constraints:
+## Testing
 
-- **Single Responsibility**: Each pull request must address exactly one bug fix, hardware improvement, or specific feature. Never bundle multiple independent bug fixes, features, or cleanups into a single commit or pull request. Break independent changes into separate, logically sequenced PRs.
-- **Minimal Change**: Touch only the files and lines necessary to accomplish the stated task. Do not refactor surrounding functions or reorganize include headers unless explicitly requested.
-- **Verify Against Upstream**: Always ensure the branch is rebased on the latest upstream `master` and that changes do not stomp on or duplicate existing open PRs.
+- Ask testers for RetroArch's log, and check which build a log came from before drawing conclusions from it.
+- Compare with standalone xemu at the same upstream version before calling something a core bug; when standalone fails the same way, it is upstream's.
 
----
-
-## 4. Verification & Testing
-
-- **Compilation**: Verify that all modified files compile without warnings or errors.
-- **Emulation Accuracy**: Do not hallucinate register definitions, bitfields, or hardware behaviors. Cross-reference existing implementations under `hw/xbox/` or verified hardware documentation.
-- **Test Coverage & Parity**: Whenever altering hardware emulation (NV2A, APU/DSP, MCPX, memory controller, etc.), provide or suggest a test XBE that can be run on both bare-metal Xbox hardware and xemu to validate behavior.
-
----
-
-## 5. Agent Pre-Submission Checklist
-
-Before finalizing any commit or pull request, ensure:
-- [ ] Commit message uses `<subsystem>: <short description>` followed by a detailed explanatory body.
-- [ ] `clang-format` is applied to new files, and existing code style is respected.
-- [ ] No unrelated formatting or refactoring changes are included.
-- [ ] The pull request description includes the agent/model declaration.
-- [ ] Existing open pull requests have been searched to avoid duplicating work.
-
----
 
 ## Libretro pitfalls already hit in the other cores
 

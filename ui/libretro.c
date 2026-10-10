@@ -1615,27 +1615,26 @@ vk_audio:
             audio_flushed = true;
         }
 
-        /* Pull available frames, skip excess to stay near real-time */
-        extern int libretro_audio_ring_frames(void);
-        int avail = libretro_audio_ring_frames();
-
-        if (avail > 1600) {
-            int16_t discard_buf[1602];
-            int skip = avail - 801; /* leave ~801 frames to pull */
-            while (skip > 0) {
-                int chunk = skip > 801 ? 801 : skip;
-                libretro_audio_pull(discard_buf, chunk);
-                skip -= chunk;
-            }
-            avail = libretro_audio_ring_frames();
-        }
+        /* Exactly one frame's worth a call - 48000 / 59.94, 800 or 801 -
+         * so RetroArch's audio sync paces retro_run, and with it the guest's
+         * vblank, at the display's rate. Handing over whatever was queued
+         * let a short queue send retro_run on early, 160 times a second
+         * and more: the guest ran in bursts and stalls (a stuttering boot
+         * animation). The APU waits once about 64 ms is queued (apu.c), so
+         * nothing has to be dropped here; a short queue is filled up with
+         * silence. */
+        static double audio_frac = 0.0;
+        audio_frac += 48000.0 / 59.94;
+        int want = (int)audio_frac;
+        audio_frac -= want;
 
         int16_t audio_buf[1602]; /* 801 stereo frames */
-        int frames = libretro_audio_pull(audio_buf, 801);
-
-        if (frames > 0) {
-            audio_batch_cb(audio_buf, frames);
+        int frames = libretro_audio_pull(audio_buf, want);
+        if (frames < want) {
+            memset(&audio_buf[frames * 2], 0,
+                   (size_t)(want - frames) * 2 * sizeof(int16_t));
         }
+        audio_batch_cb(audio_buf, want);
     }
 }
 

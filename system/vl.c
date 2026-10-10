@@ -2556,6 +2556,44 @@ static char *strdup_double_commas(const char *input) {
     return output;
 }
 
+#ifdef LIBRETRO
+/*
+ * Where the game partition starts in a disc image. An XISO is the game
+ * partition alone; a Redump image is the whole disc, with the video partition
+ * first and the game partition at a fixed offset for each disc type (XGD1,
+ * XGD2, XGD3). The drive shows the guest only the game partition, as a real
+ * Xbox drive does, so the image is attached from that offset. Found by the
+ * XDVDFS volume descriptor, 32 sectors into the partition.
+ */
+static uint64_t xbox_game_partition_offset(const char *path)
+{
+    static const uint64_t offsets[] = {
+        0, 0x18300000 /* XGD1 */, 0xFD90000 /* XGD2 */, 0x2080000 /* XGD3 */,
+    };
+    static const char magic[] = "MICROSOFT*XBOX*MEDIA";
+    uint64_t found = 0;
+
+    if (!path || !path[0]) {
+        return 0;
+    }
+    FILE *f = fopen(path, "rb");
+    if (!f) {
+        return 0;
+    }
+    for (size_t i = 0; i < ARRAY_SIZE(offsets); i++) {
+        char buf[sizeof(magic) - 1];
+        if (fseeko(f, (off_t)(offsets[i] + 32 * 2048), SEEK_SET) == 0 &&
+            fread(buf, 1, sizeof(buf), f) == sizeof(buf) &&
+            memcmp(buf, magic, sizeof(buf)) == 0) {
+            found = offsets[i];
+            break;
+        }
+    }
+    fclose(f);
+    return found;
+}
+#endif
+
 static void qemu_validate_options(const QDict *machine_opts)
 {
     const char *kernel_filename = qdict_get_try_str(machine_opts, "kernel");
@@ -3090,6 +3128,18 @@ void qemu_init(int argc, char **argv)
     // connected but no media present.
     fake_argv[fake_argc++] = strdup("-drive");
     char *escaped_dvd_path = strdup_double_commas(dvd_path);
+#ifdef LIBRETRO
+    uint64_t dvd_offset = xbox_game_partition_offset(dvd_path);
+    if (dvd_offset) {
+        /* Not info_report: the monitor it goes through is not set up yet
+         * this early, and its lock asserts */
+        fprintf(stderr, "xemu: DVD: Redump image, the game partition from "
+                "offset 0x%" PRIx64 "\n", dvd_offset);
+        fake_argv[fake_argc++] = g_strdup_printf(
+            "index=1,media=cdrom,format=raw,offset=%" PRIu64 ",file=%s",
+            dvd_offset, escaped_dvd_path);
+    } else
+#endif
     fake_argv[fake_argc++] = g_strdup_printf("index=1,media=cdrom,file=%s",
         escaped_dvd_path);
     free(escaped_dvd_path);

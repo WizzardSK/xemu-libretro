@@ -21,6 +21,7 @@ block_ss.add(files(
   'mirror.c',
   'nbd.c',
   'null.c',
+  'libretro-vfs.c',
   'preallocate.c',
   'progress_meter.c',
   'qapi.c',

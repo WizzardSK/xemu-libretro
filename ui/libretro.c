@@ -58,7 +58,8 @@ static retro_log_printf_t         log_cb       = NULL;
 /* VFS interface (optional)                                                  */
 /* ========================================================================= */
 
-static struct retro_vfs_interface *vfs_interface = NULL;
+/* also read by block/libretro-vfs.c, the DVD drive's driver for saf:// */
+struct retro_vfs_interface *xemu_libretro_vfs = NULL;
 
 /* ========================================================================= */
 /* Hardware rendering state                                                  */
@@ -1113,7 +1114,7 @@ RETRO_API void retro_set_environment(retro_environment_t cb)
     /* Get VFS interface */
     struct retro_vfs_interface_info vfs_info = { 3, NULL };
     if (environ_cb(RETRO_ENVIRONMENT_GET_VFS_INTERFACE, &vfs_info)) {
-        vfs_interface = vfs_info.iface;
+        xemu_libretro_vfs = vfs_info.iface;
         LRLOG_INFO("[xemu] VFS interface obtained (version %u)\n", vfs_info.required_interface_version);
     }
 

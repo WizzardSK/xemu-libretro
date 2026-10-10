@@ -20,6 +20,9 @@
 #include "hw/xbox/nv2a/nv2a.h"
 
 #include <epoxy/gl.h>
+#ifndef _WIN32
+#include <dlfcn.h>
+#endif
 
 #include "libretro.h"
 #if defined(_WIN32) && !defined(VK_USE_PLATFORM_WIN32_KHR)
@@ -1194,6 +1197,33 @@ RETRO_API void retro_init(void)
      * scripts/xemu-version.py at configure time) */
     LRLOG_INFO("[xemu] xemu libretro core %s, built from commit %.9s\n",
                xemu_version, xemu_commit[0] ? xemu_commit : "unknown");
+
+    /* The core stays in memory once loaded. retro_unload_game joins only the
+     * emulation thread; QEMU's other threads (RCU, vCPU, nv2a) keep running
+     * - upstream never joins them either, its exit() ends them - and its
+     * atexit handlers stay registered, so when the frontend unloaded the
+     * core they ran on unmapped code and RetroArch crashed on close (and
+     * hung while the crash was dumped). Pinned, they end with the process,
+     * as in standalone. */
+    {
+#ifdef _WIN32
+        HMODULE self;
+        if (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                                GET_MODULE_HANDLE_EX_FLAG_PIN,
+                                (LPCWSTR)(void *)retro_init, &self)) {
+            LRLOG_WARN("[xemu] could not keep the core loaded: error %lu\n",
+                       GetLastError());
+        }
+#else
+        Dl_info info;
+        /* A reference that is never dropped; RTLD_NODELETE keeps the
+         * object even past it */
+        if (!dladdr((void *)retro_init, &info) || !info.dli_fname ||
+            !dlopen(info.dli_fname, RTLD_NOW | RTLD_NOLOAD | RTLD_NODELETE)) {
+            LRLOG_WARN("[xemu] could not keep the core loaded\n");
+        }
+#endif
+    }
 
     /* Initialize Windows TLS keys for __thread replacements */
 #if defined(LIBRETRO) && defined(_WIN32)

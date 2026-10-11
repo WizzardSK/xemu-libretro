@@ -528,8 +528,14 @@ static void glx_prepare_from_current(void)
 /* RetroArch on Vulkan: a display of our own, without a window system. */
 static bool egl_prepare_standalone(void)
 {
-    if (epoxy_has_egl_extension(EGL_NO_DISPLAY, "EGL_MESA_platform_surfaceless")) {
-        g_egl_dpy = eglGetPlatformDisplay(EGL_PLATFORM_SURFACELESS_MESA, EGL_DEFAULT_DISPLAY, NULL);
+    /* The EXT entry point, from the client extension: libepoxy resolves the
+     * core eglGetPlatformDisplay only once it knows EGL 1.5 is there, which
+     * takes an initialized display - with none yet it aborted ("No provider
+     * of eglGetPlatformDisplay found") at every start on Vulkan; see
+     * qemu_egl_get_display in ui/egl-helpers.c */
+    if (epoxy_has_egl_extension(EGL_NO_DISPLAY, "EGL_MESA_platform_surfaceless") &&
+        epoxy_has_egl_extension(EGL_NO_DISPLAY, "EGL_EXT_platform_base")) {
+        g_egl_dpy = eglGetPlatformDisplayEXT(EGL_PLATFORM_SURFACELESS_MESA, EGL_DEFAULT_DISPLAY, NULL);
     }
     if (g_egl_dpy == EGL_NO_DISPLAY) {
         g_egl_dpy = eglGetDisplay(EGL_DEFAULT_DISPLAY);

@@ -18,6 +18,7 @@
  */
 
 #include "renderer.h"
+#include "libretro_shared.h"
 
 static void create_command_pool(PGRAPHState *pg)
 {
@@ -70,6 +71,41 @@ static void destroy_command_buffers(PGRAPHState *pg)
     r->aux_command_buffer = VK_NULL_HANDLE;
 }
 
+/*
+ * Every submission to the renderer's queue. In the libretro core the queue
+ * can be the frontend's (libretro_shared.h), which is then only used under
+ * the frontend's lock.
+ */
+void pgraph_vk_queue_submit(PGRAPHVkState *r, uint32_t count,
+                            const VkSubmitInfo *submits, VkFence fence)
+{
+#ifdef LIBRETRO
+    xemu_libretro_vk_lock_queue();
+#endif
+    VK_CHECK(vkQueueSubmit(r->queue, count, submits, fence));
+#ifdef LIBRETRO
+    xemu_libretro_vk_unlock_queue();
+#endif
+}
+
+/*
+ * Submit and wait for the work to finish: on a fence, not vkQueueWaitIdle,
+ * which may not run on a queue the frontend is using and would also wait
+ * for the frontend's own work.
+ */
+void pgraph_vk_queue_submit_and_wait(PGRAPHVkState *r, uint32_t count,
+                                     const VkSubmitInfo *submits)
+{
+    VkFenceCreateInfo fence_info = {
+        .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+    };
+    VkFence fence;
+    VK_CHECK(vkCreateFence(r->device, &fence_info, NULL, &fence));
+    pgraph_vk_queue_submit(r, count, submits, fence);
+    VK_CHECK(vkWaitForFences(r->device, 1, &fence, VK_TRUE, UINT64_MAX));
+    vkDestroyFence(r->device, fence, NULL);
+}
+
 VkCommandBuffer pgraph_vk_begin_single_time_commands(PGRAPHState *pg)
 {
     PGRAPHVkState *r = pg->vk_renderer_state;
@@ -99,9 +135,8 @@ void pgraph_vk_end_single_time_commands(PGRAPHState *pg, VkCommandBuffer cmd)
         .commandBufferCount = 1,
         .pCommandBuffers = &cmd,
     };
-    VK_CHECK(vkQueueSubmit(r->queue, 1, &submit_info, VK_NULL_HANDLE));
+    pgraph_vk_queue_submit_and_wait(r, 1, &submit_info);
     nv2a_profile_inc_counter(NV2A_PROF_QUEUE_SUBMIT_AUX);
-    VK_CHECK(vkQueueWaitIdle(r->queue));
 
     r->in_aux_command_buffer = false;
 }

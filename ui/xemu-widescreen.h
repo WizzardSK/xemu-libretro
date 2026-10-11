@@ -32,6 +32,7 @@ extern "C" {
 
 void xemu_set_widescreen(bool widescreen);
 bool xemu_get_widescreen(void);
+extern int xemu_aspect_gpio_value;
 
 #ifdef __cplusplus
 }

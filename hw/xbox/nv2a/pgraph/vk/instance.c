@@ -21,6 +21,7 @@
 #include "ui/xemu-settings.h"
 #include "renderer.h"
 #include "xemu-version.h"
+#include "libretro_shared.h"
 
 #define VkExtensionPropertiesArray GArray
 #define StringArray GArray
@@ -604,8 +605,56 @@ static bool init_allocator(PGRAPHState *pg, Error **errp)
     return true;
 }
 
+#ifdef LIBRETRO
+/*
+ * The instance and device the core made with the frontend (libretro_shared.h)
+ * in place of ones of our own: volk loads from the frontend's loader, and
+ * the queue, features and extensions are the ones the device was made with.
+ */
+static bool adopt_frontend_device(PGRAPHState *pg, Error **errp)
+{
+    PGRAPHVkState *r = pg->vk_renderer_state;
+    const XemuLibretroVk *s = &xemu_libretro_vk;
+
+    volkInitializeCustom(s->get_instance_proc_addr);
+    r->instance = s->instance;
+    volkLoadInstance(r->instance);
+
+    r->physical_device = s->gpu;
+    vkGetPhysicalDeviceProperties(r->physical_device, &r->device_props);
+    r->vk_api_version = MIN(s->api_version, r->device_props.apiVersion);
+    if (r->vk_api_version < VK_API_VERSION_1_1) {
+        error_setg(errp, "Vulkan 1.1 or higher is required");
+        return false;
+    }
+
+    r->device = s->device;
+    r->queue = s->queue;
+    r->enabled_physical_device_features = s->features;
+    r->debug_utils_extension_enabled = false;
+    r->custom_border_color_extension_enabled = s->custom_border_color;
+    r->memory_budget_extension_enabled = s->memory_budget;
+
+    fprintf(stderr,
+            "Vulkan device shared with the frontend: %s, queue family %u (%s)\n",
+            r->device_props.deviceName, s->queue_family,
+            s->queue_shared ? "the frontend's queue" : "a queue of its own");
+    return true;
+}
+#endif
+
 void pgraph_vk_init_instance(PGRAPHState *pg, Error **errp)
 {
+#ifdef LIBRETRO
+    if (xemu_libretro_vk.active) {
+        if (adopt_frontend_device(pg, errp) && init_allocator(pg, errp)) {
+            return;
+        }
+        pgraph_vk_finalize_instance(pg);
+        error_prepend(errp, "Failed to initialize Vulkan renderer: ");
+        return;
+    }
+#endif
     if (create_instance(pg, errp) &&
         select_physical_device(pg, errp) &&
         create_logical_device(pg, errp) &&
@@ -631,6 +680,15 @@ void pgraph_vk_finalize_instance(PGRAPHState *pg)
         vmaDestroyAllocator(r->allocator);
         r->allocator = VK_NULL_HANDLE;
     }
+
+#ifdef LIBRETRO
+    if (xemu_libretro_vk.active) {
+        /* the frontend's to destroy */
+        r->device = VK_NULL_HANDLE;
+        r->instance = VK_NULL_HANDLE;
+        return;
+    }
+#endif
 
     if (r->device != VK_NULL_HANDLE) {
         vkDestroyDevice(r->device, NULL);

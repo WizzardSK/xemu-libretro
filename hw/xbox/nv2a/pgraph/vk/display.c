@@ -20,6 +20,17 @@
 #include "renderer.h"
 #include <math.h>
 
+/* On the device the libretro core shares with its frontend, the display image
+ * is a plain image: it is not exported to GL or to a second device */
+static inline bool on_frontend_device(void)
+{
+#ifdef LIBRETRO
+    return xemu_libretro_vk.active;
+#else
+    return false;
+#endif
+}
+
 static uint8_t *convert_texture_data__CR8YB8CB8YA8(uint8_t *data_out,
                                                    const uint8_t *data_in,
                                                    unsigned int width,
@@ -544,6 +555,7 @@ static void destroy_current_display_image(PGRAPHState *pg)
     destroy_frame_buffer(pg);
 
 #if HAVE_EXTERNAL_MEMORY
+    if (!on_frontend_device()) {
     glDeleteTextures(1, &d->gl_texture_id);
     d->gl_texture_id = 0;
 
@@ -560,6 +572,7 @@ static void destroy_current_display_image(PGRAPHState *pg)
         d->frontend_fd_plus1 = 0;
     }
 #endif
+    }
 #endif
 
     vkDestroyImageView(r->device, d->image_view, NULL);
@@ -590,6 +603,7 @@ static void create_display_image(PGRAPHState *pg, int width, int height)
     bool use_optimal_tiling = true;
 
 #if HAVE_EXTERNAL_MEMORY
+    if (!on_frontend_device()) {
     GLint num_tiling_types;
     glGetInternalformativ(GL_TEXTURE_2D, gl_internal_format,
                           GL_NUM_TILING_TYPES_EXT, 1, &num_tiling_types);
@@ -605,6 +619,7 @@ static void create_display_image(PGRAPHState *pg, int width, int height)
             use_optimal_tiling = false;
             break;
         }
+    }
     }
 #endif
 
@@ -638,7 +653,9 @@ static void create_display_image(PGRAPHState *pg, int width, int height)
         .handleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT_KHR,
 #endif
     };
-    image_create_info.pNext = &external_memory_image_create_info;
+    if (!on_frontend_device()) {
+        image_create_info.pNext = &external_memory_image_create_info;
+    }
 
     VK_CHECK(vkCreateImage(r->device, &image_create_info, NULL, &d->image));
 
@@ -664,7 +681,9 @@ static void create_display_image(PGRAPHState *pg, int width, int height)
 #endif
             ,
     };
-    alloc_info.pNext = &export_memory_alloc_info;
+    if (!on_frontend_device()) {
+        alloc_info.pNext = &export_memory_alloc_info;
+    }
 
     VK_CHECK(vkAllocateMemory(r->device, &alloc_info, NULL, &d->memory));
     VK_CHECK(vkBindImageMemory(r->device, d->image, d->memory, 0));
@@ -683,6 +702,7 @@ static void create_display_image(PGRAPHState *pg, int width, int height)
                                &d->image_view));
 
 #if HAVE_EXTERNAL_MEMORY
+    if (!on_frontend_device()) {
 
 #ifdef WIN32
 
@@ -735,6 +755,7 @@ static void create_display_image(PGRAPHState *pg, int width, int height)
                          image_create_info.extent.height, d->gl_memory_obj, 0);
     assert(glGetError() == GL_NO_ERROR);
 
+    }
 #endif // HAVE_EXTERNAL_MEMORY
 
     d->width = image_create_info.extent.width;
@@ -917,6 +938,188 @@ static void update_uniforms(PGRAPHState *pg, SurfaceBinding *surface)
     }
 }
 
+#ifdef LIBRETRO
+static void destroy_frame_image(PGRAPHVkState *r, struct PGRAPHVkFrameImage *f)
+{
+    if (f->image == VK_NULL_HANDLE) {
+        return;
+    }
+    vkDestroyImageView(r->device, f->view, NULL);
+    vkDestroyImage(r->device, f->image, NULL);
+    vkFreeMemory(r->device, f->memory, NULL);
+    memset(f, 0, sizeof(*f));
+}
+
+static void create_frame_image(PGRAPHState *pg, struct PGRAPHVkFrameImage *f,
+                               int width, int height)
+{
+    PGRAPHVkState *r = pg->vk_renderer_state;
+
+    VkImageCreateInfo image_create_info = {
+        .sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+        .imageType = VK_IMAGE_TYPE_2D,
+        .extent.width = width,
+        .extent.height = height,
+        .extent.depth = 1,
+        .mipLevels = 1,
+        .arrayLayers = 1,
+        .format = VK_FORMAT_R8G8B8A8_UNORM,
+        .tiling = VK_IMAGE_TILING_OPTIMAL,
+        .initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+        .usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT |
+                 VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+        .samples = VK_SAMPLE_COUNT_1_BIT,
+        .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+    };
+    VK_CHECK(vkCreateImage(r->device, &image_create_info, NULL, &f->image));
+
+    VkMemoryRequirements memory_requirements;
+    vkGetImageMemoryRequirements(r->device, f->image, &memory_requirements);
+    VkMemoryAllocateInfo alloc_info = {
+        .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+        .allocationSize = memory_requirements.size,
+        .memoryTypeIndex =
+            pgraph_vk_get_memory_type(pg, memory_requirements.memoryTypeBits,
+                                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT),
+    };
+    VK_CHECK(vkAllocateMemory(r->device, &alloc_info, NULL, &f->memory));
+    VK_CHECK(vkBindImageMemory(r->device, f->image, f->memory, 0));
+
+    VkImageViewCreateInfo image_view_create_info = {
+        .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+        .image = f->image,
+        .viewType = VK_IMAGE_VIEW_TYPE_2D,
+        .format = image_create_info.format,
+        .subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+        .subresourceRange.levelCount = 1,
+        .subresourceRange.layerCount = 1,
+    };
+    VK_CHECK(vkCreateImageView(r->device, &image_view_create_info, NULL,
+                               &f->view));
+    f->width = width;
+    f->height = height;
+}
+
+static void frame_image_barrier(VkCommandBuffer cmd, VkImage image,
+                                VkImageLayout from, VkImageLayout to,
+                                VkAccessFlags src_access,
+                                VkAccessFlags dst_access,
+                                VkPipelineStageFlags src_stage,
+                                VkPipelineStageFlags dst_stage)
+{
+    VkImageMemoryBarrier barrier = {
+        .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+        .srcAccessMask = src_access,
+        .dstAccessMask = dst_access,
+        .oldLayout = from,
+        .newLayout = to,
+        .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+        .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+        .image = image,
+        .subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+        .subresourceRange.levelCount = 1,
+        .subresourceRange.layerCount = 1,
+    };
+    vkCmdPipelineBarrier(cmd, src_stage, dst_stage, 0, 0, NULL, 0, NULL, 1,
+                         &barrier);
+}
+
+/*
+ * The display image, just rendered, copied into the frame image of the
+ * frontend's current sync index, in the same command buffer: when it has
+ * run - end_single_time_commands waits for it - the frontend has this
+ * frame's picture in an image nothing writes to until that index comes
+ * round again, by when the frontend is done with it.
+ */
+static void copy_display_to_frame(PGRAPHState *pg, VkCommandBuffer cmd)
+{
+    PGRAPHVkState *r = pg->vk_renderer_state;
+    PGRAPHVkDisplayState *disp = &r->display;
+    struct PGRAPHVkFrameImage *f =
+        &disp->frames[xemu_libretro_vk.frame_index % XEMU_LIBRETRO_VK_FRAMES];
+
+    disp->frame_count++;
+    for (int i = 0; i < ARRAY_SIZE(disp->retired); i++) {
+        if (disp->retired[i].image != VK_NULL_HANDLE &&
+            disp->frame_count >= disp->retired[i].retire_at) {
+            destroy_frame_image(r, &disp->retired[i]);
+        }
+    }
+
+    if (f->image != VK_NULL_HANDLE &&
+        (f->width != disp->width || f->height != disp->height)) {
+        /* A frame the frontend was handed may still be on screen: kept until
+         * every sync index has come round twice */
+        bool kept = false;
+        for (int i = 0; i < ARRAY_SIZE(disp->retired) && !kept; i++) {
+            if (disp->retired[i].image == VK_NULL_HANDLE) {
+                disp->retired[i] = *f;
+                disp->retired[i].retire_at =
+                    disp->frame_count + 2 * XEMU_LIBRETRO_VK_FRAMES;
+                kept = true;
+            }
+        }
+        if (!kept) {
+            destroy_frame_image(r, f);
+        }
+        memset(f, 0, sizeof(*f));
+    }
+    if (f->image == VK_NULL_HANDLE) {
+        create_frame_image(pg, f, disp->width, disp->height);
+    }
+
+    frame_image_barrier(cmd, disp->image,
+                        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                        VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+                        VK_ACCESS_TRANSFER_READ_BIT,
+                        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                        VK_PIPELINE_STAGE_TRANSFER_BIT);
+    frame_image_barrier(cmd, f->image, VK_IMAGE_LAYOUT_UNDEFINED,
+                        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 0,
+                        VK_ACCESS_TRANSFER_WRITE_BIT,
+                        VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                        VK_PIPELINE_STAGE_TRANSFER_BIT);
+
+    VkImageCopy region = {
+        .srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+        .srcSubresource.layerCount = 1,
+        .dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+        .dstSubresource.layerCount = 1,
+        .extent.width = disp->width,
+        .extent.height = disp->height,
+        .extent.depth = 1,
+    };
+    vkCmdCopyImage(cmd, disp->image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                   f->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+
+    frame_image_barrier(cmd, f->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                        VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
+                        VK_PIPELINE_STAGE_TRANSFER_BIT,
+                        VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+    frame_image_barrier(cmd, disp->image,
+                        VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                        VK_ACCESS_TRANSFER_READ_BIT, VK_ACCESS_SHADER_READ_BIT,
+                        VK_PIPELINE_STAGE_TRANSFER_BIT,
+                        VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+    f->ready = true;
+}
+
+static void destroy_frame_images(PGRAPHState *pg)
+{
+    PGRAPHVkState *r = pg->vk_renderer_state;
+
+    for (int i = 0; i < ARRAY_SIZE(r->display.frames); i++) {
+        destroy_frame_image(r, &r->display.frames[i]);
+    }
+    for (int i = 0; i < ARRAY_SIZE(r->display.retired); i++) {
+        destroy_frame_image(r, &r->display.retired[i]);
+    }
+}
+#endif /* LIBRETRO */
+
 static void render_display(PGRAPHState *pg, SurfaceBinding *surface)
 {
     NV2AState *d = container_of(pg, NV2AState, pgraph);
@@ -1016,6 +1219,12 @@ static void render_display(PGRAPHState *pg, SurfaceBinding *surface)
                                       VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
                                       VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
+#ifdef LIBRETRO
+    if (on_frontend_device()) {
+        copy_display_to_frame(pg, cmd);
+    }
+#endif
+
     pgraph_vk_end_debug_marker(r, cmd);
     pgraph_vk_end_single_time_commands(pg, cmd);
     nv2a_profile_inc_counter(NV2A_PROF_QUEUE_SUBMIT_5);
@@ -1073,6 +1282,9 @@ void pgraph_vk_finalize_display(PGRAPHState *pg)
     if (r->display.image != VK_NULL_HANDLE) {
         destroy_current_display_image(pg);
     }
+#ifdef LIBRETRO
+    destroy_frame_images(pg);
+#endif
 
     destroy_surface_sampler(pg);
     destroy_display_pipeline(pg);

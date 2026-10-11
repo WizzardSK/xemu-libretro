@@ -17,6 +17,7 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "ui/xemu-settings.h"
 #include "renderer.h"
 
 static void create_buffer(PGRAPHState *pg, StorageBuffer *buffer)
@@ -29,9 +30,15 @@ static void create_buffer(PGRAPHState *pg, StorageBuffer *buffer)
         .usage = buffer->usage,
         .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
     };
-    VK_CHECK(vmaCreateBuffer(r->allocator, &buffer_create_info,
-                             &buffer->alloc_info, &buffer->buffer,
-                             &buffer->allocation, NULL));
+    VkResult result = vmaCreateBuffer(r->allocator, &buffer_create_info,
+                                      &buffer->alloc_info, &buffer->buffer,
+                                      &buffer->allocation, NULL);
+    if (result != VK_SUCCESS) {
+        /* which one, for a GPU that runs out of memory at start */
+        fprintf(stderr, "nv2a: Vulkan buffer of %llu bytes (usage %x) failed: %d\n",
+                (unsigned long long)buffer->buffer_size, buffer->usage, result);
+    }
+    VK_CHECK(result);
 }
 
 static void destroy_buffer(PGRAPHState *pg, StorageBuffer *buffer)
@@ -41,6 +48,59 @@ static void destroy_buffer(PGRAPHState *pg, StorageBuffer *buffer)
     vmaDestroyBuffer(r->allocator, buffer->buffer, buffer->allocation);
     buffer->buffer = VK_NULL_HANDLE;
     buffer->allocation = VK_NULL_HANDLE;
+}
+
+/*
+ * The compute buffers hold a surface at the surface scale: 2048x2048 surfaces
+ * at 8 bytes a pixel, times the scale squared, up to what upstream allocates
+ * for every scale (10240x10240). Upstream's fixed 2x800 MB failed to allocate
+ * on smaller GPUs (Adreno 618 with 4 GB shared memory) even at 1x, where 32 MB
+ * each is enough; a larger scale set while running grows them at the flush
+ * the scale change goes through (surface.c).
+ */
+static VkDeviceSize compute_buffer_size(unsigned int scale)
+{
+    const VkDeviceSize side = 2048 * (VkDeviceSize)MAX(scale, 1);
+    return MIN(side * side * 8, (VkDeviceSize)(1024 * 10) * (1024 * 10) * 8);
+}
+
+void pgraph_vk_reserve_compute_buffers(PGRAPHState *pg, unsigned int scale)
+{
+    PGRAPHVkState *r = pg->vk_renderer_state;
+    const VkDeviceSize size = compute_buffer_size(scale);
+
+    if (size <= r->storage_buffers[BUFFER_COMPUTE_DST].buffer_size) {
+        return;
+    }
+
+    pgraph_vk_finish(pg, VK_FINISH_REASON_FLUSH);
+    const int resized[] = { BUFFER_COMPUTE_DST, BUFFER_COMPUTE_SRC };
+    for (int i = 0; i < ARRAY_SIZE(resized); i++) {
+        destroy_buffer(pg, &r->storage_buffers[resized[i]]);
+        r->storage_buffers[resized[i]].buffer_size = size;
+        create_buffer(pg, &r->storage_buffers[resized[i]]);
+    }
+}
+
+/*
+ * How many of the largest inline vertex batches the inline buffer and its
+ * staging copy hold - each 128 MB. Upstream's ten (1.25 GB each, device and
+ * host) did not fit a GPU with a smaller heap (Adreno 618: one 1.9 GB heap,
+ * VK_ERROR_OUT_OF_DEVICE_MEMORY at start); with one, a full buffer only means
+ * finishing the work in flight sooner (ensure_buffer_space in draw.c).
+ */
+static int inline_vertex_batches(PGRAPHVkState *r)
+{
+    VkPhysicalDeviceMemoryProperties props;
+    VkDeviceSize device_local = 0;
+
+    vkGetPhysicalDeviceMemoryProperties(r->physical_device, &props);
+    for (uint32_t i = 0; i < props.memoryHeapCount; i++) {
+        if (props.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) {
+            device_local = MAX(device_local, props.memoryHeaps[i].size);
+        }
+    }
+    return device_local >= 4ULL * 1024 * 1024 * 1024 ? 10 : 1;
 }
 
 void pgraph_vk_init_buffers(NV2AState *d)
@@ -76,7 +136,7 @@ void pgraph_vk_init_buffers(NV2AState *d)
         .alloc_info = device_alloc_create_info,
         .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT |
                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT,
-        .buffer_size = (1024 * 10) * (1024 * 10) * 8,
+        .buffer_size = compute_buffer_size(g_config.display.quality.surface_scale),
     };
 
     r->storage_buffers[BUFFER_COMPUTE_SRC] = (StorageBuffer){
@@ -115,7 +175,7 @@ void pgraph_vk_init_buffers(NV2AState *d)
         .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT |
                  VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
         .buffer_size = NV2A_VERTEXSHADER_ATTRIBUTES * NV2A_MAX_BATCH_LENGTH *
-                       4 * sizeof(float) * 10,
+                       4 * sizeof(float) * inline_vertex_batches(r),
     };
 
     r->storage_buffers[BUFFER_VERTEX_INLINE_STAGING] = (StorageBuffer){

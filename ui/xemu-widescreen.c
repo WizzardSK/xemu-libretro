@@ -26,6 +26,10 @@
 
 static bool g_widescreen = false;
 
+/* The last value written to the aspect line (hw/xbox/acpi_xbox.c), -1 until
+ * one is: the libretro core logs it */
+int xemu_aspect_gpio_value = -1;
+
 void xemu_set_widescreen(bool widescreen)
 {
     g_widescreen = widescreen;

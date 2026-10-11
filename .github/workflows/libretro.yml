@@ -179,6 +179,10 @@ jobs:
           mkdir -p dist
           cp build/xemu_libretro.so dist/
           cp ui/xemu_libretro.info dist/
+          # the unstripped core too, for profiling and crash backtraces
+          mkdir -p symbols
+          cp build/xemu_libretro.so symbols/
+          patchelf --set-rpath '$ORIGIN' symbols/xemu_libretro.so
           strip --strip-unneeded dist/xemu_libretro.so
           patchelf --set-rpath '$ORIGIN' dist/xemu_libretro.so
           for lib in libslirp.so.0; do
@@ -191,6 +195,11 @@ jobs:
         with:
           name: xemu_libretro-linux-${{ matrix.arch }}
           path: dist/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xemu_libretro-linux-${{ matrix.arch }}-symbols
+          path: symbols/
 
   # After X-OG Mobile's recipe (Ashnar2602/X-OG_Mobile): glib, pixman and
   # libsamplerate from vcpkg's Android triplets, the NDK's clang, and QEMU's

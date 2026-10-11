@@ -72,6 +72,7 @@ static void xbox_pm_gpio_write(void *opaque, hwaddr addr, uint64_t val,
 
     if (addr == XBOX_PM_GPIO_ASPECT_RATIO) {
         xemu_set_widescreen(val == 5);
+        xemu_aspect_gpio_value = (int)val;
     }
 
     // FIXME: Add GPIO to VM state

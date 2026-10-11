@@ -99,6 +99,35 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "enabled"
     },
     {
+        "xemu_renderer",
+        "Graphics API (Restart)",
+        NULL,
+        "The renderer the emulated GPU is drawn with. Vulkan is the default; OpenGL is the fallback for drivers where Vulkan misbehaves. Takes effect when the content is loaded again. Android always uses Vulkan, macOS always OpenGL.",
+        NULL,
+        "video",
+        {
+            { "vulkan", "Vulkan" },
+            { "opengl", "OpenGL" },
+            { NULL, NULL },
+        },
+        "vulkan"
+    },
+    {
+        "xemu_aspect_ratio",
+        "Aspect Ratio",
+        NULL,
+        "The shape the picture is shown in. Auto follows the game: 16:9 when it switches the console to widescreen (Widescreen has to be on in the dashboard's video settings), 4:3 otherwise. Choose 16:9 for a game that renders widescreen but is shown squashed.",
+        NULL,
+        "video",
+        {
+            { "auto", "Auto" },
+            { "4:3",  "4:3" },
+            { "16:9", "16:9" },
+            { NULL, NULL },
+        },
+        "auto"
+    },
+    {
         "xemu_surface_scale",
         "Internal Resolution Scale",
         NULL,

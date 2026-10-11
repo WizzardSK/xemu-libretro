@@ -6,3 +6,4 @@ const int xemu_version_patch = XEMU_VERSION_PATCH;
 const char *xemu_version = XEMU_VERSION;
 const char *xemu_commit  = XEMU_COMMIT;
 const char *xemu_date    = XEMU_DATE;
+const char *xemu_libretro_version = XEMU_LIBRETRO_VERSION;

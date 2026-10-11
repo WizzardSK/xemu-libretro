@@ -1757,4 +1757,5 @@ void pgraph_vk_surface_flush(NV2AState *d)
     prune_invalid_surfaces(r, 0);
 
     pgraph_vk_reload_surface_scale_factor(pg);
+    pgraph_vk_reserve_compute_buffers(pg, pg->surface_scale_factor);
 }

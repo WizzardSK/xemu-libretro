@@ -18,6 +18,7 @@
 #include "migration/snapshot.h"
 #include "ui/console.h"
 #include "hw/xbox/nv2a/nv2a.h"
+#include "ui/xemu-widescreen.h"
 
 #include <epoxy/gl.h>
 #ifndef _WIN32
@@ -29,6 +30,7 @@
 #define VK_USE_PLATFORM_WIN32_KHR
 #endif
 #include "libretro_vulkan.h"
+#include "hw/xbox/nv2a/pgraph/vk/libretro_shared.h"
 #include "libretro_core_options.h"
 #include "xemu-settings.h"
 #include "xemu-version.h"
@@ -66,7 +68,19 @@ struct retro_vfs_interface *xemu_libretro_vfs = NULL;
 /* ========================================================================= */
 
 static struct retro_hw_render_callback hw_render;
+/* The largest frame the frontend was told to expect: the Xbox's largest
+ * output, 1920x1080, times the Internal Resolution Scale (xemu_max_geometry).
+ * Not the 10x of the highest scale for everyone: RetroArch sizes its shader
+ * passes' framebuffers by it, and at 6400x4800 a multi-pass preset took
+ * gigabytes of video memory (8192x8192 passes; NNshi: Dead or Alive 3 black,
+ * Panzer Dragoon Orta stuck loading). */
+static unsigned declared_max_width = 1920;
+static unsigned declared_max_height = 1080;
+
 static bool use_vulkan = false;
+static struct retro_rumble_interface rumble;
+/* Graphics API option: Vulkan unless set to OpenGL (read at load) */
+static bool opt_renderer_vulkan = true;
 static bool context_ready = false;
 static bool game_loaded = false;
 
@@ -85,6 +99,8 @@ static VkDeviceMemory ra_vk_memory = VK_NULL_HANDLE;
 static uint32_t ra_vk_width = 0, ra_vk_height = 0;
 static void *ra_last_handle = NULL;
 static struct retro_vulkan_image retro_vk_image;
+/* The Vulkan renderer is off the shared device (vk_park_renderer) */
+static bool vk_renderer_parked;
 static VkImageViewCreateInfo ra_vk_view_ci;
 
 /* VK function pointers from RA's device (not xemu's) */
@@ -127,6 +143,8 @@ extern void glo_set_current(GloContext *context);
 /* ========================================================================= */
 
 static bool emu_initialized = false;
+/* QEMU was started in this process (retro_load_game) */
+static bool emu_started_once = false;
 static QemuThread emu_thread;
 static volatile bool emu_thread_running = false;
 
@@ -172,6 +190,7 @@ static int  opt_network_backend = 0; /* 0=disabled, 1=nat */
 static void context_reset(void);
 static void context_destroy(void);
 static void update_variables(void);
+static void xemu_max_geometry(int scale, unsigned *width, unsigned *height);
 static void create_blit_resources(void);
 static void destroy_blit_resources(void);
 static void blit_nv2a_texture(GLuint tex, unsigned width, unsigned height, uintptr_t fbo);
@@ -601,13 +620,23 @@ static bool ra_vk_import_display(void *ext_handle, int width, int height)
 /* Vulkan device negotiation                                                 */
 /* ========================================================================= */
 
+XemuLibretroVk xemu_libretro_vk;
+bool xemu_libretro_vk_context_ready;
+
+static const VkApplicationInfo xemu_vk_app_info = {
+    .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
+    .pApplicationName = "xemu",
+    .pEngineName = "xemu",
+    .apiVersion = VK_API_VERSION_1_3,
+};
+
 /*
- * The frontend's device is where xemu's display image is imported, which
- * takes VK_KHR_external_memory and its platform half - _fd here, _win32 on
- * Windows. A device RetroArch makes for itself has neither enabled, and an
- * import into it is then not defined (Mesa ignores it and the picture stays
- * black), so the core makes the device: RetroArch's required extensions,
- * layers and features, plus those two where the GPU has them.
+ * The core makes the device RetroArch draws with, and the renderer draws on
+ * it too (pgraph/vk/libretro_shared.h): RetroArch's required extensions,
+ * layers and features plus the renderer's. A frame is then an image on that
+ * one device, handed over as it is - where the renderer had a device of its
+ * own, its display image was exported and imported into RetroArch's, with
+ * nothing to say when it was complete.
  */
 static bool xemu_vk_has_ext(const VkExtensionProperties *props, uint32_t count, const char *name)
 {
@@ -628,13 +657,16 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
 {
 #define XEMU_VK_LOAD(name) PFN_##name p_##name = (PFN_##name)gipa(instance, #name)
     XEMU_VK_LOAD(vkEnumeratePhysicalDevices);
+    XEMU_VK_LOAD(vkGetPhysicalDeviceFeatures);
     XEMU_VK_LOAD(vkGetPhysicalDeviceQueueFamilyProperties);
     XEMU_VK_LOAD(vkGetPhysicalDeviceSurfaceSupportKHR);
     XEMU_VK_LOAD(vkEnumerateDeviceExtensionProperties);
     XEMU_VK_LOAD(vkCreateDevice);
     XEMU_VK_LOAD(vkGetDeviceProcAddr);
 #undef XEMU_VK_LOAD
-    if (!p_vkEnumeratePhysicalDevices || !p_vkGetPhysicalDeviceQueueFamilyProperties ||
+    memset(&xemu_libretro_vk, 0, sizeof(xemu_libretro_vk));
+    if (!p_vkEnumeratePhysicalDevices || !p_vkGetPhysicalDeviceFeatures ||
+        !p_vkGetPhysicalDeviceQueueFamilyProperties ||
         !p_vkEnumerateDeviceExtensionProperties || !p_vkCreateDevice || !p_vkGetDeviceProcAddr) {
         return false;
     }
@@ -652,6 +684,7 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
     VkQueueFamilyProperties *qprops = g_new0(VkQueueFamilyProperties, qcount);
     p_vkGetPhysicalDeviceQueueFamilyProperties(gpu, &qcount, qprops);
     uint32_t family = UINT32_MAX;
+    uint32_t family_queues = 1;
     for (uint32_t i = 0; i < qcount && family == UINT32_MAX; i++) {
         const VkQueueFlags want = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT;
         if ((qprops[i].queueFlags & want) != want) {
@@ -663,6 +696,7 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
         }
         if (present) {
             family = i;
+            family_queues = qprops[i].queueCount;
         }
     }
     g_free(qprops);
@@ -676,14 +710,13 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
     VkExtensionProperties *eprops = g_new0(VkExtensionProperties, ecount);
     p_vkEnumerateDeviceExtensionProperties(gpu, NULL, &ecount, eprops);
 
+    /* The renderer's optional extensions (create_logical_device in
+     * pgraph/vk/instance.c) */
     static const char *const own_exts[] = {
-        VK_KHR_EXTERNAL_MEMORY_EXTENSION_NAME,
-#ifdef _WIN32
-        VK_KHR_EXTERNAL_MEMORY_WIN32_EXTENSION_NAME,
-#else
-        VK_KHR_EXTERNAL_MEMORY_FD_EXTENSION_NAME,
-#endif
+        VK_EXT_CUSTOM_BORDER_COLOR_EXTENSION_NAME,
+        VK_EXT_MEMORY_BUDGET_EXTENSION_NAME,
     };
+    bool own_ext_enabled[G_N_ELEMENTS(own_exts)] = { false };
     const char **exts = g_new0(const char *, num_required_exts + G_N_ELEMENTS(own_exts));
     uint32_t nexts = 0;
     for (unsigned i = 0; i < num_required_exts; i++) {
@@ -695,29 +728,66 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
             listed |= !strcmp(exts[j], own_exts[i]);
         }
         if (listed) {
+            own_ext_enabled[i] = true;
             continue;
         }
         if (xemu_vk_has_ext(eprops, ecount, own_exts[i])) {
             exts[nexts++] = own_exts[i];
-        } else {
-            LRLOG_WARN("[xemu] Vulkan: the GPU has no %s; the picture cannot be shared\n", own_exts[i]);
+            own_ext_enabled[i] = true;
         }
     }
     g_free(eprops);
 
-    const float priority = 1.0f;
+    /* A queue of its own for the renderer where the family has a second
+     * one: it submits many times a frame, and the frontend holds its queue's
+     * lock while it presents */
+    const bool own_queue = family_queues >= 2;
+    const float priorities[2] = { 1.0f, 1.0f };
     VkDeviceQueueCreateInfo queue_ci = {
         .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
         .queueFamilyIndex = family,
-        .queueCount = 1,
-        .pQueuePriorities = &priority,
+        .queueCount = own_queue ? 2 : 1,
+        .pQueuePriorities = priorities,
     };
+
+    /* The frontend's features and the renderer's (create_logical_device) */
+    VkPhysicalDeviceFeatures available = {0};
+    p_vkGetPhysicalDeviceFeatures(gpu, &available);
     VkPhysicalDeviceFeatures features = {0};
     if (required_features) {
         features = *required_features;
     }
+    bool renderer_features = true;
+#define XEMU_VK_FEATURE(name, required) \
+    do { \
+        if (available.name) { \
+            features.name = VK_TRUE; \
+        } else if (required) { \
+            LRLOG_ERROR("[xemu] Vulkan: the GPU has no " #name "\n"); \
+            renderer_features = false; \
+        } \
+    } while (0)
+    XEMU_VK_FEATURE(depthClamp, true);
+    XEMU_VK_FEATURE(fillModeNonSolid, true);
+    XEMU_VK_FEATURE(geometryShader, true);
+    XEMU_VK_FEATURE(occlusionQueryPrecise, true);
+    XEMU_VK_FEATURE(samplerAnisotropy, false);
+    XEMU_VK_FEATURE(shaderClipDistance, true);
+    XEMU_VK_FEATURE(shaderTessellationAndGeometryPointSize, true);
+    XEMU_VK_FEATURE(wideLines, false);
+#undef XEMU_VK_FEATURE
+    if (!renderer_features) {
+        g_free(exts);
+        return false;
+    }
+
+    VkPhysicalDeviceCustomBorderColorFeaturesEXT custom_border_features = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT,
+        .customBorderColors = VK_TRUE,
+    };
     VkDeviceCreateInfo device_ci = {
         .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+        .pNext = own_ext_enabled[0] ? &custom_border_features : NULL,
         .queueCreateInfoCount = 1,
         .pQueueCreateInfos = &queue_ci,
         .enabledLayerCount = num_required_layers,
@@ -745,15 +815,54 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
     context->queue_family_index = family;
     context->presentation_queue = queue;
     context->presentation_queue_family_index = family;
-    LRLOG_INFO("[xemu] Vulkan: device created for the frontend, queue family %u, %u extensions\n",
-               family, nexts);
+
+    /* The renderer takes this device over (pgraph/vk/instance.c) */
+    xemu_libretro_vk.get_instance_proc_addr = gipa;
+    xemu_libretro_vk.instance = instance;
+    xemu_libretro_vk.gpu = gpu;
+    xemu_libretro_vk.device = device;
+    xemu_libretro_vk.api_version = xemu_vk_app_info.apiVersion;
+    xemu_libretro_vk.queue_family = family;
+    xemu_libretro_vk.queue = queue;
+    xemu_libretro_vk.queue_shared = !own_queue;
+    if (own_queue) {
+        p_vkGetDeviceQueue(device, family, 1, &xemu_libretro_vk.queue);
+    }
+    xemu_libretro_vk.features = features;
+    xemu_libretro_vk.custom_border_color = own_ext_enabled[0];
+    xemu_libretro_vk.memory_budget = own_ext_enabled[1];
+    xemu_libretro_vk.active = true;
+
+    LRLOG_INFO("[xemu] Vulkan: device shared with the frontend, queue family %u (%s), %u extensions\n",
+               family, own_queue ? "a queue of its own" : "the frontend's queue", nexts);
     return true;
+}
+
+/* Vulkan 1.3 where there is one: the renderer wants 1.1 at least, and the
+ * device's own version caps it */
+static const VkApplicationInfo *xemu_vk_get_application_info(void)
+{
+    return &xemu_vk_app_info;
+}
+
+void xemu_libretro_vk_lock_queue(void)
+{
+    if (xemu_libretro_vk.queue_shared && vulkan_if && vulkan_if->lock_queue) {
+        vulkan_if->lock_queue(vulkan_if->handle);
+    }
+}
+
+void xemu_libretro_vk_unlock_queue(void)
+{
+    if (xemu_libretro_vk.queue_shared && vulkan_if && vulkan_if->unlock_queue) {
+        vulkan_if->unlock_queue(vulkan_if->handle);
+    }
 }
 
 static const struct retro_hw_render_context_negotiation_interface_vulkan xemu_vk_negotiation = {
     RETRO_HW_RENDER_CONTEXT_NEGOTIATION_INTERFACE_VULKAN,
     RETRO_HW_RENDER_CONTEXT_NEGOTIATION_INTERFACE_VULKAN_VERSION,
-    NULL, /* get_application_info: the frontend's default */
+    xemu_vk_get_application_info,
     xemu_vk_create_device,
     NULL, /* destroy_device: nothing of our own on the device */
 };
@@ -794,15 +903,47 @@ static void context_reset(void)
 
         libretro_gl_set_standalone_mode();
         nv2a_context_init();
+        /* the renderer may start now (pgraph_vk_init waits for this) */
+        qatomic_set(&xemu_libretro_vk_context_ready, true);
         libretro_gl_wake_pfifo();
+
+        /* After a context_destroy took the renderer off the old device:
+         * back onto this one (no renderer yet at the first reset) */
+        if (xemu_libretro_vk.active && vk_renderer_parked) {
+            if (!nv2a_libretro_switch_renderer(CONFIG_DISPLAY_RENDERER_VULKAN)) {
+                LRLOG_ERROR("[xemu] Vulkan: the renderer did not start on the new device\n");
+            }
+            vk_renderer_parked = false;
+        }
     }
 
     context_ready = true;
 }
 
+/* The Vulkan renderer taken off the device shared with the frontend, before
+ * the frontend destroys it: its objects are destroyed while the device still
+ * exists, and nothing of it runs on a device that is gone */
+static void vk_park_renderer(void)
+{
+    if (!xemu_libretro_vk.active || vk_renderer_parked) {
+        return;
+    }
+    if (nv2a_libretro_switch_renderer(CONFIG_DISPLAY_RENDERER_NULL)) {
+        vk_renderer_parked = true;
+    } else if (emu_initialized) {
+        LRLOG_ERROR("[xemu] Vulkan: the renderer did not leave the device\n");
+    }
+}
+
 static void context_destroy(void)
 {
     context_ready = false;
+
+    if (use_vulkan) {
+        vk_park_renderer();
+        xemu_libretro_vk.active = false;
+        qatomic_set(&xemu_libretro_vk_context_ready, false);
+    }
 
     if (!use_vulkan) {
         destroy_blit_resources();
@@ -840,6 +981,55 @@ static void get_option_string(const char *key, char *buf, size_t buf_sz)
     }
 }
 
+/* The Aspect Ratio option, standalone's display setting: auto follows the
+ * title's aspect line, the other two say it outright - for the titles that
+ * render widescreen without setting the line */
+static int opt_aspect = 0; /* 0 auto, 1 4:3, 2 16:9 */
+
+static bool wants_widescreen(void)
+{
+    return opt_aspect == 2 || (opt_aspect == 0 && xemu_get_widescreen());
+}
+
+/* 16:9 when the running title says it renders widescreen - it sets the
+ * AV pack's aspect line (acpi_xbox.c) when the dashboard's video settings
+ * have Widescreen on - else 4:3; RetroArch is told whenever that changes,
+ * as standalone's display follows it (NNshi) */
+static void update_aspect(void)
+{
+    static int last = -1;
+    const int widescreen = wants_widescreen() ? 1 : 0;
+
+    /* What the title writes to the aspect line, whenever it changes: 5 is
+     * widescreen, and a log then says why a title stayed at 4:3 */
+    static int last_gpio = -1;
+    const int gpio = qatomic_read(&xemu_aspect_gpio_value);
+    if (gpio != last_gpio) {
+        last_gpio = gpio;
+        LRLOG_INFO("[xemu] Aspect line (PM GPIO 0x16) written: %d\n", gpio);
+    }
+
+    if (widescreen == last) {
+        return;
+    }
+    last = widescreen;
+
+    struct retro_game_geometry geometry = {
+        .base_width = 640,
+        .base_height = 480,
+        .max_width = declared_max_width,
+        .max_height = declared_max_height,
+        .aspect_ratio = widescreen ? 16.0f / 9.0f : 4.0f / 3.0f,
+    };
+    environ_cb(RETRO_ENVIRONMENT_SET_GEOMETRY, &geometry);
+    LRLOG_INFO("[xemu] Aspect ratio %s\n", widescreen ? "16:9" : "4:3");
+}
+
+static void apply_surface_scale(void *opaque)
+{
+    nv2a_set_surface_scale_factor(opt_surface_scale);
+}
+
 static void update_variables(void)
 {
     struct retro_variable var;
@@ -848,6 +1038,18 @@ static void update_variables(void)
     get_option_string("xemu_bios_path", opt_bios_path, sizeof(opt_bios_path));
     get_option_string("xemu_hdd_path", opt_hdd_path, sizeof(opt_hdd_path));
     get_option_string("xemu_eeprom_path", opt_eeprom_path, sizeof(opt_eeprom_path));
+
+    var.key = "xemu_renderer";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        opt_renderer_vulkan = strcmp(var.value, "opengl") != 0;
+    }
+
+    var.key = "xemu_aspect_ratio";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        opt_aspect = !strcmp(var.value, "4:3") ? 1 : !strcmp(var.value, "16:9") ? 2 : 0;
+    }
 
     var.key = "xemu_memory";
     var.value = NULL;
@@ -927,7 +1129,23 @@ static void update_variables(void)
     /* Apply runtime-safe options */
     if (emu_initialized) {
         g_config.audio.volume_limit = opt_audio_volume / 100.0f;
-        g_config.display.quality.surface_scale = opt_surface_scale;
+        if (g_config.display.quality.surface_scale != opt_surface_scale) {
+            /* as standalone's setting does - g_config alone was only read
+             * when the renderer started - on the emulation thread, which
+             * holds the BQL nv2a_set_surface_scale_factor expects */
+            aio_bh_schedule_oneshot(qemu_get_aio_context(),
+                                    apply_surface_scale, NULL);
+
+            /* A scale above the one the frontend sized itself for: tell
+             * it the new maximum (it sets its video up again) */
+            unsigned max_w, max_h;
+            xemu_max_geometry(opt_surface_scale, &max_w, &max_h);
+            if (max_w > declared_max_width || max_h > declared_max_height) {
+                struct retro_system_av_info av_info;
+                retro_get_system_av_info(&av_info);
+                environ_cb(RETRO_ENVIRONMENT_SET_SYSTEM_AV_INFO, &av_info);
+            }
+        }
         g_config.display.filtering = opt_filtering;
         g_config.perf.cache_shaders = opt_cache_shaders;
         g_config.audio.use_dsp = opt_use_dsp;
@@ -955,9 +1173,8 @@ static void populate_config(const char *dvd_path)
     if (opt_eeprom_path[0]) {
         xemu_settings_set_string(&g_config.sys.files.eeprom_path, opt_eeprom_path);
     }
-    if (dvd_path && dvd_path[0]) {
-        xemu_settings_set_string(&g_config.sys.files.dvd_path, dvd_path);
-    }
+    /* also when empty: a load without content after one with it */
+    xemu_settings_set_string(&g_config.sys.files.dvd_path, dvd_path ? dvd_path : "");
 
     /* Set renderer */
     if (use_vulkan) {
@@ -1076,6 +1293,13 @@ static void *emu_thread_func(void *opaque)
         }
     }
 
+    /* The first step of upstream's qemu_cleanup(): the vCPUs are stopped and
+     * every block device drained and flushed. Without it the guest ran on
+     * after its content was closed and was cut off mid-write when RetroArch
+     * exited, which left the HDD image's cache partitions broken (NNshi:
+     * Panzer Dragoon Orta stuck loading, in standalone too with that image) */
+    vm_shutdown();
+
     bql_unlock();
     return NULL;
 }
@@ -1107,8 +1331,10 @@ RETRO_API void retro_set_environment(retro_environment_t cb)
         LRLOG_WARN("[xemu] Could not get system directory\n");
     }
 
-    /* We need content (game ISO) */
-    bool no_game = false;
+    /* Started without content ("Start Core"), the Xbox boots with an empty
+     * tray into its dashboard - the BIOS settings, the HDD's contents - as
+     * standalone does with no disc (NNshi) */
+    bool no_game = true;
     environ_cb(RETRO_ENVIRONMENT_SET_SUPPORT_NO_GAME, &no_game);
 
     /* Get VFS interface */
@@ -1172,10 +1398,17 @@ RETRO_API void retro_get_system_info(struct retro_system_info *info)
 {
     memset(info, 0, sizeof(*info));
     info->library_name     = "xemu";
-    info->library_version  = xemu_version;
+    info->library_version  = xemu_libretro_version;
     info->valid_extensions = "iso|xiso";
     info->need_fullpath    = true;
     info->block_extract    = true;
+}
+
+/* 1920x1080 times the scale, within what a GPU takes for an image */
+static void xemu_max_geometry(int scale, unsigned *width, unsigned *height)
+{
+    *width = MIN(1920u * (unsigned)MAX(scale, 1), 8192u);
+    *height = MIN(1080u * (unsigned)MAX(scale, 1), 8192u);
 }
 
 RETRO_API void retro_get_system_av_info(struct retro_system_av_info *info)
@@ -1183,9 +1416,10 @@ RETRO_API void retro_get_system_av_info(struct retro_system_av_info *info)
     memset(info, 0, sizeof(*info));
     info->geometry.base_width   = 640;
     info->geometry.base_height  = 480;
-    info->geometry.max_width    = 1920;
-    info->geometry.max_height   = 1080;
-    info->geometry.aspect_ratio = 4.0f / 3.0f;
+    xemu_max_geometry(opt_surface_scale, &declared_max_width, &declared_max_height);
+    info->geometry.max_width    = declared_max_width;
+    info->geometry.max_height   = declared_max_height;
+    info->geometry.aspect_ratio = wants_widescreen() ? 16.0f / 9.0f : 4.0f / 3.0f;
     info->timing.fps            = 59.94;
     info->timing.sample_rate    = 48000.0;
 }
@@ -1273,20 +1507,55 @@ RETRO_API void retro_deinit(void)
 
 RETRO_API bool retro_load_game(const struct retro_game_info *game)
 {
+    /* The pads' motors (retro_run); without one, no rumble */
+    memset(&rumble, 0, sizeof(rumble));
+    if (!environ_cb(RETRO_ENVIRONMENT_GET_RUMBLE_INTERFACE, &rumble)) {
+        memset(&rumble, 0, sizeof(rumble));
+    }
+
     LRLOG_INFO("[xemu] retro_load_game called\n");
 
-    if (!game || !game->path) {
-        LRLOG_ERROR("[xemu] No game path provided\n");
+    /* QEMU starts once in a process: its machine, devices and threads are
+     * not taken down when content is closed (the core stays loaded, see
+     * retro_init), and starting them again crashed RetroArch (NNshi). Until
+     * that is possible, a second content in the same RetroArch is refused,
+     * with a message, rather than loaded into a crash. */
+    if (emu_started_once) {
+        static const char text[] =
+            "xemu: restart RetroArch to load another game";
+        struct retro_message_ext msg = {
+            .msg = text,
+            .duration = 6000,
+            .priority = 3,
+            .level = RETRO_LOG_ERROR,
+            .target = RETRO_MESSAGE_TARGET_ALL,
+            .type = RETRO_MESSAGE_TYPE_NOTIFICATION,
+            .progress = -1,
+        };
+        unsigned msg_version = 0;
+        if (environ_cb(RETRO_ENVIRONMENT_GET_MESSAGE_INTERFACE_VERSION, &msg_version) &&
+            msg_version >= 1) {
+            environ_cb(RETRO_ENVIRONMENT_SET_MESSAGE_EXT, &msg);
+        } else {
+            struct retro_message old = { text, 360 };
+            environ_cb(RETRO_ENVIRONMENT_SET_MESSAGE, &old);
+        }
+        LRLOG_ERROR("[xemu] %s\n", text);
         return false;
     }
 
-    LRLOG_INFO("[xemu] Loading game: %s\n", game->path);
+    const char *content = (game && game->path) ? game->path : "";
+    if (content[0]) {
+        LRLOG_INFO("[xemu] Loading game: %s\n", content);
+    } else {
+        LRLOG_INFO("[xemu] No content: booting the dashboard, tray empty\n");
+    }
 
     /* Read core options */
     update_variables();
 
-    /* Store the DVD path */
-    snprintf(opt_dvd_path, sizeof(opt_dvd_path), "%s", game->path);
+    /* Store the DVD path (empty: no disc) */
+    snprintf(opt_dvd_path, sizeof(opt_dvd_path), "%s", content);
 
     /* Set shader cache base path */
     if (system_dir[0]) {
@@ -1359,7 +1628,9 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
     }
     LRLOG_INFO("[xemu] Frontend preferred HW render: %u\n", preferred_hw);
 
-    bool want_vulkan = (preferred_hw == RETRO_HW_CONTEXT_VULKAN);
+    /* The Graphics API option decides, not the frontend's video driver:
+     * RetroArch's preferred context only follows its own driver setting */
+    bool want_vulkan = opt_renderer_vulkan;
 #ifdef __ANDROID__
     /* No GL renderer in the Android build: Vulkan, whatever is preferred */
     want_vulkan = true;
@@ -1435,6 +1706,7 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
 
     /* Start emulation thread */
     emu_thread_running = true;
+    emu_started_once = true;
     qemu_thread_create(&emu_thread, "xemu-emu", emu_thread_func,
                        NULL, QEMU_THREAD_JOINABLE);
 
@@ -1457,6 +1729,11 @@ RETRO_API void retro_unload_game(void)
     LRLOG_INFO("[xemu] retro_unload_game\n");
 
     if (emu_thread_running) {
+        /* while the guest still runs: the switch needs its CPU, and the
+         * frontend destroys the device after this */
+        if (use_vulkan) {
+            vk_park_renderer();
+        }
         emu_thread_running = false;
         qemu_system_shutdown_request(SHUTDOWN_CAUSE_HOST_SIGNAL);
         qemu_thread_join(&emu_thread);
@@ -1496,6 +1773,12 @@ RETRO_API void retro_run(void)
         input_poll_cb();
     }
 
+    /* The motors the guest set since the last run (libretro-stubs.c) */
+    {
+        extern void libretro_input_apply_rumble(retro_set_rumble_state_t);
+        libretro_input_apply_rumble(rumble.set_rumble_state);
+    }
+
     if (!emu_initialized || !context_ready) {
         /* Emulator not ready yet, draw black frame */
         if (!use_vulkan && hw_render.get_current_framebuffer) {
@@ -1520,6 +1803,8 @@ RETRO_API void retro_run(void)
         return;
     }
 
+    update_aspect();
+
     /* ---- OpenGL path ---- */
     if (!use_vulkan) {
         /* Get NV2A framebuffer texture */
@@ -1530,6 +1815,20 @@ RETRO_API void retro_run(void)
         unsigned height = 480;
 
         if (tex) {
+            /* The frame at the size it was rendered at - Internal
+             * Resolution Scale times the guest's output - not squeezed back
+             * into 640x480, which undid the scaling on GL (NNshi) */
+            GLint tex_w = 0, tex_h = 0;
+            glBindTexture(GL_TEXTURE_2D, tex);
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &tex_w);
+            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &tex_h);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            if (tex_w > 0 && tex_h > 0 &&
+                (unsigned)tex_w <= declared_max_width &&
+                (unsigned)tex_h <= declared_max_height) {
+                width = (unsigned)tex_w;
+                height = (unsigned)tex_h;
+            }
             blit_nv2a_texture(tex, width, height, fbo);
         } else {
             /* No framebuffer yet */
@@ -1549,6 +1848,57 @@ RETRO_API void retro_run(void)
 
         if (!vulkan_if) {
             video_cb(NULL, width, height, 0);
+            goto vk_audio;
+        }
+
+        if (xemu_libretro_vk.active) {
+            /* The frame rendered now, on the device shared with the
+             * frontend, and handed over in this run: the renderer draws the
+             * display, copies it into the image of the frontend's current
+             * sync index and waits for the GPU (pgraph/vk/display.c) */
+            static uint64_t last_count;
+            static unsigned last_w = 640, last_h = 480;
+            const int index =
+                (int)vulkan_if->get_sync_index(vulkan_if->handle);
+            VkImage image;
+            VkImageView view;
+            VkFormat format;
+            int frame_w, frame_h;
+            uint64_t count = last_count;
+
+            xemu_libretro_vk.frame_index = index;
+            if (!vk_renderer_parked) {
+                nv2a_get_framebuffer_surface();
+                nv2a_release_framebuffer_surface();
+            }
+
+            if (!vk_renderer_parked &&
+                nv2a_vk_libretro_get_frame(index, &image, &view, &format,
+                                           &frame_w, &frame_h, &count) &&
+                count != last_count) {
+                last_count = count;
+                last_w = (unsigned)frame_w;
+                last_h = (unsigned)frame_h;
+
+                retro_vk_image.image_view = view;
+                retro_vk_image.image_layout =
+                    VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+                retro_vk_image.create_info = (VkImageViewCreateInfo){
+                    .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+                    .image = image,
+                    .viewType = VK_IMAGE_VIEW_TYPE_2D,
+                    .format = format,
+                    .subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+                    .subresourceRange.levelCount = 1,
+                    .subresourceRange.layerCount = 1,
+                };
+                vulkan_if->set_image(vulkan_if->handle, &retro_vk_image, 0,
+                                     NULL, VK_QUEUE_FAMILY_IGNORED);
+                video_cb(RETRO_HW_FRAME_BUFFER_VALID, last_w, last_h, 0);
+            } else {
+                /* nothing new drawn: the frontend repeats its last frame */
+                video_cb(NULL, last_w, last_h, 0);
+            }
             goto vk_audio;
         }
 
@@ -1616,27 +1966,26 @@ vk_audio:
             audio_flushed = true;
         }
 
-        /* Pull available frames, skip excess to stay near real-time */
-        extern int libretro_audio_ring_frames(void);
-        int avail = libretro_audio_ring_frames();
-
-        if (avail > 1600) {
-            int16_t discard_buf[1602];
-            int skip = avail - 801; /* leave ~801 frames to pull */
-            while (skip > 0) {
-                int chunk = skip > 801 ? 801 : skip;
-                libretro_audio_pull(discard_buf, chunk);
-                skip -= chunk;
-            }
-            avail = libretro_audio_ring_frames();
-        }
+        /* Exactly one frame's worth a call - 48000 / 59.94, 800 or 801 -
+         * so RetroArch's audio sync paces retro_run, and with it the guest's
+         * vblank, at the display's rate. Handing over whatever was queued
+         * let a short queue send retro_run on early, 160 times a second
+         * and more: the guest ran in bursts and stalls (a stuttering boot
+         * animation). The APU waits once about 64 ms is queued (apu.c), so
+         * nothing has to be dropped here; a short queue is filled up with
+         * silence. */
+        static double audio_frac = 0.0;
+        audio_frac += 48000.0 / 59.94;
+        int want = (int)audio_frac;
+        audio_frac -= want;
 
         int16_t audio_buf[1602]; /* 801 stereo frames */
-        int frames = libretro_audio_pull(audio_buf, 801);
-
-        if (frames > 0) {
-            audio_batch_cb(audio_buf, frames);
+        int frames = libretro_audio_pull(audio_buf, want);
+        if (frames < want) {
+            memset(&audio_buf[frames * 2], 0,
+                   (size_t)(want - frames) * 2 * sizeof(int16_t));
         }
+        audio_batch_cb(audio_buf, want);
     }
 }
 

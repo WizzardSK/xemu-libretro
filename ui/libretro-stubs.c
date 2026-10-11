@@ -20,6 +20,7 @@ typedef struct QEMUFile QEMUFile;
 #include "qobject/qdict.h"
 #include "qemu/option.h"
 #include "qemu/config-file.h"
+#include "qemu/atomic.h"
 
 #include "xemu-input.h"
 #include "libretro.h"
@@ -164,10 +165,37 @@ void xemu_input_update_controller(ControllerState *state)
         RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_Y);
 }
 
+/* The pad's motors as the guest last set them, on the emulation thread
+ * (xid.c); retro_run hands them to RetroArch's rumble interface on its own
+ * thread (libretro_input_apply_rumble). Left is the heavy motor, right the
+ * light one, as standalone maps them to SDL. */
+static uint32_t libretro_rumble[4];
+
 void xemu_input_update_rumble(ControllerState *state)
 {
-    /* TODO: Use RETRO_ENVIRONMENT_GET_RUMBLE_INTERFACE to send rumble */
-    (void)state;
+    if (!state || state->bound < 0 || state->bound >= 4) {
+        return;
+    }
+    qatomic_set(&libretro_rumble[state->bound],
+                ((uint32_t)state->rumble_l << 16) | state->rumble_r);
+}
+
+void libretro_input_apply_rumble(retro_set_rumble_state_t set_rumble_state)
+{
+    static uint32_t applied[4];
+
+    if (!set_rumble_state) {
+        return;
+    }
+    for (unsigned port = 0; port < 4; port++) {
+        const uint32_t want = qatomic_read(&libretro_rumble[port]);
+        if (want == applied[port]) {
+            continue;
+        }
+        set_rumble_state(port, RETRO_RUMBLE_STRONG, (uint16_t)(want >> 16));
+        set_rumble_state(port, RETRO_RUMBLE_WEAK, (uint16_t)want);
+        applied[port] = want;
+    }
 }
 
 void libretro_input_create_xid_devices(void)

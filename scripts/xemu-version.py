@@ -35,10 +35,14 @@ def main():
     # upstream.version records it ("<version>-<commits since> <commit>"),
     # updated with each merge of upstream
     xemu_version = ""
+    upstream_commit = ""
     upstream_file = os.path.join(source_dir, 'upstream.version')
     if os.path.exists(upstream_file):
         with open(upstream_file, 'r') as f:
-            xemu_version = f.read().split()[0]
+            fields = f.read().split()
+            xemu_version = fields[0]
+            if len(fields) > 1:
+                upstream_commit = fields[1][:7]
     elif os.path.exists(git_dir):
         try:
             result = subprocess.run(['git', 'describe', '--tags', '--match', 'v*'], 
@@ -76,6 +80,15 @@ def main():
     print(f'#define XEMU_VERSION_COMMIT {commit_part}')
     print(f'#define XEMU_COMMIT        "{xemu_commit}"')
     print(f'#define XEMU_DATE          "{xemu_date}"')
+    # What RetroArch shows as the core's version: upstream's version and
+    # commit, and this repository's commit - as xenia-edge-libretro and
+    # rpcs3-libretro name theirs
+    libretro_version = xemu_version
+    if upstream_commit:
+        libretro_version += f' {upstream_commit}'
+    if xemu_commit:
+        libretro_version += f' (libretro core {xemu_commit[:7]})'
+    print(f'#define XEMU_LIBRETRO_VERSION "{libretro_version}"')
 
 if __name__ == '__main__':
     main()

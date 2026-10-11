@@ -451,8 +451,7 @@ static uint8_t *render_geom_shader_triangles(NV2AState *d, int width,
         .pCommandBuffers = &r->command_buffer,
     };
 
-    VK_CHECK(vkQueueSubmit(r->queue, 1, &submit_info, VK_NULL_HANDLE));
-    VK_CHECK(vkQueueWaitIdle(r->queue));
+    pgraph_vk_queue_submit_and_wait(r, 1, &submit_info);
 
     void *data;
     VK_CHECK(

@@ -76,6 +76,10 @@ void mcpx_apu_monitor_init(MCPXAPUState *d, Error **errp)
     d->monitor.stream = NULL;
     qatomic_set(&apu_ring_wp, 0);
     qatomic_set(&apu_ring_rp, 0);
+    /* The throttle's watermarks (apu.c): below one retro_run's worth of
+     * audio the APU hurries, from about 64 ms it waits */
+    d->monitor.queued_bytes_low = 801 * 4;
+    d->monitor.queued_bytes_high = 64 * MONITOR_BYTES_PER_MS;
 }
 
 void mcpx_apu_monitor_finalize(MCPXAPUState *d)

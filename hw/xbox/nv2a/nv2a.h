@@ -35,6 +35,7 @@ int nv2a_take_vk_display_fd(void);
 /* Non-blocking: trigger PFIFO to render display image, returns immediately.
  * The display image will be updated asynchronously by the PFIFO thread. */
 void nv2a_trigger_display_render(void);
+bool nv2a_libretro_switch_renderer(int type);
 #endif
 void nv2a_set_surface_scale_factor(unsigned int scale);
 unsigned int nv2a_get_surface_scale_factor(void);

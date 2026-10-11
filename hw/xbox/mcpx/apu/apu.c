@@ -176,7 +176,24 @@ static void throttle(MCPXAPUState *d)
     throttle_update_debug(d, start_us);
     int queued_bytes = -1;
 
-#ifndef LIBRETRO
+#ifdef LIBRETRO
+    /* The core's ring stands in for the audio device: RetroArch takes one
+     * frame of audio per retro_run, and the APU waits while about 64 ms is
+     * queued, so it follows the frontend's clock as standalone follows the
+     * device's */
+    {
+        extern int libretro_audio_ring_frames(void);
+        queued_bytes = libretro_audio_ring_frames() * 4;
+        throttle_record_queue(d, queued_bytes);
+        while (!d->pause_requested && queued_bytes >= d->monitor.queued_bytes_high) {
+            qemu_cond_timedwait(&d->cond, &d->lock, EP_FRAME_US / 1000);
+            if (d->pause_requested) {
+                break;
+            }
+            queued_bytes = libretro_audio_ring_frames() * 4;
+        }
+    }
+#else
     if (d->monitor.stream) {
         queued_bytes = SDL_GetAudioStreamQueued(d->monitor.stream);
         if (queued_bytes >= 0) {

@@ -37,6 +37,8 @@
 #include <spirv_reflect.h>
 #include <vk_mem_alloc.h>
 
+#include "libretro_shared.h"
+
 #include "debug.h"
 #include "constants.h"
 #include "glsl.h"
@@ -301,6 +303,22 @@ typedef struct PGRAPHVkDisplayState {
 #endif
     GLuint gl_memory_obj;
     GLuint gl_texture_id;
+
+#ifdef LIBRETRO
+    // On the device shared with the frontend (libretro_shared.h): the frame
+    // handed over, one image for each of the frontend's sync indices - the
+    // display image is copied into the current one - and the ones replaced
+    // at a resize, destroyed once no frame can still be using them.
+    struct PGRAPHVkFrameImage {
+        VkImage image;
+        VkDeviceMemory memory;
+        VkImageView view;
+        int width, height;
+        bool ready;
+        uint64_t retire_at;
+    } frames[XEMU_LIBRETRO_VK_FRAMES], retired[XEMU_LIBRETRO_VK_FRAMES * 2];
+    uint64_t frame_count;
+#endif
 } PGRAPHVkDisplayState;
 
 typedef struct ComputePipelineKey {
@@ -490,6 +508,10 @@ void pgraph_vk_init_command_buffers(PGRAPHState *pg);
 void pgraph_vk_finalize_command_buffers(PGRAPHState *pg);
 VkCommandBuffer pgraph_vk_begin_single_time_commands(PGRAPHState *pg);
 void pgraph_vk_end_single_time_commands(PGRAPHState *pg, VkCommandBuffer cmd);
+void pgraph_vk_queue_submit(PGRAPHVkState *r, uint32_t count,
+                            const VkSubmitInfo *submits, VkFence fence);
+void pgraph_vk_queue_submit_and_wait(PGRAPHVkState *r, uint32_t count,
+                                     const VkSubmitInfo *submits);
 
 // image.c
 void pgraph_vk_transition_image_layout(PGRAPHState *pg, VkCommandBuffer cmd,
@@ -590,6 +612,7 @@ void pgraph_vk_clear_surface(NV2AState *d, uint32_t parameter);
 void pgraph_vk_draw_begin(NV2AState *d);
 void pgraph_vk_draw_end(NV2AState *d);
 void pgraph_vk_finish(PGRAPHState *pg, FinishReason why);
+void pgraph_vk_reserve_compute_buffers(PGRAPHState *pg, unsigned int scale);
 void pgraph_vk_flush_draw(NV2AState *d);
 void pgraph_vk_begin_command_buffer(PGRAPHState *pg);
 void pgraph_vk_ensure_command_buffer(PGRAPHState *pg);

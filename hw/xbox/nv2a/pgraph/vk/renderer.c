@@ -28,6 +28,13 @@ static GloContext *g_gl_context;
 
 static void early_context_init(void)
 {
+#ifdef LIBRETRO
+    if (xemu_libretro_vk.active) {
+        /* No GL: the picture goes to the frontend as an image on the device
+         * shared with it, not through GL's import of exported memory */
+        return;
+    }
+#endif
 #if HAVE_EXTERNAL_MEMORY
     g_gl_context = glo_context_create();
 #endif
@@ -39,8 +46,20 @@ static void pgraph_vk_init(NV2AState *d, Error **errp)
 
     pg->vk_renderer_state = (PGRAPHVkState *)g_malloc0(sizeof(PGRAPHVkState));
 
+#ifdef LIBRETRO
+    /* Until the frontend has its Vulkan context, and with it the device this
+     * renderer may be sharing (libretro_shared.h): the emulation thread
+     * starts at retro_load_game, before that. Thirty seconds at most, as the
+     * GL renderer waits for its contexts. */
+    for (int i = 0; i < 30000 && !qatomic_read(&xemu_libretro_vk_context_ready); i++) {
+        g_usleep(1000);
+    }
+#endif
+
 #if HAVE_EXTERNAL_MEMORY
-    glo_set_current(g_gl_context);
+    if (g_gl_context) {
+        glo_set_current(g_gl_context);
+    }
 #endif
 
     pgraph_vk_debug_init();
@@ -109,7 +128,9 @@ static void pgraph_vk_sync(NV2AState *d)
     PGRAPHState *pg = &d->pgraph;
 #if HAVE_EXTERNAL_MEMORY
     /* Ensure PFIFO thread's GL context is current for GL interop in render_display */
-    glo_set_current(g_gl_context);
+    if (g_gl_context) {
+        glo_set_current(g_gl_context);
+    }
 #endif
     pgraph_vk_render_display(pg);
 
@@ -213,6 +234,31 @@ static int pgraph_vk_get_framebuffer_surface(NV2AState *d)
 }
 
 #ifdef LIBRETRO
+bool nv2a_vk_libretro_get_frame(int index, VkImage *image, VkImageView *view,
+                                VkFormat *format, int *width, int *height,
+                                uint64_t *count)
+{
+    NV2AState *d = g_nv2a;
+    PGRAPHVkState *r = d ? d->pgraph.vk_renderer_state : NULL;
+
+    /* only an image on the device the frontend draws with */
+    if (!r || r->device != xemu_libretro_vk.device) {
+        return false;
+    }
+    const struct PGRAPHVkFrameImage *f =
+        &r->display.frames[index % XEMU_LIBRETRO_VK_FRAMES];
+    *count = r->display.frame_count;
+    if (!f->ready) {
+        return false;
+    }
+    *image = f->image;
+    *view = f->view;
+    *format = VK_FORMAT_R8G8B8A8_UNORM;
+    *width = f->width;
+    *height = f->height;
+    return true;
+}
+
 void nv2a_get_vk_display_info(void **out_handle, int *out_width, int *out_height)
 {
     NV2AState *d = g_nv2a;

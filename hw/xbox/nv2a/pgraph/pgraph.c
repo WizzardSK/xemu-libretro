@@ -394,6 +394,37 @@ void nv2a_release_framebuffer_surface(void)
 }
 
 #ifdef LIBRETRO
+/*
+ * The renderer switched from the frontend's thread, through the switch
+ * pgraph_process_pending does for standalone's setting: used to take the
+ * Vulkan renderer off the device shared with the frontend before the device
+ * goes away (to the null renderer), and back onto the next one. Waits for
+ * it, five seconds at most: it needs the guest's CPU to reach a safe point.
+ * False when no renderer is running yet or the switch did not happen.
+ */
+bool nv2a_libretro_switch_renderer(int type)
+{
+    NV2AState *d = g_nv2a;
+
+    if (!d || !qatomic_read(&d->pgraph.renderer)) {
+        return false;
+    }
+    g_config.display.renderer = type;
+    for (int i = 0; i < 500; i++) {
+        const PGRAPHRenderer *renderer = qatomic_read(&d->pgraph.renderer);
+        if (renderer && renderer->type == type &&
+            qatomic_read(&d->pgraph.renderer_switch_phase) ==
+                PGRAPH_RENDERER_SWITCH_PHASE_IDLE) {
+            return true;
+        }
+        qemu_mutex_lock(&d->pfifo.lock);
+        pfifo_kick(d);
+        qemu_mutex_unlock(&d->pfifo.lock);
+        g_usleep(10 * 1000);
+    }
+    return false;
+}
+
 void nv2a_trigger_display_render(void)
 {
     NV2AState *d = g_nv2a;

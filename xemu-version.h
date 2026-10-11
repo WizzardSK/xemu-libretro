@@ -7,5 +7,6 @@ extern const int xemu_version_patch;
 extern const char *xemu_version;
 extern const char *xemu_commit;
 extern const char *xemu_date;
+extern const char *xemu_libretro_version;
 
 #endif

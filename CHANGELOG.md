@@ -11,7 +11,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 - Rumble through RetroArch's rumble interface.
 - Internal Resolution Scale works on OpenGL: the frame is handed over at the size it was rendered at. The largest picture RetroArch is told to expect follows the scale, so its shader passes are not sized for a resolution that is not in use.
 - Closing content stops the emulated console and flushes its disk. Before, the console ran on and was cut off mid-write when RetroArch exited, which could break the hard disk image.
-- A second content in the same RetroArch is refused with a message instead of crashing; RetroArch has to be restarted to load another game.
+- Another game can be loaded without restarting RetroArch, on Vulkan: the emulated console stays built when content is closed, and the next game puts its disc in the drive, resets the console and starts it again (six games in a row without a crash, tested by NNshi). On OpenGL a second game is still refused with a message. Core options that need a restart, such as the memory size and Graphics API, keep the first game's values until RetroArch is restarted.
 - Start Core without content boots the dashboard with an empty tray.
 - The core's version names upstream's version and commit and this repository's.
 - Vulkan starts on Linux and on GPUs with little memory: the surfaceless EGL display is made in a way libepoxy accepts, and the compute and vertex buffers are sized for the surface scale and the memory there is.

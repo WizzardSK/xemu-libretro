@@ -144,6 +144,10 @@
 #include "qemu/keyval.h"
 
 #include "ui/xemu-settings.h"
+#ifdef LIBRETRO
+#include "qapi/qapi-commands-block.h"
+#include "hw/xbox/smbus.h"
+#endif
 #include "ui/xemu-notifications.h"
 #include "ui/xemu-net.h"
 #include "ui/xemu-input.h"
@@ -2627,6 +2631,52 @@ static uint64_t xbox_game_partition_offset(const char *path)
         fclose(f);
     }
     return found;
+}
+#endif
+
+#ifdef LIBRETRO
+/* Another disc into the built machine's drive, for the content loaded after
+ * the first (ui/libretro.c): upstream's xemu_load_disc, with the game
+ * partition's offset of a Redump image as at start. An empty path leaves the
+ * tray empty. Under the BQL. */
+void xemu_libretro_change_disc(const char *path, Error **errp)
+{
+    Error *err = NULL;
+
+    xemu_settings_set_string(&g_config.sys.files.dvd_path, "");
+    if (!path || !path[0]) {
+        qmp_eject("ide0-cd1", NULL, true, true, &err);
+        /* nothing in the drive to eject is not a failure */
+        error_free(err);
+        xbox_smc_update_tray_state();
+        return;
+    }
+
+    const uint64_t offset = xbox_game_partition_offset(path);
+    if (offset) {
+        QDict *options = qdict_new();
+        qdict_put_str(options, "driver", "raw");
+        qdict_put_int(options, "offset", (int64_t)offset);
+        qdict_put_str(options, "file.filename", path);
+        GString *json = qobject_to_json(QOBJECT(options));
+        char *filename = g_strdup_printf("json:%s", json->str);
+        fprintf(stderr, "xemu: DVD: Redump image, the game partition from "
+                "offset 0x%" PRIx64 "\n", offset);
+        qmp_blockdev_change_medium("ide0-cd1", NULL, filename, "raw", true,
+                                   true, false, 0, &err);
+        g_free(filename);
+        g_string_free(json, true);
+        qobject_unref(options);
+    } else {
+        qmp_blockdev_change_medium("ide0-cd1", NULL, path, "raw", true, true,
+                                   false, 0, &err);
+    }
+    if (err) {
+        error_propagate(errp, err);
+    } else {
+        xemu_settings_set_string(&g_config.sys.files.dvd_path, path);
+    }
+    xbox_smc_update_tray_state();
 }
 #endif
 

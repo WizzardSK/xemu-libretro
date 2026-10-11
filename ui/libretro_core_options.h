@@ -149,7 +149,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_renderer",
         "Graphics API (Restart)",
         NULL,
-        "The renderer the emulated GPU is drawn with. Vulkan is the default; OpenGL is the fallback for drivers where Vulkan misbehaves. Takes effect when the content is loaded again. Android always uses Vulkan, macOS always OpenGL.",
+        "The renderer the emulated GPU is drawn with. Vulkan is the default; OpenGL is the fallback for drivers where Vulkan misbehaves. Takes effect after RetroArch is restarted. Android always uses Vulkan, macOS always OpenGL.",
         NULL,
         "video",
         {

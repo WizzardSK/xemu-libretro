@@ -14,6 +14,7 @@
 #include "qemu/thread.h"
 #include "system/system.h"
 #include "system/runstate.h"
+#include "qapi/error.h"
 #include "system/cpus.h"
 #include "migration/snapshot.h"
 #include "ui/console.h"
@@ -143,8 +144,10 @@ extern void glo_set_current(GloContext *context);
 /* ========================================================================= */
 
 static bool emu_initialized = false;
-/* QEMU was started in this process (retro_load_game) */
+/* QEMU was started in this process (retro_load_game), and with which
+ * renderer: the machine stays built, and the next content runs on it */
 static bool emu_started_once = false;
+static bool emu_started_vulkan = false;
 static QemuThread emu_thread;
 static volatile bool emu_thread_running = false;
 
@@ -901,8 +904,14 @@ static void context_reset(void)
         extern void libretro_gl_set_standalone_mode(void);
         extern void libretro_gl_wake_pfifo(void);
 
+        /* The renderers' contexts are made once: they are the machine's,
+         * and it outlives the content and RetroArch's context */
+        static bool renderer_contexts_made = false;
         libretro_gl_set_standalone_mode();
-        nv2a_context_init();
+        if (!renderer_contexts_made) {
+            nv2a_context_init();
+            renderer_contexts_made = true;
+        }
         /* the renderer may start now (pgraph_vk_init waits for this) */
         qatomic_set(&xemu_libretro_vk_context_ready, true);
         libretro_gl_wake_pfifo();
@@ -1213,6 +1222,8 @@ static void populate_config(const char *dvd_path)
 }
 
 /* Thread function for running QEMU main loop */
+extern GMainContext *qemu_main_context;
+
 static void *emu_thread_func(void *opaque)
 {
     /* Build QEMU argv */
@@ -1224,11 +1235,46 @@ static void *emu_thread_func(void *opaque)
     };
     int argc = 5;
 
-    qemu_init(argc, (char **)argv);
+    /* QEMU's machine is built once in a process and never taken down (see
+     * retro_init). The first content builds it; each one after that gets
+     * the machine the last one left stopped: its disc is put in the drive
+     * and the console is reset and started again, as a power cycle with
+     * another disc. This thread takes over as QEMU's main thread by holding
+     * the BQL, which the last one released when it ended. */
+    static bool machine_built = false;
+    if (!machine_built) {
+        qemu_init(argc, (char **)argv);
 
-    /* Create XID USB gamepad devices for all 4 ports (BQL is held) */
-    extern void libretro_input_create_xid_devices(void);
-    libretro_input_create_xid_devices();
+        /* Create XID USB gamepad devices for all 4 ports (BQL is held) */
+        extern void libretro_input_create_xid_devices(void);
+        libretro_input_create_xid_devices();
+        machine_built = true;
+    } else {
+        extern void xemu_libretro_change_disc(const char *path, Error **errp);
+        extern void qemu_libretro_clear_shutdown_request(void);
+        Error *err = NULL;
+
+        bql_lock();
+        /* xemu's main loop runs on the thread's default GLib context
+         * (g_main_context_get_thread_default, util/main-loop.c), which
+         * qemu_init pushed on the first thread only: without it the loop
+         * handed GLib a null context and RetroArch crashed in ntdll on the
+         * second content (NNshi's dump). The thread before this one popped
+         * it when it ended, which also gave up its ownership. */
+        g_main_context_push_thread_default(qemu_main_context);
+        xemu_libretro_change_disc(opt_dvd_path, &err);
+        if (err) {
+            LRLOG_ERROR("[xemu] Disc not loaded: %s\n", error_get_pretty(err));
+            error_free(err);
+        }
+        qemu_libretro_clear_shutdown_request();
+        qemu_system_reset(SHUTDOWN_CAUSE_HOST_QMP_SYSTEM_RESET);
+        if (!runstate_check(RUN_STATE_PRELAUNCH)) {
+            runstate_set(RUN_STATE_PRELAUNCH);
+        }
+        vm_start();
+        LRLOG_INFO("[xemu] The machine is reset and started with the new disc\n");
+    }
 
     emu_initialized = true;
 
@@ -1299,6 +1345,10 @@ static void *emu_thread_func(void *opaque)
      * exited, which left the HDD image's cache partitions broken (NNshi:
      * Panzer Dragoon Orta stuck loading, in standalone too with that image) */
     vm_shutdown();
+
+    /* The main loop's GLib context goes to the next content's thread, which
+     * cannot take it while this one still owns it as its default */
+    g_main_context_pop_thread_default(qemu_main_context);
 
     bql_unlock();
     return NULL;
@@ -1518,12 +1568,18 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
 
     /* QEMU starts once in a process: its machine, devices and threads are
      * not taken down when content is closed (the core stays loaded, see
-     * retro_init), and starting them again crashed RetroArch (NNshi). Until
-     * that is possible, a second content in the same RetroArch is refused,
-     * with a message, rather than loaded into a crash. */
-    if (emu_started_once) {
+     * retro_init), and starting them again crashed RetroArch (NNshi). The
+     * next content runs on the machine that is there (emu_thread_func). On
+     * Vulkan that is: the renderer was taken off RetroArch's device when the
+     * content was closed (vk_park_renderer) and is put on the new one in
+     * context_reset, as after any loss of the context. On OpenGL the
+     * renderer's contexts share with RetroArch's context of the first
+     * content, which is gone by the second, so there another content is
+     * still refused, with a message, rather than loaded into a black
+     * screen. */
+    if (emu_started_once && !emu_started_vulkan) {
         static const char text[] =
-            "xemu: restart RetroArch to load another game";
+            "xemu: on OpenGL, restart RetroArch to load another game";
         struct retro_message_ext msg = {
             .msg = text,
             .duration = 6000,
@@ -1641,6 +1697,11 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
      * whatever is preferred */
     want_vulkan = false;
 #endif
+    if (emu_started_once) {
+        /* the machine was started on Vulkan (checked above) and stays on it,
+         * whatever the option says now */
+        want_vulkan = true;
+    }
 
     /* Setup hardware rendering based on frontend preference */
     memset(&hw_render, 0, sizeof(hw_render));
@@ -1692,6 +1753,12 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
         }
     }
 
+    if (emu_started_once && !want_vulkan) {
+        /* the machine's renderer is Vulkan and cannot be changed under it */
+        LRLOG_ERROR("[xemu] No Vulkan context for the next content; the machine was started on Vulkan\n");
+        return false;
+    }
+
     use_vulkan = want_vulkan;
     if (use_vulkan) {
         LRLOG_INFO("[xemu] Using Vulkan HW rendering\n");
@@ -1708,6 +1775,7 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
     /* Start emulation thread */
     emu_thread_running = true;
     emu_started_once = true;
+    emu_started_vulkan = use_vulkan;
     qemu_thread_create(&emu_thread, "xemu-emu", emu_thread_func,
                        NULL, QEMU_THREAD_JOINABLE);
 

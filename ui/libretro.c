@@ -1313,7 +1313,8 @@ RETRO_API void retro_set_environment(retro_environment_t cb)
     environ_cb = cb;
 
     /* Set core options v2 */
-    libretro_set_core_options(environ_cb);
+    bool categories_supported = false;
+    libretro_set_core_options(environ_cb, &categories_supported);
 
     /* Get log interface */
     struct retro_log_callback log;

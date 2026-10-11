@@ -1,24 +1,89 @@
+# DESCRIPTION: GitLab CI/CD for libRetro (NOT FOR GitLab-proper)
 #
-# This is the GitLab CI configuration file for the mainstream QEMU
-# project: https://gitlab.com/qemu-project/qemu/-/pipelines
+# Linux x64, Linux aarch64 and Windows x64.
 #
-# !!! DO NOT ADD ANY NEW CONFIGURATION TO THIS FILE !!!
+# xemu is QEMU: it is built with QEMU's configure, meson and ninja, with
+# upstream's dependencies, which the buildbot's Linux images (Ubuntu 16.04)
+# do not have. So the Linux jobs run in Ubuntu 24.04 with the packages of
+# .ci/libretro-linux.sh, and the Windows job cross-compiles in the MXE
+# toolchain image upstream xemu builds its Windows releases in
+# (.ci/libretro-windows.sh). The templates give the jobs their stage, runner
+# tags and artifacts; the scripts replace the templates' CMake steps.
 #
-# Only documentation or comments is accepted.
-#
-# To use a different set of jobs than the mainstream QEMU project,
-# you need to set the location of your custom yml file at "custom CI/CD
-# configuration path", on your GitLab CI namespace:
-# https://docs.gitlab.com/ee/ci/pipelines/settings.html#custom-cicd-configuration-path
-#
-# ----------------------------------------------------------------------
-#
-# QEMU CI jobs are based on templates. Some templates provide
-# user-configurable options, modifiable via configuration variables.
-#
-# See https://qemu-project.gitlab.io/qemu/devel/ci.html#custom-ci-cd-variables
-# for more information.
-#
+# Android and macOS are built by the GitHub workflow only: Android takes glib
+# and pixman from vcpkg and needs ninja and Python modules the buildbot's
+# Android image is not known to have, and macOS takes its libraries from
+# MacPorts and ships them in a folder next to the core, which the buildbot's
+# one-file artifact cannot hold.
+
+##############################################################################
+################################# BOILERPLATE ################################
+##############################################################################
+
+variables:
+  # The submodules are QEMU's firmware sources (edk2, u-boot and the like),
+  # none of which xemu builds; its dependencies come as meson wraps.
+  GIT_SUBMODULE_STRATEGY: none
+  # The whole history, for the version string (git describe)
+  GIT_DEPTH: 0
+
+.core-defs:
+  variables:
+    CORENAME: xemu
 
 include:
-  - local: '/.gitlab-ci.d/qemu-project.yml'
+  # Linux
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/linux-cmake.yml'
+
+  # Windows
+  - project: 'libretro-infrastructure/ci-templates'
+    file: '/windows-cmake-mingw.yml'
+
+stages:
+  - build-prepare
+  - build-shared
+
+# A runner having a bad minute should not redden the pipeline; anything really
+# broken still fails three times over.
+default:
+  retry: 2
+
+##############################################################################
+#################################### STAGES ##################################
+##############################################################################
+
+# Defining before_script replaces the template's instead of adding to it, so
+# its NUMPROC is set again here.
+.core-defs-linux:
+  extends: .core-defs
+  image: ubuntu:24.04
+  timeout: 2h
+  before_script:
+    - export NUMPROC=$(($(nproc)/5))
+  script:
+    - bash .ci/libretro-linux.sh
+
+# Linux 64-bit
+libretro-build-linux-x64:
+  extends:
+    - .libretro-linux-cmake-x86_64
+    - .core-defs-linux
+
+# Linux 64-bit (ARM)
+libretro-build-linux-aarch64:
+  extends:
+    - .libretro-linux-cmake-aarch64
+    - .core-defs-linux
+
+# Windows 64-bit
+libretro-build-windows-x64:
+  extends:
+    - .libretro-windows-cmake-x86_64
+    - .core-defs
+  image: ghcr.io/xemu-project/xemu-win64-toolchain-gcc:sha-18018f1
+  timeout: 2h
+  before_script:
+    - export NUMPROC=$(($(nproc)/5))
+  script:
+    - bash .ci/libretro-windows.sh

@@ -35,3 +35,4 @@ ui/xemu.desktop
 ui/xui
 xemu.entitlements
 xemu.metainfo.xml
+.gitlab-ci.d

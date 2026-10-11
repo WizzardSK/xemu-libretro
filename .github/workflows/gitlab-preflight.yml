@@ -1,0 +1,65 @@
+name: GitLab CI preflight
+
+# Replays the libretro buildbot's jobs (.gitlab-ci.yml) in the same images,
+# since the buildbot's pipelines cannot be started from here. The jobs and
+# this workflow run the same scripts (.ci/libretro-*.sh); only the job count
+# differs, as a GitHub runner has four cores.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [gitlab-ci]
+
+jobs:
+  linux:
+    name: libretro-build-linux-${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: x64
+            runner: ubuntu-24.04
+          - name: aarch64
+            runner: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          submodules: false
+
+      - name: Replay the job in ubuntu:24.04
+        run: |
+          docker run --rm -v "$PWD":/src -w /src ubuntu:24.04 bash -euxc '
+            export NUMPROC=$(nproc)
+            bash .ci/libretro-linux.sh
+          '
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xemu_libretro-buildbot-linux-${{ matrix.name }}
+          path: xemu_libretro.so
+
+  windows:
+    name: libretro-build-windows-x64
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          submodules: false
+
+      - name: Replay the job in the MXE image
+        run: |
+          docker run --rm -v "$PWD":/src -w /src \
+            ghcr.io/xemu-project/xemu-win64-toolchain-gcc:sha-18018f1 bash -euxc '
+            export NUMPROC=$(nproc)
+            bash .ci/libretro-windows.sh
+          '
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xemu_libretro-buildbot-windows-x64
+          path: xemu_libretro.dll

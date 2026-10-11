@@ -21,10 +21,17 @@ This repository builds the libretro core and nothing else. The standalone's part
 - When something new is deleted for the same reason, add its path to `.upstream-excluded` in the same commit.
 - This `AGENTS.md` replaces upstream xemu's own. When a merge conflicts on it, keep this one.
 - After a merge, `upstream.version` names the upstream version merged; the core reports that version, and a new release is built.
+- `CHANGELOG.md` is this fork's own. When a merge conflicts on it, keep this one.
 
 ## These files
 
 - Only the developer writes to or deletes `AGENTS.md` and `CLAUDE.md`. An agent does not change them on its own; it proposes the change to the developer instead.
+
+## Changelog and README
+
+- `CHANGELOG.md` is updated in the same commit as the change it describes: what changed for someone using the core, newest first. Not a copy of the commit message.
+- A change on a feature branch gets its entry on that branch, under "Unreleased"; it reaches `libretro` with the squash merge.
+- `README.md` is kept true in the same way: when a change makes a sentence in it wrong (a limit lifted, an option added, a file moved), fix the sentence in that commit.
 
 ## Code
 

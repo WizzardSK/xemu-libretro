@@ -11,10 +11,11 @@ NUMPROC=${NUMPROC:-$(nproc)}
 export DEBIAN_FRONTEND=noninteractive
 
 # upstream's build dependencies (debian/control), as the GitHub workflow
-# installs them, without libslirp
+# installs them, without libslirp; cmake (for the CMake subprojects) and curl
+# (meson fetches the DSP library with it) are on a GitHub runner already
 apt-get -qy update
 apt-get -qy install --no-install-recommends \
-  build-essential git ca-certificates pkg-config ninja-build meson \
+  build-essential git ca-certificates pkg-config ninja-build meson cmake curl \
   python3 python3-pip python3-tomli python3-yaml python3-venv \
   libepoxy-dev libpixman-1-dev libsdl2-dev libsamplerate0-dev zlib1g-dev libssl-dev \
   libpcap-dev libvulkan-dev libusb-1.0-0-dev libcurl4-openssl-dev \

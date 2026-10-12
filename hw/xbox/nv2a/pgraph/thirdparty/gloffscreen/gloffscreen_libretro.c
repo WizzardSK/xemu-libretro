@@ -444,6 +444,7 @@ void glo_context_destroy(GloContext *context)
 
 #include <pthread.h>
 #include <time.h>
+#include <dlfcn.h>
 #include <epoxy/egl.h>
 #include <epoxy/glx.h>
 
@@ -520,7 +521,14 @@ static void glx_prepare_from_current(void)
     GLXFBConfig *configs = glXChooseFBConfig(g_glx_dpy, DefaultScreen(g_glx_dpy), attribs, &n);
     g_glx_config = (configs && n > 0) ? configs[0] : NULL;
     if (configs) {
-        XFree(configs);
+        /* Xlib's own free, found at run time: with a GLX context current the
+         * frontend has libX11 loaded, and the core does not link it, so that
+         * it loads where there is no X11 at all. Not found: a few bytes
+         * leaked, once. */
+        int (*x_free)(void *) = (int (*)(void *))dlsym(RTLD_DEFAULT, "XFree");
+        if (x_free) {
+            x_free(configs);
+        }
     }
     g_api = GLO_API_GLX;
 }

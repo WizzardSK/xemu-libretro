@@ -20,14 +20,14 @@ if host_os == 'android'
   # Vulkan only there: no GL renderer for gloffscreen to serve
   libgloffscreen = static_library('libgloffscreen', sources: files('gloffscreen/common.c'))
 elif get_option('libretro')
-  # CGL on macOS; EGL and GLX through epoxy on the other non-Windows hosts,
-  # X11 for the GLX config query
+  # CGL on macOS; EGL and GLX through epoxy on the other non-Windows hosts.
+  # Xlib's headers only, for the GLX types: the core does not link libX11
   if host_os == 'windows'
     gloffscreen_deps = []
   elif host_os == 'darwin'
     gloffscreen_deps = [epoxy, opengl]
   else
-    gloffscreen_deps = [epoxy, dependency('x11', required: true)]
+    gloffscreen_deps = [epoxy, dependency('x11', required: true).partial_dependency(compile_args: true, includes: true)]
   endif
   libgloffscreen = static_library('libgloffscreen',
                             sources: files('gloffscreen/common.c', 'gloffscreen/gloffscreen_libretro.c'),

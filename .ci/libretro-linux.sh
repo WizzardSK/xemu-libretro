@@ -47,3 +47,5 @@ ls -la xemu_libretro.so
 # libslirp must be inside: no NEEDED entry for it
 readelf -d xemu_libretro.so | grep NEEDED
 ! readelf -d xemu_libretro.so | grep -q 'NEEDED.*libslirp'
+# and no window system's library: the frontend owns the window
+! readelf -d xemu_libretro.so | grep -q 'NEEDED.*libX11'

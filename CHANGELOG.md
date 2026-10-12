@@ -2,7 +2,7 @@
 
 What changed in the libretro core of this fork, newest first. Changes that come with a merge of upstream xemu are in upstream's own history; a merge is noted here with the upstream version it brought in.
 
-## Unreleased
+## Test build 3 - 2026-10-12
 
 - The console's files are also found in `system/` itself, where an older core info file had them, and the BIOS also as `Complex_4627.bin`. `system/xemu/` and `Complex_4627v1.03.bin` stay the documented place and name (boardsofcanada).
 - Reduced Vulkan Buffers (Video, on by default): the Vulkan renderer's buffer for inline vertex data is a tenth of xemu's size on every graphics card, as it already was on those with less than 4 GB - about 1.2 GB less video memory and as much less system memory (3.16 to 2.01 GB in NNshi's run, frame times unchanged). Off reserves xemu's size.

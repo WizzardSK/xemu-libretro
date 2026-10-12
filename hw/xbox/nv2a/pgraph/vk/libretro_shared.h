@@ -58,6 +58,10 @@ extern bool xemu_libretro_vk_context_ready;
 
 extern XemuLibretroVk xemu_libretro_vk;
 
+/* The Reduced Vulkan Buffers core option (buffer.c), read when content is
+ * loaded */
+extern bool xemu_libretro_vk_reduced_buffers;
+
 /* The frontend's queue lock, around every use of a shared queue; no-ops
  * while the renderer has a queue of its own */
 void xemu_libretro_vk_lock_queue(void);

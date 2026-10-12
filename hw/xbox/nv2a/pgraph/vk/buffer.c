@@ -100,6 +100,13 @@ static int inline_vertex_batches(PGRAPHVkState *r)
             device_local = MAX(device_local, props.memoryHeaps[i].size);
         }
     }
+    /* Reduced Vulkan Buffers (on by default): one batch on every GPU - 1.2 GB
+     * of VRAM and as much host memory less than upstream's ten, with the
+     * frame times unchanged in NNshi's runs. Off is upstream's ten, where the
+     * GPU has the memory for them. */
+    if (xemu_libretro_vk_reduced_buffers) {
+        return 1;
+    }
     return device_local >= 4ULL * 1024 * 1024 * 1024 ? 10 : 1;
 }
 

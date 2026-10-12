@@ -624,6 +624,7 @@ static bool ra_vk_import_display(void *ext_handle, int width, int height)
 /* ========================================================================= */
 
 XemuLibretroVk xemu_libretro_vk;
+bool xemu_libretro_vk_reduced_buffers = true;
 bool xemu_libretro_vk_context_ready;
 
 static const VkApplicationInfo xemu_vk_app_info = {
@@ -1113,6 +1114,12 @@ static void update_variables(void)
     var.value = NULL;
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
         opt_cache_shaders = !strcmp(var.value, "enabled");
+    }
+
+    var.key = "xemu_vk_reduced_buffers";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        xemu_libretro_vk_reduced_buffers = strcmp(var.value, "disabled") != 0;
     }
 
     var.key = "xemu_display_filtering";

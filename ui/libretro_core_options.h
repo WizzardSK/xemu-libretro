@@ -242,6 +242,20 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "enabled"
     },
     {
+        "xemu_vk_reduced_buffers",
+        "Reduced Vulkan Buffers (Restart)",
+        NULL,
+        "The Vulkan renderer reserves its work buffers when it starts, whatever the game needs. Enabled keeps the buffer for inline vertex data at a tenth of xemu's size, which takes about 1.2 GB less video memory and as much less system memory. Disabled reserves xemu's full size on graphics cards with 4 GB or more; try it if a game is slower with this enabled.",
+        NULL,
+        "video",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
         "xemu_audio_volume",
         "Audio Volume Limit (%)",
         NULL,

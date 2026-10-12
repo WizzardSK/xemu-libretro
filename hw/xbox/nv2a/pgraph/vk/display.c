@@ -1221,6 +1221,11 @@ static void render_display(PGRAPHState *pg, SurfaceBinding *surface)
 
 #ifdef LIBRETRO
     if (on_frontend_device()) {
+        if (surface->vram_addr != disp->last_surface_addr ||
+            surface->draw_time != disp->draw_time) {
+            disp->guest_frame_count++;
+        }
+        disp->last_surface_addr = surface->vram_addr;
         copy_display_to_frame(pg, cmd);
     }
 #endif

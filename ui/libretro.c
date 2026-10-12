@@ -1816,13 +1816,54 @@ RETRO_API void retro_unload_game(void)
 RETRO_API void retro_run(void)
 {
     static int run_count = 0;
+    /* Where the time of a run goes, over the last 300 runs: the whole run
+     * from the previous one's start, the wait for the renderer to draw the
+     * display, and the frontend's video and audio callbacks. For telling a
+     * slow guest from a slow hand-over in a tester's log. */
+    static int64_t st_last_start, st_period_sum, st_period_max;
+    static int64_t st_sync_sum, st_sync_max, st_video_sum, st_video_max;
+    static int64_t st_audio_sum, st_audio_max;
+    static int st_new_frames;
+    static uint64_t st_guest_frames;
+    int64_t st_t;
+    const int64_t st_start = g_get_monotonic_time();
+
+    if (st_last_start) {
+        const int64_t period = st_start - st_last_start;
+        st_period_sum += period;
+        st_period_max = MAX(st_period_max, period);
+    }
+    st_last_start = st_start;
+
     run_count++;
     if (run_count <= 5 || (run_count % 300) == 0) {
         LRLOG_INFO("[xemu] retro_run #%d (emu_init=%d ctx_ready=%d game=%d)\n",
                    run_count, emu_initialized, context_ready, game_loaded);
     }
+    if ((run_count % 300) == 0 && use_vulkan && xemu_libretro_vk.active) {
+        const uint64_t guest_frames = nv2a_vk_libretro_guest_frames();
+        LRLOG_INFO("[xemu] last 300 runs: %d guest frames; %d new frames; run every %.2f ms "
+                   "(max %.2f); renderer wait %.2f ms (max %.2f); video "
+                   "callback %.2f ms (max %.2f); audio callback %.2f ms "
+                   "(max %.2f)\n",
+                   (int)(guest_frames - st_guest_frames), st_new_frames,
+                   st_period_sum / 300000.0,
+                   st_period_max / 1000.0, st_sync_sum / 300000.0,
+                   st_sync_max / 1000.0, st_video_sum / 300000.0,
+                   st_video_max / 1000.0, st_audio_sum / 300000.0,
+                   st_audio_max / 1000.0);
+        st_guest_frames = guest_frames;
+        st_new_frames = 0;
+        st_period_sum = st_period_max = 0;
+        st_sync_sum = st_sync_max = 0;
+        st_video_sum = st_video_max = 0;
+        st_audio_sum = st_audio_max = 0;
+    }
 
-    /* Schedule vblank (graphic_hw_update) on emu thread */
+    /* Schedule vblank (graphic_hw_update) on emu thread. Before the picture
+     * is taken, not after: raised after it, the wait for the renderer in the
+     * game's heavy scenes grew from 2-4 ms to 6-7 ms and RetroArch's presents
+     * came in pairs, a late one and an early one (NNshi's captures). */
     {
         QemuConsole *con = nv2a_get_vga_console();
         if (con) {
@@ -1937,8 +1978,12 @@ RETRO_API void retro_run(void)
 
             xemu_libretro_vk.frame_index = index;
             if (!vk_renderer_parked) {
+                st_t = g_get_monotonic_time();
                 nv2a_get_framebuffer_surface();
                 nv2a_release_framebuffer_surface();
+                st_t = g_get_monotonic_time() - st_t;
+                st_sync_sum += st_t;
+                st_sync_max = MAX(st_sync_max, st_t);
             }
 
             if (!vk_renderer_parked &&
@@ -1963,11 +2008,17 @@ RETRO_API void retro_run(void)
                 };
                 vulkan_if->set_image(vulkan_if->handle, &retro_vk_image, 0,
                                      NULL, VK_QUEUE_FAMILY_IGNORED);
+                st_new_frames++;
+                st_t = g_get_monotonic_time();
                 video_cb(RETRO_HW_FRAME_BUFFER_VALID, last_w, last_h, 0);
             } else {
                 /* nothing new drawn: the frontend repeats its last frame */
+                st_t = g_get_monotonic_time();
                 video_cb(NULL, last_w, last_h, 0);
             }
+            st_t = g_get_monotonic_time() - st_t;
+            st_video_sum += st_t;
+            st_video_max = MAX(st_video_max, st_t);
             goto vk_audio;
         }
 
@@ -2054,7 +2105,11 @@ vk_audio:
             memset(&audio_buf[frames * 2], 0,
                    (size_t)(want - frames) * 2 * sizeof(int16_t));
         }
+        st_t = g_get_monotonic_time();
         audio_batch_cb(audio_buf, want);
+        st_t = g_get_monotonic_time() - st_t;
+        st_audio_sum += st_t;
+        st_audio_max = MAX(st_audio_max, st_t);
     }
 }
 

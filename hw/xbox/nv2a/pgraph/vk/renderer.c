@@ -234,6 +234,23 @@ static int pgraph_vk_get_framebuffer_surface(NV2AState *d)
 }
 
 #ifdef LIBRETRO
+uint64_t nv2a_vk_libretro_guest_frames(void)
+{
+    NV2AState *d = g_nv2a;
+
+    /* The renderer's state is a union: with the OpenGL renderer this pointer
+     * is its state, not a Vulkan one, and the count would be read from past
+     * the end of it (RetroArch crashed at the first log line on OpenGL,
+     * NNshi) */
+    if (!d || !xemu_libretro_vk.active) {
+        return 0;
+    }
+    PGRAPHVkState *r = d->pgraph.vk_renderer_state;
+
+    return r && r->device == xemu_libretro_vk.device ?
+           r->display.guest_frame_count : 0;
+}
+
 bool nv2a_vk_libretro_get_frame(int index, VkImage *image, VkImageView *view,
                                 VkFormat *format, int *width, int *height,
                                 uint64_t *count)

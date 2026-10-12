@@ -318,6 +318,10 @@ typedef struct PGRAPHVkDisplayState {
         uint64_t retire_at;
     } frames[XEMU_LIBRETRO_VK_FRAMES], retired[XEMU_LIBRETRO_VK_FRAMES * 2];
     uint64_t frame_count;
+    /* How many of the pictures rendered were another guest frame than the
+     * one before: another surface, or one drawn to since */
+    uint64_t guest_frame_count;
+    hwaddr last_surface_addr;
 #endif
 } PGRAPHVkDisplayState;
 

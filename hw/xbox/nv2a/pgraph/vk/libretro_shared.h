@@ -68,6 +68,9 @@ void xemu_libretro_vk_unlock_queue(void);
  * the frontend). False until a frame was rendered for that index. *count is
  * the number of frames rendered so far: unchanged since the last call, the
  * display was not rendered again and the image holds an older frame. */
+/* The count of pictures handed over that showed another guest frame than the
+ * one before them */
+uint64_t nv2a_vk_libretro_guest_frames(void);
 bool nv2a_vk_libretro_get_frame(int index, VkImage *image, VkImageView *view,
                                 VkFormat *format, int *width, int *height,
                                 uint64_t *count);

@@ -1630,27 +1630,50 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
         LRLOG_INFO("[xemu] Shader cache base path: %s\n", base_path);
     }
 
-    /* Auto-populate BIOS paths from system directory if not set by options */
+    /* Auto-populate BIOS paths from system directory if not set by options.
+     * Each file is looked for in system/xemu/ and then in system/ itself,
+     * where an older core info file had them (boardsofcanada), and the BIOS
+     * under both of the names it goes by. The first one there is used; when
+     * none is, the path stays the first place, for the message below. */
     if (system_dir[0]) {
-        if (!opt_bootrom_path[0]) {
-            snprintf(opt_bootrom_path, sizeof(opt_bootrom_path),
-                     "%s/xemu/mcpx_1.0.bin", system_dir);
-            LRLOG_INFO("[xemu] Auto-set bootrom: %s\n", opt_bootrom_path);
-        }
-        if (!opt_bios_path[0]) {
-            snprintf(opt_bios_path, sizeof(opt_bios_path),
-                     "%s/xemu/Complex_4627v1.03.bin", system_dir);
-            LRLOG_INFO("[xemu] Auto-set bios: %s\n", opt_bios_path);
-        }
-        if (!opt_hdd_path[0]) {
-            snprintf(opt_hdd_path, sizeof(opt_hdd_path),
-                     "%s/xemu/xbox_hdd.qcow2", system_dir);
-            LRLOG_INFO("[xemu] Auto-set hdd: %s\n", opt_hdd_path);
-        }
-        if (!opt_eeprom_path[0]) {
-            snprintf(opt_eeprom_path, sizeof(opt_eeprom_path),
-                     "%s/xemu/xbox_eeprom.bin", system_dir);
-            LRLOG_INFO("[xemu] Auto-set eeprom: %s\n", opt_eeprom_path);
+        static const char *const dirs[] = { "xemu/", "" };
+        static const char *const bootrom_names[] = { "mcpx_1.0.bin", NULL };
+        static const char *const bios_names[] = { "Complex_4627v1.03.bin", "Complex_4627.bin", NULL };
+        static const char *const hdd_names[] = { "xbox_hdd.qcow2", NULL };
+        static const char *const eeprom_names[] = { "xbox_eeprom.bin", NULL };
+        const struct {
+            char *path;
+            size_t size;
+            const char *const *names;
+            const char *what;
+        } files[] = {
+            { opt_bootrom_path, sizeof(opt_bootrom_path), bootrom_names, "bootrom" },
+            { opt_bios_path, sizeof(opt_bios_path), bios_names, "bios" },
+            { opt_hdd_path, sizeof(opt_hdd_path), hdd_names, "hdd" },
+            { opt_eeprom_path, sizeof(opt_eeprom_path), eeprom_names, "eeprom" },
+        };
+        for (size_t i = 0; i < sizeof(files) / sizeof(files[0]); i++) {
+            bool found = false;
+            if (files[i].path[0]) {
+                continue;
+            }
+            for (size_t d = 0; d < sizeof(dirs) / sizeof(dirs[0]) && !found; d++) {
+                for (size_t n = 0; files[i].names[n] && !found; n++) {
+                    FILE *probe;
+                    snprintf(files[i].path, files[i].size, "%s/%s%s",
+                             system_dir, dirs[d], files[i].names[n]);
+                    probe = fopen(files[i].path, "rb");
+                    if (probe) {
+                        fclose(probe);
+                        found = true;
+                    }
+                }
+            }
+            if (!found) {
+                snprintf(files[i].path, files[i].size, "%s/xemu/%s",
+                         system_dir, files[i].names[0]);
+            }
+            LRLOG_INFO("[xemu] Auto-set %s: %s\n", files[i].what, files[i].path);
         }
     }
 

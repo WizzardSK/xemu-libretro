@@ -1216,33 +1216,33 @@ struct retro_core_options_v2 options_bg = {
 /* RETRO_LANGUAGE_CA */
 
 #define CATEGORY_SYSTEM_LABEL_CA "Sistema"
-#define CATEGORY_SYSTEM_INFO_0_CA NULL
+#define CATEGORY_SYSTEM_INFO_0_CA "Configureu els paràmetres a nivell de sistema, com ara els camins de la BIOS, la memòria i les opcions d'arrencada."
 #define CATEGORY_VIDEO_LABEL_CA "Vídeo"
-#define CATEGORY_VIDEO_INFO_0_CA NULL
+#define CATEGORY_VIDEO_INFO_0_CA "Configura el renderitzat de vídeo."
 #define CATEGORY_AUDIO_LABEL_CA "Àudio"
-#define CATEGORY_AUDIO_INFO_0_CA NULL
-#define XEMU_MEMORY_LABEL_CA NULL
-#define XEMU_MEMORY_INFO_0_CA NULL
+#define CATEGORY_AUDIO_INFO_0_CA "Configura l'emulació de vídeo."
+#define XEMU_MEMORY_LABEL_CA "Memòria del sistema (MB)"
+#define XEMU_MEMORY_INFO_0_CA "Quantitat de memòria RAM. L'estàndard és 64 MB; es fan servir 128 MB en cas de fer depuració."
 #define OPTION_VAL_64_CA NULL
 #define OPTION_VAL_128_CA NULL
-#define XEMU_NETWORK_BACKEND_LABEL_CA NULL
-#define XEMU_NETWORK_BACKEND_INFO_0_CA NULL
+#define XEMU_NETWORK_BACKEND_LABEL_CA "Backend de xarxa"
+#define XEMU_NETWORK_BACKEND_INFO_0_CA "Habilita el suport de xarxa per a jocs d'Xbox amb funcionalitats LAN/System Link. El sistema NAT proporciona connectivitat bàsica."
 #define OPTION_VAL_NAT_CA NULL
-#define XEMU_SKIP_BOOT_ANIM_LABEL_CA NULL
-#define XEMU_SKIP_BOOT_ANIM_INFO_0_CA NULL
-#define XEMU_HARD_FPU_LABEL_CA NULL
-#define XEMU_HARD_FPU_INFO_0_CA NULL
-#define XEMU_RENDERER_LABEL_CA NULL
-#define XEMU_RENDERER_INFO_0_CA NULL
+#define XEMU_SKIP_BOOT_ANIM_LABEL_CA "Omet animació d'inici"
+#define XEMU_SKIP_BOOT_ANIM_INFO_0_CA "Omet l'animació inicial de Xbox."
+#define XEMU_HARD_FPU_LABEL_CA "Emulació del maquinari FPU"
+#define XEMU_HARD_FPU_INFO_0_CA "Fes servir l'amfitrió FPU per l'emulació de x87. És més ràpid però pot provocar alguna imprecisió."
+#define XEMU_RENDERER_LABEL_CA "API de gràfics (Cal reiniciar)"
+#define XEMU_RENDERER_INFO_0_CA "El motor de renderització utilitzat per dibuixar la GPU emulada. Vulkan és l'opció predeterminada; OpenGL és l'alternativa per als controladors en què Vulkan no funciona correctament. Els canvis s'apliquen després de reiniciar RetroArch. Android utilitza sempre Vulkan, mentre que macOS utilitza sempre OpenGL."
 #define OPTION_VAL_VULKAN_CA NULL
 #define OPTION_VAL_OPENGL_CA NULL
 #define XEMU_ASPECT_RATIO_LABEL_CA "Relació d'aspecte"
-#define XEMU_ASPECT_RATIO_INFO_0_CA NULL
+#define XEMU_ASPECT_RATIO_INFO_0_CA "La forma en què es mostra la imatge. L'opció «Automàtic» s'adapta al joc: 16:9 quan la consola canvia a format panoràmic (cal tenir activat el format panoràmic a la configuració de vídeo del tauler de control) i 4:3 en cas contrari. Tria 16:9 per a un joc que es genera en format panoràmic però que es mostra comprimit."
 #define OPTION_VAL_AUTO_CA "Automàtic"
 #define OPTION_VAL_4_3_CA NULL
 #define OPTION_VAL_16_9_CA NULL
-#define XEMU_SURFACE_SCALE_LABEL_CA NULL
-#define XEMU_SURFACE_SCALE_INFO_0_CA NULL
+#define XEMU_SURFACE_SCALE_LABEL_CA "Escala de la resolució interna"
+#define XEMU_SURFACE_SCALE_INFO_0_CA "Escala la resolució interna de renderització. Valors alts poden millorar la qualitat per reduir el rendiment."
 #define OPTION_VAL_1_CA NULL
 #define OPTION_VAL_2_CA NULL
 #define OPTION_VAL_3_CA NULL
@@ -1253,29 +1253,29 @@ struct retro_core_options_v2 options_bg = {
 #define OPTION_VAL_8_CA NULL
 #define OPTION_VAL_9_CA NULL
 #define OPTION_VAL_10_CA NULL
-#define XEMU_AVPACK_LABEL_CA NULL
-#define XEMU_AVPACK_INFO_0_CA NULL
+#define XEMU_AVPACK_LABEL_CA "Pack AV"
+#define XEMU_AVPACK_INFO_0_CA "Selecciona el tipus de paquet AV. Afecta als modes de vídeo disponibles."
 #define OPTION_VAL_HDTV_CA NULL
 #define OPTION_VAL_COMPOSITE_CA "Composició"
 #define OPTION_VAL_SVIDEO_CA NULL
 #define OPTION_VAL_SCART_CA NULL
 #define OPTION_VAL_VGA_CA NULL
-#define XEMU_USE_DSP_LABEL_CA NULL
-#define XEMU_USE_DSP_INFO_0_CA NULL
-#define XEMU_CACHE_SHADERS_LABEL_CA NULL
-#define XEMU_CACHE_SHADERS_INFO_0_CA NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_CA NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_CA NULL
-#define XEMU_AUDIO_VOLUME_LABEL_CA NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_CA NULL
+#define XEMU_USE_DSP_LABEL_CA "Emulació de APU DSP"
+#define XEMU_USE_DSP_INFO_0_CA "Activa l'emulació DSP per millorar la precisió de l'àudio. Pot tenir un impacte en el rendiment."
+#define XEMU_CACHE_SHADERS_LABEL_CA "Memòria cau de shaders"
+#define XEMU_CACHE_SHADERS_INFO_0_CA "Emmagatzema al disc els shaders de GPU compilats. Redueix les estrebades en execucions posteriors."
+#define XEMU_VK_REDUCED_BUFFERS_LABEL_CA "Redueix la memòria cau de Vulkan (Cal reiniciar)"
+#define XEMU_VK_REDUCED_BUFFERS_INFO_0_CA "El renderitzador Vulkan reserva els seus buffers de treball en iniciar-se, segons les necessitats del joc. Si està activat, el buffer per a dades de vèrtexs «en línia» es manté a una desena part de la mida utilitzada per xemu; això estalvia aproximadament 1,2 GB de memòria de vídeo i una quantitat equivalent de memòria del sistema. Si està desactivat, es reserva la mida completa de xemu en targetes gràfiques amb 4 GB o més; proveu de desactivar-lo si noteu que un joc funciona més lentament amb aquesta opció activada."
+#define XEMU_AUDIO_VOLUME_LABEL_CA "Llindar del volum d'àudio (%)"
+#define XEMU_AUDIO_VOLUME_INFO_0_CA "Limita el volum de la sortida d'àudio de Xbox independentment del volum principal de RetroArch."
 #define OPTION_VAL_100_CA NULL
 #define OPTION_VAL_80_CA NULL
 #define OPTION_VAL_60_CA NULL
 #define OPTION_VAL_40_CA NULL
 #define OPTION_VAL_20_CA NULL
-#define OPTION_VAL_0_CA NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_CA NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_CA NULL
+#define OPTION_VAL_0_CA "Silenciat"
+#define XEMU_DISPLAY_FILTERING_LABEL_CA "Filtratge de pantalla"
+#define XEMU_DISPLAY_FILTERING_INFO_0_CA "Mode del filtratge de textures per la sortida a pantalla."
 #define OPTION_VAL_LINEAR_CA "Bilineal"
 #define OPTION_VAL_NEAREST_CA "Veí més proper"
 
@@ -1510,66 +1510,66 @@ struct retro_core_options_v2 options_ca = {
 /* RETRO_LANGUAGE_CHS */
 
 #define CATEGORY_SYSTEM_LABEL_CHS "系统"
-#define CATEGORY_SYSTEM_INFO_0_CHS NULL
+#define CATEGORY_SYSTEM_INFO_0_CHS "配置系统级设置，如 BIOS 路径、内存和启动选项。"
 #define CATEGORY_VIDEO_LABEL_CHS "视频"
-#define CATEGORY_VIDEO_INFO_0_CHS NULL
+#define CATEGORY_VIDEO_INFO_0_CHS "配置视频渲染设置。"
 #define CATEGORY_AUDIO_LABEL_CHS "音频"
-#define CATEGORY_AUDIO_INFO_0_CHS NULL
-#define XEMU_MEMORY_LABEL_CHS NULL
-#define XEMU_MEMORY_INFO_0_CHS NULL
+#define CATEGORY_AUDIO_INFO_0_CHS "配置音频模拟设置。"
+#define XEMU_MEMORY_LABEL_CHS "系统内存 (MB)"
+#define XEMU_MEMORY_INFO_0_CHS "系统内存容量。64 MB 为标准配置；128 MB 仅用于开发调试机。"
 #define OPTION_VAL_64_CHS NULL
 #define OPTION_VAL_128_CHS NULL
-#define XEMU_NETWORK_BACKEND_LABEL_CHS NULL
-#define XEMU_NETWORK_BACKEND_INFO_0_CHS NULL
+#define XEMU_NETWORK_BACKEND_LABEL_CHS "网络后端"
+#define XEMU_NETWORK_BACKEND_INFO_0_CHS "为支持局域网/系统联机 (System Link) 功能的 Xbox 游戏启用网络支持。NAT 后端提供基础连接能力。"
 #define OPTION_VAL_NAT_CHS NULL
-#define XEMU_SKIP_BOOT_ANIM_LABEL_CHS NULL
-#define XEMU_SKIP_BOOT_ANIM_INFO_0_CHS NULL
-#define XEMU_HARD_FPU_LABEL_CHS NULL
-#define XEMU_HARD_FPU_INFO_0_CHS NULL
-#define XEMU_RENDERER_LABEL_CHS NULL
-#define XEMU_RENDERER_INFO_0_CHS NULL
+#define XEMU_SKIP_BOOT_ANIM_LABEL_CHS "跳过启动动画"
+#define XEMU_SKIP_BOOT_ANIM_INFO_0_CHS "跳过 Xbox 开机动画。"
+#define XEMU_HARD_FPU_LABEL_CHS "硬件 FPU 模拟"
+#define XEMU_HARD_FPU_INFO_0_CHS "使用宿主机的 FPU 来模拟 x87 指令。速度更快，但可能会有轻微的精度偏差。"
+#define XEMU_RENDERER_LABEL_CHS "图形 API (需重启)"
+#define XEMU_RENDERER_INFO_0_CHS "用于绘制模拟 GPU 的渲染器。默认为 Vulkan；当驱动程序无法正常运行 Vulkan 时可回退使用 OpenGL。在重启 RetroArch 后生效。Android 始终使用 Vulkan，macOS 始终使用 OpenGL。"
 #define OPTION_VAL_VULKAN_CHS NULL
 #define OPTION_VAL_OPENGL_CHS NULL
 #define XEMU_ASPECT_RATIO_LABEL_CHS "宽高比"
-#define XEMU_ASPECT_RATIO_INFO_0_CHS NULL
+#define XEMU_ASPECT_RATIO_INFO_0_CHS "图像显示的画面比例。“自动”将跟随游戏：当游戏将主机切换至宽屏时显示为 16:9（需在 Xbox 系统界面/仪表盘的视频设置中开启宽屏），否则显示为 4:3。若游戏渲染的是宽屏画面但被挤压显示，请选择 16:9。"
 #define OPTION_VAL_AUTO_CHS "自动"
 #define OPTION_VAL_4_3_CHS NULL
 #define OPTION_VAL_16_9_CHS NULL
-#define XEMU_SURFACE_SCALE_LABEL_CHS NULL
-#define XEMU_SURFACE_SCALE_INFO_0_CHS NULL
+#define XEMU_SURFACE_SCALE_LABEL_CHS "内部分辨率"
+#define XEMU_SURFACE_SCALE_INFO_0_CHS "缩放内部渲染分辨率。较高的数值可提升画质，但会降低运行性能。"
 #define OPTION_VAL_1_CHS NULL
 #define OPTION_VAL_2_CHS NULL
 #define OPTION_VAL_3_CHS NULL
-#define OPTION_VAL_4_CHS NULL
+#define OPTION_VAL_4_CHS "4 x (2560x1920)"
 #define OPTION_VAL_5_CHS NULL
 #define OPTION_VAL_6_CHS NULL
-#define OPTION_VAL_7_CHS NULL
+#define OPTION_VAL_7_CHS "7 x (4480x3360)"
 #define OPTION_VAL_8_CHS NULL
 #define OPTION_VAL_9_CHS NULL
 #define OPTION_VAL_10_CHS NULL
-#define XEMU_AVPACK_LABEL_CHS NULL
-#define XEMU_AVPACK_INFO_0_CHS NULL
-#define OPTION_VAL_HDTV_CHS NULL
+#define XEMU_AVPACK_LABEL_CHS "影音输出线缆类型 (AV Pack)"
+#define XEMU_AVPACK_INFO_0_CHS "选择影音线缆类型。会影响可用的视频输出模式。"
+#define OPTION_VAL_HDTV_CHS "高清电视 (HDTV)"
 #define OPTION_VAL_COMPOSITE_CHS "复合"
-#define OPTION_VAL_SVIDEO_CHS "S-视频"
+#define OPTION_VAL_SVIDEO_CHS "S-端子"
 #define OPTION_VAL_SCART_CHS NULL
 #define OPTION_VAL_VGA_CHS NULL
-#define XEMU_USE_DSP_LABEL_CHS NULL
-#define XEMU_USE_DSP_INFO_0_CHS NULL
-#define XEMU_CACHE_SHADERS_LABEL_CHS NULL
-#define XEMU_CACHE_SHADERS_INFO_0_CHS NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_CHS NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_CHS NULL
-#define XEMU_AUDIO_VOLUME_LABEL_CHS NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_CHS NULL
+#define XEMU_USE_DSP_LABEL_CHS "APU DSP 模拟"
+#define XEMU_USE_DSP_INFO_0_CHS "启用 DSP 模拟以提高音频精确度。可能会影响运行性能。"
+#define XEMU_CACHE_SHADERS_LABEL_CHS "着色器缓存"
+#define XEMU_CACHE_SHADERS_INFO_0_CHS "将已编译的 GPU 着色器缓存至磁盘。可减少后续运行时的卡顿现象。"
+#define XEMU_VK_REDUCED_BUFFERS_LABEL_CHS "减少 Vulkan 缓冲区 (需重启)"
+#define XEMU_VK_REDUCED_BUFFERS_INFO_0_CHS "Vulkan 渲染器启动时会预留工作缓冲区（无论游戏实际需要多少）。启用此项会将内联顶点数据的缓冲区压缩至 xemu 默认大小的十分之一，可节省约 1.2 GB 的显存和等量的系统内存。禁用此项则会在 4 GB 或更高显存的显卡上预留完整缓冲区；若开启此项后游戏变慢，可尝试将其禁用。"
+#define XEMU_AUDIO_VOLUME_LABEL_CHS "音频音量限制 (%)"
+#define XEMU_AUDIO_VOLUME_INFO_0_CHS "独立于 RetroArch 主音量限制 Xbox 的音频输出音量。"
 #define OPTION_VAL_100_CHS NULL
 #define OPTION_VAL_80_CHS NULL
 #define OPTION_VAL_60_CHS NULL
 #define OPTION_VAL_40_CHS NULL
 #define OPTION_VAL_20_CHS NULL
-#define OPTION_VAL_0_CHS NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_CHS NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_CHS NULL
+#define OPTION_VAL_0_CHS "已静音"
+#define XEMU_DISPLAY_FILTERING_LABEL_CHS "显示过滤"
+#define XEMU_DISPLAY_FILTERING_INFO_0_CHS "显示输出的纹理过滤模式。"
 #define OPTION_VAL_LINEAR_CHS "双线性"
 #define OPTION_VAL_NEAREST_CHS "最近邻"
 
@@ -4156,66 +4156,66 @@ struct retro_core_options_v2 options_eo = {
 /* RETRO_LANGUAGE_ES */
 
 #define CATEGORY_SYSTEM_LABEL_ES "Sistema"
-#define CATEGORY_SYSTEM_INFO_0_ES NULL
+#define CATEGORY_SYSTEM_INFO_0_ES "Configura los ajustes de sistema, como las rutas de la BIOS, la memoria y las opciones de arranque."
 #define CATEGORY_VIDEO_LABEL_ES "Vídeo"
-#define CATEGORY_VIDEO_INFO_0_ES NULL
+#define CATEGORY_VIDEO_INFO_0_ES "Configura el renderizado de vídeo."
 #define CATEGORY_AUDIO_LABEL_ES NULL
-#define CATEGORY_AUDIO_INFO_0_ES NULL
+#define CATEGORY_AUDIO_INFO_0_ES "Configura la emulación de audio."
 #define XEMU_MEMORY_LABEL_ES "Memoria del sistema (MB)"
-#define XEMU_MEMORY_INFO_0_ES NULL
+#define XEMU_MEMORY_INFO_0_ES "La cantidad de memoria RAM que tendrá el sistema. 64 MB es el valor estándar, 128 MB es para kits de depuración."
 #define OPTION_VAL_64_ES NULL
 #define OPTION_VAL_128_ES NULL
-#define XEMU_NETWORK_BACKEND_LABEL_ES NULL
-#define XEMU_NETWORK_BACKEND_INFO_0_ES NULL
+#define XEMU_NETWORK_BACKEND_LABEL_ES "Back-end de red"
+#define XEMU_NETWORK_BACKEND_INFO_0_ES "Activa el soporte de red para aquellos juegos de Xbox compatibles con red local e interconexión. El back-end NAT ofrece una conectividad básica."
 #define OPTION_VAL_NAT_ES NULL
-#define XEMU_SKIP_BOOT_ANIM_LABEL_ES NULL
-#define XEMU_SKIP_BOOT_ANIM_INFO_0_ES NULL
-#define XEMU_HARD_FPU_LABEL_ES NULL
-#define XEMU_HARD_FPU_INFO_0_ES NULL
-#define XEMU_RENDERER_LABEL_ES NULL
-#define XEMU_RENDERER_INFO_0_ES NULL
+#define XEMU_SKIP_BOOT_ANIM_LABEL_ES "Omitir animación de arranque"
+#define XEMU_SKIP_BOOT_ANIM_INFO_0_ES "Omite la animación de arranque de Xbox."
+#define XEMU_HARD_FPU_LABEL_ES "Emulación de FPU de hardware"
+#define XEMU_HARD_FPU_INFO_0_ES "Utiliza la FPU del host para emular el código x87. Es más rápido, pero tendrá pequeñas pérdidas de precisión."
+#define XEMU_RENDERER_LABEL_ES "API de gráficos (es necesario reiniciar)"
+#define XEMU_RENDERER_INFO_0_ES "El renderizador con el que se dibujará la GPU emulada. Vulkan es el predeterminado, OpenGL es el de respaldo para aquellos controladores en los que Vulkan dé problemas. Es necesario reiniciar RetroArch. Android utilizará siempre Vulkan y macOS utilizará OpenGL."
 #define OPTION_VAL_VULKAN_ES NULL
 #define OPTION_VAL_OPENGL_ES NULL
 #define XEMU_ASPECT_RATIO_LABEL_ES "Relación de aspecto"
-#define XEMU_ASPECT_RATIO_INFO_0_ES NULL
-#define OPTION_VAL_AUTO_ES "Automático"
+#define XEMU_ASPECT_RATIO_INFO_0_ES "La forma de dibujar la imagen. Automática respetará al juego: 16:9 cuando la consola se muestre en modo panorámico (es necesario activarlo dentro de la configuración de vídeo de la interfaz de Xbox), en caso contrario se utilizará 4:3. Selecciona 16:9 en aquellos juegos que se muestren con una relación panorámica, pero aplastada."
+#define OPTION_VAL_AUTO_ES "Automática"
 #define OPTION_VAL_4_3_ES NULL
 #define OPTION_VAL_16_9_ES NULL
-#define XEMU_SURFACE_SCALE_LABEL_ES NULL
-#define XEMU_SURFACE_SCALE_INFO_0_ES NULL
-#define OPTION_VAL_1_ES NULL
-#define OPTION_VAL_2_ES NULL
-#define OPTION_VAL_3_ES NULL
-#define OPTION_VAL_4_ES NULL
-#define OPTION_VAL_5_ES NULL
-#define OPTION_VAL_6_ES NULL
-#define OPTION_VAL_7_ES NULL
-#define OPTION_VAL_8_ES NULL
-#define OPTION_VAL_9_ES NULL
-#define OPTION_VAL_10_ES NULL
-#define XEMU_AVPACK_LABEL_ES NULL
-#define XEMU_AVPACK_INFO_0_ES NULL
+#define XEMU_SURFACE_SCALE_LABEL_ES "Escala de resolución interna"
+#define XEMU_SURFACE_SCALE_INFO_0_ES "Escala la resolución interna de renderizado. Un valor más alto mejorará la calidad, pero reducirá el rendimiento."
+#define OPTION_VAL_1_ES "× 1 (640 × 480)"
+#define OPTION_VAL_2_ES "× 2 (1280 × 960)"
+#define OPTION_VAL_3_ES "× 3 (1920 × 1440)"
+#define OPTION_VAL_4_ES "× 4 (2560 × 1920)"
+#define OPTION_VAL_5_ES "× 5 (3200 × 2400)"
+#define OPTION_VAL_6_ES "× 6 (3840 × 2880)"
+#define OPTION_VAL_7_ES "× 7 (4480 × 3360)"
+#define OPTION_VAL_8_ES "× 8 (5120 × 3840)"
+#define OPTION_VAL_9_ES "× 9 (5760 × 4320)"
+#define OPTION_VAL_10_ES "× 10 (6400 × 4800)"
+#define XEMU_AVPACK_LABEL_ES "Cable AV"
+#define XEMU_AVPACK_INFO_0_ES "Selecciona el tipo de cable AV. Afectará a los modos de vídeo disponibles."
 #define OPTION_VAL_HDTV_ES NULL
 #define OPTION_VAL_COMPOSITE_ES "Vídeo compuesto"
 #define OPTION_VAL_SVIDEO_ES NULL
-#define OPTION_VAL_SCART_ES "Euroconector"
+#define OPTION_VAL_SCART_ES NULL
 #define OPTION_VAL_VGA_ES NULL
-#define XEMU_USE_DSP_LABEL_ES NULL
-#define XEMU_USE_DSP_INFO_0_ES NULL
-#define XEMU_CACHE_SHADERS_LABEL_ES NULL
-#define XEMU_CACHE_SHADERS_INFO_0_ES NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_ES NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_ES NULL
-#define XEMU_AUDIO_VOLUME_LABEL_ES NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_ES NULL
+#define XEMU_USE_DSP_LABEL_ES "Emulación del DSP de la APU"
+#define XEMU_USE_DSP_INFO_0_ES "Activa la emulación del DSP para mejorar la fidelidad del audio. Podría afectar al rendimiento."
+#define XEMU_CACHE_SHADERS_LABEL_ES "Caché de shaders"
+#define XEMU_CACHE_SHADERS_INFO_0_ES "Almacena los shaders de la GPU compilados en una caché en disco. Reducirá los tirones de partidas posteriores."
+#define XEMU_VK_REDUCED_BUFFERS_LABEL_ES "Reducir búferes de Vulkan (es necesario reiniciar)"
+#define XEMU_VK_REDUCED_BUFFERS_INFO_0_ES "El renderizador de Vulkan se reserva sus búferes de trabajo al arrancar en función de las necesidades del juego. Activa esta opción para que el búfer de datos de vértices insertados ocupe una décima parte del tamaño de xemu, que ocupará unos 1,2 GB menos de memoria de vídeo y una cantidad similar de memoria del sistema. Desactívala para reservar el tamaño total de xemu en aquellas gráficas que tengan 4 GB de memoria o más. Si un juego funciona más lento con esta opción activada, prueba a desactivarla."
+#define XEMU_AUDIO_VOLUME_LABEL_ES "Límite de volumen de audio (%)"
+#define XEMU_AUDIO_VOLUME_INFO_0_ES "Limita el volumen de la salida de audio de Xbox de forma independiente al volumen maestro de RetroArch."
 #define OPTION_VAL_100_ES "100 %"
 #define OPTION_VAL_80_ES "80 %"
 #define OPTION_VAL_60_ES "60 %"
 #define OPTION_VAL_40_ES "40 %"
 #define OPTION_VAL_20_ES "20 %"
-#define OPTION_VAL_0_ES NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_ES NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_ES NULL
+#define OPTION_VAL_0_ES "Silenciado"
+#define XEMU_DISPLAY_FILTERING_LABEL_ES "Filtro de imagen"
+#define XEMU_DISPLAY_FILTERING_INFO_0_ES "El modo de filtrado de la salida de imagen."
 #define OPTION_VAL_LINEAR_ES "Bilineal"
 #define OPTION_VAL_NEAREST_ES "Vecino más próximo"
 

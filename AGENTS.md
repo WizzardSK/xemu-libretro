@@ -12,7 +12,7 @@ These apply to any AI agent working in this repository (Claude Code reads them t
 
 This repository builds the libretro core and nothing else. The standalone's parts - its UI, packaging, upstream's CI and its contributor docs - were deleted on purpose, and must not come back with a merge. The paths are listed in `.upstream-excluded`.
 
-- Upstream is xemu-project/xemu, branch `master` (remote `upstream`). Only full merges of it, no cherry-picked upstream commits.
+- Upstream is Tovarichtch's xemu fork, Tovarichtch/xemu, branches `main` and `perf-experimental` (remote `tovarichtch`), which carries xemu-project/xemu `master` (remote `upstream`) with Chihiro and renderer work on top. Its commits come in by full merges; xemu `master` commits the fork has not merged can be merged directly, keeping the fork's work in `hw/xbox/nv2a` conflicts. Only full merges, no cherry-picks.
 - Right after `git merge` of upstream, before resolving anything else, run:
   `git rm -r -q --ignore-unmatch --pathspec-from-file=.upstream-excluded`
   This settles the modify/delete conflicts in favour of the deletion, and it also removes files upstream newly added under those paths, which git would otherwise bring in without any conflict.

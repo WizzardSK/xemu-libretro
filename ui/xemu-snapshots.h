@@ -35,8 +35,6 @@ extern "C" {
 #define XEMU_SNAPSHOT_THUMBNAIL_WIDTH 160
 #define XEMU_SNAPSHOT_THUMBNAIL_HEIGHT 120
 
-extern const char **g_snapshot_shortcut_index_key_map[];
-
 typedef struct XemuSnapshotData {
     char *disc_path;
     char *xbe_title_name;
@@ -45,6 +43,7 @@ typedef struct XemuSnapshotData {
 
 // Implemented in xemu-snapshots.c
 char *xemu_get_currently_loaded_disc_path(void);
+bool xemu_snapshots_chihiro_image_matches(const char *vm_name);
 int xemu_snapshots_list(QEMUSnapshotInfo **info, XemuSnapshotData **extra_data,
                         Error **err);
 void xemu_snapshots_load(const char *vm_name, Error **err);

@@ -48,6 +48,28 @@ void xemu_settings_set_path(const char *path);
 // Get the path of the base settings dir
 const char *xemu_settings_get_base_path(void);
 
+/* CHIHIRO (not upstream): the machine asked for on the command line
+ * (-machine ...,chihiro=on|off, see xemu_chihiro_mode_ask), else the loaded
+ * image's. An Xbox disc (XISO) boots an Xbox, any other image boots a
+ * Chihiro; with no image the sys.default_machine setting decides, "auto"
+ * being the machine last booted (sys.last_machine). Decided once, at the
+ * first call. */
+bool xemu_media_is_xbox_disc(const char *path);
+bool xemu_chihiro_mode(void);
+void xemu_chihiro_mode_ask(bool chihiro);
+/* CHIHIRO (not upstream): the image the machine booted, kept at the first
+ * xemu_chihiro_mode() call. Load Disc on a Chihiro only sets dvd_path for
+ * the next launch. */
+const char *xemu_chihiro_image(void);
+
+/* DOGE (not upstream) easter egg: [doge] doge_mode = 'wow', read once. */
+bool xemu_doge_mode(void);
+
+/* Debug mode (perf.debug_mode; XEMU_DEBUG_MODE=1 or 0 decides for one
+ * session): the session log gets the Chihiro log categories and the
+ * XEMU_TBRATE report. Read once, after the settings are loaded. */
+bool xemu_debug_mode(void);
+
 // Get path of the config file on disk
 const char *xemu_settings_get_path(void);
 

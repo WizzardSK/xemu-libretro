@@ -78,12 +78,16 @@
     _X(NV2A_PROF_FINISH_FLIP_STALL) \
     _X(NV2A_PROF_FINISH_FLUSH) \
     _X(NV2A_PROF_FINISH_STALLED) \
+    _X(NV2A_PROF_FINISH_SURFACE_UP) \
+    _X(NV2A_PROF_FINISH_TEXTURE_UP) \
+    _X(NV2A_PROF_FINISH_EAGER) \
     _X(NV2A_PROF_CLEAR) \
     _X(NV2A_PROF_QUEUE_SUBMIT) \
     _X(NV2A_PROF_QUEUE_SUBMIT_AUX) \
     _X(NV2A_PROF_PIPELINE_NOTDIRTY) \
     _X(NV2A_PROF_PIPELINE_GEN) \
     _X(NV2A_PROF_PIPELINE_BIND) \
+    _X(NV2A_PROF_VERTEX_INPUT_SET) \
     _X(NV2A_PROF_PIPELINE_RENDERPASSES) \
     _X(NV2A_PROF_BEGIN_ENDS) \
     _X(NV2A_PROF_DRAW_ARRAYS) \
@@ -92,6 +96,8 @@
     _X(NV2A_PROF_INLINE_ELEMENTS) \
     _X(NV2A_PROF_QUERY) \
     _X(NV2A_PROF_SHADER_GEN) \
+    _X(NV2A_PROF_SHADER_FALLBACK) \
+    _X(NV2A_PROF_UNIFORM_UP) \
     _X(NV2A_PROF_SHADER_BIND) \
     _X(NV2A_PROF_SHADER_BIND_NOTDIRTY) \
     _X(NV2A_PROF_SHADER_UBO_DIRTY) \
@@ -128,6 +134,13 @@ typedef struct NV2AStats {
     int64_t last_flip_time;
     unsigned int frame_count;
     unsigned int increment_fps;
+    /* Displayed frame rate: distinct guest frames that reached the screen
+     * per second, counted at the UI present (nv2a_profile_present) -- the
+     * same on a 60 Hz or a 320 Hz monitor, vsync on or off. increment_fps
+     * counts NV097_FLIP submissions and overreads under GPU load. */
+    unsigned int display_fps;
+    /* Identity of the frame the renderer handed to the UI (draw_time). */
+    unsigned int presented_frame_id;
     struct {
         int mspf;
         int counters[NV2A_PROF__COUNT];

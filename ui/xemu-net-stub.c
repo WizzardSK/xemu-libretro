@@ -23,3 +23,8 @@ int xemu_net_is_enabled(void)
 {
     return 0;
 }
+
+/* Linked Chihiro cabinets talk over the network: none here */
+void xemu_link_enable(void)
+{
+}

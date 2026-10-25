@@ -143,6 +143,7 @@
 #include "qemu/guest-random.h"
 #include "qemu/keyval.h"
 
+#include <glib/gstdio.h>
 #include "ui/xemu-settings.h"
 #ifdef LIBRETRO
 #include "qapi/qapi-commands-block.h"
@@ -152,6 +153,8 @@
 #include "ui/xemu-net.h"
 #include "ui/xemu-input.h"
 #include "hw/xbox/eeprom_generation.h"
+#include "hw/xbox/chihiro/chihiro.h"
+#include "block/block-global-state.h"
 
 #define MAX_VIRTIO_CONSOLES 1
 
@@ -666,7 +669,8 @@ static int drive_init_func(void *opaque, QemuOpts *opts, Error **errp)
 {
     BlockInterfaceType *block_default_type = opaque;
     const char *file_path = qemu_opt_get(opts, "file");
-    bool is_cdrom_with_file = !strcmp(qemu_opt_get(opts, "media"), "cdrom") && strlen(file_path) > 0;
+    bool is_cdrom_with_file = !g_strcmp0(qemu_opt_get(opts, "media"), "cdrom") &&
+        file_path && strlen(file_path) > 0;
 
     Error *error_warn = NULL;
     bool failed = drive_new(opts, *block_default_type, is_cdrom_with_file ? &error_warn : errp) == NULL;
@@ -2045,8 +2049,72 @@ static void qemu_apply_machine_options(QDict *qdict)
     }
 }
 
+static int xemu_check_file(const char *path);
+static char *strdup_double_commas(const char *input);
+
+/* Chihiro: the qcow2 that holds VM snapshots. Off-bus (if=none) so the
+ * guest never sees it, still reachable by savevm. Defaults to
+ * chihiro_snapshots.qcow2 in the data directory and is created there when
+ * missing: nothing else creates images on the user's machine. */
+static void chihiro_snapshot_store_setup(void)
+{
+    /* Earlier builds kept the store, chihiro_snapshots.qcow2, in the hard
+     * disk setting; an Xbox must not boot from it. */
+    char *hdd_name = g_path_get_basename(g_config.sys.files.hdd_path);
+    if (strcmp(hdd_name, "chihiro_snapshots.qcow2") == 0) {
+        if (strlen(g_config.chihiro.roms.snapshot_store_path) == 0) {
+            xemu_settings_set_string(&g_config.chihiro.roms.snapshot_store_path,
+                                     g_config.sys.files.hdd_path);
+        }
+        xemu_settings_set_string(&g_config.sys.files.hdd_path, "");
+    }
+    g_free(hdd_name);
+    if (!xemu_chihiro_mode()) {
+        return;
+    }
+    if (strlen(g_config.chihiro.roms.snapshot_store_path) == 0) {
+        char *path = g_strdup_printf("%schihiro_snapshots.qcow2",
+                                     xemu_settings_get_base_path());
+        xemu_settings_set_string(&g_config.chihiro.roms.snapshot_store_path,
+                                 path);
+        g_free(path);
+    }
+    const char *path = g_config.chihiro.roms.snapshot_store_path;
+    if (qemu_access(path, F_OK) == -1) {
+        Error *err = NULL;
+        bdrv_img_create(path, "qcow2", NULL, NULL, NULL, 64 * MiB, 0, true,
+                        &err);
+        if (err) {
+            char *msg = g_strdup_printf("Failed to create the snapshot store "
+                                        "'%s': %s\n\nSnapshots are unavailable.",
+                                        path, error_get_pretty(err));
+            xemu_queue_error_message(msg);
+            g_free(msg);
+            error_free(err);
+            return;
+        }
+        printf("Chihiro: snapshot store created at '%s'\n", path);
+    } else if (xemu_check_file(path)) {
+        char *msg = g_strdup_printf("Failed to open the snapshot store '%s'. "
+                                    "Please check machine settings.", path);
+        xemu_queue_error_message(msg);
+        g_free(msg);
+        return;
+    }
+    char *escaped = strdup_double_commas(path);
+    char *spec = g_strdup_printf("if=none,id=snapshots,format=qcow2,file=%s",
+                                 escaped);
+    free(escaped);
+    if (!qemu_opts_parse_noisily(qemu_find_opts("drive"), spec, false)) {
+        xemu_queue_error_message("The snapshot store could not be attached. "
+                                 "Snapshots are unavailable.");
+    }
+    g_free(spec);
+}
+
 static void qemu_create_early_backends(void)
 {
+    chihiro_snapshot_store_setup();
     MachineClass *machine_class = MACHINE_GET_CLASS(current_machine);
 #if defined(CONFIG_SDL)
     const bool use_sdl = (dpy.type == DISPLAY_TYPE_SDL);
@@ -2997,6 +3065,7 @@ void qmp_x_exit_preconfig(Error **errp)
     } else {
         xemu_net_disable();
     }
+    xemu_link_enable();
 #endif
 
     if (!qemu_machine_creation_done(errp)) {
@@ -3032,15 +3101,65 @@ void qmp_x_exit_preconfig(Error **errp)
 
 static const char *get_eeprom_path(void)
 {
-    const char *path = g_config.sys.files.eeprom_path;
+    /* Each machine has its own EEPROM: the Xbox's is the configured file
+     * with a retail key; the Chihiro's carries the debug key its BIOS
+     * expects and lives in the data directory like a save. Both are
+     * written back when the machine changes them. */
+    bool is_chihiro = xemu_chihiro_mode();
+    XboxEEPROMVersion needed = is_chihiro ? XBOX_EEPROM_VERSION_D
+                                          : XBOX_EEPROM_VERSION_R1;
+    static char *chihiro_path;
+    const char *path;
+    if (is_chihiro) {
+        if (!chihiro_path) {
+            chihiro_path = g_strdup_printf("%schihiro_eeprom.bin",
+                                           xemu_settings_get_base_path());
+        }
+        path = chihiro_path;
+    } else {
+        if (strlen(g_config.sys.files.eeprom_path) == 0) {
+            xemu_settings_set_string(&g_config.sys.files.eeprom_path,
+                                     xemu_settings_get_default_eeprom_path());
+        }
+        path = g_config.sys.files.eeprom_path;
+    }
 
-    if (strlen(path) == 0) {
-        path = xemu_settings_get_default_eeprom_path();
-        xemu_settings_set_string(&g_config.sys.files.eeprom_path, path);
+    /* The kernel decrypts the EEPROM with its own key: a Chihiro (debug)
+     * BIOS needs a debug EEPROM, an Xbox BIOS a retail one. One made for
+     * the other machine is set aside and regenerated. */
+    if (qemu_access(path, F_OK) == 0) {
+        FILE *f = qemu_fopen(path, "rb");
+        if (f) {
+            uint8_t data[256];
+            bool valid = fread(data, 1, 256, f) == 256;
+            fclose(f);
+            bool debug = xbox_eeprom_detect_version(data) == XBOX_EEPROM_VERSION_D;
+            if (valid && debug != is_chihiro) {
+                /* Kept under a free name: the user's file is never
+                 * deleted, nor an older copy overwritten. */
+                const char *kind = debug ? "debug" : "retail";
+                char *aside = g_strdup_printf("%s.%s", path, kind);
+                for (int n = 1; n < 100 && qemu_access(aside, F_OK) == 0; n++) {
+                    g_free(aside);
+                    aside = g_strdup_printf("%s.%s.%d", path, kind, n);
+                }
+                if (qemu_access(aside, F_OK) != 0 && g_rename(path, aside) == 0) {
+                    printf("EEPROM '%s' has the %s key, kept as '%s' and "
+                           "regenerated\n", path, kind, aside);
+                } else {
+                    char *msg = g_strdup_printf(
+                        "EEPROM '%s' has the %s key and could not be set "
+                        "aside.\n\nMove it away and restart xemu.", path, kind);
+                    xemu_queue_error_message(msg);
+                    g_free(msg);
+                }
+                g_free(aside);
+            }
+        }
     }
 
     if (qemu_access(path, F_OK) == -1) {
-        if (!xbox_eeprom_generate(path, XBOX_EEPROM_VERSION_R1)) {
+        if (!xbox_eeprom_generate(path, needed)) {
             char *msg = g_strdup_printf("Failed to generate EEPROM file '%s'."
                                         "\n\nPlease check machine settings.",
                                         path);
@@ -3103,10 +3222,19 @@ void qemu_init(int argc, char **argv)
     fake_argv[fake_argc++] = argv[0];
     fake_argv[fake_argc++] = strdup("-machine");
 
+    /* The machine asked for on the command line, else the loaded image's
+     * (xemu_chihiro_mode), remembered for a launch with no image. */
+    bool chihiro_machine = xemu_chihiro_mode();
+    g_config.sys.last_machine = chihiro_machine ? CONFIG_SYS_LAST_MACHINE_CHIHIRO
+                                                : CONFIG_SYS_LAST_MACHINE_XBOX;
+
     char *bootrom_arg = NULL;
     const char *bootrom_path = g_config.sys.files.bootrom_path;
 
-    if (strlen(bootrom_path) > 0) {
+    /* CHIHIRO (not upstream): the Chihiro BIOS is an MCPX X2 image with its
+     * boot ROM built in, which xemu boots as is, like a debug BIOS. The MCPX
+     * ROM configured for the retail Xbox is not handed to that machine. */
+    if (!chihiro_machine && strlen(bootrom_path) > 0) {
         int bootrom_size = get_image_size(bootrom_path, NULL);
         if (bootrom_size < 0) {
             char *msg = g_strdup_printf("Failed to open BootROM file '%s'. "
@@ -3142,8 +3270,8 @@ void qemu_init(int argc, char **argv)
 
     fake_argv[fake_argc++] = g_strdup_printf("xbox%s%s%s,avpack=%s",
         (bootrom_arg != NULL) ? bootrom_arg : "",
+        chihiro_machine ? ",chihiro=on" : "",
         g_config.general.skip_boot_anim ? ",short-animation=on" : "",
-        ",kernel-irqchip=off",
         avpack_str
         );
 
@@ -3163,10 +3291,22 @@ void qemu_init(int argc, char **argv)
     }
 
     const char *flashrom_path = g_config.sys.files.flashrom_path;
+    bool chihiro_bios_ok = false;
+    /* A Chihiro only boots its own BIOS (Settings > System > Chihiro Files),
+     * never an Xbox one. Its other files, if not set, are taken from the BIOS
+     * folder. */
+    if (chihiro_machine) {
+        flashrom_path = g_config.chihiro.roms.bios_path ?: "";
+        chihiro_bios_ok = flashrom_path[0] &&
+                          !xemu_check_file(flashrom_path) &&
+                          chihiro_bios_known(flashrom_path);
+    }
     if (g_config.general.show_welcome) {
         // Don't display an error if this is the first boot. Give user a chance
         // to configure the path.
         autostart = 0;
+    } else if (chihiro_machine && !chihiro_bios_ok) {
+        autostart = 0; /* reported below with the other Chihiro files */
     } else if (xemu_check_file(flashrom_path)) {
         char *msg = g_strdup_printf("Failed to open flash file '%s'. Please check machine settings.", flashrom_path);
         xemu_queue_error_message(msg);
@@ -3177,12 +3317,60 @@ void qemu_init(int argc, char **argv)
         fake_argv[fake_argc++] = strdup(flashrom_path);
     }
 
-    int mem = ((int)g_config.sys.mem_limit + 1) * 64;
+    /* A Chihiro has 128 MiB; the Xbox has what the setting says. */
+    int mem = chihiro_machine ? 128 : ((int)g_config.sys.mem_limit + 1) * 64;
     fake_argv[fake_argc++] = strdup("-m");
     fake_argv[fake_argc++] = g_strdup_printf("%d", mem);
 
+    /* Chihiro: the QC and SC USB devices are realized from their EEPROM
+     * dumps and a missing dump aborts the whole process from inside the
+     * machine build. Load the media board files here, where a missing one
+     * becomes a message and a paused machine like a missing BIOS. */
+    if (chihiro_machine) {
+        chihiro_load_flash_rom(flashrom_path);
+        chihiro_load_eeproms(flashrom_path);
+        GString *missing = g_string_new(NULL);
+        if (!flashrom_path[0] || xemu_check_file(flashrom_path)) {
+            g_string_append(missing, "\n- BIOS (chihiro_xbox_bios.bin)");
+        }
+        if (!chihiro_flash_rom_loaded()) {
+            g_string_append(missing, "\n- media board flash (fpr21042_m29w160et.bin)");
+        }
+        if (!chihiro_ic10_data) {
+            g_string_append(missing, "\n- QC EEPROM (ic10_g24lc64.bin)");
+        }
+        if (!chihiro_pc20_data) {
+            g_string_append(missing, "\n- SC EEPROM (pc20_g24lc64.bin)");
+        }
+        if (!chihiro_ic11_data) {
+            g_string_append(missing, "\n- baseboard EEPROM (ic11_24lc024.bin)");
+        }
+        if (missing->len) {
+            char *msg = g_strdup_printf(
+                "Chihiro files not found:%s\n\nSet them in Settings > System "
+                "> Chihiro Files (or put them next to the BIOS) and restart.",
+                missing->str);
+            xemu_queue_error_message(msg);
+            g_free(msg);
+            autostart = 0;
+        } else if (!chihiro_bios_ok) {
+            char *msg = g_strdup_printf(
+                "'%s' is not a Chihiro BIOS.\n\nSelect chihiro_xbox_bios.bin "
+                "(from MAME's chihiro set) in Settings > System > Chihiro "
+                "Files, then restart.",
+                flashrom_path);
+            xemu_queue_error_message(msg);
+            g_free(msg);
+        }
+        g_string_free(missing, TRUE);
+    }
+
     const char *hdd_path = g_config.sys.files.hdd_path;
-    if (strlen(hdd_path) > 0) {
+    if (chihiro_machine) {
+        /* Chihiro has no IDE hard disk; hdd_path is the Xbox's. Snapshots go
+         * to chihiro.roms.snapshot_store_path, attached once the block layer
+         * is up (chihiro_snapshot_store_setup), created there when absent. */
+    } else if (strlen(hdd_path) > 0) {
         if (xemu_check_file(hdd_path)) {
             char *msg = g_strdup_printf("Failed to open hard disk image file '%s'. Please check machine settings.", hdd_path);
             xemu_queue_error_message(msg);
@@ -3198,37 +3386,32 @@ void qemu_init(int argc, char **argv)
     }
 
     const char *dvd_path = g_config.sys.files.dvd_path;
-    // Allow overriding the dvd path from command line
-    for (int i = 1; i < argc; i++) {
-        if (argv[i] && strcmp(argv[i], "-dvd_path") == 0) {
-            argv[i] = NULL;
-            if (i < argc - 1 && argv[i+1]) {
-                dvd_path = argv[i+1];
-                argv[i+1] = NULL;
-            }
-            break;
-        }
-    }
 
-    // Always populate DVD drive. If disc path is the empty string, drive is
-    // connected but no media present.
-    fake_argv[fake_argc++] = strdup("-drive");
-    char *escaped_dvd_path = strdup_double_commas(dvd_path);
+    /* An Xbox mounts the image in its DVD drive. A Chihiro has none: its IDE
+     * slave is the media board's interface (chihiro_ide_interface_init),
+     * which serves a FATX image from the DIMM; another -drive at index 1
+     * crashes QEMU's check of orphaned drives. */
+    if (!chihiro_machine) {
+        // Always populate DVD drive. If disc path is the empty string, drive is
+        // connected but no media present.
+        fake_argv[fake_argc++] = strdup("-drive");
+        char *escaped_dvd_path = strdup_double_commas(dvd_path);
 #ifdef LIBRETRO
-    uint64_t dvd_offset = xbox_game_partition_offset(dvd_path);
-    if (dvd_offset) {
-        /* Not info_report: the monitor it goes through is not set up yet
-         * this early, and its lock asserts */
-        fprintf(stderr, "xemu: DVD: Redump image, the game partition from "
-                "offset 0x%" PRIx64 "\n", dvd_offset);
-        fake_argv[fake_argc++] = g_strdup_printf(
-            "index=1,media=cdrom,format=raw,offset=%" PRIu64 ",file=%s",
-            dvd_offset, escaped_dvd_path);
-    } else
+        uint64_t dvd_offset = xbox_game_partition_offset(dvd_path);
+        if (dvd_offset) {
+            /* Not info_report: the monitor it goes through is not set up yet
+             * this early, and its lock asserts */
+            fprintf(stderr, "xemu: DVD: Redump image, the game partition from "
+                    "offset 0x%" PRIx64 "\n", dvd_offset);
+            fake_argv[fake_argc++] = g_strdup_printf(
+                "index=1,media=cdrom,format=raw,offset=%" PRIu64 ",file=%s",
+                dvd_offset, escaped_dvd_path);
+        } else
 #endif
-    fake_argv[fake_argc++] = g_strdup_printf("index=1,media=cdrom,file=%s",
-        escaped_dvd_path);
-    free(escaped_dvd_path);
+        fake_argv[fake_argc++] = g_strdup_printf("index=1,media=cdrom,file=%s",
+            escaped_dvd_path);
+        free(escaped_dvd_path);
+    }
 
 #ifdef LIBRETRO
     fake_argv[fake_argc++] = strdup("-display");
@@ -3239,8 +3422,11 @@ void qemu_init(int argc, char **argv)
 #endif
 
     // Create USB Daughterboard for 1.0 Xbox. This is connected to Port 1 of the Root hub.
-    fake_argv[fake_argc++] = strdup("-device");
-    fake_argv[fake_argc++] = strdup("usb-hub,port=1,ports=4");
+    // On a Chihiro, skip: the baseboard USB devices use these ports instead.
+    if (!chihiro_machine) {
+        fake_argv[fake_argc++] = strdup("-device");
+        fake_argv[fake_argc++] = strdup("usb-hub,port=1,ports=4");
+    }
 
     for (int i = 1; i < argc; i++) {
         if (argv[i] != NULL) {

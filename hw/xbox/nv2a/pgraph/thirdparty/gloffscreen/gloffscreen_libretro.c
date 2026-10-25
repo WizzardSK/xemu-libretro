@@ -738,4 +738,11 @@ void glo_context_destroy(GloContext *context)
 }
 
 #endif /* _WIN32 */
+
+/* The fork asks for a GL 4.1 context for its tuned renderer; in the core the
+ * context is the frontend's, whatever version it is */
+GloContext *glo_context_create_4_1(void)
+{
+    return glo_context_create();
+}
 #endif /* LIBRETRO */

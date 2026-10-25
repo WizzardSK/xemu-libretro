@@ -32,6 +32,7 @@
 #include "qemu/config-file.h"
 #include "qapi/error.h"
 #include "system/block-backend.h"
+#include "chihiro/chihiro.h"
 #include "system/blockdev.h"
 #include "system/system.h"
 #include "smbus.h"
@@ -146,6 +147,9 @@ static int smc_write_data(SMBusDevice *dev, uint8_t *buf, uint8_t len)
         break;
 
     case SMC_REG_SCRATCH:
+        if (buf[0] == 0x04) {
+            chihiro_on_quickreboot_signal();
+        }
         smc->scratch_reg = buf[0];
         break;
 
@@ -279,6 +283,12 @@ static void smbus_smc_realize(DeviceState *dev, Error **errp)
         g_free(avpack);
     }
 
+    /* A Chihiro's SMC reads 0x00 whatever the command line says: DIP 6-8
+     * ground the AV sense pins. */
+    if (object_property_get_bool(qdev_get_machine(), "chihiro", NULL)) {
+        smc->avpack_reg = SMC_REG_AVPACK_SCART;
+    }
+
     smc_version = object_property_get_str(qdev_get_machine(), "smc-version", NULL);
     if (smc_version) {
         if (strlen(smc_version) != SMC_VERSION_LENGTH) {
@@ -357,6 +367,14 @@ void xbox_smc_update_tray_state(void)
 
     const char *blk_name = "ide0-cd1";
     BlockBackend *blk = blk_by_name(blk_name);
+
+    /* A Chihiro has no DVD drive: report a closed tray with no disc. */
+    if (blk == NULL) {
+        smc->traystate_reg = SMC_REG_TRAYSTATE_NO_MEDIA_DETECTED;
+        smc->intstatus_reg |= SMC_REG_INTSTATUS_TRAYCLOSED;
+        xbox_assert_extsmi();
+        return;
+    }
     assert(blk != NULL);
 
     if (blk_dev_is_tray_open(blk)) {

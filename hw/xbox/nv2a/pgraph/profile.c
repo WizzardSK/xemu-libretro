@@ -39,6 +39,46 @@ void nv2a_profile_increment(void)
     }
 }
 
+/* Displayed FPS: distinct guest frames that reached the screen, counted at
+ * the UI present. Rolling span of the last 60 distinct presents, rounded
+ * to nearest: a stretched present interval or a single dropped frame does
+ * not flip the reading, a sustained drop reads exactly. A fixed window with
+ * truncating division reads 56-59 at a true 60. */
+void nv2a_profile_present(void)
+{
+    if (nv2a_stock_active()) {
+        stock_nv2a_profile_present();
+        return;
+    }
+    static unsigned int last_id = (unsigned int)-1;
+    static int64_t ring[128];
+    static unsigned ring_n, ring_w;
+    int64_t now = qemu_clock_get_us(QEMU_CLOCK_REALTIME);
+
+    unsigned int id = g_nv2a_stats.presented_frame_id;
+    if (id != last_id) {
+        last_id = id;
+        ring[ring_w] = now;
+        ring_w = (ring_w + 1) % ARRAY_SIZE(ring);
+        if (ring_n < ARRAY_SIZE(ring)) {
+            ring_n++;
+        }
+    }
+    if (ring_n >= 2) {
+        unsigned frames = MIN(ring_n - 1, 60u);
+        int64_t newest = ring[(ring_w + ARRAY_SIZE(ring) - 1) % ARRAY_SIZE(ring)];
+        int64_t oldest =
+            ring[(ring_w + ARRAY_SIZE(ring) - 1 - frames) % ARRAY_SIZE(ring)];
+        /* A stall (no distinct frame for a while) lowers the reading as it
+         * lasts instead of freezing the last good value. */
+        int64_t span = MAX(newest - oldest, now - oldest - 100000);
+        if (span > 0) {
+            g_nv2a_stats.display_fps =
+                (unsigned int)((frames * 1000000LL + span / 2) / span);
+        }
+    }
+}
+
 void nv2a_profile_flip_stall(void)
 {
     int64_t now = qemu_clock_get_us(QEMU_CLOCK_REALTIME);
@@ -55,6 +95,9 @@ void nv2a_profile_flip_stall(void)
 
 const char *nv2a_profile_get_counter_name(unsigned int cnt)
 {
+    if (nv2a_stock_active()) {
+        return stock_nv2a_profile_get_counter_name(cnt);
+    }
     const char *default_names[NV2A_PROF__COUNT] = {
         #define _X(x) stringify(x),
         NV2A_PROF_COUNTERS_XMAC
@@ -67,6 +110,9 @@ const char *nv2a_profile_get_counter_name(unsigned int cnt)
 
 int nv2a_profile_get_counter_value(unsigned int cnt)
 {
+    if (nv2a_stock_active()) {
+        return stock_nv2a_profile_get_counter_value(cnt);
+    }
     assert(cnt < NV2A_PROF__COUNT);
     unsigned int idx = (g_nv2a_stats.frame_ptr + NV2A_PROF_NUM_FRAMES - 1) %
                        NV2A_PROF_NUM_FRAMES;

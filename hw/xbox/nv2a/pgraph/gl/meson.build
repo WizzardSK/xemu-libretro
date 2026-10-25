@@ -4,6 +4,7 @@ specific_ss.add([get_option('libretro') ? [] : sdl, gloffscreen, files(
 	'display.c',
 	'draw.c',
 	'gpuprops.c',
+	'probe.c',
 	'renderer.c',
 	'reports.c',
 	'shaders.c',

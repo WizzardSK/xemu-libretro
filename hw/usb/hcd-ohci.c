@@ -37,6 +37,7 @@
 #include "hw/qdev-properties.h"
 #include "trace.h"
 #include "hcd-ohci.h"
+#include "hw/xbox/chihiro/chihiro.h"
 
 /* This causes frames to occur 1000x slower */
 /*#define OHCI_TIME_WARP 1*/
@@ -280,18 +281,18 @@ static inline void ohci_set_interrupt(OHCIState *ohci, uint32_t intr)
 static USBDevice *ohci_find_device(OHCIState *ohci, uint8_t addr)
 {
     USBDevice *dev;
+    USBDevice *fallback = NULL;
     int i;
 
     for (i = 0; i < ohci->num_ports; i++) {
-        if ((ohci->rhport[i].ctrl & OHCI_PORT_PES) == 0) {
-            continue;
-        }
         dev = usb_find_device(&ohci->rhport[i].port, addr);
         if (dev != NULL) {
-            return dev;
+            int pes = (ohci->rhport[i].ctrl & OHCI_PORT_PES) ? 1 : 0;
+            if (pes) return dev;
+            if (!fallback) fallback = dev;
         }
     }
-    return NULL;
+    return fallback;
 }
 
 void ohci_stop_endpoints(OHCIState *ohci)
@@ -1284,6 +1285,11 @@ static void ohci_frame_boundary(void *opaque)
 static int ohci_bus_start(OHCIState *ohci)
 {
     trace_usb_ohci_start(ohci->name);
+
+    /* Chihiro: the USB devices attach after the kernel enables RHSC, so
+     * fresh CSC events trigger the full enumeration, SET_CONFIG included. */
+    chihiro_on_ohci_bus_start();
+
     /*
      * Delay the first SOF event by one frame time as linux driver is
      * not ready to receive it and can meet some race conditions
@@ -1298,6 +1304,9 @@ static int ohci_bus_start(OHCIState *ohci)
 void ohci_bus_stop(OHCIState *ohci)
 {
     trace_usb_ohci_stop(ohci->name);
+
+    chihiro_on_ohci_bus_stop();
+
     timer_del(ohci->eof_timer);
 }
 
@@ -1481,7 +1490,11 @@ static void ohci_port_set_status(OHCIState *ohci, int portnum, uint32_t val)
         port->ctrl &= ~(val & OHCI_PORT_WTC);
     }
     if (val & OHCI_PORT_CCS) {
+        /* ClearPortEnable goes through on a Chihiro too: the kernel's USB
+         * enumeration disables and re-enables the port
+         * (GET_DESC→SET_ADDRESS→ClearPortEnable→re-enable→SET_CONFIG). */
         port->ctrl &= ~OHCI_PORT_PES;
+        port->ctrl |= OHCI_PORT_PESC;
     }
     ohci_port_set_if_connected(ohci, portnum, val & OHCI_PORT_PES);
 

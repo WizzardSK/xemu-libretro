@@ -12,6 +12,9 @@
 #include "qemu/osdep.h"
 typedef struct GloContext GloContext;
 
+/* The fork's GPU boost on OpenGL (gl/shaders.c): never, without one */
+int xemu_gl_opt_capable = 0;
+
 GloContext *glo_context_create(void)
 {
     return NULL;

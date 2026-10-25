@@ -32,12 +32,17 @@ typedef struct {
     bool smooth_shading;
     bool first_vertex_is_provoking;
     bool z_perspective;
+    /* OpenGL only: the host cannot rasterize lines this wide, so the
+     * geometry shader draws each segment as a rectangle. Lives in the
+     * padding byte: the key keeps its size and every recorded seed. */
+    bool wide_lines;
     short tri_rot0;
     short tri_rot1;
 } GeomState;
 
 typedef struct GenGeomGlslOptions {
     bool vulkan;
+    bool locations;
 } GenGeomGlslOptions;
 
 void pgraph_glsl_set_geom_state(PGRAPHState *pg, GeomState *geom);

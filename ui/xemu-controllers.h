@@ -2,6 +2,7 @@
  * xemu Settings Management
  *
  * Copyright (C) 2025 Matt Borgerson
+ * Copyright (c) 2026 Réda Chérif-Touil
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,6 +68,66 @@ public:
         : RebindingMap(table_row), m_state{ state }, m_seen_key_down{ false }
     {
     }
+};
+
+/* An emulator shortcut: an SDL scancode, with in bits 16-18 the modifiers
+ * held with it. */
+#define HOTKEY_SHIFT (1 << 16)
+#define HOTKEY_CTRL (1 << 17)
+#define HOTKEY_ALT (1 << 18)
+#define HOTKEY_SCANCODE(h) ((h) & 0xFFFF)
+
+static inline int hotkey_mods(SDL_Keymod mod)
+{
+#ifdef __APPLE__
+    /* Cmd plays Ctrl's part on a Mac, as in the rest of the UI. */
+    SDL_Keymod ctrl = SDL_KMOD_GUI;
+#else
+    SDL_Keymod ctrl = SDL_KMOD_CTRL;
+#endif
+    return (mod & SDL_KMOD_SHIFT ? HOTKEY_SHIFT : 0) |
+           (mod & ctrl ? HOTKEY_CTRL : 0) |
+           (mod & SDL_KMOD_ALT ? HOTKEY_ALT : 0);
+}
+
+/* The next key pressed, with the modifiers held; Escape for none. */
+struct HotkeyRebindingMap : public virtual RebindingMap {
+    int *m_scancode;
+    int m_pressed;
+
+    RebindEventResult ConsumeRebindEvent(SDL_Event *event) override;
+
+    HotkeyRebindingMap(int table_row, int *scancode)
+        : RebindingMap(table_row), m_scancode{ scancode }, m_pressed{ 0 }
+    {
+    }
+};
+
+struct ChihiroRebindingMap : public virtual RebindingMap {
+    /* The binding itself: the row number is not its index in its group. */
+    int *m_scancode;
+
+    /* Raw-joystick capture: a wheel pedal rests at an extreme, so axes are
+     * captured by MOVEMENT from a rest snapshot (taken here) rather than by
+     * an absolute threshold, and the moved axis is classified centre-rest
+     * (steering) vs extreme-rest (pedal). Every raw joystick bound to a
+     * port is listened to; the binding records the port. */
+    SDL_JoystickID m_joy_id[4];       /* per port, 0 = no raw joystick */
+    int            m_joy_num_axes[4];
+    Sint16         m_joy_baseline[4][24];
+
+    /* The player whose row is bound: its pointer device has no SDL events,
+     * so its buttons are polled (PollPointer) while the row waits. */
+    int      m_player;
+    uint32_t m_pointer_seen;
+
+    /* The key or button pressed while the row waits; it binds on its
+     * release. 0: none yet. */
+    int m_pressed;
+
+    ChihiroRebindingMap(int table_row, int *scancode, int player);
+    RebindEventResult ConsumeRebindEvent(SDL_Event *event) override;
+    bool PollPointer();
 };
 
 #endif // XEMU_CONTROLLERS_H

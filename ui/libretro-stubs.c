@@ -23,6 +23,7 @@ typedef struct QEMUFile QEMUFile;
 #include "qemu/atomic.h"
 
 #include "xemu-input.h"
+#include "xemu-settings.h"
 #include "libretro.h"
 
 /* ========================================================================= */
@@ -47,6 +48,12 @@ void xemu_queue_notification(const char *fmt, ...)
     vfprintf(stderr, fmt, ap);
     fprintf(stderr, "\n");
     va_end(ap);
+}
+
+/* The Tovarichtch fork's warning: in the core, a notification like any */
+void xemu_queue_notification_warning(const char *msg)
+{
+    xemu_queue_notification("%s", msg);
 }
 
 /* ========================================================================= */
@@ -105,63 +112,63 @@ void xemu_input_update_controller(ControllerState *state)
     int port = state->bound;
     if (port < 0 || port >= 4) return;
 
-    state->buttons = 0;
-    memset(state->axis, 0, sizeof(state->axis));
+    state->gp.buttons = 0;
+    memset(state->gp.axis, 0, sizeof(state->gp.axis));
 
     if (input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B))
-        state->buttons |= CONTROLLER_BUTTON_A;
+        state->gp.buttons |= CONTROLLER_BUTTON_A;
     if (input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A))
-        state->buttons |= CONTROLLER_BUTTON_B;
+        state->gp.buttons |= CONTROLLER_BUTTON_B;
     if (input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y))
-        state->buttons |= CONTROLLER_BUTTON_X;
+        state->gp.buttons |= CONTROLLER_BUTTON_X;
     if (input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_X))
-        state->buttons |= CONTROLLER_BUTTON_Y;
+        state->gp.buttons |= CONTROLLER_BUTTON_Y;
 
     if (input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L))
-        state->buttons |= CONTROLLER_BUTTON_WHITE;
+        state->gp.buttons |= CONTROLLER_BUTTON_WHITE;
     if (input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R))
-        state->buttons |= CONTROLLER_BUTTON_BLACK;
+        state->gp.buttons |= CONTROLLER_BUTTON_BLACK;
 
     if (input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT))
-        state->buttons |= CONTROLLER_BUTTON_BACK;
+        state->gp.buttons |= CONTROLLER_BUTTON_BACK;
     if (input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START))
-        state->buttons |= CONTROLLER_BUTTON_START;
+        state->gp.buttons |= CONTROLLER_BUTTON_START;
 
     if (input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L3))
-        state->buttons |= CONTROLLER_BUTTON_LSTICK;
+        state->gp.buttons |= CONTROLLER_BUTTON_LSTICK;
     if (input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R3))
-        state->buttons |= CONTROLLER_BUTTON_RSTICK;
+        state->gp.buttons |= CONTROLLER_BUTTON_RSTICK;
 
     if (input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP))
-        state->buttons |= CONTROLLER_BUTTON_DPAD_UP;
+        state->gp.buttons |= CONTROLLER_BUTTON_DPAD_UP;
     if (input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN))
-        state->buttons |= CONTROLLER_BUTTON_DPAD_DOWN;
+        state->gp.buttons |= CONTROLLER_BUTTON_DPAD_DOWN;
     if (input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT))
-        state->buttons |= CONTROLLER_BUTTON_DPAD_LEFT;
+        state->gp.buttons |= CONTROLLER_BUTTON_DPAD_LEFT;
     if (input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT))
-        state->buttons |= CONTROLLER_BUTTON_DPAD_RIGHT;
+        state->gp.buttons |= CONTROLLER_BUTTON_DPAD_RIGHT;
 
     int16_t lt = input_state_cb(port, RETRO_DEVICE_ANALOG,
                                 RETRO_DEVICE_INDEX_ANALOG_BUTTON,
                                 RETRO_DEVICE_ID_JOYPAD_L2);
     if (lt == 0 && input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L2))
         lt = 0x7FFF;
-    state->axis[CONTROLLER_AXIS_LTRIG] = lt;
+    state->gp.axis[CONTROLLER_AXIS_LTRIG] = lt;
 
     int16_t rt = input_state_cb(port, RETRO_DEVICE_ANALOG,
                                 RETRO_DEVICE_INDEX_ANALOG_BUTTON,
                                 RETRO_DEVICE_ID_JOYPAD_R2);
     if (rt == 0 && input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R2))
         rt = 0x7FFF;
-    state->axis[CONTROLLER_AXIS_RTRIG] = rt;
+    state->gp.axis[CONTROLLER_AXIS_RTRIG] = rt;
 
-    state->axis[CONTROLLER_AXIS_LSTICK_X] = input_state_cb(port, RETRO_DEVICE_ANALOG,
+    state->gp.axis[CONTROLLER_AXIS_LSTICK_X] = input_state_cb(port, RETRO_DEVICE_ANALOG,
         RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_X);
-    state->axis[CONTROLLER_AXIS_LSTICK_Y] = -input_state_cb(port, RETRO_DEVICE_ANALOG,
+    state->gp.axis[CONTROLLER_AXIS_LSTICK_Y] = -input_state_cb(port, RETRO_DEVICE_ANALOG,
         RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_Y);
-    state->axis[CONTROLLER_AXIS_RSTICK_X] = input_state_cb(port, RETRO_DEVICE_ANALOG,
+    state->gp.axis[CONTROLLER_AXIS_RSTICK_X] = input_state_cb(port, RETRO_DEVICE_ANALOG,
         RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_X);
-    state->axis[CONTROLLER_AXIS_RSTICK_Y] = -input_state_cb(port, RETRO_DEVICE_ANALOG,
+    state->gp.axis[CONTROLLER_AXIS_RSTICK_Y] = -input_state_cb(port, RETRO_DEVICE_ANALOG,
         RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_Y);
 }
 
@@ -177,7 +184,16 @@ void xemu_input_update_rumble(ControllerState *state)
         return;
     }
     qatomic_set(&libretro_rumble[state->bound],
-                ((uint32_t)state->rumble_l << 16) | state->rumble_r);
+                ((uint32_t)state->gp.rumble_l << 16) | state->gp.rumble_r);
+}
+
+/* A Chihiro drive board's force feedback (libretro-chihiro.c), for a port
+ * with no Xbox pad behind it */
+void libretro_input_set_rumble(unsigned port, uint16_t strong, uint16_t weak)
+{
+    if (port < 4) {
+        qatomic_set(&libretro_rumble[port], ((uint32_t)strong << 16) | weak);
+    }
 }
 
 void libretro_input_apply_rumble(retro_set_rumble_state_t set_rumble_state)
@@ -203,6 +219,14 @@ void libretro_input_create_xid_devices(void)
     static const int port_map[4] = { 3, 4, 1, 2 };
 
     libretro_controllers_ensure_init();
+
+    /* A Chihiro has no Xbox pads: its USB ports carry the media board's QC
+     * and SC devices, and a hub put on one of them aborted the process at
+     * the first Chihiro boot (NNshi). Standalone's xemu_input_bind skips
+     * them the same way; the cabinet's controls go through JVS. */
+    if (xemu_chihiro_mode()) {
+        return;
+    }
 
     for (int i = 0; i < 4; i++) {
         char *tmp;

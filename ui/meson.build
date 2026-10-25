@@ -23,6 +23,7 @@ subdir('thirdparty')
 xemu_ss = ss.source_set()
 xemu_ss.add(files(
   'libretro.c',
+  'libretro-chihiro.c',
   'libretro-settings-stub.c',
   'libretro-stubs.c',
   'xemu-widescreen.c',

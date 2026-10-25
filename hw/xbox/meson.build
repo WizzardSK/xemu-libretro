@@ -14,6 +14,7 @@ specific_ss.add(files(
 	'xbox.c',
 	'xbox_pci.c',
 	'xid.c',
+	'xid-light-gun.c',
 	'xid-gamepad.c',
 	))
 # The Xbox Live Communicator plays and records through SDL, which the libretro
@@ -21,5 +22,7 @@ specific_ss.add(files(
 if not get_option('libretro')
 	specific_ss.add(files('xblc.c'))
 endif
+subdir('chihiro')
 subdir('nv2a')
+subdir('nv2a-stock')
 subdir('mcpx')

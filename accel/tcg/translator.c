@@ -2,6 +2,7 @@
  * Generic intermediate code generation.
  *
  * Copyright (C) 2016-2017 Lluís Vilanova <vilanova@ac.upc.edu>
+ * Copyright (c) 2026 Réda Chérif-Touil
  *
  * This work is licensed under the terms of the GNU GPL, version 2 or later.
  * See the COPYING file in the top-level directory.
@@ -21,6 +22,99 @@
 #include "internal-common.h"
 #include "disas/disas.h"
 #include "tb-internal.h"
+#include "tb-jmp-cache.h"
+#include "tb-hash.h"
+#include "tcg/tcg-temp-internal.h"
+#include "hw/core/cpu.h"
+#include "system/cpus.h"
+#include "qemu/cpu-pace.h"
+
+void tcg_gen_lookup_and_goto_ptr_fast(TCGv_i64 pc, uint64_t cs_base,
+                                      uint32_t flags)
+{
+#ifdef CONFIG_SOFTMMU
+    uint32_t cflags = tcg_ctx->gen_tb->cflags;
+    TCGLabel *slow;
+    TCGv_i64 t, hash;
+    TCGv_i32 t32;
+    TCGv_ptr ent, tb, code, hoff;
+
+    if (cflags & (CF_NO_GOTO_PTR | CF_COUNT_MASK | CF_SINGLE_STEP |
+                  CF_MEMI_ONLY | CF_USE_ICOUNT | CF_BP_PAGE | CF_NOIRQ)) {
+        tcg_gen_lookup_and_goto_ptr();
+        return;
+    }
+
+    QEMU_BUILD_BUG_ON(sizeof(((CPUJumpCache *)0)->array[0]) != 16);
+    QEMU_BUILD_BUG_ON(offsetof(CPUState, breakpoints.tqh_first) !=
+                      offsetof(CPUState, breakpoints));
+
+    slow = gen_new_label();
+    t = tcg_temp_ebb_new_i64();
+    hash = tcg_temp_ebb_new_i64();
+    t32 = tcg_temp_ebb_new_i32();
+    ent = tcg_temp_ebb_new_ptr();
+    tb = tcg_temp_ebb_new_ptr();
+    code = tcg_temp_ebb_new_ptr();
+    hoff = tcg_temp_ebb_new_ptr();
+
+    /* tb_jmp_cache_hash_func() */
+    tcg_gen_shri_i64(t, pc, TARGET_PAGE_BITS - TB_JMP_PAGE_BITS);
+    tcg_gen_xor_i64(t, t, pc);
+    tcg_gen_shri_i64(hash, t, TARGET_PAGE_BITS - TB_JMP_PAGE_BITS);
+    tcg_gen_andi_i64(hash, hash, TB_JMP_PAGE_MASK);
+    tcg_gen_andi_i64(t, t, TB_JMP_ADDR_MASK);
+    tcg_gen_or_i64(hash, hash, t);
+    tcg_gen_shli_i64(hash, hash, 4);
+
+    tcg_gen_ld_ptr(ent, tcg_env,
+                   offsetof(CPUState, tb_jmp_cache) - sizeof(CPUState));
+    tcg_gen_trunc_i64_ptr(hoff, hash);
+    tcg_gen_add_ptr(ent, ent, hoff);
+
+    /* same tests, same order as tb_lookup() */
+    tcg_gen_ld_ptr(tb, ent, offsetof(CPUJumpCache, array[0].tb));
+    tcg_gen_brcondi_ptr(TCG_COND_EQ, tb, 0, slow);
+    tcg_gen_ld_i64(t, ent, offsetof(CPUJumpCache, array[0].pc));
+    tcg_gen_brcond_i64(TCG_COND_NE, t, pc, slow);
+    tcg_gen_ld_i64(t, tb, offsetof(TranslationBlock, cs_base));
+    tcg_gen_brcondi_i64(TCG_COND_NE, t, cs_base, slow);
+    tcg_gen_ld_i32(t32, tb, offsetof(TranslationBlock, flags));
+    tcg_gen_brcondi_i32(TCG_COND_NE, t32, flags, slow);
+    tcg_gen_ld_i32(t32, tb, offsetof(TranslationBlock, cflags));
+    tcg_gen_brcondi_i32(TCG_COND_NE, t32, cflags, slow);
+    tcg_gen_ld_i64(t, tcg_env,
+                   offsetof(CPUState, breakpoints) - sizeof(CPUState));
+    tcg_gen_brcondi_i64(TCG_COND_NE, t, 0, slow);
+
+    tcg_gen_ld_ptr(code, tb, offsetof(TranslationBlock, tc.ptr));
+    tcg_gen_goto_ptr(code);
+
+    gen_set_label(slow);
+    tcg_gen_lookup_and_goto_ptr();
+#else
+    tcg_gen_lookup_and_goto_ptr();
+#endif
+}
+
+XemuTbRate xemu_tbrate;
+
+/* The block's own count, emitted where the caller points emit_before_op. */
+static void gen_tbrate_count(int num_insns)
+{
+    TCGv_ptr p = tcg_temp_ebb_new_ptr();
+    TCGv_i64 t = tcg_temp_ebb_new_i64();
+
+    tcg_gen_movi_ptr(p, (intptr_t)&xemu_tbrate);
+    tcg_gen_ld_i64(t, p, offsetof(XemuTbRate, blocks));
+    tcg_gen_addi_i64(t, t, 1);
+    tcg_gen_st_i64(t, p, offsetof(XemuTbRate, blocks));
+    tcg_gen_ld_i64(t, p, offsetof(XemuTbRate, insns));
+    tcg_gen_addi_i64(t, t, num_insns);
+    tcg_gen_st_i64(t, p, offsetof(XemuTbRate, insns));
+    tcg_temp_free_i64(t);
+    tcg_temp_free_ptr(p);
+}
 
 static void set_can_do_io(DisasContextBase *db, bool val)
 {
@@ -45,6 +139,11 @@ static TCGOp *gen_tb_start(DisasContextBase *db, uint32_t cflags)
 {
     TCGv_i32 count = NULL;
     TCGOp *icount_start_insn = NULL;
+    /* Real hardware speed: the block draws its instructions from the
+     * budget in icount_decr.u16.low, as with icount, and stops below when
+     * the budget is spent. */
+    bool budget = (cflags & CF_USE_ICOUNT) ||
+                  (qatomic_read(&xemu_cpu_pace_on) && !(cflags & CF_NOIRQ));
 
     if ((cflags & CF_USE_ICOUNT) || !(cflags & CF_NOIRQ)) {
         count = tcg_temp_new_i32();
@@ -53,7 +152,7 @@ static TCGOp *gen_tb_start(DisasContextBase *db, uint32_t cflags)
                        sizeof(CPUState));
     }
 
-    if (cflags & CF_USE_ICOUNT) {
+    if (budget) {
         /*
          * We emit a sub with a dummy immediate argument. Keep the insn index
          * of the sub so that we later (when we know the actual insn count)
@@ -77,7 +176,7 @@ static TCGOp *gen_tb_start(DisasContextBase *db, uint32_t cflags)
         tcg_gen_brcondi_i32(TCG_COND_LT, count, 0, tcg_ctx->exitreq_label);
     }
 
-    if (cflags & CF_USE_ICOUNT) {
+    if (budget) {
         tcg_gen_st16_i32(count, tcg_env,
                          offsetof(CPUState, neg.icount_decr.u16.low) -
                          sizeof(CPUState));
@@ -89,7 +188,7 @@ static TCGOp *gen_tb_start(DisasContextBase *db, uint32_t cflags)
 static void gen_tb_end(const TranslationBlock *tb, uint32_t cflags,
                        TCGOp *icount_start_insn, int num_insns)
 {
-    if (cflags & CF_USE_ICOUNT) {
+    if (icount_start_insn) {
         /*
          * Update the num_insn immediate parameter now that we know
          * the actual insn count.
@@ -205,6 +304,14 @@ void translator_loop(CPUState *cpu, TranslationBlock *tb, int *max_insns,
     /* Emit code to exit the TB, as indicated by db->is_jmp.  */
     ops->tb_stop(db, cpu);
     gen_tb_end(tb, cflags, icount_start_insn, db->num_insns);
+
+    /* XEMU_TBRATE: counted before the first instruction, past the exit
+     * check, now that the number of instructions is known. */
+    if (unlikely(xemu_tbrate_enabled())) {
+        tcg_ctx->emit_before_op = first_insn_start;
+        gen_tbrate_count(db->num_insns);
+        tcg_ctx->emit_before_op = NULL;
+    }
 
     /*
      * Manage can_do_io for the translation block: set to false before

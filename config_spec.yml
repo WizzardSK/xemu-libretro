@@ -5,7 +5,7 @@ general:
   updates:
     check:
       type: bool
-      default: true
+      default: false
   screenshot_dir: string
   games_dir: string
   skip_boot_anim: bool
@@ -13,6 +13,8 @@ general:
   last_viewed_menu_index: integer
   user_token: string
   snapshots:
+    # Deprecated: quick saves are per game now (Settings > Hotkeys); cleared
+    # at load.
     shortcuts:
       f5: string
       f6: string
@@ -60,6 +62,67 @@ input:
     type: bool
     default: true
   background_input_capture: bool
+  # Emulator shortcuts (Settings > Hotkeys): an SDL scancode, with Shift,
+  # Ctrl (Cmd on a Mac) and Alt in bits 16-18; 0 = none. While a Chihiro runs,
+  # a single key also bound to one of its inputs is left to the game.
+  hotkeys:
+    settings:
+      type: integer
+      default: 58 # F1
+    quick_menu:
+      type: integer
+      default: 59 # F2
+    pause:
+      type: integer
+      default: 131091 # Ctrl+P
+    reset:
+      type: integer
+      default: 131093 # Ctrl+R
+    quit:
+      type: integer
+      default: 131092 # Ctrl+Q
+    quick_save1:
+      type: integer
+      default: 65598 # Shift+F5
+    quick_save2:
+      type: integer
+      default: 65599 # Shift+F6
+    quick_save3:
+      type: integer
+      default: 65600 # Shift+F7
+    quick_save4:
+      type: integer
+      default: 65601 # Shift+F8
+    quick_load1:
+      type: integer
+      default: 62 # F5
+    quick_load2:
+      type: integer
+      default: 63 # F6
+    quick_load3:
+      type: integer
+      default: 64 # F7
+    quick_load4:
+      type: integer
+      default: 65 # F8
+    fullscreen:
+      type: integer
+      default: 68 # F11
+    screenshot:
+      type: integer
+      default: 69 # F12
+    lightgun_mode:
+      type: integer
+      default: 60 # F3
+    eject_disc:
+      type: integer
+      default: 131080 # Ctrl+E
+    load_disc:
+      type: integer
+      default: 131090 # Ctrl+O
+    monitor:
+      type: integer
+      default: 53 # `
   keyboard_controller_scancode_map:
     # Scancode reference : https://github.com/libsdl-org/SDL/blob/main/include/SDL_scancode.h
     a:
@@ -241,6 +304,11 @@ display:
     type: enum
     values: [linear, nearest]
     default: linear
+  # A gamma exponent on the final image, after the DAC palette: 1.0 = off.
+  # The Display page keeps it between 1.0 and 1.5.
+  crt_gamma:
+    type: number
+    default: 1.0
   window:
     fullscreen_on_startup: bool
     fullscreen_exclusive: bool
@@ -351,6 +419,18 @@ net:
           default: tcp
 
 sys:
+  # The machine that boots when no image is loaded: the machine last booted,
+  # the Xbox dashboard, or SEGABOOT waiting for a game. With an image loaded,
+  # the image decides (Xbox disc = Xbox, anything else = Chihiro).
+  default_machine:
+    type: enum
+    values: [auto, xbox, chihiro]
+    default: auto
+  # The machine last booted, for default_machine = auto.
+  last_machine:
+    type: enum
+    values: [xbox, chihiro]
+    default: xbox
   mem_limit:
     type: enum
     values: ['64', '128']
@@ -370,6 +450,483 @@ perf:
   hard_fpu:
     type: bool
     default: true
+  # CPU boost (Experimental Settings): native SSE, a wider jump cache and
+  # other fast paths of the CPU and the APU. Read at start-up.
+  native_sse:
+    type: bool
+    default: true
   cache_shaders:
     type: bool
     default: true
+  # Real hardware speed (Experimental Settings): the GPU work and the CPU are
+  # paced as on the real cabinet; off = uncapped. Needs GPU boost.
+  real_hw_speed:
+    type: bool
+    default: false
+  # GPU boost (Experimental Settings): the tuned NV2A; off = the stock one.
+  # Read at start-up.
+  optimizations:
+    type: bool
+    default: true
+  # Smooth first play (Experimental Settings): the game's known shaders are
+  # compiled during boot. Needs GPU boost; on OpenGL also cache_shaders and
+  # GL 4.1 (separate shader objects).
+  shader_seeding:
+    type: bool
+    default: true
+  # Debug mode (Experimental Settings): the session log gets the Chihiro log
+  # categories (all but verbose and ffb) and the XEMU_TBRATE report. Read at
+  # start-up; XEMU_DEBUG_MODE overrides it.
+  debug_mode:
+    type: bool
+    default: false
+
+chihiro:
+  jvs:
+    # The game whose keys the Game tab edits; also the keys used for a game
+    # the cabinet table does not know.
+    profile:
+      type: enum
+      values: [hotd3, vc3, gs, ctx, or2, ok, wmmt2, gundam]
+      default: hotd3
+    # Pointer: "mouse" = system cursor, "" = none, else the identity of a
+    # pointer device (chihiro.settings.pointer_devices)
+    pointer_device:
+      type: string
+      default: mouse
+    crosshair_path:
+      type: string
+      default: ""
+    crosshair_scale:
+      type: integer
+      default: 100
+    # System keys, shared by every game
+    start:
+      type: integer
+      default: 40
+    service:
+      type: integer
+      default: 38
+    coin:
+      type: integer
+      default: 34
+    test:
+      type: integer
+      default: 39
+    # Driving keys, shared by the driving games (a wheel or a pad)
+    steer_left:
+      type: integer
+      default: 80
+    steer_right:
+      type: integer
+      default: 79
+    gas:
+      type: integer
+      default: 82
+    brake:
+      type: integer
+      default: 81
+    # Gear paddles: OutRun 2's sequential shifter, and Maximum Tune's lever
+    # moved one gear at a time
+    gear_up:
+      type: integer
+      default: 29
+    gear_down:
+      type: integer
+      default: 27
+    # Card In, shared by the card games: one press pushes the card in hand
+    # (or a blank one) into the reader. Maximum Tune takes it back on a
+    # second press, before its reader draws it in.
+    card_in:
+      type: integer
+      default: 6
+    hotd3:
+      trigger:
+        type: integer
+        default: 1001
+      body_button:
+        type: integer
+        default: 1003
+    vc3:
+      trigger:
+        type: integer
+        default: 1001
+      body_button:
+        type: integer
+        default: 1003
+      pedal:
+        type: integer
+        default: 44
+      reload:
+        type: integer
+        default: 0
+    gs:
+      trigger:
+        type: integer
+        default: 1001
+      body_button:
+        type: integer
+        default: 1003
+      change:
+        type: integer
+        default: 44
+      reload:
+        type: integer
+        default: 0
+      # Deprecated: read once into jvs.card_in
+      card:
+        type: integer
+        default: 6
+    ctx:
+      drive_gear:
+        type: integer
+        default: 225
+      reverse:
+        type: integer
+        default: 224
+      jump:
+        type: integer
+        default: 44
+    or2:
+      # Deprecated: read once into jvs.gear_up and jvs.gear_down
+      gear_up:
+        type: integer
+        default: 29
+      gear_down:
+        type: integer
+        default: 27
+      view_change:
+        type: integer
+        default: 224
+    # Maximum Tune reads its H shifter and its two wheel buttons from the
+    # SECOND switch byte of player 1 (V322.xbe 0x00055AA0): bits 7/6 are the
+    # lever's up/down, bits 5/4 its left/right, and bits 1/0 the two buttons.
+    # gear1..gear6: a real shifter's positions, none set by default.
+    wmmt2:
+      gear1:
+        type: integer
+        default: 0
+      gear2:
+        type: integer
+        default: 0
+      gear3:
+        type: integer
+        default: 0
+      gear4:
+        type: integer
+        default: 0
+      gear5:
+        type: integer
+        default: 0
+      gear6:
+        type: integer
+        default: 0
+      view_change:
+        type: integer
+        default: 224
+      intrude_change:
+        type: integer
+        default: 225
+      # Deprecated: read once into jvs.card_in
+      card:
+        type: integer
+        default: 6
+    ok:
+      swing_left:
+        type: integer
+        default: 80
+      swing_right:
+        type: integer
+        default: 79
+      board_front:
+        type: integer
+        default: 82
+      board_rear:
+        type: integer
+        default: 81
+      left_grab:
+        type: integer
+        default: 29
+      right_grab:
+        type: integer
+        default: 27
+    # Gundam Battle Operating Simulator's twin-stick cockpit, named as its
+    # INPUT TEST names it. Keyboard: W A S D + Q E left, the arrows + right
+    # Shift and Ctrl right, Space the pedal.
+    gundam:
+      l_up:
+        type: integer
+        default: 26
+      l_down:
+        type: integer
+        default: 22
+      l_left:
+        type: integer
+        default: 4
+      l_right:
+        type: integer
+        default: 7
+      l_trigger:
+        type: integer
+        default: 20
+      l_button:
+        type: integer
+        default: 8
+      r_up:
+        type: integer
+        default: 82
+      r_down:
+        type: integer
+        default: 81
+      r_left:
+        type: integer
+        default: 80
+      r_right:
+        type: integer
+        default: 79
+      r_trigger:
+        type: integer
+        default: 229
+      r_button:
+        type: integer
+        default: 228
+      pedal:
+        type: integer
+        default: 44
+      # Deprecated: read once into jvs.card_in
+      card:
+        type: integer
+        default: 6
+  jvs_p2:
+    pointer_device:
+      type: string
+      default: ""
+    crosshair_path:
+      type: string
+      default: ""
+    crosshair_scale:
+      type: integer
+      default: 100
+    start:
+      type: integer
+      default: 0
+    coin:
+      type: integer
+      default: 0
+    hotd3_trigger:
+      type: integer
+      default: 0
+    hotd3_body_button:
+      type: integer
+      default: 0
+    vc3_trigger:
+      type: integer
+      default: 0
+    vc3_body_button:
+      type: integer
+      default: 0
+    vc3_pedal:
+      type: integer
+      default: 0
+    vc3_reload:
+      type: integer
+      default: 0
+    gs_trigger:
+      type: integer
+      default: 0
+    gs_body_button:
+      type: integer
+      default: 0
+    gs_change:
+      type: integer
+      default: 0
+    gs_reload:
+      type: integer
+      default: 0
+    # Deprecated: read once into jvs_p2.card_in
+    gs_card:
+      type: integer
+      default: 25
+    # Player 2's Card In (Ghost Squad's second slot)
+    card_in:
+      type: integer
+      default: 25
+  settings:
+    lightgun_mode:
+      type: bool
+      default: false
+    freeplay:
+      type: bool
+      default: false
+    # The preferred region, the byte SEGABOOT reads at EEPROM 0x1F00 (the enum
+    # index: 1 Japan, 2 USA, 3 Export); a game outside its boot.id mask (0x38)
+    # would stop on Error 05, so it gets the first of Export, USA and Japan it
+    # accepts. 'auto' is Export's older name.
+    region:
+      type: enum
+      values: [auto, jp, us, ex]
+      default: ex
+    # The media board's DIMM: the JP1/JP2 jumper value (the enum index), for
+    # the host side and the Type-3 board's block table alike (a mismatch is
+    # SEGABOOT's Caution 53). Gundam's 603 MB image needs 1024 MB.
+    dimm_size:
+      type: enum
+      values: ['128', '256', '512', '1024', 'auto']
+      default: 'auto'
+    # Which media board the machine presents; Auto follows the cabinet table.
+    board_type:
+      type: enum
+      values: [auto, type1, type3]
+      default: auto
+    force_feedback:
+      type: bool
+      default: false
+    # Drive-board force-feedback strength, percent: 0-200, 100 = what the game
+    # asks for, 0 = off. Scales gamepad rumble and steering-wheel haptic
+    # effects (OutRun 2, Maximum Tune).
+    ffb_strength:
+      type: integer
+      default: 100
+    # Flip force-feedback direction. Off is correct on Linux and the standard case;
+    # enable if the wheel is driven away from center instead of toward it (some
+    # wheels/drivers on Windows or macOS invert the FFB polarity).
+    ffb_invert:
+      type: bool
+      default: false
+    # How heavy the wheel turns while a game drives it: the damping the
+    # Maximum Tune drive board asks for, as a share of the wheel's own damper,
+    # percent. Heavy without hiding the knocks on a geared wheel by default; a
+    # stronger wheel can take more.
+    wheel_weight:
+      type: integer
+      default: 40
+    # Degrees of physical wheel rotation that reach full in-game lock (Sega Rally
+    # Model 2 wrapper convention). Default 270 = a 270 deg turn covers the game's
+    # whole steering range (OutRun 2 cabinet). 0 = "Full range": the whole wheel
+    # maps 1:1. Software scaling assuming a 900 deg wheel.
+    wheel_rotation:
+      type: integer
+      default: 270
+    # Spring the wheel back to centre while the game is not driving force
+    # feedback. Arcade wheel cabs centre mechanically (Crazy Taxi HR has no FFB
+    # hardware at all), so a limp FFB wheel is less faithful than this.
+    wheel_autocenter:
+      type: bool
+      default: true
+    wheel_autocenter_strength:
+      type: integer
+      default: 50
+    # Read each mouse or light gun on its own (evdev on Linux, Raw Input on
+    # Windows) so two players can aim with their own device. Off: the system
+    # cursor aims.
+    pointer_devices:
+      type: bool
+      default: false
+    # Exclusive grab of the devices aimed with while playing (Linux)
+    pointer_grab:
+      type: bool
+      default: true
+    sinden_border:
+      type: bool
+      default: false
+    sinden_border_style:
+      type: enum
+      values: [game, fullscreen]
+      default: game
+    sinden_border_size:
+      type: integer
+      default: 2
+  link:
+    # Linked cabinets share a private Ethernet between xemu instances. The
+    # host cabinet listens once per other cabinet, on port + that cabinet's
+    # number, and relays every frame; the others connect to it. The game's
+    # own cabinet number is written into its backup for the titles whose
+    # layout is known (Ollie King, OutRun 2, OutRun 2 SP, Maximum Tune).
+    enable: bool
+    cabinets:
+      type: integer
+      default: 2
+    cabinet:
+      type: integer
+      default: 1
+    # Empty: this cabinet is the host (cabinet 1); the others give its
+    # address.
+    host:
+      type: string
+      default: ""
+    port:
+      type: integer
+      default: 9100
+  card_reader:
+    # Answer the cabinet's card reader; each reader has its own slots.
+    enable:
+      type: bool
+      default: true
+    # Tamura (SAXA) HW210, two slots: Ghost Squad. Gundam Battle Operating
+    # Simulator carries one reader of the same family on the same wire, but
+    # it takes Banpresto cards, not Sega ones, so its card has its own slot.
+    hw210:
+      slot1:
+        type: string
+        default: ""
+      slot2:
+        type: string
+        default: ""
+      gundam:
+        type: string
+        default: ""
+    # Sanwa CRP-1231LR-10NAB: Maximum Tune 1 and 2 share the reader, not
+    # the card, so each game has its own slot.
+    crp1231:
+      mt1:
+        type: string
+        default: ""
+      mt2:
+        type: string
+        default: ""
+    # Deprecated: the names the HW210 slots had before the readers were told
+    # apart; read into hw210 above at a Chihiro boot, when that slot is empty.
+    card1_path:
+      type: string
+      default: ""
+    card2_path:
+      type: string
+      default: ""
+  roms:
+    bios_path:
+      type: string
+      default: ""
+    mediaboard_path:
+      type: string
+      default: ""
+    ic10_path:
+      type: string
+      default: ""
+    ic11_path:
+      type: string
+      default: ""
+    pc20_path:
+      type: string
+      default: ""
+    # OPTIONAL: the DIMM board's network firmware (Au1500, VxWorks). Linked
+    # cabinets run it on the network board. The version the board reports is
+    # read from it: the word after "FIRM_VERSION is here!", 0x13050621 = 13.05
+    # in ver1305.bin. Network titles check it (OutRun 2 SP 11.01, MJ2 12.06,
+    # MJ3 13.05, Gundam 12.09 or 13.09 and later). Empty: 3.17.
+    net_firmware_path:
+      type: string
+      default: ""
+    # The qcow2 that holds the Chihiro VM snapshots. Empty: chihiro_snapshots.qcow2
+    # in the data directory, created when missing; that path is then saved
+    # here.
+    snapshot_store_path:
+      type: string
+      default: ""
+
+# DOGE (not upstream): the easter egg. Written by hand in the toml:
+#   [doge]
+#   doge_mode = 'wow'
+doge:
+  doge_mode:
+    type: string
+    default: ""

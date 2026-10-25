@@ -19,6 +19,8 @@
 #include "migration/snapshot.h"
 #include "ui/console.h"
 #include "hw/xbox/nv2a/nv2a.h"
+#include "hw/xbox/chihiro/chihiro.h"
+#include "libretro-crosshair.h"
 #include "ui/xemu-widescreen.h"
 
 #include <epoxy/gl.h>
@@ -148,6 +150,10 @@ static bool emu_initialized = false;
  * renderer: the machine stays built, and the next content runs on it */
 static bool emu_started_once = false;
 static bool emu_started_vulkan = false;
+/* and whether that machine is a Chihiro rather than an Xbox, and the
+ * Chihiro's game */
+static bool emu_started_chihiro = false;
+static char emu_started_image[4096];
 static QemuThread emu_thread;
 static volatile bool emu_thread_running = false;
 
@@ -178,6 +184,17 @@ static char system_dir[4096] = "";
 static int  opt_memory_mb = 64;
 static bool opt_skip_boot_anim = false;
 static bool opt_hard_fpu = true;
+/* The fork's CPU boost and smooth first play (Tovarichtch/xemu), on by
+ * default there */
+static bool opt_cpu_boost = true;
+static bool opt_smooth_first_play = true;
+static bool opt_chihiro_freeplay = true;
+/* Video > Vulkan Fast Paths: which of the renderer's fast-path features the
+ * shared device may get (xemu_vk_create_device) */
+static bool opt_vk_gpl = true, opt_vk_dynamic = true;
+static int opt_chihiro_ffb = 0; /* percent, 0 = off */
+extern bool libretro_chihiro_aim_stick;   /* libretro-chihiro.c */
+extern bool libretro_chihiro_crosshair;
 static bool opt_use_dsp = false;
 static int  opt_surface_scale = 1;
 static int  opt_avpack = CONFIG_SYS_AVPACK_HDTV;
@@ -321,6 +338,46 @@ static void blit_nv2a_texture(GLuint tex, unsigned width, unsigned height, uintp
     glBindVertexArray(0);
     glUseProgram(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+/* The gun games' crosshairs (libretro-crosshair.h) over the OpenGL frame, as
+ * the Vulkan frame copy draws them (pgraph/vk/display.c): a plus sign with a
+ * black outline, player 1 red, player 2 blue. The frame's origin is bottom
+ * left. */
+static void draw_gl_crosshairs(unsigned width, unsigned height, uintptr_t fbo)
+{
+    static const float colors[3][3] = {
+        { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.16f, 0.16f }, { 0.16f, 0.55f, 1.0f },
+    };
+    if (!xemu_libretro_crosshairs[0].shown &&
+        !xemu_libretro_crosshairs[1].shown) {
+        return;
+    }
+    const int arm = MIN(MAX((int)height / 40, 6), 40);
+    const int thick = MIN(MAX((int)height / 240, 2), 6);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)fbo);
+    glEnable(GL_SCISSOR_TEST);
+    for (int pass = 0; pass < 2; pass++) {
+        for (int p = 0; p < 2; p++) {
+            const XemuLibretroCrosshair *c = &xemu_libretro_crosshairs[p];
+            if (!c->shown) {
+                continue;
+            }
+            const int cx = (int)(c->x * width);
+            const int cy = (int)((1.0f - c->y) * height);
+            const int edge = pass ? 0 : 1;
+            const float *rgb = colors[pass ? 1 + p : 0];
+            const int len = 2 * arm + 1 + 2 * edge, t = thick + 2 * edge;
+            glClearColor(rgb[0], rgb[1], rgb[2], 1.0f);
+            glScissor(cx - arm - edge, cy - t / 2, len, t);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glScissor(cx - t / 2, cy - arm - edge, t, len);
+            glClear(GL_COLOR_BUFFER_BIT);
+        }
+    }
+    glDisable(GL_SCISSOR_TEST);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -624,7 +681,6 @@ static bool ra_vk_import_display(void *ext_handle, int width, int height)
 /* ========================================================================= */
 
 XemuLibretroVk xemu_libretro_vk;
-bool xemu_libretro_vk_reduced_buffers = true;
 bool xemu_libretro_vk_context_ready;
 
 static const VkApplicationInfo xemu_vk_app_info = {
@@ -667,6 +723,8 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
     XEMU_VK_LOAD(vkEnumerateDeviceExtensionProperties);
     XEMU_VK_LOAD(vkCreateDevice);
     XEMU_VK_LOAD(vkGetDeviceProcAddr);
+    XEMU_VK_LOAD(vkGetPhysicalDeviceProperties);
+    XEMU_VK_LOAD(vkGetPhysicalDeviceFeatures2);
 #undef XEMU_VK_LOAD
     memset(&xemu_libretro_vk, 0, sizeof(xemu_libretro_vk));
     if (!p_vkEnumeratePhysicalDevices || !p_vkGetPhysicalDeviceFeatures ||
@@ -716,9 +774,18 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
 
     /* The renderer's optional extensions (create_logical_device in
      * pgraph/vk/instance.c) */
+    enum {
+        EXT_CUSTOM_BORDER, EXT_MEMORY_BUDGET, EXT_EDS, EXT_EDS3,
+        EXT_VERTEX_INPUT, EXT_PIPELINE_LIBRARY, EXT_GPL,
+    };
     static const char *const own_exts[] = {
-        VK_EXT_CUSTOM_BORDER_COLOR_EXTENSION_NAME,
-        VK_EXT_MEMORY_BUDGET_EXTENSION_NAME,
+        [EXT_CUSTOM_BORDER] = VK_EXT_CUSTOM_BORDER_COLOR_EXTENSION_NAME,
+        [EXT_MEMORY_BUDGET] = VK_EXT_MEMORY_BUDGET_EXTENSION_NAME,
+        [EXT_EDS] = VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME,
+        [EXT_EDS3] = VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME,
+        [EXT_VERTEX_INPUT] = VK_EXT_VERTEX_INPUT_DYNAMIC_STATE_EXTENSION_NAME,
+        [EXT_PIPELINE_LIBRARY] = VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME,
+        [EXT_GPL] = VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME,
     };
     bool own_ext_enabled[G_N_ELEMENTS(own_exts)] = { false };
     const char **exts = g_new0(const char *, num_required_exts + G_N_ELEMENTS(own_exts));
@@ -785,13 +852,121 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
         return false;
     }
 
+    /* The dynamic states, pipeline libraries and 1.2/1.3 features the
+     * renderer's fast paths use, decided as create_logical_device does
+     * (pgraph/vk/instance.c): an extension alone does not promise its
+     * features. Without them every new state compiled a whole pipeline on
+     * the draw path, the shader stutter NNshi measured against standalone. */
+    VkPhysicalDeviceProperties props;
+    p_vkGetPhysicalDeviceProperties(gpu, &props);
+    const uint32_t api = MIN(xemu_vk_app_info.apiVersion, props.apiVersion);
+    VkPhysicalDeviceExtendedDynamicStateFeaturesEXT eds_q = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
+    };
+    VkPhysicalDeviceExtendedDynamicState3FeaturesEXT eds3_q = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT,
+        .pNext = &eds_q,
+    };
+    VkPhysicalDeviceVertexInputDynamicStateFeaturesEXT vids_q = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT,
+        .pNext = &eds3_q,
+    };
+    VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT gpl_q = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT,
+        .pNext = &vids_q,
+    };
+    VkPhysicalDeviceHostQueryResetFeatures hqr_q = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES,
+        .pNext = &gpl_q,
+    };
+    VkPhysicalDeviceVulkan13Features v13_q = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES,
+        .pNext = &hqr_q,
+    };
+    const bool query_v13 = api >= VK_API_VERSION_1_3;
+    VkPhysicalDeviceFeatures2 features2_q = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
+        .pNext = query_v13 ? (void *)&v13_q : (void *)&hqr_q,
+    };
+    if (p_vkGetPhysicalDeviceFeatures2) {
+        p_vkGetPhysicalDeviceFeatures2(gpu, &features2_q);
+    }
+    const bool shader_demote = query_v13 && v13_q.shaderDemoteToHelperInvocation;
+    const bool host_query_reset = api >= VK_API_VERSION_1_2 && hqr_q.hostQueryReset;
+    const bool dyn_cull_front = opt_vk_dynamic && own_ext_enabled[EXT_EDS] &&
+                                eds_q.extendedDynamicState;
+    const bool dyn_blend = opt_vk_dynamic && own_ext_enabled[EXT_EDS3] &&
+                           eds3_q.extendedDynamicState3ColorBlendEnable &&
+                           eds3_q.extendedDynamicState3ColorBlendEquation &&
+                           eds3_q.extendedDynamicState3ColorWriteMask;
+    const bool dyn_vertex_input = opt_vk_dynamic && own_ext_enabled[EXT_VERTEX_INPUT] &&
+                                  vids_q.vertexInputDynamicState;
+    const bool pipeline_library = opt_vk_gpl && own_ext_enabled[EXT_PIPELINE_LIBRARY] &&
+                                  own_ext_enabled[EXT_GPL] &&
+                                  gpl_q.graphicsPipelineLibrary;
+
+    void *next = NULL;
+    VkPhysicalDeviceExtendedDynamicStateFeaturesEXT eds_features = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
+        .extendedDynamicState = VK_TRUE,
+    };
+    if (dyn_cull_front) {
+        eds_features.pNext = next;
+        next = &eds_features;
+    }
+    VkPhysicalDeviceExtendedDynamicState3FeaturesEXT eds3_features = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT,
+        .extendedDynamicState3ColorBlendEnable = VK_TRUE,
+        .extendedDynamicState3ColorBlendEquation = VK_TRUE,
+        .extendedDynamicState3ColorWriteMask = VK_TRUE,
+    };
+    if (dyn_blend) {
+        eds3_features.pNext = next;
+        next = &eds3_features;
+    }
+    VkPhysicalDeviceGraphicsPipelineLibraryFeaturesEXT gpl_features = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT,
+        .graphicsPipelineLibrary = VK_TRUE,
+    };
+    if (pipeline_library) {
+        gpl_features.pNext = next;
+        next = &gpl_features;
+    }
+    VkPhysicalDeviceVertexInputDynamicStateFeaturesEXT vids_features = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT,
+        .vertexInputDynamicState = VK_TRUE,
+    };
+    if (dyn_vertex_input) {
+        vids_features.pNext = next;
+        next = &vids_features;
+    }
+    VkPhysicalDeviceVulkan13Features v13_features = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES,
+        .shaderDemoteToHelperInvocation = VK_TRUE,
+    };
+    if (shader_demote) {
+        v13_features.pNext = next;
+        next = &v13_features;
+    }
+    VkPhysicalDeviceHostQueryResetFeatures hqr_features = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HOST_QUERY_RESET_FEATURES,
+        .hostQueryReset = VK_TRUE,
+    };
+    if (host_query_reset) {
+        hqr_features.pNext = next;
+        next = &hqr_features;
+    }
     VkPhysicalDeviceCustomBorderColorFeaturesEXT custom_border_features = {
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT,
         .customBorderColors = VK_TRUE,
     };
+    if (own_ext_enabled[EXT_CUSTOM_BORDER]) {
+        custom_border_features.pNext = next;
+        next = &custom_border_features;
+    }
     VkDeviceCreateInfo device_ci = {
         .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-        .pNext = own_ext_enabled[0] ? &custom_border_features : NULL,
+        .pNext = next,
         .queueCreateInfoCount = 1,
         .pQueueCreateInfos = &queue_ci,
         .enabledLayerCount = num_required_layers,
@@ -833,12 +1008,21 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
         p_vkGetDeviceQueue(device, family, 1, &xemu_libretro_vk.queue);
     }
     xemu_libretro_vk.features = features;
-    xemu_libretro_vk.custom_border_color = own_ext_enabled[0];
-    xemu_libretro_vk.memory_budget = own_ext_enabled[1];
+    xemu_libretro_vk.custom_border_color = own_ext_enabled[EXT_CUSTOM_BORDER];
+    xemu_libretro_vk.memory_budget = own_ext_enabled[EXT_MEMORY_BUDGET];
+    xemu_libretro_vk.dyn_cull_front = dyn_cull_front;
+    xemu_libretro_vk.dyn_blend = dyn_blend;
+    xemu_libretro_vk.dyn_vertex_input = dyn_vertex_input;
+    xemu_libretro_vk.pipeline_library = pipeline_library;
+    xemu_libretro_vk.host_query_reset = host_query_reset;
+    xemu_libretro_vk.shader_demote = shader_demote;
     xemu_libretro_vk.active = true;
 
     LRLOG_INFO("[xemu] Vulkan: device shared with the frontend, queue family %u (%s), %u extensions\n",
                family, own_queue ? "a queue of its own" : "the frontend's queue", nexts);
+    LRLOG_INFO("[xemu] Vulkan: dynamic state cull/front %d, blend %d, vertex input %d | pipeline library %d | host query reset %d | shader demote %d\n",
+               dyn_cull_front, dyn_blend, dyn_vertex_input, pipeline_library,
+               host_query_reset, shader_demote);
     return true;
 }
 
@@ -1116,10 +1300,50 @@ static void update_variables(void)
         opt_cache_shaders = !strcmp(var.value, "enabled");
     }
 
-    var.key = "xemu_vk_reduced_buffers";
+    var.key = "xemu_cpu_boost";
     var.value = NULL;
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
-        xemu_libretro_vk_reduced_buffers = strcmp(var.value, "disabled") != 0;
+        opt_cpu_boost = !strcmp(var.value, "enabled");
+    }
+
+    var.key = "xemu_chihiro_freeplay";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        opt_chihiro_freeplay = !strcmp(var.value, "enabled");
+    }
+
+    var.key = "xemu_vk_fast_paths";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        opt_vk_gpl = !strcmp(var.value, "all") || !strcmp(var.value, "no_dyn");
+        opt_vk_dynamic = !strcmp(var.value, "all") || !strcmp(var.value, "no_gpl");
+    }
+
+    var.key = "xemu_chihiro_gun_aim";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        libretro_chihiro_aim_stick = !strcmp(var.value, "stick");
+    }
+
+    var.key = "xemu_chihiro_crosshair";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        libretro_chihiro_crosshair = strcmp(var.value, "disabled") != 0;
+    }
+
+    var.key = "xemu_chihiro_ffb";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        opt_chihiro_ffb = atoi(var.value);
+    }
+    /* read by retro_run's rumble (libretro-chihiro.c), so it applies at once */
+    g_config.chihiro.settings.force_feedback = opt_chihiro_ffb > 0;
+    g_config.chihiro.settings.ffb_strength = opt_chihiro_ffb;
+
+    var.key = "xemu_smooth_first_play";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        opt_smooth_first_play = !strcmp(var.value, "enabled");
     }
 
     var.key = "xemu_display_filtering";
@@ -1189,8 +1413,66 @@ static void populate_config(const char *dvd_path)
     if (opt_eeprom_path[0]) {
         xemu_settings_set_string(&g_config.sys.files.eeprom_path, opt_eeprom_path);
     }
+
+    /* Chihiro files live in system/xemu/Chihiro/. The media board flash and
+     * the EEPROMs are found next to the BIOS by their MAME names; only the
+     * optional network firmware needs its own path. */
+    if (system_dir[0]) {
+        char path[4096];
+        snprintf(path, sizeof(path), "%s/xemu/Chihiro/chihiro_xbox_bios.bin",
+                 system_dir);
+        xemu_settings_set_string(&g_config.chihiro.roms.bios_path, path);
+        snprintf(path, sizeof(path), "%s/xemu/Chihiro/ver1305.bin", system_dir);
+        if (g_file_test(path, G_FILE_TEST_IS_REGULAR)) {
+            xemu_settings_set_string(&g_config.chihiro.roms.net_firmware_path,
+                                     path);
+        }
+    }
+    /* The Chihiro settings the machine reads, at config_spec.yml's defaults:
+     * g_config starts zeroed in the core (no xemu.toml), which leaves its
+     * strings NULL - the snapshot store setup takes strlen of one at a
+     * Chihiro boot - and some enums off their default (DIMM size 128 MB
+     * rather than auto). */
+    {
+        const char **paths[] = {
+            &g_config.chihiro.roms.mediaboard_path,
+            &g_config.chihiro.roms.ic10_path,
+            &g_config.chihiro.roms.ic11_path,
+            &g_config.chihiro.roms.pc20_path,
+            &g_config.chihiro.roms.snapshot_store_path,
+            &g_config.chihiro.roms.net_firmware_path,
+            &g_config.chihiro.link.host,
+            &g_config.chihiro.card_reader.hw210.slot1,
+            &g_config.chihiro.card_reader.hw210.slot2,
+            &g_config.chihiro.card_reader.hw210.gundam,
+            &g_config.chihiro.card_reader.crp1231.mt1,
+            &g_config.chihiro.card_reader.crp1231.mt2,
+            &g_config.chihiro.card_reader.card1_path,
+            &g_config.chihiro.card_reader.card2_path,
+        };
+        for (size_t i = 0; i < G_N_ELEMENTS(paths); i++) {
+            if (!*paths[i]) {
+                xemu_settings_set_string(paths[i], "");
+            }
+        }
+        g_config.chihiro.settings.dimm_size = CONFIG_CHIHIRO_SETTINGS_DIMM_SIZE_AUTO;
+        g_config.chihiro.settings.freeplay = opt_chihiro_freeplay;
+        g_config.chihiro.settings.force_feedback = opt_chihiro_ffb > 0;
+        g_config.chihiro.settings.ffb_strength = opt_chihiro_ffb;
+        g_config.chihiro.settings.region = CONFIG_CHIHIRO_SETTINGS_REGION_EX;
+        g_config.chihiro.card_reader.enable = true;
+        g_config.chihiro.link.cabinets = 2;
+        g_config.chihiro.link.cabinet = 1;
+        g_config.chihiro.link.port = 9100;
+    }
+
     /* also when empty: a load without content after one with it */
     xemu_settings_set_string(&g_config.sys.files.dvd_path, dvd_path ? dvd_path : "");
+    /* Xbox or Chihiro and the image, decided for this content (an Xbox disc
+     * image boots an Xbox, any other image - a .bin netboot image - a
+     * Chihiro; retro_load_game has refused the other machine's content) */
+    extern void libretro_chihiro_mode_reset(void);
+    libretro_chihiro_mode_reset();
 
     /* Set renderer */
     if (use_vulkan) {
@@ -1210,6 +1492,14 @@ static void populate_config(const char *dvd_path)
     /* Set other options */
     g_config.general.skip_boot_anim = opt_skip_boot_anim;
     g_config.perf.hard_fpu = opt_hard_fpu;
+    g_config.perf.native_sse = opt_cpu_boost;
+    g_config.perf.shader_seeding = opt_smooth_first_play;
+    /* GPU boost is the renderer the core is made for: the stock one the fork
+     * keeps for it being off (hw/xbox/nv2a-stock) has none of the core's
+     * frontend handover. Real hardware speed paces the machine itself, which
+     * in the core is the frontend's job. */
+    g_config.perf.optimizations = true;
+    g_config.perf.real_hw_speed = false;
     g_config.audio.use_dsp = opt_use_dsp;
     g_config.display.quality.surface_scale = opt_surface_scale;
     g_config.sys.avpack = opt_avpack;
@@ -1249,6 +1539,7 @@ static void *emu_thread_func(void *opaque)
      * another disc. This thread takes over as QEMU's main thread by holding
      * the BQL, which the last one released when it ended. */
     static bool machine_built = false;
+    static char machine_image[4096]; /* the content the machine holds */
     if (!machine_built) {
         qemu_init(argc, (char **)argv);
 
@@ -1269,10 +1560,23 @@ static void *emu_thread_func(void *opaque)
          * second content (NNshi's dump). The thread before this one popped
          * it when it ended, which also gave up its ownership. */
         g_main_context_push_thread_default(qemu_main_context);
-        xemu_libretro_change_disc(opt_dvd_path, &err);
-        if (err) {
-            LRLOG_ERROR("[xemu] Disc not loaded: %s\n", error_get_pretty(err));
-            error_free(err);
+        /* A Chihiro has no disc drive: its game is in its media board's
+         * memory, where another one is put (the same one stays as it is).
+         * Asked before anything touches the DVD path, which the machine
+         * type and the image are worked out from: the drive's disc change
+         * clears it first, and failed on the Chihiro's missing drive, so
+         * the switch took the machine for an Xbox and never ran (NNshi). */
+        if (xemu_chihiro_mode()) {
+            if (strcmp(opt_dvd_path, machine_image)) {
+                chihiro_change_game();
+                LRLOG_INFO("[xemu] Chihiro: the media board holds %s now\n", opt_dvd_path);
+            }
+        } else {
+            xemu_libretro_change_disc(opt_dvd_path, &err);
+            if (err) {
+                LRLOG_ERROR("[xemu] Disc not loaded: %s\n", error_get_pretty(err));
+                error_free(err);
+            }
         }
         qemu_libretro_clear_shutdown_request();
         qemu_system_reset(SHUTDOWN_CAUSE_HOST_QMP_SYSTEM_RESET);
@@ -1282,6 +1586,7 @@ static void *emu_thread_func(void *opaque)
         vm_start();
         LRLOG_INFO("[xemu] The machine is reset and started with the new disc\n");
     }
+    snprintf(machine_image, sizeof(machine_image), "%s", opt_dvd_path);
 
     emu_initialized = true;
 
@@ -1457,7 +1762,7 @@ RETRO_API void retro_get_system_info(struct retro_system_info *info)
     memset(info, 0, sizeof(*info));
     info->library_name     = "xemu";
     info->library_version  = xemu_libretro_version;
-    info->valid_extensions = "iso|xiso";
+    info->valid_extensions = "iso|xiso|bin";
     info->need_fullpath    = true;
     info->block_extract    = true;
 }
@@ -1563,6 +1868,29 @@ RETRO_API void retro_deinit(void)
     use_vulkan = false;
 }
 
+/* A content refused at load: the reason as a notification and in the log */
+static void load_refused(const char *text)
+{
+    struct retro_message_ext msg = {
+        .msg = text,
+        .duration = 6000,
+        .priority = 3,
+        .level = RETRO_LOG_ERROR,
+        .target = RETRO_MESSAGE_TARGET_ALL,
+        .type = RETRO_MESSAGE_TYPE_NOTIFICATION,
+        .progress = -1,
+    };
+    unsigned msg_version = 0;
+    if (environ_cb(RETRO_ENVIRONMENT_GET_MESSAGE_INTERFACE_VERSION, &msg_version) &&
+        msg_version >= 1) {
+        environ_cb(RETRO_ENVIRONMENT_SET_MESSAGE_EXT, &msg);
+    } else {
+        struct retro_message old = { text, 360 };
+        environ_cb(RETRO_ENVIRONMENT_SET_MESSAGE, &old);
+    }
+    LRLOG_ERROR("[xemu] %s\n", text);
+}
+
 RETRO_API bool retro_load_game(const struct retro_game_info *game)
 {
     /* The pads' motors (retro_run); without one, no rumble */
@@ -1585,30 +1913,33 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
      * still refused, with a message, rather than loaded into a black
      * screen. */
     if (emu_started_once && !emu_started_vulkan) {
-        static const char text[] =
-            "xemu: on OpenGL, restart RetroArch to load another game";
-        struct retro_message_ext msg = {
-            .msg = text,
-            .duration = 6000,
-            .priority = 3,
-            .level = RETRO_LOG_ERROR,
-            .target = RETRO_MESSAGE_TARGET_ALL,
-            .type = RETRO_MESSAGE_TYPE_NOTIFICATION,
-            .progress = -1,
-        };
-        unsigned msg_version = 0;
-        if (environ_cb(RETRO_ENVIRONMENT_GET_MESSAGE_INTERFACE_VERSION, &msg_version) &&
-            msg_version >= 1) {
-            environ_cb(RETRO_ENVIRONMENT_SET_MESSAGE_EXT, &msg);
-        } else {
-            struct retro_message old = { text, 360 };
-            environ_cb(RETRO_ENVIRONMENT_SET_MESSAGE, &old);
-        }
-        LRLOG_ERROR("[xemu] %s\n", text);
+        load_refused("xemu: on OpenGL, restart RetroArch to load another game");
         return false;
     }
 
     const char *content = (game && game->path) ? game->path : "";
+
+    /* The machine that is there is an Xbox or a Chihiro, and the next
+     * content only gets its disc swapped: a Chihiro game after an Xbox one
+     * booted the Xbox dashboard with the netboot image in the drive (NNshi).
+     * The other machine needs RetroArch started again. An Xbox disc image
+     * boots an Xbox, any other image a Chihiro, no content an Xbox. */
+    const bool chihiro = content[0] && !xemu_media_is_xbox_disc(content);
+    if (emu_started_once && chihiro != emu_started_chihiro) {
+        load_refused(chihiro
+            ? "xemu: restart RetroArch to load a Chihiro game after an Xbox one"
+            : "xemu: restart RetroArch to load an Xbox game after a Chihiro one");
+        return false;
+    }
+    /* A Chihiro's game is in its media board's memory, which another game
+     * fills again (chihiro_change_game, when the machine is started); one
+     * larger than the memory the machine was built with needs RetroArch
+     * started again (NNshi) */
+    if (emu_started_once && chihiro && strcmp(content, emu_started_image) &&
+        !chihiro_netboot_image_fits(content)) {
+        load_refused("xemu: restart RetroArch to load this Chihiro game, larger than the last one's media board memory");
+        return false;
+    }
     if (content[0]) {
         LRLOG_INFO("[xemu] Loading game: %s\n", content);
     } else {
@@ -1806,6 +2137,8 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
     emu_thread_running = true;
     emu_started_once = true;
     emu_started_vulkan = use_vulkan;
+    emu_started_chihiro = chihiro;
+    snprintf(emu_started_image, sizeof(emu_started_image), "%s", content);
     qemu_thread_create(&emu_thread, "xemu-emu", emu_thread_func,
                        NULL, QEMU_THREAD_JOINABLE);
 
@@ -1841,6 +2174,52 @@ RETRO_API void retro_unload_game(void)
 
     game_loaded = false;
     emu_initialized = false;
+}
+
+/* The vblank's trip to the emulator thread: when retro_run asked for it, and
+ * how late it was raised (in the 300-run log line) */
+static int64_t vblank_asked_us;
+static int64_t vblank_delay_sum_us, vblank_delay_max_us;
+
+/* The picture is taken once the guest has handled the vblank this run
+ * raised: its handler is what points the display at the frame it just
+ * flipped. Taken before, the race with it showed about a quarter of the
+ * frames twice and skipped as many, the game itself flipping every vblank
+ * (NNshi's log: 300 flips, 224 new pictures in 300 runs). A guest that does
+ * not acknowledge its vblanks (early boot) is not waited for: after a
+ * timeout the wait is off for a second. */
+extern uint64_t xemu_lr_vblanks_raised, xemu_lr_vblanks_acked;
+static uint64_t vblank_target;
+static int vblank_wait_off;
+static int64_t vblank_wait_sum_us;
+static int vblank_wait_timeouts;
+static void wait_for_vblank_handled(void)
+{
+    if (vblank_wait_off > 0) {
+        vblank_wait_off--;
+        return;
+    }
+    const int64_t t0 = g_get_monotonic_time();
+    int64_t t = t0;
+    while (qatomic_read(&xemu_lr_vblanks_acked) < vblank_target) {
+        if (t - t0 > 4000) {
+            vblank_wait_timeouts++;
+            vblank_wait_off = 60;
+            break;
+        }
+        g_usleep(100);
+        t = g_get_monotonic_time();
+    }
+    vblank_wait_sum_us += t - t0;
+}
+static void libretro_vblank_bh(void *opaque)
+{
+    const int64_t delay = g_get_monotonic_time() - qatomic_read(&vblank_asked_us);
+    qatomic_set(&vblank_delay_sum_us, qatomic_read(&vblank_delay_sum_us) + delay);
+    if (delay > qatomic_read(&vblank_delay_max_us)) {
+        qatomic_set(&vblank_delay_max_us, delay);
+    }
+    graphic_hw_update(opaque);
 }
 
 RETRO_API void retro_run(void)
@@ -1882,6 +2261,32 @@ RETRO_API void retro_run(void)
                    st_sync_max / 1000.0, st_video_sum / 300000.0,
                    st_video_max / 1000.0, st_audio_sum / 300000.0,
                    st_audio_max / 1000.0);
+        /* The guest's own flips (FLIP_STALL), by when they were issued after
+         * the vblank they wait for, and how long the pusher waited for them
+         * (nv2a.c); a flip issued after 16.7 ms misses its vblank */
+        {
+            extern uint64_t xemu_lr_flips, xemu_lr_flip_phase[4];
+            extern int64_t xemu_lr_flip_wait_sum_ns, xemu_lr_flip_wait_max_ns;
+            const uint64_t flips = qatomic_xchg(&xemu_lr_flips, 0);
+            uint64_t ph[4];
+            for (int i = 0; i < 4; i++) {
+                ph[i] = qatomic_xchg(&xemu_lr_flip_phase[i], 0);
+            }
+            const int64_t wsum = qatomic_xchg(&xemu_lr_flip_wait_sum_ns, 0);
+            const int64_t wmax = qatomic_xchg(&xemu_lr_flip_wait_max_ns, 0);
+            const int64_t vsum = qatomic_xchg(&vblank_delay_sum_us, 0);
+            const int64_t vmax = qatomic_xchg(&vblank_delay_max_us, 0);
+            LRLOG_INFO("[xemu] last 300 runs: %d flips, issued after the vblank "
+                       "<8 ms %d, 8-14 %d, 14-16.7 %d, later %d; flip wait %.2f ms "
+                       "(max %.2f); vblank raised %.2f ms after retro_run (max %.2f), "
+                       "handled by the guest %.2f ms after it (%d not within 4 ms)\n",
+                       (int)flips, (int)ph[0], (int)ph[1], (int)ph[2], (int)ph[3],
+                       flips ? wsum / 1e6 / flips : 0.0, wmax / 1e6,
+                       vsum / 300000.0, vmax / 1000.0,
+                       vblank_wait_sum_us / 300000.0, vblank_wait_timeouts);
+            vblank_wait_sum_us = 0;
+            vblank_wait_timeouts = 0;
+        }
         st_guest_frames = guest_frames;
         st_new_frames = 0;
         st_period_sum = st_period_max = 0;
@@ -1897,8 +2302,10 @@ RETRO_API void retro_run(void)
     {
         QemuConsole *con = nv2a_get_vga_console();
         if (con) {
-            aio_bh_schedule_oneshot(qemu_get_aio_context(),
-                                    (void(*)(void *))graphic_hw_update, con);
+            qatomic_set(&vblank_asked_us, g_get_monotonic_time());
+            vblank_target = qatomic_read(&xemu_lr_vblanks_raised) + 1;
+            aio_bh_schedule_oneshot(qemu_get_aio_context(), libretro_vblank_bh,
+                                    con);
         }
     }
 
@@ -1911,6 +2318,12 @@ RETRO_API void retro_run(void)
     /* Poll input */
     if (input_poll_cb) {
         input_poll_cb();
+    }
+
+    /* A Chihiro's cabinet controls (libretro-chihiro.c) */
+    {
+        extern void libretro_chihiro_update_input(void);
+        libretro_chihiro_update_input();
     }
 
     /* The motors the guest set since the last run (libretro-stubs.c) */
@@ -1970,6 +2383,7 @@ RETRO_API void retro_run(void)
                 height = (unsigned)tex_h;
             }
             blit_nv2a_texture(tex, width, height, fbo);
+            draw_gl_crosshairs(width, height, fbo);
         } else {
             /* No framebuffer yet */
             glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)fbo);
@@ -2008,6 +2422,7 @@ RETRO_API void retro_run(void)
 
             xemu_libretro_vk.frame_index = index;
             if (!vk_renderer_parked) {
+                wait_for_vblank_handled();
                 st_t = g_get_monotonic_time();
                 nv2a_get_framebuffer_surface();
                 nv2a_release_framebuffer_surface();

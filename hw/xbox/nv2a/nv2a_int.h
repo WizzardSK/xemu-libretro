@@ -33,6 +33,8 @@
 #include "qemu/error-report.h"
 #include "migration/vmstate.h"
 #include "system/runstate.h"
+#include "system/cpus.h"
+#include "qemu/timer.h"
 #include "ui/console.h"
 #include "hw/display/vga_int.h"
 #include "hw/pci/pci_device.h"
@@ -53,6 +55,8 @@
 #include "nv2a_regs.h"
 
 #define NV2A_DEVICE(obj) OBJECT_CHECK(NV2AState, (obj), "nv2a")
+
+#define NV2A_VBLANK_INTERVAL_NS 16666666LL
 
 enum FIFOEngine {
     ENGINE_SOFTWARE = 0,
@@ -78,6 +82,8 @@ typedef struct NV2AState {
     VGACommonState vga;
     GraphicHwOps hw_ops;
     QEMUTimer *vblank_timer;
+    int64_t vblank_deadline;
+    QEMUTimer *flip_timer;
 
     MemoryRegion *vram;
     MemoryRegion vram_pci;
@@ -130,7 +136,6 @@ typedef struct NV2AState {
         uint32_t pending_interrupts;
         uint32_t enabled_interrupts;
         hwaddr start;
-        uint32_t raster;
     } pcrtc;
 
     struct {
@@ -210,6 +215,9 @@ DEFINE_PROTO(prmdio)
 // DEFINE_PROTO(pramin)
 DEFINE_PROTO(user)
 #undef DEFINE_PROTO
+
+/* The cost model's compression flag, from the PFB region registers. */
+void pfb_update_zcomp(NV2AState *d);
 
 DMAObject nv_dma_load(NV2AState *d, hwaddr dma_obj_address);
 void *nv_dma_map(NV2AState *d, hwaddr dma_obj_address, hwaddr *len);

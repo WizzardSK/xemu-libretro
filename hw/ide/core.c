@@ -43,6 +43,10 @@
 #include "system/runstate.h"
 #include "ide-internal.h"
 #include "trace.h"
+#include "hw/xbox/chihiro/chihiro.h"
+
+/* ATA commands issued; read by the NV2A cost model's bus-contention gate. */
+unsigned long xemu_ide_cmds;
 
 /* These values were based on a Seagate ST3500418AS but have been modified
    to make more sense in QEMU */
@@ -958,6 +962,20 @@ static void ide_dma_cb(void *opaque, int ret)
 
     trace_ide_dma_cb(s, sector_num, n, IDE_DMA_CMD_str(s->dma_cmd));
 
+    if (s->unit == 1 && n > 0) {
+        bool irq = false;
+        if (chihiro_ide_serve(s->dma_cmd, (uint32_t)sector_num, n,
+                              &s->sg, &irq)) {
+            ide_dma_buf_commit(s, s->sg.size);
+            sector_num += n;
+            ide_set_sector(s, sector_num);
+            s->nsector -= n;
+            s->status = READY_STAT | SEEK_STAT;
+            if (irq) ide_bus_set_irq(s->bus);
+            goto eot;
+        }
+    }
+
     if ((s->dma_cmd == IDE_DMA_READ || s->dma_cmd == IDE_DMA_WRITE) &&
         !ide_sect_range_ok(s, sector_num, n)) {
         ide_dma_error(s);
@@ -1459,6 +1477,33 @@ static bool cmd_identify(IDEState *s, uint8_t cmd)
         } else {
             ide_cfata_identify(s);
         }
+
+        /* Chihiro: override IDENTIFY for baseboard (unit 1).
+         * MAME's ide_baseboard_device reports CHS 65535/255/255.
+         * The arcdkrnl MediaBoard driver checks this geometry to
+         * distinguish the baseboard from a regular HDD. Without it,
+         * the kernel never creates \Device\MediaBoard partitions. */
+        if (s->unit == 1) {
+            uint16_t *p = (uint16_t *)s->identify_data;
+            put_le16(p + 1, 65535);  /* cylinders */
+            put_le16(p + 3, 255);    /* heads */
+            put_le16(p + 6, 255);    /* sectors per track */
+            put_le16(p + 54, 65535); /* current cylinders */
+            put_le16(p + 55, 255);   /* current heads */
+            put_le16(p + 56, 255);   /* current sectors */
+            padstr((char *)(p + 27), "SEGA CHIHIRO BASEBOARD", 40);
+            /* The DIMM's capacity, so the kernel maps every MediaBoard partition
+             * (mbcom is the last 0x8000 sectors); the Chihiro IDE hooks serve the
+             * reads and writes themselves. */
+            int64_t bb_sectors = (int64_t)0x40000 << chihiro_dimm_factor();
+            put_le16(p + 60, bb_sectors);
+            put_le16(p + 61, bb_sectors >> 16);
+            put_le16(p + 100, bb_sectors);
+            put_le16(p + 101, bb_sectors >> 16);
+            put_le16(p + 102, 0);
+            put_le16(p + 103, 0);
+        }
+
         s->status = READY_STAT | SEEK_STAT;
         ide_transfer_start(s, s->io_buffer, 512, ide_transfer_stop);
         ide_bus_set_irq(s->bus);
@@ -2174,6 +2219,8 @@ void ide_bus_exec_cmd(IDEBus *bus, uint32_t val)
 
     s = ide_bus_active_if(bus);
     trace_ide_bus_exec_cmd(bus, s, val);
+
+    xemu_ide_cmds++;
 
     /* ignore commands to non existent slave */
     if (s != bus->ifs && !s->blk) {

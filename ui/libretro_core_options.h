@@ -81,6 +81,11 @@ struct retro_core_option_v2_category option_cats_us[] = {
         "Audio",
         "Configure audio emulation settings."
     },
+    {
+        "chihiro",
+        "Sega Chihiro",
+        "The Sega Chihiro arcade games: free play, the gun games' aim and the racing games' force feedback."
+    },
     { NULL, NULL, NULL },
 };
 
@@ -136,6 +141,20 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "Hardware FPU Emulation",
         NULL,
         "Use host FPU for x87 emulation. Faster but may have minor inaccuracies.",
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_cpu_boost",
+        "CPU Boost (Restart)",
+        NULL,
+        "Faster paths for the guest CPU and the audio processor: native SSE and a wider jump cache. Turn it off if a game misbehaves.",
         NULL,
         "system",
         {
@@ -242,10 +261,10 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        "Reduced Vulkan Buffers (Restart)",
+        "xemu_smooth_first_play",
+        "Smooth First Play (Restart)",
         NULL,
-        "The Vulkan renderer reserves its work buffers when it starts, whatever the game needs. Enabled keeps the buffer for inline vertex data at a tenth of xemu's size, which takes about 1.2 GB less video memory and as much less system memory. Disabled reserves xemu's full size on graphics cards with 4 GB or more; try it if a game is slower with this enabled.",
+        "Compiles the shaders a game is known to use while it boots, so the first minutes do not stutter while they are compiled. Needs Cache Shaders on OpenGL.",
         NULL,
         "video",
         {
@@ -286,6 +305,94 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { NULL, NULL },
         },
         "linear"
+    },
+    /* All by default, as standalone's own device has them where the GPU
+     * does; fewer for a GPU that crashes on one of them (Akrido) */
+    {
+        "xemu_vk_fast_paths",
+        "Vulkan Fast Paths (Restart)",
+        NULL,
+        "The Vulkan features the renderer's fast paths use: pipeline libraries (pipelines compiled in parts, on a thread) and dynamic states. All, as standalone. Fewer only to find out whether one of them crashes on a GPU.",
+        NULL,
+        "video",
+        {
+            { "all",      "All" },
+            { "no_gpl",   "No Pipeline Libraries" },
+            { "no_dyn",   "No Dynamic States" },
+            { "none",     "None" },
+            { NULL, NULL },
+        },
+        "all"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        "Free Play (Restart)",
+        NULL,
+        "Starts Sega Chihiro games in free play, without coins. Off, Select inserts a coin.",
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Mouse by default, as standalone aims with the mouse */
+    {
+        "xemu_chihiro_gun_aim",
+        "Light Gun Aim",
+        NULL,
+        "What aims in House of the Dead III, Virtua Cop 3 and Ghost Squad. Mouse: the mouse (or RetroArch's light gun) aims, left button fires, right button is the gun's button (pump, change weapon), middle button the pedal or fire rate. Analog Stick: the left stick or D-pad aims, R2 fires, L2 is the gun's button, L the pedal or fire rate, R shoots off the screen.",
+        NULL,
+        "chihiro",
+        {
+            { "mouse", "Mouse" },
+            { "stick", "Analog Stick" },
+            { NULL, NULL },
+        },
+        "mouse"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        "Crosshair",
+        NULL,
+        "Draws each player's aim over the picture, player 1 red, player 2 blue.",
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Off by default, as standalone's force feedback */
+    {
+        "xemu_chihiro_ffb",
+        "Force Feedback Rumble",
+        NULL,
+        "Gives a Chihiro racing game's force feedback (OutRun 2, Maximum Tune) as rumble on port 1's pad, at this strength.",
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  "25%" },
+            { "50",  "50%" },
+            { "75",  "75%" },
+            { "100", "100%" },
+            { "150", "150%" },
+            { "200", "200%" },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };

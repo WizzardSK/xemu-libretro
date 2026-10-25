@@ -4,6 +4,7 @@
  * Copyright (c) 2012 espes
  * Copyright (c) 2015 Jannik Vogel
  * Copyright (c) 2018-2025 Matt Borgerson
+ * Copyright (c) 2026 Réda Chérif-Touil
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -190,13 +191,24 @@ static void nv2a_get_params(VGACommonState *s, VGADisplayParams *params)
                            ((s->cr[VGA_CRTC_MAX_SCAN] & 0x40) << 3);
 }
 
+bool nv2a_stock_active(void)
+{
+    return !pgraph_gpu_boost();
+}
+
 const uint8_t *nv2a_get_dac_palette(void)
 {
+    if (nv2a_stock_active()) {
+        return stock_nv2a_get_dac_palette();
+    }
     return g_nv2a->puserdac.palette;
 }
 
 int nv2a_get_screen_off(void)
 {
+    if (nv2a_stock_active()) {
+        return stock_nv2a_get_screen_off();
+    }
     return g_nv2a->vga.sr[VGA_SEQ_CLOCK_MODE] & VGA_SR01_SCREEN_OFF;
 }
 
@@ -208,16 +220,79 @@ QemuConsole *nv2a_get_vga_console(void)
     return NULL;
 }
 
+/* Modelled-GPU backlog deadline (see xemu_cost_flip_deadline). */
+int64_t xemu_gpu_free_ns;
+
+/* PCRTC VBlank driven by REALTIME wall clock at ~60Hz.
+ * Decoupled from guest CPU speed — fires regardless of TCG load. */
+static void nv2a_realtime_vblank_cb(void *opaque)
+{
+    NV2AState *d = opaque;
+
+    /* PCRTC_INTR_0 has one vblank bit: a vblank raised while the previous
+     * one is unacknowledged merges into it, as on hardware. */
+    d->pcrtc.pending_interrupts |= NV_PCRTC_INTR_0_VBLANK;
+
+    nv2a_update_irq(d);
+
+    /* Absolute deadline: a late callback must not push the next vblank back,
+     * or the guest, which counts time in vblanks, runs slow. */
+    int64_t now = qemu_clock_get_ns(QEMU_CLOCK_REALTIME);
+
+    d->vblank_deadline += NV2A_VBLANK_INTERVAL_NS;
+    if (d->vblank_deadline < now) {
+        d->vblank_deadline = now + NV2A_VBLANK_INTERVAL_NS;
+    }
+    timer_mod_ns(d->vblank_timer, d->vblank_deadline);
+}
+
+/* Real hardware speed: a flip held for the modelled render deadline completes
+ * at that deadline. Nothing else wakes the pfifo thread then; it would wait
+ * for the next kick, the display's next frame. */
+static void nv2a_flip_deadline_cb(void *opaque)
+{
+    NV2AState *d = opaque;
+
+    qemu_mutex_lock(&d->pfifo.lock);
+    pfifo_kick(d);
+    qemu_mutex_unlock(&d->pfifo.lock);
+}
+
+#ifdef LIBRETRO
+/* Where the guest's frames fall against the vblanks retro_run raises, for the
+ * core's log (libretro.c, every 300 runs): when each FLIP_STALL is issued
+ * after the last vblank (pgraph.c), and how long the pusher then waits for
+ * the flip to complete (pfifo.c) */
+int64_t xemu_lr_last_vblank_ns;
+uint64_t xemu_lr_flips;
+uint64_t xemu_lr_flip_phase[4]; /* <8, 8-14, 14-16.7, >16.7 ms */
+int64_t xemu_lr_flip_wait_sum_ns, xemu_lr_flip_wait_max_ns;
+int64_t xemu_lr_flip_stall_start_ns;
+/* Vblanks raised (gfx_update) and acknowledged by the guest's handler
+ * (pcrtc.c), which is where it points the display at the frame it flipped:
+ * retro_run takes the picture once the one it raised is handled */
+uint64_t xemu_lr_vblanks_raised, xemu_lr_vblanks_acked;
+#endif
+
 static void nv2a_vga_gfx_update(void *opaque)
 {
     VGACommonState *vga = opaque;
     vga->hw_ops->gfx_update(vga);
-
+#ifdef LIBRETRO
+    /* In the core the frontend paces the frames: the guest's vblank comes
+     * with each retro_run, as upstream raises it here, and not from the
+     * wall-clock timer below, which would run on its own while RetroArch
+     * fast-forwards, slows down or pauses */
     NV2AState *d = container_of(vga, NV2AState, vga);
     d->pcrtc.pending_interrupts |= NV_PCRTC_INTR_0_VBLANK;
-    d->pcrtc.raster = 0;
-
+    qatomic_set(&xemu_lr_last_vblank_ns, qemu_clock_get_ns(QEMU_CLOCK_REALTIME));
+    qatomic_inc(&xemu_lr_vblanks_raised);
+    /* The raster position (pcrtc.c) counts from the next vblank's deadline */
+    qatomic_set(&d->vblank_deadline,
+                qemu_clock_get_ns(QEMU_CLOCK_REALTIME) +
+                NV2A_VBLANK_INTERVAL_NS);
     nv2a_update_irq(d);
+#endif
 }
 
 static void nv2a_init_memory(NV2AState *d, MemoryRegion *ram)
@@ -250,7 +325,7 @@ static void nv2a_init_memory(NV2AState *d, MemoryRegion *ram)
     pgraph_init(d);
 
     /* fire up pfifo */
-    qemu_thread_create(&d->pfifo.thread, "nv2a.pfifo_thread",
+    qemu_thread_create(&d->pfifo.thread, "nv2a.pfifo",
                        pfifo_thread, d, QEMU_THREAD_JOINABLE);
 }
 
@@ -267,6 +342,17 @@ static void nv2a_init_vga(NV2AState *d)
     d->hw_ops = *vga->hw_ops;
     d->hw_ops.gfx_update = nv2a_vga_gfx_update;
     vga->con = graphic_console_init(DEVICE(d), 0, &d->hw_ops, vga);
+
+    /* PCRTC VBlank: REALTIME wall-clock timer at ~60Hz */
+    d->vblank_timer = timer_new_ns(QEMU_CLOCK_REALTIME,
+                                    nv2a_realtime_vblank_cb, d);
+#ifndef LIBRETRO
+    d->vblank_deadline = qemu_clock_get_ns(QEMU_CLOCK_REALTIME) +
+                         NV2A_VBLANK_INTERVAL_NS;
+    timer_mod_ns(d->vblank_timer, d->vblank_deadline);
+#endif
+    d->flip_timer = timer_new_ns(QEMU_CLOCK_REALTIME,
+                                 nv2a_flip_deadline_cb, d);
 
     /* hacky. swap out vga's vram */
     memory_region_destroy(&vga->vram);
@@ -410,6 +496,24 @@ static void nv2a_reset_hold(Object *obj, ResetType type)
 static void nv2a_vm_state_change(void *opaque, bool running, RunState state)
 {
     NV2AState *d = opaque;
+    /* The vblank timer runs on the REALTIME clock, which does not pause
+     * with the VM. Left armed, it keeps firing during savevm/loadvm:
+     * a phantom VBLANK is latched into the saved pending_interrupts and
+     * the timer fires again right after resume, delivering back-to-back
+     * vblanks. Real hardware never spaces two vblanks closer than the
+     * refresh period, and game vblank callbacks are not reentrant —
+     * snapshots taken mid-action then crash the guest on load. Stop the
+     * timer while the VM is not running and restart it on a clean period
+     * boundary. */
+    if (!running) {
+        timer_del(d->vblank_timer);
+    } else {
+#ifndef LIBRETRO
+        d->vblank_deadline = qemu_clock_get_ns(QEMU_CLOCK_REALTIME) +
+                             NV2A_VBLANK_INTERVAL_NS;
+        timer_mod_ns(d->vblank_timer, d->vblank_deadline);
+#endif
+    }
     if (state == RUN_STATE_SAVE_VM) {
         nv2a_lock_fifo(d);
         qatomic_set(&d->pfifo.halt, true);
@@ -448,13 +552,20 @@ static int nv2a_pre_load(void *opaque)
 {
     NV2AState *d = opaque;
     nv2a_lock_fifo(d);
+    /* Off unless the snapshot says otherwise (vmstate_nv2a_two_side). */
+    d->pgraph.two_side_light_en = false;
     return 0;
 }
 
 static int nv2a_post_load(void *opaque, int version_id)
 {
     NV2AState *d = opaque;
+    /* The switch registers come back with the snapshot; the subchannel they
+     * were loaded for does not. */
+    d->pgraph.ctx_switch_subchannel = -1;
     qatomic_set(&d->pgraph.flush_pending, true);
+    /* The compression flag follows the restored PFB registers. */
+    pfb_update_zcomp(d);
     nv2a_unlock_fifo(d);
     return 0;
 }
@@ -467,6 +578,26 @@ const VMStateDescription vmstate_nv2a_pgraph_vertex_attributes = {
         // FIXME
         VMSTATE_END_OF_LIST()
     }
+};
+
+static bool nv2a_two_side_needed(void *opaque)
+{
+    NV2AState *d = opaque;
+
+    return d->pgraph.two_side_light_en;
+}
+
+/* Two-sided lighting: D3D sends it only when it changes, so a load that lost
+ * it would light the back faces wrongly until the game turned it off and on. */
+static const VMStateDescription vmstate_nv2a_two_side = {
+    .name = "nv2a/two-side-light",
+    .version_id = 1,
+    .minimum_version_id = 1,
+    .needed = nv2a_two_side_needed,
+    .fields = (const VMStateField[]) {
+        VMSTATE_BOOL(pgraph.two_side_light_en, NV2AState),
+        VMSTATE_END_OF_LIST()
+    },
 };
 
 static const VMStateDescription vmstate_nv2a = {
@@ -594,7 +725,12 @@ static const VMStateDescription vmstate_nv2a = {
         VMSTATE_UINT64_V(ptimer.alarm_time, NV2AState, 4),
         VMSTATE_UINT64_V(ptimer.time_offset, NV2AState, 4),
         VMSTATE_TIMER_V(ptimer.timer, NV2AState, 4),
+        VMSTATE_BOOL_V(pgraph.zpass_pixel_count_enable, NV2AState, 4),
         VMSTATE_END_OF_LIST()
+    },
+    .subsections = (const VMStateDescription * const []) {
+        &vmstate_nv2a_two_side,
+        NULL
     },
 };
 
@@ -641,6 +777,11 @@ type_init(nv2a_register);
 
 void nv2a_init(PCIBus *bus, int devfn, MemoryRegion *ram)
 {
+    if (nv2a_stock_active()) {
+        fprintf(stderr, "nv2a: GPU boost off, the stock GPU runs\n");
+        stock_nv2a_init(bus, devfn, ram);
+        return;
+    }
     PCIDevice *dev = pci_create_simple(bus, devfn, "nv2a");
     NV2AState *d = NV2A_DEVICE(dev);
     nv2a_init_memory(d, ram);

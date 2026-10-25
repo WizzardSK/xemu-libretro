@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- The core info file names the core "Microsoft - Xbox / Sega Chihiro (xemu)" (NNshi).
 - Chihiro: the Chihiro options are in a category of their own, Sega Chihiro, the last one (NNshi).
 - Chihiro gun games: new option Sega Chihiro > Light Gun Aim, Mouse or Analog Stick. With the mouse it aims, the left button fires, the right one is the gun's button (House of the Dead III's pump reload, Virtua Cop 3's change weapon, Ghost Squad's action) and the middle one Virtua Cop 3's pedal or Ghost Squad's fire rate, as standalone binds them; RetroArch's light gun still works. With the stick the left stick or D-pad aims, R2 fires, L2 is the gun's button, L the pedal or fire rate and R shoots off the screen. New option Sega Chihiro > Crosshair, on by default: each player's aim drawn over the picture, player 1 red and player 2 blue, where standalone shows the mouse cursor; with one mouse only player 1's (NNshi).
 - Vulkan: new option Video > Vulkan Fast Paths (All by default, as standalone), to leave out the pipeline libraries or the dynamic states on a GPU that crashes with one of them (Akrido).

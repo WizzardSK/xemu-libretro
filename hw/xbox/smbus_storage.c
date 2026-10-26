@@ -127,6 +127,34 @@ static int smbus_storage_write_data(SMBusDevice *dev, uint8_t *buf, uint8_t len)
     return 0;
 }
 
+bool smbus_storage_peek(uint32_t offset, void *buf, uint32_t len)
+{
+    Object *obj = object_resolve_path_type("", TYPE_SMBUS_STORAGE, NULL);
+    if (!obj) {
+        return false;
+    }
+    SMBusStorageDevice *s = SMBUS_STORAGE(obj);
+    if (!s->data || offset + len > s->size) {
+        return false;
+    }
+    memcpy(buf, s->data + offset, len);
+    return true;
+}
+
+bool smbus_storage_poke(uint32_t offset, const void *buf, uint32_t len)
+{
+    Object *obj = object_resolve_path_type("", TYPE_SMBUS_STORAGE, NULL);
+    if (!obj) {
+        return false;
+    }
+    SMBusStorageDevice *s = SMBUS_STORAGE(obj);
+    if (!s->data || offset + len > s->size) {
+        return false;
+    }
+    memcpy(s->data + offset, buf, len);
+    return true;
+}
+
 static uint8_t smbus_storage_receive_byte(SMBusDevice *dev)
 {
     SMBusStorageDevice *s = SMBUS_STORAGE(dev);

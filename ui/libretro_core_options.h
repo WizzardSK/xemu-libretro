@@ -179,10 +179,26 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "vulkan"
     },
     {
-        "xemu_aspect_ratio",
-        "Aspect Ratio",
+        "xemu_video_aspect",
+        "System Aspect Ratio (Restart)",
         NULL,
-        "The shape the picture is shown in. Auto follows the game: 16:9 when it switches the console to widescreen (Widescreen has to be on in the dashboard's video settings), 4:3 otherwise. Choose 16:9 for a game that renders widescreen but is shown squashed.",
+        "The display shape the console's video settings report to games, in place of the dashboard's setting. At 16:9, games that support widescreen run in widescreen; at 4:3 they run in 4:3. Set it to the shape of your display. Letterbox is the dashboard's 4:3 with widescreen games letterboxed. Dashboard keeps the dashboard's setting.",
+        NULL,
+        "video",
+        {
+            { "dashboard", "Dashboard" },
+            { "4:3",       "4:3" },
+            { "16:9",      "16:9" },
+            { "letterbox", "Letterbox" },
+            { NULL, NULL },
+        },
+        "dashboard"
+    },
+    {
+        "xemu_aspect_ratio",
+        "Core Aspect Ratio",
+        NULL,
+        "The shape the picture is shown in. Best kept at Auto, which follows the game: 16:9 when the console is set to widescreen (System Aspect Ratio or the dashboard) and the game renders 16:9, 4:3 otherwise and on a Chihiro. 16:9 stretches a 4:3 game to widescreen.",
         NULL,
         "video",
         {

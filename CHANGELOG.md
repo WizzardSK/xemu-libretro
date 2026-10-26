@@ -4,6 +4,8 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- New option Video > System Aspect Ratio (Restart): Dashboard (as before), 4:3, 16:9 or Letterbox, set in the emulated EEPROM's video settings at each start, so a game that supports widescreen runs in it without going to the dashboard; the EEPROM file keeps the dashboard's own setting. Aspect Ratio is now Core Aspect Ratio, after it; its Auto follows the setting (NNshi).
+- Aspect Ratio Auto: 16:9 when Widescreen is on in the dashboard's video settings and the game is one that renders 16:9 then, 4:3 otherwise and always on a Chihiro. The core knows the games by their Title ID, from a list of 200 games (226 releases) with 16:9 support; before, Auto waited for the game to switch the AV pack to widescreen, which games hardly do, and stayed at 4:3. The log says which Title ID runs, whether it is on the list and what the dashboard is set to (NNshi).
 - The machine is stopped while RetroArch's menu is open or the content is paused, as standalone's Pause does it, once no frame has been asked for 50 ms (about 3 frames), and started again with the next frame: the guest ran on without its vblank meanwhile, and a game could take its disc reads for failed when it came back (Akrido: Ninja Gaiden's dirty disc error after the menu).
 
 ## Test build 4 - 2026-10-25

@@ -38,4 +38,9 @@ void xbox_smc_power_button(void);
 void xbox_smc_eject_button(void);
 void xbox_smc_update_tray_state(void);
 
+/* What the EEPROM holds now, as the guest last wrote it */
+bool smbus_storage_peek(uint32_t offset, void *buf, uint32_t len);
+/* Writes the EEPROM's contents in memory only, not to its file */
+bool smbus_storage_poke(uint32_t offset, const void *buf, uint32_t len);
+
 #endif

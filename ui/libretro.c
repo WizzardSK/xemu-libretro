@@ -22,6 +22,9 @@
 #include "hw/xbox/chihiro/chihiro.h"
 #include "libretro-crosshair.h"
 #include "ui/xemu-widescreen.h"
+#include "ui/libretro-widescreen-titles.h"
+#include "xemu-xbe.h"
+#include "qemu/bswap.h"
 
 #include <epoxy/gl.h>
 #ifndef _WIN32
@@ -1187,24 +1190,135 @@ static void get_option_string(const char *key, char *buf, size_t buf_sz)
     }
 }
 
-/* The Aspect Ratio option, standalone's display setting: auto follows the
- * title's aspect line, the other two say it outright - for the titles that
- * render widescreen without setting the line */
+/* The Aspect Ratio option: 4:3 and 16:9 say it outright, auto works it out
+ * (wants_widescreen) */
 static int opt_aspect = 0; /* 0 auto, 1 4:3, 2 16:9 */
 
-static bool wants_widescreen(void)
+/* The running title's ID and the dashboard's video settings, as the guest
+ * has them now: read on the emulation thread, which holds the BQL the
+ * guest's memory and the EEPROM device need (poll_guest_title) */
+static uint32_t guest_title_id;
+static uint32_t guest_video_flags;
+
+/* The EEPROM's video settings (user section, 0x94), and their Widescreen
+ * bit */
+#define EEPROM_VIDEO_FLAGS 0x94
+#define EEPROM_VIDEO_WIDESCREEN 0x00010000
+#define EEPROM_VIDEO_LETTERBOX 0x00100000
+/* The user section the video flags are in, and its checksum */
+#define EEPROM_USER_CHECKSUM 0x60
+#define EEPROM_USER_SECTION 0x64
+#define EEPROM_USER_SECTION_LEN 0x5C
+
+/* System Aspect Ratio: what the dashboard's video settings say to the game,
+ * set in the emulated EEPROM at each start - 0 as the EEPROM has it, 1 4:3,
+ * 2 16:9, 3 letterbox - so that it no longer takes the dashboard to change
+ * (NNshi). In memory only: the EEPROM file keeps the dashboard's. */
+static int opt_video_aspect = 0;
+
+extern bool smbus_storage_peek(uint32_t offset, void *buf, uint32_t len);
+extern bool smbus_storage_poke(uint32_t offset, const void *buf, uint32_t len);
+
+/* The EEPROM's checksum over a section (eeprom_generation.c) */
+static uint32_t eeprom_checksum(const uint8_t *data, size_t len)
 {
-    return opt_aspect == 2 || (opt_aspect == 0 && xemu_get_widescreen());
+    uint32_t high = 0, low = 0;
+    for (size_t i = 0; i < len / 4; i++) {
+        uint32_t val = ldl_le_p(data + i * 4);
+        uint64_t sum = ((uint64_t)high << 32) | low;
+        high = (sum + val) >> 32;
+        low += val;
+    }
+    return ~(high + low);
 }
 
-/* 16:9 when the running title says it renders widescreen - it sets the
- * AV pack's aspect line (acpi_xbox.c) when the dashboard's video settings
- * have Widescreen on - else 4:3; RetroArch is told whenever that changes,
- * as standalone's display follows it (NNshi) */
+static void apply_video_aspect(void)
+{
+    if (opt_video_aspect == 0) {
+        return;
+    }
+    uint8_t user[EEPROM_USER_SECTION_LEN];
+    if (!smbus_storage_peek(EEPROM_USER_SECTION, user, sizeof(user))) {
+        return;
+    }
+    uint32_t *flags = (uint32_t *)(user + EEPROM_VIDEO_FLAGS - EEPROM_USER_SECTION);
+    uint32_t value = le32_to_cpu(*flags) & ~(EEPROM_VIDEO_WIDESCREEN | EEPROM_VIDEO_LETTERBOX);
+    if (opt_video_aspect == 2) {
+        value |= EEPROM_VIDEO_WIDESCREEN;
+    } else if (opt_video_aspect == 3) {
+        value |= EEPROM_VIDEO_LETTERBOX;
+    }
+    *flags = cpu_to_le32(value);
+    uint32_t sum = cpu_to_le32(eeprom_checksum(user, sizeof(user)));
+    smbus_storage_poke(EEPROM_USER_SECTION, user, sizeof(user));
+    smbus_storage_poke(EEPROM_USER_CHECKSUM, &sum, sizeof(sum));
+    LRLOG_INFO("[xemu] System Aspect Ratio: the EEPROM's video settings set to %08X\n", value);
+}
+
+static void poll_guest_title(void)
+{
+    extern bool smbus_storage_peek(uint32_t offset, void *buf, uint32_t len);
+    struct xbe *xbe = xemu_get_xbe_info();
+    uint32_t flags = 0;
+
+    qatomic_set(&guest_title_id,
+                xbe && xbe->cert ? ldl_le_p(&xbe->cert->m_titleid) : 0);
+    if (smbus_storage_peek(EEPROM_VIDEO_FLAGS, &flags, sizeof(flags))) {
+        qatomic_set(&guest_video_flags, le32_to_cpu(flags));
+    }
+}
+
+static int compare_title_id(const void *a, const void *b)
+{
+    const uint32_t x = *(const uint32_t *)a, y = *(const uint32_t *)b;
+    return x < y ? -1 : x > y;
+}
+
+static bool title_renders_widescreen(uint32_t title_id)
+{
+    return bsearch(&title_id, libretro_widescreen_titles,
+                   ARRAY_SIZE(libretro_widescreen_titles),
+                   sizeof(libretro_widescreen_titles[0]),
+                   compare_title_id) != NULL;
+}
+
+/* Auto: 16:9 with Widescreen on in the dashboard's video settings and a
+ * title that renders 16:9 then - one on the list, or one that sets the AV
+ * pack's aspect line (acpi_xbox.c), which few do - and 4:3 for the rest
+ * and on a Chihiro (NNshi) */
+static bool wants_widescreen(void)
+{
+    if (opt_aspect != 0) {
+        return opt_aspect == 2;
+    }
+    if (emu_started_chihiro ||
+        !(qatomic_read(&guest_video_flags) & EEPROM_VIDEO_WIDESCREEN)) {
+        return false;
+    }
+    return title_renders_widescreen(qatomic_read(&guest_title_id)) ||
+           xemu_get_widescreen();
+}
+
+/* RetroArch is told whenever the aspect changes, as standalone's display
+ * follows the title */
 static void update_aspect(void)
 {
     static int last = -1;
     const int widescreen = wants_widescreen() ? 1 : 0;
+
+    /* What Auto goes by, whenever the title or the settings change */
+    static uint32_t last_title = UINT32_MAX, last_flags = UINT32_MAX;
+    const uint32_t title = qatomic_read(&guest_title_id);
+    const uint32_t flags = qatomic_read(&guest_video_flags);
+    if (title != last_title || flags != last_flags) {
+        last_title = title;
+        last_flags = flags;
+        LRLOG_INFO("[xemu] Title ID %08X (%s), dashboard video settings "
+                   "%08X (Widescreen %s)\n", title,
+                   title_renders_widescreen(title) ? "on the 16:9 list"
+                                                   : "not on the 16:9 list",
+                   flags, flags & EEPROM_VIDEO_WIDESCREEN ? "on" : "off");
+    }
 
     /* What the title writes to the aspect line, whenever it changes: 5 is
      * widescreen, and a log then says why a title stayed at 4:3 */
@@ -1255,6 +1369,13 @@ static void update_variables(void)
     var.value = NULL;
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
         opt_aspect = !strcmp(var.value, "4:3") ? 1 : !strcmp(var.value, "16:9") ? 2 : 0;
+    }
+
+    var.key = "xemu_video_aspect";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        opt_video_aspect = !strcmp(var.value, "4:3") ? 1 : !strcmp(var.value, "16:9") ? 2 :
+                           !strcmp(var.value, "letterbox") ? 3 : 0;
     }
 
     var.key = "xemu_memory";
@@ -1558,6 +1679,7 @@ static void *emu_thread_func(void *opaque)
         /* Create XID USB gamepad devices for all 4 ports (BQL is held) */
         extern void libretro_input_create_xid_devices(void);
         libretro_input_create_xid_devices();
+        apply_video_aspect();
         machine_built = true;
     } else {
         extern void xemu_libretro_change_disc(const char *path, Error **errp);
@@ -1591,6 +1713,7 @@ static void *emu_thread_func(void *opaque)
             }
         }
         qemu_libretro_clear_shutdown_request();
+        apply_video_aspect();
         qemu_system_reset(SHUTDOWN_CAUSE_HOST_QMP_SYSTEM_RESET);
         if (!runstate_check(RUN_STATE_PRELAUNCH)) {
             runstate_set(RUN_STATE_PRELAUNCH);
@@ -2249,6 +2372,13 @@ static void libretro_vblank_bh(void *opaque)
         qatomic_set(&vblank_delay_max_us, delay);
     }
     graphic_hw_update(opaque);
+
+    /* about once a second */
+    static int title_poll;
+    if (++title_poll >= 60) {
+        title_poll = 0;
+        poll_guest_title();
+    }
 }
 
 RETRO_API void retro_run(void)

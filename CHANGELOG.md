@@ -4,6 +4,8 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- The machine is stopped while RetroArch's menu is open or the content is paused, as standalone's Pause does it, once no frame has been asked for 50 ms (about 3 frames), and started again with the next frame: the guest ran on without its vblank meanwhile, and a game could take its disc reads for failed when it came back (Akrido: Ninja Gaiden's dirty disc error after the menu).
+
 ## Test build 4 - 2026-10-25
 
 - The core info file names the core "Microsoft - Xbox / Sega Chihiro (xemu)" (NNshi).

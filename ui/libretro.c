@@ -157,6 +157,18 @@ static char emu_started_image[4096];
 static QemuThread emu_thread;
 static volatile bool emu_thread_running = false;
 
+/* When retro_run last started, and whether the machine is stopped because
+ * it did not come: the frontend's menu or pause. The guest's vblank comes
+ * with retro_run, so while the menu was open the CPU ran on without frames,
+ * and a game coming back from it could take its disc reads for failed
+ * (Akrido: Ninja Gaiden's dirty disc error after the menu). Stopped the way
+ * standalone pauses, and started again with the next retro_run. */
+static int64_t last_run_us;
+static bool frontend_paused;
+/* about 3 frames: the guest runs on that long after the frontend stopped,
+ * as RetroArch says nothing of its menu or pause (NNshi) */
+#define FRONTEND_PAUSE_US 50000
+
 /* Snapshot dispatch: RetroArch thread requests, QEMU thread executes */
 enum {
     SNAPSHOT_NONE = 0,
@@ -1616,7 +1628,22 @@ static void *emu_thread_func(void *opaque)
             emu_thread_running = false;
             break;
         }
-        
+
+        /* No retro_run for a while: the menu is open, or the frontend paused */
+        const int64_t last_run = qatomic_read(&last_run_us);
+        const bool frontend_idle =
+            last_run && g_get_monotonic_time() - last_run > FRONTEND_PAUSE_US;
+        if (!qatomic_read(&frontend_paused) && frontend_idle &&
+            runstate_is_running()) {
+            vm_stop(RUN_STATE_PAUSED);
+            qatomic_set(&frontend_paused, true);
+        } else if (qatomic_read(&frontend_paused) && !frontend_idle) {
+            if (runstate_check(RUN_STATE_PAUSED)) {
+                vm_start();
+            }
+            qatomic_set(&frontend_paused, false);
+        }
+
         main_loop_wait(false);
 
         /* Check for snapshot requests from RetroArch thread */
@@ -2171,6 +2198,8 @@ RETRO_API void retro_unload_game(void)
         qemu_thread_join(&emu_thread);
         LRLOG_INFO("[xemu] Emulation thread joined\n");
     }
+    qatomic_set(&last_run_us, 0);
+    qatomic_set(&frontend_paused, false);
 
     game_loaded = false;
     emu_initialized = false;
@@ -2243,6 +2272,12 @@ RETRO_API void retro_run(void)
         st_period_max = MAX(st_period_max, period);
     }
     st_last_start = st_start;
+
+    /* a stopped machine is started again by the main loop, woken here */
+    qatomic_set(&last_run_us, st_start);
+    if (qatomic_read(&frontend_paused)) {
+        qemu_notify_event();
+    }
 
     run_count++;
     if (run_count <= 5 || (run_count % 300) == 0) {

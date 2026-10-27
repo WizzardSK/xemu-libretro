@@ -21,11 +21,11 @@ Put these files into RetroArch's system directory, under `system/xemu/`:
 |---|---|
 | `mcpx_1.0.bin` | the MCPX boot ROM, 512 bytes, MD5 `d49c52a4102f6df7bcf8d0617ac475ed` |
 | `Complex_4627v1.03.bin` | the flash BIOS, a 1 MB or 256 KB image |
-| `xbox_hdd.qcow2` | the hard disk, for example [xemu's ready-made image](https://github.com/xemu-project/xemu-hdd-image/releases) |
+| `xbox_hdd.qcow2` | optional: the hard disk. Without one the core writes the ready-made image it carries, [xemu-dashboard](https://github.com/xemu-project/xemu-dashboard)'s (MIT, an unsigned dashboard and no Microsoft software), the same one xemu offers |
 
 The boot ROM and the BIOS are Microsoft's and have to be dumped from your own console; see xemu's [required files](https://xemu.app/docs/required-files/). Other names and locations can be set in the core options. The EEPROM (`xbox_eeprom.bin`) is created in the same folder when it is missing.
 
-For Sega Chihiro games, these files go under `system/xemu/Chihiro/` (MAME's names; the boot ROM and hard disk above are needed too):
+For Sega Chihiro games, these files go under `system/xemu/Chihiro/` (MAME's names; the boot ROM above is needed too, and the hard disk is written as for an Xbox):
 
 | File | What it is |
 |---|---|

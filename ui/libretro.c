@@ -32,6 +32,7 @@
 #include "ui/libretro-widescreen-titles.h"
 #include "xemu-xbe.h"
 #include "qemu/bswap.h"
+#include "data/xbox_hdd.qcow2.h"
 
 #include <epoxy/gl.h>
 #ifndef _WIN32
@@ -1847,6 +1848,26 @@ static void *emu_thread_func(void *opaque)
 #define HDD_CACHE_LEN   (3 * 0x2EE00000LL)     /* 750 MB each */
 #define HDD_COPY_CHUNK  (1024 * 1024)
 
+/* xemu-dashboard's pre-formatted HDD, which the core carries
+ * (data/xbox_hdd.qcow2, MIT): written where the HDD is looked for when there
+ * is none, so only the boot ROM and the BIOS have to come from the user
+ * (NNshi). The image is small and grows as games use the disk. */
+static bool write_bundled_hdd(const char *path)
+{
+    g_autofree char *dir = g_path_get_dirname(path);
+    g_autoptr(GError) err = NULL;
+    if (g_mkdir_with_parents(dir, 0755) != 0 ||
+        !g_file_set_contents(path, (const char *)xbox_hdd_data,
+                             xbox_hdd_size, &err)) {
+        LRLOG_ERROR("[xemu] Cannot write the bundled HDD to %s: %s\n", path,
+                    err ? err->message : g_strerror(errno));
+        return false;
+    }
+    LRLOG_INFO("[xemu] No HDD: wrote the bundled one (xemu-dashboard) to %s\n",
+               path);
+    return true;
+}
+
 static bool hdd_has_snapshot(BlockDriverState *bs)
 {
     GRAPH_RDLOCK_GUARD_MAINLOOP();
@@ -2359,6 +2380,9 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
         LRLOG_INFO("[xemu] Found bios: %s\n", opt_bios_path);
 
         f = fopen(opt_hdd_path, "rb");
+        if (!f && write_bundled_hdd(opt_hdd_path)) {
+            f = fopen(opt_hdd_path, "rb");
+        }
         if (!f) {
             LRLOG_ERROR("[xemu] Xbox HDD image not found: %s\n", opt_hdd_path);
             LRLOG_ERROR("[xemu] Place xbox_hdd.qcow2 in RetroArch system/xemu/ directory\n");

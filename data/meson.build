@@ -4,6 +4,9 @@ pfiles = [
   'segaboot_logo.rgba',
   'segaboot_jingle.raw',
   'shader_seeds.bin',
+  # xemu-dashboard's pre-formatted HDD (MIT, xbox_hdd-LICENSE.txt), written
+  # to system/xemu/ when there is no HDD (ui/libretro.c)
+  'xbox_hdd.qcow2',
 ]
 
 libpfile_targets = []

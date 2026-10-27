@@ -60,7 +60,7 @@ static float trigger(unsigned port, unsigned id)
  * the mouse or RetroArch's light gun, the mouse being the only way in
  * standalone (NNshi); and Sega Chihiro > Crosshair (ui/libretro.c sets
  * them) */
-bool libretro_chihiro_aim_stick;
+bool libretro_chihiro_aim_stick = true;
 bool libretro_chihiro_crosshair = true;
 
 XemuLibretroCrosshair xemu_libretro_crosshairs[2];

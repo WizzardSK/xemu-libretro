@@ -68,8 +68,8 @@ extern "C" {
 struct retro_core_option_v2_category option_cats_us[] = {
     {
         "system",
-        "System",
-        "Configure system-level settings such as BIOS paths, memory, and boot options."
+        "System (Restart)",
+        "The machine itself: memory, network, boot and CPU. Taken when the content starts (Trim HDD on Close when it closes)."
     },
     {
         "video",
@@ -90,27 +90,9 @@ struct retro_core_option_v2_category option_cats_us[] = {
 };
 
 struct retro_core_option_v2_definition option_defs_us[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
-    {
-        "xemu_hdd_trim",
-        "Trim HDD on Close (Experimental)",
-        NULL,
-        "When the game is closed, empties the hard disk's cache partitions X, Y and Z (games format them again when they need them) and rewrites the image without unused space, so the file shrinks. Needs as much free space as the image's data for a moment. Skipped while the image holds a savestate.",
-        NULL,
-        "system",
-        {
-            { "disabled", NULL },
-            { "enabled",  NULL },
-            { NULL, NULL },
-        },
-        "disabled"
-    },
     {
         "xemu_memory",
-        "System Memory (MB, Restart)",
+        "System Memory (MB)",
         NULL,
         "Amount of system RAM. 64 MB is standard; 128 MB is used by debug kits.",
         NULL,
@@ -124,7 +106,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
     },
     {
         "xemu_network_backend",
-        "Network Backend (Restart)",
+        "Network Backend",
         NULL,
         "Enable network support for Xbox games with LAN/System Link features. NAT backend provides basic connectivity.",
         NULL,
@@ -136,9 +118,11 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
-        "Skip Boot Animation (Restart)",
+        "Skip Boot Animation",
         NULL,
         "Skip the Xbox boot animation.",
         NULL,
@@ -148,11 +132,11 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
-        "Hardware FPU Emulation (Restart)",
+        "Hardware FPU Emulation",
         NULL,
         "Use host FPU for x87 emulation. Faster but may have minor inaccuracies.",
         NULL,
@@ -166,7 +150,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
     },
     {
         "xemu_cpu_boost",
-        "CPU Boost (Restart)",
+        "CPU Boost",
         NULL,
         "Faster paths for the guest CPU and the audio processor: native SSE and a wider jump cache. Turn it off if a game misbehaves.",
         NULL,
@@ -177,6 +161,24 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        "Trim HDD on Close",
+        NULL,
+        "When the game is closed, empties the hard disk's cache partitions X, Y and Z (games format them again when they need them) and rewrites the image without unused space, so the file shrinks. Needs as much free space as the image's data for a moment. Skipped while the image holds a savestate. Done when the game closes, not at its next start.",
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_renderer",
@@ -192,6 +194,9 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "vulkan"
     },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
     {
         "xemu_video_aspect",
         "System Aspect Ratio (Restart)",
@@ -206,7 +211,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "letterbox", "Letterbox" },
             { NULL, NULL },
         },
-        "dashboard"
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -324,24 +329,10 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "0"
     },
     {
-        "xemu_cache_shaders",
-        "Shader Cache (OpenGL)",
-        NULL,
-        "Cache compiled GPU shaders to disk. Reduces stutter on subsequent runs.",
-        NULL,
-        "video",
-        {
-            { "enabled",  "Enabled" },
-            { "disabled", "Disabled" },
-            { NULL, NULL },
-        },
-        "enabled"
-    },
-    {
         "xemu_smooth_first_play",
         "Smooth First Play (Restart)",
         NULL,
-        "Compiles the shaders a game is known to use while it boots, so the first minutes do not stutter while they are compiled. Needs Cache Shaders on OpenGL.",
+        "Compiles the shaders a game is known to use while it boots, so the first minutes do not stutter while they are compiled. On OpenGL it keeps what it compiles in the shader cache, which is always on.",
         NULL,
         "video",
         {
@@ -406,7 +397,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "enabled"
     },
-    /* Mouse by default, as standalone aims with the mouse */
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
     {
         "xemu_chihiro_gun_aim",
         "Light Gun Aim",
@@ -419,7 +411,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "stick", "Analog Stick" },
             { NULL, NULL },
         },
-        "mouse"
+        "stick"
     },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
@@ -437,7 +429,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "enabled"
     },
-    /* Off by default, as standalone's force feedback */
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
     {
         "xemu_chihiro_ffb",
         "Force Feedback Rumble",
@@ -455,7 +448,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "200", "200%" },
             { NULL, NULL },
         },
-        "disabled"
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };

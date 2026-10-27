@@ -207,7 +207,7 @@ static char opt_eeprom_path[4096] = "";
 static char opt_dvd_path[4096] = "";
 static char system_dir[4096] = "";
 static int  opt_memory_mb = 64;
-static bool opt_skip_boot_anim = false;
+static bool opt_skip_boot_anim = true;
 static bool opt_hard_fpu = true;
 /* The fork's CPU boost and smooth first play (Tovarichtch/xemu), on by
  * default there */
@@ -217,13 +217,15 @@ static bool opt_chihiro_freeplay = true;
 /* Video > Vulkan Fast Paths: which of the renderer's fast-path features the
  * shared device may get (xemu_vk_create_device) */
 static bool opt_vk_gpl = true, opt_vk_dynamic = true;
-static int opt_chihiro_ffb = 0; /* percent, 0 = off */
+static int opt_chihiro_ffb = 100; /* percent, 0 = off */
 extern bool libretro_chihiro_aim_stick;   /* libretro-chihiro.c */
 extern bool libretro_chihiro_crosshair;
 static bool opt_use_dsp = false;
 static int  opt_surface_scale = 1;
 static int  opt_avpack = CONFIG_SYS_AVPACK_HDTV;
-static bool opt_cache_shaders = true;
+/* OpenGL's shader cache, always on, as Vulkan's is (NNshi): turning it off
+ * only made the next start compile everything again */
+static const bool opt_cache_shaders = true;
 /* audio.use_dsp_jit, audio.hrtf and audio.vp.num_workers, as standalone's
  * defaults; the JIT and HRTF are read as the audio runs, the threads when the
  * voice processor starts */
@@ -1229,7 +1231,7 @@ static uint32_t guest_video_flags;
  * set in the emulated EEPROM at each start - 0 as the EEPROM has it, 1 4:3,
  * 2 16:9, 3 letterbox - so that it no longer takes the dashboard to change
  * (NNshi). In memory only: the EEPROM file keeps the dashboard's. */
-static int opt_video_aspect = 0;
+static int opt_video_aspect = 2;
 
 extern bool smbus_storage_peek(uint32_t offset, void *buf, uint32_t len);
 extern bool smbus_storage_poke(uint32_t offset, const void *buf, uint32_t len);
@@ -1447,12 +1449,6 @@ static void update_variables(void)
         else if (!strcmp(var.value, "vga"))       opt_avpack = CONFIG_SYS_AVPACK_VGA;
     }
 
-    var.key = "xemu_cache_shaders";
-    var.value = NULL;
-    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
-        opt_cache_shaders = !strcmp(var.value, "enabled");
-    }
-
     var.key = "xemu_cpu_boost";
     var.value = NULL;
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
@@ -1550,7 +1546,6 @@ static void update_variables(void)
                 environ_cb(RETRO_ENVIRONMENT_SET_SYSTEM_AV_INFO, &av_info);
             }
         }
-        g_config.perf.cache_shaders = opt_cache_shaders;
         g_config.audio.use_dsp = opt_use_dsp;
         g_config.audio.use_dsp_jit = opt_dsp_jit;
         g_config.audio.hrtf = opt_hrtf;

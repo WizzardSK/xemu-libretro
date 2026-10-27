@@ -57,6 +57,11 @@ static retro_environment_t        environ_cb   = NULL;
 static retro_video_refresh_t      video_cb     = NULL;
 static retro_audio_sample_t       audio_cb     = NULL;
 static retro_audio_sample_batch_t audio_batch_cb = NULL;
+/* Audio > Audio Thread: taken at load; whether RetroArch then calls
+ * audio_thread_callback on its audio thread (SET_AUDIO_CALLBACK) */
+static bool opt_audio_thread = false;
+static bool audio_async = false;
+static bool audio_async_enabled = false;
 static retro_input_poll_t         input_poll_cb  = NULL;
 retro_input_state_t               input_state_cb = NULL; /* non-static: used by libretro-stubs.c */
 static retro_log_printf_t         log_cb       = NULL;
@@ -1514,6 +1519,34 @@ static void update_variables(void)
         opt_vp_workers = atoi(var.value);
     }
 
+    /* Controls: per player, read by the input and rumble code
+     * (libretro-stubs.c) as they run */
+    {
+        extern int libretro_deadzone_percent[4];
+        extern bool libretro_rumble_enabled[4];
+        for (unsigned p = 0; p < 2; p++) {
+            char key[32];
+            snprintf(key, sizeof(key), "xemu_rumble_p%u", p + 1);
+            var.key = key;
+            var.value = NULL;
+            if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+                libretro_rumble_enabled[p] = strcmp(var.value, "disabled") != 0;
+            }
+            snprintf(key, sizeof(key), "xemu_deadzone_p%u", p + 1);
+            var.key = key;
+            var.value = NULL;
+            if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+                libretro_deadzone_percent[p] = MIN(MAX(atoi(var.value), 0), 30);
+            }
+        }
+    }
+
+    var.key = "xemu_audio_thread";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        opt_audio_thread = !strcmp(var.value, "enabled");
+    }
+
     var.key = "xemu_audio_volume";
     var.value = NULL;
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
@@ -2255,6 +2288,41 @@ static void load_refused(const char *text)
     LRLOG_ERROR("[xemu] %s\n", text);
 }
 
+/* Audio > Audio Thread: RetroArch's audio thread asks for the sound, and gets
+ * what the APU has mixed as it comes, at the sound card's pace as standalone
+ * plays it, so the sound keeps going while retro_run stalls (shaders being
+ * compiled). The APU still waits once about 64 ms is queued (apu.c). The
+ * ring has one reader, this thread now; retro_run leaves it alone. RetroArch
+ * stops calling while it pauses (audio_thread_set_state). */
+static void audio_thread_callback(void)
+{
+    extern int libretro_audio_pull(int16_t *out_buf, int max_frames);
+    extern void libretro_audio_flush(void);
+    static bool flushed = false;
+    int16_t buf[1024 * 2];
+
+    if (!emu_initialized || !audio_async_enabled || !audio_batch_cb) {
+        g_usleep(2000);
+        return;
+    }
+    if (!flushed) {
+        /* the stale boot audio, as the frame-paced path drops it */
+        libretro_audio_flush();
+        flushed = true;
+    }
+    const int frames = libretro_audio_pull(buf, 1024);
+    if (frames > 0) {
+        audio_batch_cb(buf, frames);
+    } else {
+        g_usleep(1000);
+    }
+}
+
+static void audio_thread_set_state(bool enabled)
+{
+    qatomic_set(&audio_async_enabled, enabled);
+}
+
 RETRO_API bool retro_load_game(const struct retro_game_info *game)
 {
     /* The pads' motors (retro_run); without one, no rumble */
@@ -2262,6 +2330,7 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
     if (!environ_cb(RETRO_ENVIRONMENT_GET_RUMBLE_INTERFACE, &rumble)) {
         memset(&rumble, 0, sizeof(rumble));
     }
+
 
     LRLOG_INFO("[xemu] retro_load_game called\n");
 
@@ -2312,6 +2381,17 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
 
     /* Read core options */
     update_variables();
+
+    /* Audio > Audio Thread, for this load */
+    audio_async = false;
+    if (opt_audio_thread) {
+        struct retro_audio_callback audio_callback = {
+            audio_thread_callback, audio_thread_set_state
+        };
+        audio_async = environ_cb(RETRO_ENVIRONMENT_SET_AUDIO_CALLBACK, &audio_callback);
+        LRLOG_INFO("[xemu] Audio: %s\n", audio_async ? "on RetroArch's audio thread"
+                                                   : "a frame's worth each frame (no audio thread to be had)");
+    }
 
     /* Store the DVD path (empty: no disc) */
     snprintf(opt_dvd_path, sizeof(opt_dvd_path), "%s", content);
@@ -2730,8 +2810,9 @@ RETRO_API void retro_run(void)
             video_cb(RETRO_HW_FRAME_BUFFER_VALID, 640, 480, 0);
         }
 
-        /* Push silence for audio */
-        if (audio_batch_cb) {
+        /* Push silence for audio (the audio thread, when it has it, does
+         * its own) */
+        if (audio_batch_cb && !audio_async) {
             int16_t silence[1600] = {0}; /* ~800 samples stereo */
             audio_batch_cb(silence, 800);
         }
@@ -2901,8 +2982,9 @@ RETRO_API void retro_run(void)
     }
 
 vk_audio:
-    /* Pull audio from the APU ring buffer */
-    if (audio_batch_cb) {
+    /* Pull audio from the APU ring buffer, unless RetroArch's audio thread
+     * does (audio_thread_callback) */
+    if (audio_batch_cb && !audio_async) {
         extern int libretro_audio_pull(int16_t *out_buf, int max_frames);
         extern void libretro_audio_flush(void);
 

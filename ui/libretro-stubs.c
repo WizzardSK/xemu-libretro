@@ -25,6 +25,7 @@ typedef struct QEMUFile QEMUFile;
 #include "xemu-input.h"
 #include "xemu-settings.h"
 #include "libretro.h"
+#include <math.h>
 
 /* ========================================================================= */
 /* xemu error/notification stubs                                             */
@@ -62,6 +63,7 @@ void xemu_queue_notification_warning(const char *msg)
 
 /* Libretro callbacks — set by libretro.c */
 extern retro_input_state_t input_state_cb;
+void libretro_input_stick(unsigned port, unsigned index, int16_t *x, int16_t *y);
 
 /* Static controller states for 4 Xbox ports */
 static ControllerState libretro_controllers[4];
@@ -162,14 +164,46 @@ void xemu_input_update_controller(ControllerState *state)
         rt = 0x7FFF;
     state->gp.axis[CONTROLLER_AXIS_RTRIG] = rt;
 
-    state->gp.axis[CONTROLLER_AXIS_LSTICK_X] = input_state_cb(port, RETRO_DEVICE_ANALOG,
-        RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_X);
-    state->gp.axis[CONTROLLER_AXIS_LSTICK_Y] = -input_state_cb(port, RETRO_DEVICE_ANALOG,
-        RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_Y);
-    state->gp.axis[CONTROLLER_AXIS_RSTICK_X] = input_state_cb(port, RETRO_DEVICE_ANALOG,
-        RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_X);
-    state->gp.axis[CONTROLLER_AXIS_RSTICK_Y] = -input_state_cb(port, RETRO_DEVICE_ANALOG,
-        RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_Y);
+    int16_t x, y;
+    libretro_input_stick(port, RETRO_DEVICE_INDEX_ANALOG_LEFT, &x, &y);
+    state->gp.axis[CONTROLLER_AXIS_LSTICK_X] = x;
+    state->gp.axis[CONTROLLER_AXIS_LSTICK_Y] = -y;
+    libretro_input_stick(port, RETRO_DEVICE_INDEX_ANALOG_RIGHT, &x, &y);
+    state->gp.axis[CONTROLLER_AXIS_RSTICK_X] = x;
+    state->gp.axis[CONTROLLER_AXIS_RSTICK_Y] = -y;
+}
+
+/* Controls > Analog Dead Zone and Rumble, per player (ui/libretro.c sets
+ * them; players 3 and 4 have neither option, and keep no dead zone and their
+ * rumble) */
+int libretro_deadzone_percent[4] = { 10, 10, 0, 0 };
+bool libretro_rumble_enabled[4] = { true, true, true, true };
+
+/* A stick through its player's Analog Dead Zone: a push inside it reads as
+ * none and the rest is scaled up to full, as one stick rather than per axis,
+ * so diagonals keep their direction. The Xbox pads and the Chihiro's controls
+ * read it alike (NNshi: OutRun 2 stops at a drive board error when the left
+ * stick is touched during its test). */
+void libretro_input_stick(unsigned port, unsigned index, int16_t *x, int16_t *y)
+{
+    const int raw_x = input_state_cb(port, RETRO_DEVICE_ANALOG, index, RETRO_DEVICE_ID_ANALOG_X);
+    const int raw_y = input_state_cb(port, RETRO_DEVICE_ANALOG, index, RETRO_DEVICE_ID_ANALOG_Y);
+    const int percent = port < 4 ? libretro_deadzone_percent[port] : 0;
+    *x = (int16_t)raw_x;
+    *y = (int16_t)raw_y;
+    if (percent <= 0) {
+        return;
+    }
+    const float dead = 32767.0f * percent / 100.0f;
+    const float magnitude = sqrtf((float)raw_x * raw_x + (float)raw_y * raw_y);
+    if (magnitude <= dead) {
+        *x = *y = 0;
+        return;
+    }
+    float scale = (magnitude - dead) / (32767.0f - dead) * 32767.0f / magnitude;
+    float fx = raw_x * scale, fy = raw_y * scale;
+    *x = (int16_t)(fx > 32767.0f ? 32767.0f : fx < -32768.0f ? -32768.0f : fx);
+    *y = (int16_t)(fy > 32767.0f ? 32767.0f : fy < -32768.0f ? -32768.0f : fy);
 }
 
 /* The pad's motors as the guest last set them, on the emulation thread
@@ -204,7 +238,9 @@ void libretro_input_apply_rumble(retro_set_rumble_state_t set_rumble_state)
         return;
     }
     for (unsigned port = 0; port < 4; port++) {
-        const uint32_t want = qatomic_read(&libretro_rumble[port]);
+        /* Controls > Rumble off: none from the Xbox pad nor a Chihiro's
+         * force feedback */
+        const uint32_t want = libretro_rumble_enabled[port] ? qatomic_read(&libretro_rumble[port]) : 0;
         if (want == applied[port]) {
             continue;
         }

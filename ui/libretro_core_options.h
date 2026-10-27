@@ -82,6 +82,11 @@ struct retro_core_option_v2_category option_cats_us[] = {
         "Configure audio emulation settings."
     },
     {
+        "controls",
+        "Controls",
+        "Rumble and the sticks' dead zone, per player."
+    },
+    {
         "chihiro",
         "Sega Chihiro",
         "The Sega Chihiro arcade games: free play, the gun games' aim and the racing games' force feedback."
@@ -267,6 +272,22 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "hdtv"
     },
+    /* Off by default: standalone mixes on its own SDL thread anyway, and
+     * the frame-paced hand-over is what the core was tested with (NNshi) */
+    {
+        "xemu_audio_thread",
+        "Audio Thread (Restart)",
+        NULL,
+        "Hands the sound to RetroArch's audio thread as the APU mixes it, as standalone plays it, instead of a frame's worth each frame: the sound keeps going while frames stall, as while shaders compile.",
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
     {
         "xemu_use_dsp",
         "APU DSP Emulation",
@@ -379,6 +400,78 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { NULL, NULL },
         },
         "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        "Rumble (Player 1)",
+        NULL,
+        "Player 1's pad rumbles, from the Xbox games and from a Chihiro racing game's force feedback. Off, none of either.",
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        "Rumble (Player 2)",
+        NULL,
+        "Player 2's pad rumbles, from the Xbox games and from a Chihiro racing game's force feedback. Off, none of either.",
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        "Analog Dead Zone (Player 1)",
+        NULL,
+        "How far player 1's sticks can be pushed before the game sees it, both sticks, on the Xbox and the Chihiro alike; the rest of the travel is scaled up to full.",
+        NULL,
+        "controls",
+        {
+            { "0",  "0%" },
+            { "5",  "5%" },
+            { "10", "10%" },
+            { "15", "15%" },
+            { "20", "20%" },
+            { "25", "25%" },
+            { "30", "30%" },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        "Analog Dead Zone (Player 2)",
+        NULL,
+        "How far player 2's sticks can be pushed before the game sees it, both sticks, on the Xbox and the Chihiro alike; the rest of the travel is scaled up to full.",
+        NULL,
+        "controls",
+        {
+            { "0",  "0%" },
+            { "5",  "5%" },
+            { "10", "10%" },
+            { "15", "15%" },
+            { "20", "20%" },
+            { "25", "25%" },
+            { "30", "30%" },
+            { NULL, NULL },
+        },
+        "10"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */

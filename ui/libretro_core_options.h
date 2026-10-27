@@ -68,8 +68,8 @@ extern "C" {
 struct retro_core_option_v2_category option_cats_us[] = {
     {
         "system",
-        "System",
-        "Configure system-level settings such as BIOS paths, memory, and boot options."
+        "System (Restart)",
+        "The machine itself: memory, network, boot and CPU. Taken when the content starts (Trim HDD on Close when it closes)."
     },
     {
         "video",
@@ -90,24 +90,6 @@ struct retro_core_option_v2_category option_cats_us[] = {
 };
 
 struct retro_core_option_v2_definition option_defs_us[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
-    {
-        "xemu_hdd_trim",
-        "Trim HDD on Close (Experimental)",
-        NULL,
-        "When the game is closed, empties the hard disk's cache partitions X, Y and Z (games format them again when they need them) and rewrites the image without unused space, so the file shrinks. Needs as much free space as the image's data for a moment. Skipped while the image holds a savestate.",
-        NULL,
-        "system",
-        {
-            { "disabled", NULL },
-            { "enabled",  NULL },
-            { NULL, NULL },
-        },
-        "disabled"
-    },
     {
         "xemu_memory",
         "System Memory (MB)",
@@ -136,6 +118,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         "Skip Boot Animation",
@@ -148,7 +132,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -166,7 +150,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
     },
     {
         "xemu_cpu_boost",
-        "CPU Boost (Restart)",
+        "CPU Boost",
         NULL,
         "Faster paths for the guest CPU and the audio processor: native SSE and a wider jump cache. Turn it off if a game misbehaves.",
         NULL,
@@ -177,6 +161,24 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        "Trim HDD on Close",
+        NULL,
+        "When the game is closed, empties the hard disk's cache partitions X, Y and Z (games format them again when they need them) and rewrites the image without unused space, so the file shrinks. Needs as much free space as the image's data for a moment. Skipped while the image holds a savestate. Done when the game closes, not at its next start.",
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_renderer",
@@ -192,6 +194,9 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "vulkan"
     },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
     {
         "xemu_video_aspect",
         "System Aspect Ratio (Restart)",
@@ -206,7 +211,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "letterbox", "Letterbox" },
             { NULL, NULL },
         },
-        "dashboard"
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -247,7 +252,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
     },
     {
         "xemu_avpack",
-        "AV Pack",
+        "AV Pack (Restart)",
         NULL,
         "Select the AV pack type. Affects available video modes.",
         NULL,
@@ -276,13 +281,29 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        "Shader Cache",
+        "xemu_dsp_jit",
+        "DSP JIT",
         NULL,
-        "Cache compiled GPU shaders to disk. Reduces stutter on subsequent runs.",
+        "Runs APU DSP Emulation's programs as compiled code instead of interpreting them: faster, as standalone's DSP JIT. Only does something with APU DSP Emulation on.",
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        "HRTF",
+        NULL,
+        "Positions the 3D voices of games that use them with head-related transfer functions, as on the console, for headphones and stereo speakers.",
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -291,10 +312,27 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "enabled"
     },
     {
+        "xemu_vp_workers",
+        "Voice Processor Threads (Restart)",
+        NULL,
+        "Threads the audio voice processor mixes the voices on. Auto uses one per CPU core.",
+        NULL,
+        "audio",
+        {
+            { "0", "Auto" },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
         "xemu_smooth_first_play",
         "Smooth First Play (Restart)",
         NULL,
-        "Compiles the shaders a game is known to use while it boots, so the first minutes do not stutter while they are compiled. Needs Cache Shaders on OpenGL.",
+        "Compiles the shaders a game is known to use while it boots, so the first minutes do not stutter while they are compiled. On OpenGL it keeps what it compiles in the shader cache, which is always on.",
         NULL,
         "video",
         {
@@ -322,27 +360,15 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "100"
     },
-    {
-        "xemu_display_filtering",
-        "Display Filtering",
-        NULL,
-        "Texture filtering mode for the display output.",
-        NULL,
-        "video",
-        {
-            { "linear",  "Bilinear" },
-            { "nearest", "Nearest Neighbor" },
-            { NULL, NULL },
-        },
-        "linear"
-    },
-    /* All by default, as standalone's own device has them where the GPU
-     * does; fewer for a GPU that crashes on one of them (Akrido) */
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
         "xemu_vk_fast_paths",
         "Vulkan Fast Paths (Restart)",
         NULL,
-        "The Vulkan features the renderer's fast paths use: pipeline libraries (pipelines compiled in parts, on a thread) and dynamic states. All, as standalone. Fewer only to find out whether one of them crashes on a GPU.",
+        "Affects shader compilation speed on Vulkan. \"All\" is the fastest but can crash some games.",
         NULL,
         "video",
         {
@@ -352,7 +378,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "none",     "None" },
             { NULL, NULL },
         },
-        "all"
+        "no_gpl"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -373,7 +399,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "enabled"
     },
-    /* Mouse by default, as standalone aims with the mouse */
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
     {
         "xemu_chihiro_gun_aim",
         "Light Gun Aim",
@@ -386,7 +413,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "stick", "Analog Stick" },
             { NULL, NULL },
         },
-        "mouse"
+        "stick"
     },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
@@ -404,7 +431,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "enabled"
     },
-    /* Off by default, as standalone's force feedback */
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
     {
         "xemu_chihiro_ffb",
         "Force Feedback Rumble",
@@ -422,7 +450,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "200", "200%" },
             { NULL, NULL },
         },
-        "disabled"
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };

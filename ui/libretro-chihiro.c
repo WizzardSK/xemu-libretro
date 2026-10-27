@@ -40,9 +40,14 @@ static bool pad(unsigned port, unsigned id)
     return input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, id) != 0;
 }
 
+/* One axis of a stick, through its player's Analog Dead Zone
+ * (libretro-stubs.c) */
 static int16_t stick(unsigned port, unsigned index, unsigned id)
 {
-    return input_state_cb(port, RETRO_DEVICE_ANALOG, index, id);
+    extern void libretro_input_stick(unsigned port, unsigned index, int16_t *x, int16_t *y);
+    int16_t x, y;
+    libretro_input_stick(port, index, &x, &y);
+    return id == RETRO_DEVICE_ID_ANALOG_X ? x : y;
 }
 
 /* A trigger's travel, 0..1; a pad without analog triggers gives all or none */

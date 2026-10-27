@@ -368,7 +368,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_vk_fast_paths",
         "Vulkan Fast Paths (Restart)",
         NULL,
-        "The Vulkan features the renderer's fast paths use: pipeline libraries (pipelines compiled in parts, on a thread) and dynamic states. No Pipeline Libraries by default, as some games crash with them (RalliSport Challenge 2, Conker); All is standalone's.",
+        "Affects shader compilation speed on Vulkan. \"All\" is the fastest but can crash some games.",
         NULL,
         "video",
         {

@@ -95,6 +95,20 @@ struct retro_core_option_v2_definition option_defs_us[] = {
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
     {
+        "xemu_hdd_trim",
+        "Trim HDD on Close (Experimental)",
+        NULL,
+        "When the game is closed, empties the hard disk's cache partitions X, Y and Z (games format them again when they need them) and rewrites the image without unused space, so the file shrinks. Needs as much free space as the image's data for a moment. Skipped while the image holds a savestate.",
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_memory",
         "System Memory (MB)",
         NULL,

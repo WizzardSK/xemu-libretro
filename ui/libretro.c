@@ -22,6 +22,13 @@
 #include "hw/xbox/chihiro/chihiro.h"
 #include "libretro-crosshair.h"
 #include "ui/xemu-widescreen.h"
+#include "system/blockdev.h"
+#include "system/block-backend.h"
+#include "block/block.h"
+#include "block/snapshot.h"
+#include "block/graph-lock.h"
+#include "qobject/qdict.h"
+#include <glib/gstdio.h>
 #include "ui/libretro-widescreen-titles.h"
 #include "xemu-xbe.h"
 #include "qemu/bswap.h"
@@ -193,6 +200,9 @@ static bool snapshot_sem_initialized = false;
 static char opt_bootrom_path[4096] = "";
 static char opt_bios_path[4096] = "";
 static char opt_hdd_path[4096] = "";
+/* Trim HDD on Close (hdd_trim) */
+static bool opt_hdd_trim = false;
+static void hdd_trim(void);
 static char opt_eeprom_path[4096] = "";
 static char opt_dvd_path[4096] = "";
 static char system_dir[4096] = "";
@@ -1371,6 +1381,11 @@ static void update_variables(void)
         opt_aspect = !strcmp(var.value, "4:3") ? 1 : !strcmp(var.value, "16:9") ? 2 : 0;
     }
 
+    var.key = "xemu_hdd_trim";
+    var.value = NULL;
+    opt_hdd_trim = environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value &&
+                   !strcmp(var.value, "enabled");
+
     var.key = "xemu_video_aspect";
     var.value = NULL;
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
@@ -1808,12 +1823,176 @@ static void *emu_thread_func(void *opaque)
      * Panzer Dragoon Orta stuck loading, in standalone too with that image) */
     vm_shutdown();
 
+    if (opt_hdd_trim && !xemu_chihiro_mode()) {
+        hdd_trim();
+    }
+
     /* The main loop's GLib context goes to the next content's thread, which
      * cannot take it while this one still owns it as its default */
     g_main_context_pop_thread_default(qemu_main_context);
 
     bql_unlock();
     return NULL;
+}
+
+/* Trim HDD on Close (experimental, NNshi, Akrido): when the content closes,
+ * the cache partitions X, Y and Z are emptied - games format them again
+ * when they need them - and the image is written anew without the clusters
+ * nothing uses, so the file shrinks. Skipped while the image holds a
+ * savestate (a snapshot keeps its clusters, and copying the disk alone
+ * would drop it). The copy needs as much free space as the data for a
+ * moment. Runs on the emulator thread with the VM shut down. */
+
+#define HDD_CACHE_START 0x00080000LL           /* X, then Y and Z */
+#define HDD_CACHE_LEN   (3 * 0x2EE00000LL)     /* 750 MB each */
+#define HDD_COPY_CHUNK  (1024 * 1024)
+
+static bool hdd_has_snapshot(BlockDriverState *bs)
+{
+    GRAPH_RDLOCK_GUARD_MAINLOOP();
+    QEMUSnapshotInfo *sn = NULL;
+    int n = bdrv_snapshot_list(bs, &sn);
+    g_free(sn);
+    return n > 0;
+}
+
+static bool hdd_is_zero(const uint8_t *buf, size_t len)
+{
+    return buf[0] == 0 && !memcmp(buf, buf + 1, len - 1);
+}
+
+/* Every chunk of blk that is not all zero, into a new qcow2 image at path */
+static bool hdd_copy_used(BlockBackend *blk, const char *path, int64_t size)
+{
+    Error *err = NULL;
+    bdrv_img_create(path, "qcow2", NULL, NULL, NULL, size, 0, true, &err);
+    if (err) {
+        LRLOG_ERROR("[xemu] Trim HDD: cannot create %s: %s\n", path, error_get_pretty(err));
+        error_free(err);
+        return false;
+    }
+    QDict *opts = qdict_new();
+    qdict_put_str(opts, "driver", "qcow2");
+    BlockBackend *out = blk_new_open(path, NULL, opts, BDRV_O_RDWR, &err);
+    if (!out) {
+        LRLOG_ERROR("[xemu] Trim HDD: cannot open %s: %s\n", path, error_get_pretty(err));
+        error_free(err);
+        return false;
+    }
+    uint8_t *buf = g_malloc(HDD_COPY_CHUNK);
+    bool ok = true;
+    for (int64_t off = 0; off < size && ok; off += HDD_COPY_CHUNK) {
+        const int64_t len = MIN(HDD_COPY_CHUNK, size - off);
+        if (blk_pread(blk, off, len, buf, 0) < 0) {
+            ok = false;
+        } else if (!hdd_is_zero(buf, len) && blk_pwrite(out, off, len, buf, 0) < 0) {
+            ok = false;
+        }
+    }
+    g_free(buf);
+    if (ok && blk_flush(out) < 0) {
+        ok = false;
+    }
+    blk_unref(out);
+    if (!ok) {
+        LRLOG_ERROR("[xemu] Trim HDD: copying the image failed (free space?), the image stays as it was\n");
+    }
+    return ok;
+}
+
+static BlockDriverState *hdd_open(const char *path, int flags)
+{
+    Error *err = NULL;
+    QDict *opts = qdict_new();
+    qdict_put_str(opts, "driver", "qcow2");
+    BlockDriverState *bs = bdrv_open(path, NULL, opts, flags, &err);
+    if (!bs) {
+        LRLOG_ERROR("[xemu] Trim HDD: cannot open %s: %s\n", path, error_get_pretty(err));
+        error_free(err);
+    }
+    return bs;
+}
+
+static void hdd_trim(void)
+{
+    const char *path = g_config.sys.files.hdd_path;
+    DriveInfo *dinfo = drive_get(IF_IDE, 0, 0);
+    BlockBackend *blk = dinfo ? blk_by_legacy_dinfo(dinfo) : NULL;
+    BlockDriverState *bs = blk ? blk_bs(blk) : NULL;
+    if (!bs || !path || !path[0]) {
+        return;
+    }
+    if (hdd_has_snapshot(bs)) {
+        LRLOG_INFO("[xemu] Trim HDD: skipped, the image holds a savestate\n");
+        return;
+    }
+    const int64_t size = blk_getlength(blk);
+    if (size < HDD_CACHE_START + HDD_CACHE_LEN) {
+        return;
+    }
+    struct stat before;
+    const bool had_size = stat(path, &before) == 0;
+
+    if (blk_pwrite_zeroes(blk, HDD_CACHE_START, HDD_CACHE_LEN, BDRV_REQ_MAY_UNMAP) < 0 ||
+        blk_flush(blk) < 0) {
+        LRLOG_ERROR("[xemu] Trim HDD: emptying X, Y and Z failed, the image stays as it was\n");
+        return;
+    }
+
+    char *tmp = g_strdup_printf("%s.trim", path);
+    char *bak = g_strdup_printf("%s.untrimmed", path);
+    if (!hdd_copy_used(blk, tmp, size)) {
+        g_remove(tmp);
+        goto out;
+    }
+
+    /* The new image in the old one's place, under the same drive */
+    const int flags = bdrv_get_flags(bs);
+    blk_remove_bs(blk);
+    bool replaced = g_rename(path, bak) == 0;
+    if (replaced && g_rename(tmp, path) != 0) {
+        g_rename(bak, path);
+        replaced = false;
+    }
+    if (!replaced) {
+        LRLOG_ERROR("[xemu] Trim HDD: cannot replace the image, the old one is kept\n");
+        g_remove(tmp);
+    }
+    BlockDriverState *nbs = hdd_open(path, flags);
+    Error *err = NULL;
+    if (!nbs || blk_insert_bs(blk, nbs, &err) < 0) {
+        if (err) {
+            LRLOG_ERROR("[xemu] Trim HDD: %s\n", error_get_pretty(err));
+            error_free(err);
+        }
+        if (nbs) {
+            bdrv_unref(nbs);
+            nbs = NULL;
+        }
+        if (replaced) {
+            /* back to the image as it was */
+            LRLOG_ERROR("[xemu] Trim HDD: the new image did not open, the old one is put back\n");
+            g_remove(path);
+            g_rename(bak, path);
+            nbs = hdd_open(path, flags);
+            if (nbs) {
+                blk_insert_bs(blk, nbs, NULL);
+            }
+        }
+    } else if (replaced) {
+        g_remove(bak);
+        struct stat after;
+        if (had_size && stat(path, &after) == 0) {
+            LRLOG_INFO("[xemu] Trim HDD: X, Y and Z emptied, the image went from %lld to %lld MB\n",
+                       (long long)(before.st_size >> 20), (long long)(after.st_size >> 20));
+        }
+    }
+    if (nbs) {
+        bdrv_unref(nbs);
+    }
+out:
+    g_free(tmp);
+    g_free(bak);
 }
 
 /* ========================================================================= */

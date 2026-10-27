@@ -369,8 +369,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "100"
     },
-        "linear"
-    },
     /* All by default, as standalone's own device has them where the GPU
      * does; fewer for a GPU that crashes on one of them (Akrido) */
     {

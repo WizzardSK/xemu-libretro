@@ -360,13 +360,15 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "100"
     },
-    /* All by default, as standalone's own device has them where the GPU
-     * does; fewer for a GPU that crashes on one of them (Akrido) */
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
         "xemu_vk_fast_paths",
         "Vulkan Fast Paths (Restart)",
         NULL,
-        "The Vulkan features the renderer's fast paths use: pipeline libraries (pipelines compiled in parts, on a thread) and dynamic states. All, as standalone. Fewer only to find out whether one of them crashes on a GPU.",
+        "The Vulkan features the renderer's fast paths use: pipeline libraries (pipelines compiled in parts, on a thread) and dynamic states. No Pipeline Libraries by default, as some games crash with them (RalliSport Challenge 2, Conker); All is standalone's.",
         NULL,
         "video",
         {
@@ -376,7 +378,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "none",     "None" },
             { NULL, NULL },
         },
-        "all"
+        "no_gpl"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */

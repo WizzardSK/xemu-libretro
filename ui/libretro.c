@@ -216,7 +216,7 @@ static bool opt_smooth_first_play = true;
 static bool opt_chihiro_freeplay = true;
 /* Video > Vulkan Fast Paths: which of the renderer's fast-path features the
  * shared device may get (xemu_vk_create_device) */
-static bool opt_vk_gpl = true, opt_vk_dynamic = true;
+static bool opt_vk_gpl = false, opt_vk_dynamic = true;
 static int opt_chihiro_ffb = 100; /* percent, 0 = off */
 extern bool libretro_chihiro_aim_stick;   /* libretro-chihiro.c */
 extern bool libretro_chihiro_crosshair;

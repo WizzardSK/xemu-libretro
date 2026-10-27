@@ -235,7 +235,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
     },
     {
         "xemu_surface_scale",
-        "Internal Resolution Scale",
+        "Internal Resolution Scale (Restart)",
         NULL,
         "Scales the internal rendering resolution. Higher values improve quality but reduce performance.",
         NULL,

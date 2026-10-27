@@ -1368,11 +1368,6 @@ static void update_aspect(void)
     LRLOG_INFO("[xemu] Aspect ratio %s\n", widescreen ? "16:9" : "4:3");
 }
 
-static void apply_surface_scale(void *opaque)
-{
-    nv2a_set_surface_scale_factor(opt_surface_scale);
-}
-
 static void update_variables(void)
 {
     struct retro_variable var;
@@ -1431,9 +1426,13 @@ static void update_variables(void)
         opt_hard_fpu = !strcmp(var.value, "enabled");
     }
 
+    /* Internal Resolution Scale (Restart): taken when the content starts
+     * only. A scale above the one the frontend was told at the start made it
+     * rebuild its video context, which the core crashed in, and declaring the
+     * highest scale for everyone costs video memory nobody uses (NNshi). */
     var.key = "xemu_surface_scale";
     var.value = NULL;
-    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+    if (!emu_initialized && environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
         opt_surface_scale = atoi(var.value);
         if (opt_surface_scale < 1) opt_surface_scale = 1;
         if (opt_surface_scale > 10) opt_surface_scale = 10;
@@ -1563,23 +1562,6 @@ static void update_variables(void)
     /* Apply runtime-safe options */
     if (emu_initialized) {
         g_config.audio.volume_limit = opt_audio_volume / 100.0f;
-        if (g_config.display.quality.surface_scale != opt_surface_scale) {
-            /* as standalone's setting does - g_config alone was only read
-             * when the renderer started - on the emulation thread, which
-             * holds the BQL nv2a_set_surface_scale_factor expects */
-            aio_bh_schedule_oneshot(qemu_get_aio_context(),
-                                    apply_surface_scale, NULL);
-
-            /* A scale above the one the frontend sized itself for: tell
-             * it the new maximum (it sets its video up again) */
-            unsigned max_w, max_h;
-            xemu_max_geometry(opt_surface_scale, &max_w, &max_h);
-            if (max_w > declared_max_width || max_h > declared_max_height) {
-                struct retro_system_av_info av_info;
-                retro_get_system_av_info(&av_info);
-                environ_cb(RETRO_ENVIRONMENT_SET_SYSTEM_AV_INFO, &av_info);
-            }
-        }
         g_config.audio.use_dsp = opt_use_dsp;
         g_config.audio.use_dsp_jit = opt_dsp_jit;
         g_config.audio.hrtf = opt_hrtf;

@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- Internal Resolution Scale is Internal Resolution Scale (Restart), taken when the content starts: raised while running above the scale it started with, it made RetroArch rebuild its video context and the core crashed (NNshi).
 - New category Controls, after Audio: Rumble (Player 1) and (Player 2), on by default, turn off everything that rumbles that player's pad, the Xbox games' and a Chihiro racing game's force feedback; Analog Dead Zone (Player 1) and (Player 2), 0 to 30%, 10% by default, for both sticks, Xbox and Chihiro alike, with the rest of the travel scaled up to full (OutRun 2 stopped at a drive board error when the stick moved during its test) (NNshi).
 - New option Audio > Audio Thread (Restart), off by default: the sound goes to RetroArch's audio thread as the APU mixes it, as standalone plays it, so it keeps going while frames stall, as while shaders compile (NNshi).
 - The core carries xemu-dashboard's pre-formatted hard disk (`xbox_hdd.qcow2`, 1.6 MB, MIT: an unsigned dashboard and no Microsoft software) and writes it to `system/xemu/` when there is no HDD, so only the boot ROM and the BIOS have to be supplied (NNshi).

@@ -26,6 +26,7 @@
 #include "libretro-crosshair.h"
 
 extern retro_input_state_t input_state_cb;
+extern retro_log_printf_t log_cb;
 
 void libretro_chihiro_update_input(void);
 void libretro_chihiro_apply_pending(void);
@@ -445,6 +446,49 @@ void libretro_chihiro_update_input(void)
     for (int p = 0; p < 2; p++) {
         if (pressed(pad(p, RETRO_DEVICE_ID_JOYPAD_SELECT), &coin_before[p]))
             qatomic_inc(&pending_coins[p]);
+    }
+
+    /* Test build: what RetroArch gives port 1 and what the board gets,
+     * once a second and whenever it changes */
+    {
+        static unsigned frames;
+        static uint32_t last_buttons = UINT32_MAX;
+        static uint16_t last_sw = 0xFFFF;
+        static uint8_t last_sys = 0xFF;
+        uint32_t buttons = 0;
+        for (unsigned id = 0; id <= RETRO_DEVICE_ID_JOYPAD_R3; id++) {
+            if (pad(0, id))
+                buttons |= 1u << id;
+        }
+        uint16_t sw = (uint16_t)(sw0 << 8 | sw1);
+        if (log_cb && (++frames % 60 == 0 || buttons != last_buttons ||
+                       sw != last_sw || jvs->system_switches != last_sys)) {
+            log_cb(RETRO_LOG_INFO,
+                   "[xemu] Chihiro input: profile %d, port 1 buttons %04X "
+                   "(B Y Sel St U D L R A X L R L2 R2 L3 R3), left stick "
+                   "%d,%d, R2 %d L2 %d | board: system %02X, P1 %02X%02X, "
+                   "P2 %02X%02X, analog %04X %04X %04X, coins %d/%d (pending "
+                   "%d/%d)\n",
+                   profile, buttons,
+                   stick(0, RETRO_DEVICE_INDEX_ANALOG_LEFT,
+                         RETRO_DEVICE_ID_ANALOG_X),
+                   stick(0, RETRO_DEVICE_INDEX_ANALOG_LEFT,
+                         RETRO_DEVICE_ID_ANALOG_Y),
+                   input_state_cb(0, RETRO_DEVICE_ANALOG,
+                                  RETRO_DEVICE_INDEX_ANALOG_BUTTON,
+                                  RETRO_DEVICE_ID_JOYPAD_R2),
+                   input_state_cb(0, RETRO_DEVICE_ANALOG,
+                                  RETRO_DEVICE_INDEX_ANALOG_BUTTON,
+                                  RETRO_DEVICE_ID_JOYPAD_L2),
+                   jvs->system_switches, sw0, sw1, p2sw0, p2sw1,
+                   jvs->analog[0], jvs->analog[1], jvs->analog[2],
+                   jvs->coin_count[0], jvs->coin_count[1],
+                   qatomic_read(&pending_coins[0]),
+                   qatomic_read(&pending_coins[1]));
+            last_buttons = buttons;
+            last_sw = sw;
+            last_sys = jvs->system_switches;
+        }
     }
     if (cards) {
         qatomic_or(&pending_cards, cards);

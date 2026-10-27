@@ -64,7 +64,7 @@ static bool audio_async = false;
 static bool audio_async_enabled = false;
 static retro_input_poll_t         input_poll_cb  = NULL;
 retro_input_state_t               input_state_cb = NULL; /* non-static: used by libretro-stubs.c */
-static retro_log_printf_t         log_cb       = NULL;
+retro_log_printf_t                log_cb       = NULL; /* non-static: used by libretro-chihiro.c */
 
 /* ========================================================================= */
 /* Libretro log wrapper - use this instead of fprintf(stderr, ...)           */

@@ -272,8 +272,11 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "hdtv"
     },
-    /* Off by default: standalone mixes on its own SDL thread anyway, and
-     * the frame-paced hand-over is what the core was tested with (NNshi) */
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
     {
         "xemu_audio_thread",
         "Audio Thread (Restart)",
@@ -286,7 +289,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_use_dsp",

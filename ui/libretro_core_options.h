@@ -110,7 +110,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
     },
     {
         "xemu_memory",
-        "System Memory (MB)",
+        "System Memory (MB, Restart)",
         NULL,
         "Amount of system RAM. 64 MB is standard; 128 MB is used by debug kits.",
         NULL,
@@ -124,7 +124,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
     },
     {
         "xemu_network_backend",
-        "Network Backend",
+        "Network Backend (Restart)",
         NULL,
         "Enable network support for Xbox games with LAN/System Link features. NAT backend provides basic connectivity.",
         NULL,
@@ -138,7 +138,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
     },
     {
         "xemu_skip_boot_anim",
-        "Skip Boot Animation",
+        "Skip Boot Animation (Restart)",
         NULL,
         "Skip the Xbox boot animation.",
         NULL,
@@ -152,7 +152,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
     },
     {
         "xemu_hard_fpu",
-        "Hardware FPU Emulation",
+        "Hardware FPU Emulation (Restart)",
         NULL,
         "Use host FPU for x87 emulation. Faster but may have minor inaccuracies.",
         NULL,
@@ -247,7 +247,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
     },
     {
         "xemu_avpack",
-        "AV Pack",
+        "AV Pack (Restart)",
         NULL,
         "Select the AV pack type. Affects available video modes.",
         NULL,
@@ -276,9 +276,56 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
+    {
+        "xemu_dsp_jit",
+        "DSP JIT",
+        NULL,
+        "Runs APU DSP Emulation's programs as compiled code instead of interpreting them: faster, as standalone's DSP JIT. Only does something with APU DSP Emulation on.",
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        "HRTF",
+        NULL,
+        "Positions the 3D voices of games that use them with head-related transfer functions, as on the console, for headphones and stereo speakers.",
+        NULL,
+        "audio",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_vp_workers",
+        "Voice Processor Threads (Restart)",
+        NULL,
+        "Threads the audio voice processor mixes the voices on. Auto uses one per CPU core.",
+        NULL,
+        "audio",
+        {
+            { "0", "Auto" },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
     {
         "xemu_cache_shaders",
-        "Shader Cache",
+        "Shader Cache (OpenGL)",
         NULL,
         "Cache compiled GPU shaders to disk. Reduces stutter on subsequent runs.",
         NULL,
@@ -322,18 +369,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "100"
     },
-    {
-        "xemu_display_filtering",
-        "Display Filtering",
-        NULL,
-        "Texture filtering mode for the display output.",
-        NULL,
-        "video",
-        {
-            { "linear",  "Bilinear" },
-            { "nearest", "Nearest Neighbor" },
-            { NULL, NULL },
-        },
         "linear"
     },
     /* All by default, as standalone's own device has them where the GPU

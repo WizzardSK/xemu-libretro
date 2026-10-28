@@ -29,6 +29,7 @@
 #include "block/graph-lock.h"
 #include "qobject/qdict.h"
 #include <glib/gstdio.h>
+#include <zlib.h>
 #include "ui/libretro-widescreen-titles.h"
 #include "ui/libretro-xdb-titles.h"
 #include "xemu-xbe.h"
@@ -2034,8 +2035,11 @@ static bool xiso_blk_read(void *ctx, int64_t off, size_t len, void *buf)
     return blk_pread(ctx, off, len, buf, 0) >= 0;
 }
 
-/* The title ID and name in the certificate of an XISO's default.xbe */
-static bool xiso_title(const char *image, uint32_t *title_id, char **title_name)
+/* The title ID, name and regions (XBE_REGION_*) in the certificate of an
+ * XISO's default.xbe */
+#define XBE_REGION_NORTH_AMERICA 0x1
+static bool xiso_title(const char *image, uint32_t *title_id, char **title_name,
+                       uint32_t *regions)
 {
     static const int64_t offsets[] = { 0, 0x18300000, 0xFD90000, 0x2080000 };
     FILE *f = fopen(image, "rb");
@@ -2046,7 +2050,7 @@ static bool xiso_title(const char *image, uint32_t *title_id, char **title_name)
     for (size_t i = 0; i < ARRAY_SIZE(offsets) && !ok; i++) {
         struct xiso_file x = { f, offsets[i] };
         uint32_t sector, size;
-        uint8_t hdr[0x120], cert[0x58];
+        uint8_t hdr[0x120], cert[0xA4];
         if (!xiso_find_xbe(xiso_file_read, &x, &sector, &size) ||
             !xiso_file_read(&x, (int64_t)sector * XISO_SECTOR, sizeof(hdr), hdr) ||
             memcmp(hdr, "XBEH", 4)) {
@@ -2059,6 +2063,7 @@ static bool xiso_title(const char *image, uint32_t *title_id, char **title_name)
             continue;
         }
         *title_id = ldl_le_p(cert + 8);
+        *regions = ldl_le_p(cert + 0xA0);
         gunichar2 name[41] = { 0 };
         for (int c = 0; c < 40; c++) {
             name[c] = lduw_le_p(cert + 0xC + 2 * c);
@@ -2198,18 +2203,24 @@ static void patch_manager_load(const char *image, bool chihiro)
     patch_files = g_ptr_array_new_with_free_func(g_free);
     patch_enabled = g_ptr_array_new_with_free_func(g_free);
 
-    uint32_t title_id = 0;
+    uint32_t title_id = 0, regions = 0;
     g_autofree char *title_name = NULL;
     g_autofree char *dir = system_dir[0] ? g_strdup_printf("%s/xemu/patches", system_dir) : NULL;
     GDir *d = dir ? g_dir_open(dir, 0, NULL) : NULL;
     if (d && !chihiro && image && image[0] && !strstr(image, "://") &&
-        xiso_title(image, &title_id, &title_name)) {
+        xiso_title(image, &title_id, &title_name, &regions)) {
         g_autofree char *title_norm = patch_name_norm(title_name);
-        LRLOG_INFO("[xemu] Patch Manager: %08X \"%s\"\n", title_id, title_name);
+        /* XboxGraphicalPatches' IPS patches are for the North American
+         * releases: on a PAL or Japanese one, which can have the same title
+         * ID, they kept games from booting or did nothing (NNshi). A BPS
+         * patch carries the CRC of the XBE it is for and checks it itself. */
+        const bool north_america = regions & XBE_REGION_NORTH_AMERICA;
+        LRLOG_INFO("[xemu] Patch Manager: %08X \"%s\", regions %X\n", title_id, title_name, regions);
         const char *n;
         while ((n = g_dir_read_name(d))) {
             g_autofree char *lower = g_ascii_strdown(n, -1);
-            if ((g_str_has_suffix(lower, ".ips") || g_str_has_suffix(lower, ".jmp")) &&
+            if ((((g_str_has_suffix(lower, ".ips") || g_str_has_suffix(lower, ".jmp")) && north_america) ||
+                 g_str_has_suffix(lower, ".bps")) &&
                 !strstr(lower, "apply to") && patch_is_for(n, title_id, title_norm)) {
                 g_ptr_array_add(patch_files, g_strdup(n));
             }
@@ -2271,6 +2282,92 @@ static int xbe_apply_ips(uint8_t *xbe, size_t size, const uint8_t *p, size_t n)
         records++;
     }
     return -1;
+}
+
+static uint64_t bps_number(const uint8_t *p, size_t n, size_t *i)
+{
+    uint64_t data = 0, shift = 1;
+    while (*i < n) {
+        const uint8_t x = p[(*i)++];
+        data += (x & 0x7f) * shift;
+        if (x & 0x80) {
+            break;
+        }
+        shift <<= 7;
+        data += shift;
+    }
+    return data;
+}
+
+/* A BPS patch, for an XBE of its size and CRC alone: -2 when the XBE is
+ * another one, -1 when the patch is not valid or would change the size */
+static int xbe_apply_bps(uint8_t *xbe, size_t size, const uint8_t *p, size_t n)
+{
+    if (n < 4 + 12 || memcmp(p, "BPS1", 4)) {
+        return -1;
+    }
+    const size_t end = n - 12;
+    size_t i = 4;
+    const uint64_t source_size = bps_number(p, end, &i);
+    const uint64_t target_size = bps_number(p, end, &i);
+    i += bps_number(p, end, &i); /* metadata */
+    if (source_size != size || target_size != size || i > end) {
+        return -1;
+    }
+    if (crc32(0, xbe, size) != ldl_le_p(p + end)) {
+        return -2;
+    }
+    g_autofree uint8_t *target = g_malloc(size);
+    size_t out = 0;
+    int64_t source_rel = 0, target_rel = 0;
+    int actions = 0;
+    while (i < end) {
+        const uint64_t d = bps_number(p, end, &i);
+        const uint64_t len = (d >> 2) + 1;
+        if (out + len > size) {
+            return -1;
+        }
+        switch (d & 3) {
+        case 0: /* SourceRead */
+            memcpy(target + out, xbe + out, len);
+            break;
+        case 1: /* TargetRead */
+            if (i + len > end) {
+                return -1;
+            }
+            memcpy(target + out, p + i, len);
+            i += len;
+            break;
+        case 2: { /* SourceCopy */
+            const uint64_t o = bps_number(p, end, &i);
+            source_rel += (o & 1 ? -1 : 1) * (int64_t)(o >> 1);
+            if (source_rel < 0 || source_rel + len > size) {
+                return -1;
+            }
+            memcpy(target + out, xbe + source_rel, len);
+            source_rel += len;
+            break;
+        }
+        case 3: { /* TargetCopy, byte by byte as it may overlap */
+            const uint64_t o = bps_number(p, end, &i);
+            target_rel += (o & 1 ? -1 : 1) * (int64_t)(o >> 1);
+            if (target_rel < 0 || target_rel + len > out + len) {
+                return -1;
+            }
+            for (uint64_t k = 0; k < len; k++) {
+                target[out + k] = target[target_rel++];
+            }
+            break;
+        }
+        }
+        out += len;
+        actions++;
+    }
+    if (out != size || crc32(0, target, size) != ldl_le_p(p + end + 4)) {
+        return -1;
+    }
+    memcpy(xbe, target, size);
+    return actions;
 }
 
 static int xbe_apply_jmp(uint8_t *xbe, size_t size, const char *text)
@@ -2356,9 +2453,15 @@ char *xemu_libretro_xbe_patched(const char *image, uint64_t offset)
         }
         /* each patch on a copy, so one that fails leaves no half of itself */
         g_autofree uint8_t *copy = g_memdup2(xbe, size);
-        const bool jmp = g_str_has_suffix(f, ".jmp") || g_str_has_suffix(f, ".JMP");
-        const int r = jmp ? xbe_apply_jmp(copy, size, data)
-                          : xbe_apply_ips(copy, size, (const uint8_t *)data, n);
+        g_autofree char *lower = g_ascii_strdown(f, -1);
+        const int r = g_str_has_suffix(lower, ".jmp") ? xbe_apply_jmp(copy, size, data)
+                    : g_str_has_suffix(lower, ".bps") ? xbe_apply_bps(copy, size, (const uint8_t *)data, n)
+                    : xbe_apply_ips(copy, size, (const uint8_t *)data, n);
+        if (r == -2) {
+            LRLOG_ERROR("[xemu] XBE patch %s not applied: it is for another release's "
+                        "default.xbe (CRC)\n", f);
+            continue;
+        }
         if (r < 0) {
             LRLOG_ERROR("[xemu] XBE patch %s not applied: not a valid patch, or it "
                         "writes past default.xbe's end\n", f);

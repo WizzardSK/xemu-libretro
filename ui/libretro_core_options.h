@@ -281,7 +281,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_audio_thread",
         "Audio Thread (Restart)",
         NULL,
-        "Hands the sound to RetroArch's audio thread as the APU mixes it, as standalone plays it, instead of a frame's worth each frame: the sound keeps going while frames stall, as while shaders compile. RetroArch 1.21 and older slow their menu down with it; nightly builds do not.",
+        "Hands the sound to RetroArch's audio thread as the APU mixes it, as standalone plays it, instead of a frame's worth each frame: the sound keeps going while frames stall, as while shaders compile. RetroArch up to 1.22.2 slows its menu down with it; nightly builds do not.",
         NULL,
         "audio",
         {

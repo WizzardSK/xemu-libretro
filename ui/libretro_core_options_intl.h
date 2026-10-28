@@ -39,12 +39,16 @@ extern "C" {
 */
 /* RETRO_LANGUAGE_AR */
 
-#define CATEGORY_SYSTEM_LABEL_AR "نظام"
+#define CATEGORY_SYSTEM_LABEL_AR NULL
 #define CATEGORY_SYSTEM_INFO_0_AR NULL
 #define CATEGORY_VIDEO_LABEL_AR "الفيديو"
 #define CATEGORY_VIDEO_INFO_0_AR NULL
 #define CATEGORY_AUDIO_LABEL_AR "الصوت"
 #define CATEGORY_AUDIO_INFO_0_AR NULL
+#define CATEGORY_CONTROLS_LABEL_AR "التحكم"
+#define CATEGORY_CONTROLS_INFO_0_AR NULL
+#define CATEGORY_CHIHIRO_LABEL_AR NULL
+#define CATEGORY_CHIHIRO_INFO_0_AR NULL
 #define XEMU_MEMORY_LABEL_AR NULL
 #define XEMU_MEMORY_INFO_0_AR NULL
 #define OPTION_VAL_64_AR NULL
@@ -56,15 +60,23 @@ extern "C" {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_AR NULL
 #define XEMU_HARD_FPU_LABEL_AR NULL
 #define XEMU_HARD_FPU_INFO_0_AR NULL
+#define XEMU_CPU_BOOST_LABEL_AR NULL
+#define XEMU_CPU_BOOST_INFO_0_AR NULL
+#define XEMU_HDD_TRIM_LABEL_AR NULL
+#define XEMU_HDD_TRIM_INFO_0_AR NULL
 #define XEMU_RENDERER_LABEL_AR NULL
 #define XEMU_RENDERER_INFO_0_AR NULL
 #define OPTION_VAL_VULKAN_AR NULL
 #define OPTION_VAL_OPENGL_AR NULL
-#define XEMU_ASPECT_RATIO_LABEL_AR "نسبة الجانب"
-#define XEMU_ASPECT_RATIO_INFO_0_AR NULL
-#define OPTION_VAL_AUTO_AR "تلقائي"
+#define XEMU_VIDEO_ASPECT_LABEL_AR NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_AR NULL
+#define OPTION_VAL_DASHBOARD_AR NULL
 #define OPTION_VAL_4_3_AR NULL
 #define OPTION_VAL_16_9_AR NULL
+#define OPTION_VAL_LETTERBOX_AR NULL
+#define XEMU_ASPECT_RATIO_LABEL_AR NULL
+#define XEMU_ASPECT_RATIO_INFO_0_AR NULL
+#define OPTION_VAL_AUTO_AR "تلقائي"
 #define XEMU_SURFACE_SCALE_LABEL_AR NULL
 #define XEMU_SURFACE_SCALE_INFO_0_AR NULL
 #define OPTION_VAL_1_AR NULL
@@ -84,12 +96,18 @@ extern "C" {
 #define OPTION_VAL_SVIDEO_AR NULL
 #define OPTION_VAL_SCART_AR NULL
 #define OPTION_VAL_VGA_AR NULL
+#define XEMU_AUDIO_THREAD_LABEL_AR NULL
+#define XEMU_AUDIO_THREAD_INFO_0_AR NULL
 #define XEMU_USE_DSP_LABEL_AR NULL
 #define XEMU_USE_DSP_INFO_0_AR NULL
-#define XEMU_CACHE_SHADERS_LABEL_AR NULL
-#define XEMU_CACHE_SHADERS_INFO_0_AR NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_AR NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_AR NULL
+#define XEMU_DSP_JIT_LABEL_AR NULL
+#define XEMU_DSP_JIT_INFO_0_AR NULL
+#define XEMU_HRTF_LABEL_AR NULL
+#define XEMU_HRTF_INFO_0_AR NULL
+#define XEMU_VP_WORKERS_LABEL_AR NULL
+#define XEMU_VP_WORKERS_INFO_0_AR NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_AR NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_AR NULL
 #define XEMU_AUDIO_VOLUME_LABEL_AR NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_AR NULL
 #define OPTION_VAL_100_AR NULL
@@ -98,10 +116,40 @@ extern "C" {
 #define OPTION_VAL_40_AR NULL
 #define OPTION_VAL_20_AR NULL
 #define OPTION_VAL_0_AR NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_AR NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_AR NULL
-#define OPTION_VAL_LINEAR_AR "ثنائي"
-#define OPTION_VAL_NEAREST_AR "أقرب جوار"
+#define XEMU_VK_FAST_PATHS_LABEL_AR NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_AR NULL
+#define OPTION_VAL_ALL_AR "الكل"
+#define OPTION_VAL_NO_GPL_AR NULL
+#define OPTION_VAL_NO_DYN_AR NULL
+#define OPTION_VAL_NONE_AR "لاشيء"
+#define XEMU_RUMBLE_P1_LABEL_AR NULL
+#define XEMU_RUMBLE_P1_INFO_0_AR NULL
+#define XEMU_RUMBLE_P2_LABEL_AR NULL
+#define XEMU_RUMBLE_P2_INFO_0_AR NULL
+#define XEMU_DEADZONE_P1_LABEL_AR NULL
+#define XEMU_DEADZONE_P1_INFO_0_AR NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_AR NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_AR NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_AR NULL
+#define OPTION_VAL_15_AR NULL
+#define OPTION_VAL_25_AR NULL
+#define OPTION_VAL_30_AR NULL
+#define XEMU_DEADZONE_P2_LABEL_AR NULL
+#define XEMU_DEADZONE_P2_INFO_0_AR NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_AR NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_AR NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_AR NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_AR NULL
+#define OPTION_VAL_MOUSE_AR NULL
+#define OPTION_VAL_STICK_AR NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_AR NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_AR NULL
+#define XEMU_CHIHIRO_FFB_LABEL_AR NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_AR NULL
+#define OPTION_VAL_50_AR NULL
+#define OPTION_VAL_75_AR NULL
+#define OPTION_VAL_150_AR NULL
+#define OPTION_VAL_200_AR NULL
 
 struct retro_core_option_v2_category option_cats_ar[] = {
     {
@@ -119,13 +167,19 @@ struct retro_core_option_v2_category option_cats_ar[] = {
         CATEGORY_AUDIO_LABEL_AR,
         CATEGORY_AUDIO_INFO_0_AR
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_AR,
+        CATEGORY_CONTROLS_INFO_0_AR
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_AR,
+        CATEGORY_CHIHIRO_INFO_0_AR
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_ar[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_AR,
@@ -154,6 +208,8 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_AR,
@@ -166,7 +222,7 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -183,6 +239,38 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_AR,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_AR,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_AR,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_AR,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_AR,
         NULL,
@@ -195,6 +283,25 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_AR,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_AR,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_AR },
+            { "4:3",       OPTION_VAL_4_3_AR },
+            { "16:9",      OPTION_VAL_16_9_AR },
+            { "letterbox", OPTION_VAL_LETTERBOX_AR },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -250,6 +357,25 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_AR,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_AR,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_AR,
@@ -264,13 +390,29 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_AR,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_AR,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_AR,
+        XEMU_DSP_JIT_INFO_0_AR,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_AR,
+        NULL,
+        XEMU_HRTF_INFO_0_AR,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -279,10 +421,27 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_AR,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_AR,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_AR,
+        XEMU_VP_WORKERS_INFO_0_AR,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_AR },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_AR,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_AR,
         NULL,
         "video",
         {
@@ -310,19 +469,169 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_AR,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_AR,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_AR,
+        XEMU_VK_FAST_PATHS_INFO_0_AR,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_AR },
-            { "nearest", OPTION_VAL_NEAREST_AR },
+            { "all",      OPTION_VAL_ALL_AR },
+            { "no_gpl",   OPTION_VAL_NO_GPL_AR },
+            { "no_dyn",   OPTION_VAL_NO_DYN_AR },
+            { "none",     OPTION_VAL_NONE_AR },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_AR,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_AR,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_AR,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_AR,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_AR,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_AR,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_AR },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_AR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_AR },
+            { "15", OPTION_VAL_15_AR },
+            { "20", OPTION_VAL_20_AR },
+            { "25", OPTION_VAL_25_AR },
+            { "30", OPTION_VAL_30_AR },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_AR,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_AR,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_AR },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_AR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_AR },
+            { "15", OPTION_VAL_15_AR },
+            { "20", OPTION_VAL_20_AR },
+            { "25", OPTION_VAL_25_AR },
+            { "30", OPTION_VAL_30_AR },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_AR,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_AR,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_AR,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_AR,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_AR },
+            { "stick", OPTION_VAL_STICK_AR },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_AR,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_AR,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_AR,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_AR,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_AR },
+            { "50",  OPTION_VAL_50_AR },
+            { "75",  OPTION_VAL_75_AR },
+            { "100", OPTION_VAL_100_AR },
+            { "150", OPTION_VAL_150_AR },
+            { "200", OPTION_VAL_200_AR },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -333,12 +642,16 @@ struct retro_core_options_v2 options_ar = {
 
 /* RETRO_LANGUAGE_AST */
 
-#define CATEGORY_SYSTEM_LABEL_AST "Sistema"
+#define CATEGORY_SYSTEM_LABEL_AST NULL
 #define CATEGORY_SYSTEM_INFO_0_AST NULL
 #define CATEGORY_VIDEO_LABEL_AST "Videu"
 #define CATEGORY_VIDEO_INFO_0_AST NULL
 #define CATEGORY_AUDIO_LABEL_AST "Audiu"
 #define CATEGORY_AUDIO_INFO_0_AST NULL
+#define CATEGORY_CONTROLS_LABEL_AST NULL
+#define CATEGORY_CONTROLS_INFO_0_AST NULL
+#define CATEGORY_CHIHIRO_LABEL_AST NULL
+#define CATEGORY_CHIHIRO_INFO_0_AST NULL
 #define XEMU_MEMORY_LABEL_AST NULL
 #define XEMU_MEMORY_INFO_0_AST NULL
 #define OPTION_VAL_64_AST NULL
@@ -350,15 +663,23 @@ struct retro_core_options_v2 options_ar = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_AST NULL
 #define XEMU_HARD_FPU_LABEL_AST NULL
 #define XEMU_HARD_FPU_INFO_0_AST NULL
+#define XEMU_CPU_BOOST_LABEL_AST NULL
+#define XEMU_CPU_BOOST_INFO_0_AST NULL
+#define XEMU_HDD_TRIM_LABEL_AST NULL
+#define XEMU_HDD_TRIM_INFO_0_AST NULL
 #define XEMU_RENDERER_LABEL_AST NULL
 #define XEMU_RENDERER_INFO_0_AST NULL
 #define OPTION_VAL_VULKAN_AST NULL
 #define OPTION_VAL_OPENGL_AST NULL
-#define XEMU_ASPECT_RATIO_LABEL_AST "Proporción del aspeutu"
-#define XEMU_ASPECT_RATIO_INFO_0_AST NULL
-#define OPTION_VAL_AUTO_AST NULL
+#define XEMU_VIDEO_ASPECT_LABEL_AST NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_AST NULL
+#define OPTION_VAL_DASHBOARD_AST NULL
 #define OPTION_VAL_4_3_AST NULL
 #define OPTION_VAL_16_9_AST NULL
+#define OPTION_VAL_LETTERBOX_AST NULL
+#define XEMU_ASPECT_RATIO_LABEL_AST "Proporción d'aspeutu del nucleu"
+#define XEMU_ASPECT_RATIO_INFO_0_AST NULL
+#define OPTION_VAL_AUTO_AST NULL
 #define XEMU_SURFACE_SCALE_LABEL_AST NULL
 #define XEMU_SURFACE_SCALE_INFO_0_AST NULL
 #define OPTION_VAL_1_AST NULL
@@ -378,12 +699,18 @@ struct retro_core_options_v2 options_ar = {
 #define OPTION_VAL_SVIDEO_AST NULL
 #define OPTION_VAL_SCART_AST NULL
 #define OPTION_VAL_VGA_AST NULL
+#define XEMU_AUDIO_THREAD_LABEL_AST NULL
+#define XEMU_AUDIO_THREAD_INFO_0_AST NULL
 #define XEMU_USE_DSP_LABEL_AST NULL
 #define XEMU_USE_DSP_INFO_0_AST NULL
-#define XEMU_CACHE_SHADERS_LABEL_AST NULL
-#define XEMU_CACHE_SHADERS_INFO_0_AST NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_AST NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_AST NULL
+#define XEMU_DSP_JIT_LABEL_AST NULL
+#define XEMU_DSP_JIT_INFO_0_AST NULL
+#define XEMU_HRTF_LABEL_AST NULL
+#define XEMU_HRTF_INFO_0_AST NULL
+#define XEMU_VP_WORKERS_LABEL_AST NULL
+#define XEMU_VP_WORKERS_INFO_0_AST NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_AST NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_AST NULL
 #define XEMU_AUDIO_VOLUME_LABEL_AST NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_AST NULL
 #define OPTION_VAL_100_AST NULL
@@ -392,10 +719,40 @@ struct retro_core_options_v2 options_ar = {
 #define OPTION_VAL_40_AST NULL
 #define OPTION_VAL_20_AST NULL
 #define OPTION_VAL_0_AST NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_AST NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_AST NULL
-#define OPTION_VAL_LINEAR_AST "Billinial"
-#define OPTION_VAL_NEAREST_AST NULL
+#define XEMU_VK_FAST_PATHS_LABEL_AST NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_AST NULL
+#define OPTION_VAL_ALL_AST NULL
+#define OPTION_VAL_NO_GPL_AST NULL
+#define OPTION_VAL_NO_DYN_AST NULL
+#define OPTION_VAL_NONE_AST NULL
+#define XEMU_RUMBLE_P1_LABEL_AST NULL
+#define XEMU_RUMBLE_P1_INFO_0_AST NULL
+#define XEMU_RUMBLE_P2_LABEL_AST NULL
+#define XEMU_RUMBLE_P2_INFO_0_AST NULL
+#define XEMU_DEADZONE_P1_LABEL_AST NULL
+#define XEMU_DEADZONE_P1_INFO_0_AST NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_AST NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_AST NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_AST NULL
+#define OPTION_VAL_15_AST NULL
+#define OPTION_VAL_25_AST NULL
+#define OPTION_VAL_30_AST NULL
+#define XEMU_DEADZONE_P2_LABEL_AST NULL
+#define XEMU_DEADZONE_P2_INFO_0_AST NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_AST NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_AST NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_AST NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_AST NULL
+#define OPTION_VAL_MOUSE_AST "Mur"
+#define OPTION_VAL_STICK_AST NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_AST NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_AST NULL
+#define XEMU_CHIHIRO_FFB_LABEL_AST NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_AST NULL
+#define OPTION_VAL_50_AST NULL
+#define OPTION_VAL_75_AST NULL
+#define OPTION_VAL_150_AST NULL
+#define OPTION_VAL_200_AST NULL
 
 struct retro_core_option_v2_category option_cats_ast[] = {
     {
@@ -413,13 +770,19 @@ struct retro_core_option_v2_category option_cats_ast[] = {
         CATEGORY_AUDIO_LABEL_AST,
         CATEGORY_AUDIO_INFO_0_AST
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_AST,
+        CATEGORY_CONTROLS_INFO_0_AST
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_AST,
+        CATEGORY_CHIHIRO_INFO_0_AST
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_ast[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_AST,
@@ -448,6 +811,8 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_AST,
@@ -460,7 +825,7 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -477,6 +842,38 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_AST,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_AST,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_AST,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_AST,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_AST,
         NULL,
@@ -489,6 +886,25 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_AST,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_AST,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_AST },
+            { "4:3",       OPTION_VAL_4_3_AST },
+            { "16:9",      OPTION_VAL_16_9_AST },
+            { "letterbox", OPTION_VAL_LETTERBOX_AST },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -544,6 +960,25 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_AST,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_AST,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_AST,
@@ -558,13 +993,29 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_AST,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_AST,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_AST,
+        XEMU_DSP_JIT_INFO_0_AST,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_AST,
+        NULL,
+        XEMU_HRTF_INFO_0_AST,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -573,10 +1024,27 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_AST,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_AST,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_AST,
+        XEMU_VP_WORKERS_INFO_0_AST,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_AST },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_AST,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_AST,
         NULL,
         "video",
         {
@@ -604,19 +1072,169 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_AST,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_AST,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_AST,
+        XEMU_VK_FAST_PATHS_INFO_0_AST,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_AST },
-            { "nearest", OPTION_VAL_NEAREST_AST },
+            { "all",      OPTION_VAL_ALL_AST },
+            { "no_gpl",   OPTION_VAL_NO_GPL_AST },
+            { "no_dyn",   OPTION_VAL_NO_DYN_AST },
+            { "none",     OPTION_VAL_NONE_AST },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_AST,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_AST,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_AST,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_AST,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_AST,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_AST,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_AST },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_AST },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_AST },
+            { "15", OPTION_VAL_15_AST },
+            { "20", OPTION_VAL_20_AST },
+            { "25", OPTION_VAL_25_AST },
+            { "30", OPTION_VAL_30_AST },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_AST,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_AST,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_AST },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_AST },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_AST },
+            { "15", OPTION_VAL_15_AST },
+            { "20", OPTION_VAL_20_AST },
+            { "25", OPTION_VAL_25_AST },
+            { "30", OPTION_VAL_30_AST },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_AST,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_AST,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_AST,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_AST,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_AST },
+            { "stick", OPTION_VAL_STICK_AST },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_AST,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_AST,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_AST,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_AST,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_AST },
+            { "50",  OPTION_VAL_50_AST },
+            { "75",  OPTION_VAL_75_AST },
+            { "100", OPTION_VAL_100_AST },
+            { "150", OPTION_VAL_150_AST },
+            { "200", OPTION_VAL_200_AST },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -627,12 +1245,16 @@ struct retro_core_options_v2 options_ast = {
 
 /* RETRO_LANGUAGE_BE */
 
-#define CATEGORY_SYSTEM_LABEL_BE "Сістэма"
+#define CATEGORY_SYSTEM_LABEL_BE NULL
 #define CATEGORY_SYSTEM_INFO_0_BE NULL
 #define CATEGORY_VIDEO_LABEL_BE "Відэа"
 #define CATEGORY_VIDEO_INFO_0_BE NULL
 #define CATEGORY_AUDIO_LABEL_BE "Аўдыя"
 #define CATEGORY_AUDIO_INFO_0_BE NULL
+#define CATEGORY_CONTROLS_LABEL_BE "Кіраванне"
+#define CATEGORY_CONTROLS_INFO_0_BE NULL
+#define CATEGORY_CHIHIRO_LABEL_BE NULL
+#define CATEGORY_CHIHIRO_INFO_0_BE NULL
 #define XEMU_MEMORY_LABEL_BE NULL
 #define XEMU_MEMORY_INFO_0_BE NULL
 #define OPTION_VAL_64_BE "64 МБ"
@@ -644,15 +1266,23 @@ struct retro_core_options_v2 options_ast = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_BE NULL
 #define XEMU_HARD_FPU_LABEL_BE NULL
 #define XEMU_HARD_FPU_INFO_0_BE NULL
+#define XEMU_CPU_BOOST_LABEL_BE NULL
+#define XEMU_CPU_BOOST_INFO_0_BE NULL
+#define XEMU_HDD_TRIM_LABEL_BE NULL
+#define XEMU_HDD_TRIM_INFO_0_BE NULL
 #define XEMU_RENDERER_LABEL_BE NULL
 #define XEMU_RENDERER_INFO_0_BE NULL
 #define OPTION_VAL_VULKAN_BE NULL
 #define OPTION_VAL_OPENGL_BE NULL
-#define XEMU_ASPECT_RATIO_LABEL_BE "Суадносіны бакоў"
-#define XEMU_ASPECT_RATIO_INFO_0_BE NULL
-#define OPTION_VAL_AUTO_BE "Аўта"
+#define XEMU_VIDEO_ASPECT_LABEL_BE NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_BE NULL
+#define OPTION_VAL_DASHBOARD_BE NULL
 #define OPTION_VAL_4_3_BE NULL
 #define OPTION_VAL_16_9_BE NULL
+#define OPTION_VAL_LETTERBOX_BE NULL
+#define XEMU_ASPECT_RATIO_LABEL_BE "Суадносіны бакоў ядра"
+#define XEMU_ASPECT_RATIO_INFO_0_BE NULL
+#define OPTION_VAL_AUTO_BE "Аўта"
 #define XEMU_SURFACE_SCALE_LABEL_BE NULL
 #define XEMU_SURFACE_SCALE_INFO_0_BE NULL
 #define OPTION_VAL_1_BE NULL
@@ -672,12 +1302,18 @@ struct retro_core_options_v2 options_ast = {
 #define OPTION_VAL_SVIDEO_BE NULL
 #define OPTION_VAL_SCART_BE NULL
 #define OPTION_VAL_VGA_BE NULL
+#define XEMU_AUDIO_THREAD_LABEL_BE NULL
+#define XEMU_AUDIO_THREAD_INFO_0_BE NULL
 #define XEMU_USE_DSP_LABEL_BE NULL
 #define XEMU_USE_DSP_INFO_0_BE NULL
-#define XEMU_CACHE_SHADERS_LABEL_BE NULL
-#define XEMU_CACHE_SHADERS_INFO_0_BE NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_BE NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_BE NULL
+#define XEMU_DSP_JIT_LABEL_BE NULL
+#define XEMU_DSP_JIT_INFO_0_BE NULL
+#define XEMU_HRTF_LABEL_BE NULL
+#define XEMU_HRTF_INFO_0_BE NULL
+#define XEMU_VP_WORKERS_LABEL_BE NULL
+#define XEMU_VP_WORKERS_INFO_0_BE NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_BE NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_BE NULL
 #define XEMU_AUDIO_VOLUME_LABEL_BE NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_BE NULL
 #define OPTION_VAL_100_BE "100 %"
@@ -686,10 +1322,40 @@ struct retro_core_options_v2 options_ast = {
 #define OPTION_VAL_40_BE "40 %"
 #define OPTION_VAL_20_BE "20 %"
 #define OPTION_VAL_0_BE NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_BE NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_BE NULL
-#define OPTION_VAL_LINEAR_BE "Білінейны"
-#define OPTION_VAL_NEAREST_BE "Метад бліжэйшага суседа"
+#define XEMU_VK_FAST_PATHS_LABEL_BE NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_BE NULL
+#define OPTION_VAL_ALL_BE "Усе"
+#define OPTION_VAL_NO_GPL_BE NULL
+#define OPTION_VAL_NO_DYN_BE NULL
+#define OPTION_VAL_NONE_BE "Няма"
+#define XEMU_RUMBLE_P1_LABEL_BE NULL
+#define XEMU_RUMBLE_P1_INFO_0_BE NULL
+#define XEMU_RUMBLE_P2_LABEL_BE NULL
+#define XEMU_RUMBLE_P2_INFO_0_BE NULL
+#define XEMU_DEADZONE_P1_LABEL_BE NULL
+#define XEMU_DEADZONE_P1_INFO_0_BE NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_BE NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_BE NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_BE NULL
+#define OPTION_VAL_15_BE "15 %"
+#define OPTION_VAL_25_BE NULL
+#define OPTION_VAL_30_BE "30 %"
+#define XEMU_DEADZONE_P2_LABEL_BE NULL
+#define XEMU_DEADZONE_P2_INFO_0_BE NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_BE NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_BE NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_BE NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_BE NULL
+#define OPTION_VAL_MOUSE_BE "Мыш"
+#define OPTION_VAL_STICK_BE NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_BE NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_BE NULL
+#define XEMU_CHIHIRO_FFB_LABEL_BE NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_BE NULL
+#define OPTION_VAL_50_BE "50 %"
+#define OPTION_VAL_75_BE "75 %"
+#define OPTION_VAL_150_BE "150 %"
+#define OPTION_VAL_200_BE "200 %"
 
 struct retro_core_option_v2_category option_cats_be[] = {
     {
@@ -707,13 +1373,19 @@ struct retro_core_option_v2_category option_cats_be[] = {
         CATEGORY_AUDIO_LABEL_BE,
         CATEGORY_AUDIO_INFO_0_BE
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_BE,
+        CATEGORY_CONTROLS_INFO_0_BE
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_BE,
+        CATEGORY_CHIHIRO_INFO_0_BE
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_be[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_BE,
@@ -742,6 +1414,8 @@ struct retro_core_option_v2_definition option_defs_be[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_BE,
@@ -754,7 +1428,7 @@ struct retro_core_option_v2_definition option_defs_be[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -771,6 +1445,38 @@ struct retro_core_option_v2_definition option_defs_be[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_BE,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_BE,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_BE,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_BE,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_BE,
         NULL,
@@ -783,6 +1489,25 @@ struct retro_core_option_v2_definition option_defs_be[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_BE,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_BE,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_BE },
+            { "4:3",       OPTION_VAL_4_3_BE },
+            { "16:9",      OPTION_VAL_16_9_BE },
+            { "letterbox", OPTION_VAL_LETTERBOX_BE },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -838,6 +1563,25 @@ struct retro_core_option_v2_definition option_defs_be[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_BE,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_BE,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_BE,
@@ -852,13 +1596,29 @@ struct retro_core_option_v2_definition option_defs_be[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_BE,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_BE,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_BE,
+        XEMU_DSP_JIT_INFO_0_BE,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_BE,
+        NULL,
+        XEMU_HRTF_INFO_0_BE,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -867,10 +1627,27 @@ struct retro_core_option_v2_definition option_defs_be[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_BE,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_BE,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_BE,
+        XEMU_VP_WORKERS_INFO_0_BE,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_BE },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_BE,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_BE,
         NULL,
         "video",
         {
@@ -898,19 +1675,169 @@ struct retro_core_option_v2_definition option_defs_be[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_BE,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_BE,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_BE,
+        XEMU_VK_FAST_PATHS_INFO_0_BE,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_BE },
-            { "nearest", OPTION_VAL_NEAREST_BE },
+            { "all",      OPTION_VAL_ALL_BE },
+            { "no_gpl",   OPTION_VAL_NO_GPL_BE },
+            { "no_dyn",   OPTION_VAL_NO_DYN_BE },
+            { "none",     OPTION_VAL_NONE_BE },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_BE,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_BE,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_BE,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_BE,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_BE,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_BE,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_BE },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_BE },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_BE },
+            { "15", OPTION_VAL_15_BE },
+            { "20", OPTION_VAL_20_BE },
+            { "25", OPTION_VAL_25_BE },
+            { "30", OPTION_VAL_30_BE },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_BE,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_BE,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_BE },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_BE },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_BE },
+            { "15", OPTION_VAL_15_BE },
+            { "20", OPTION_VAL_20_BE },
+            { "25", OPTION_VAL_25_BE },
+            { "30", OPTION_VAL_30_BE },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_BE,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_BE,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_BE,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_BE,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_BE },
+            { "stick", OPTION_VAL_STICK_BE },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_BE,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_BE,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_BE,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_BE,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_BE },
+            { "50",  OPTION_VAL_50_BE },
+            { "75",  OPTION_VAL_75_BE },
+            { "100", OPTION_VAL_100_BE },
+            { "150", OPTION_VAL_150_BE },
+            { "200", OPTION_VAL_200_BE },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -927,6 +1854,10 @@ struct retro_core_options_v2 options_be = {
 #define CATEGORY_VIDEO_INFO_0_BG NULL
 #define CATEGORY_AUDIO_LABEL_BG "Звук"
 #define CATEGORY_AUDIO_INFO_0_BG NULL
+#define CATEGORY_CONTROLS_LABEL_BG NULL
+#define CATEGORY_CONTROLS_INFO_0_BG NULL
+#define CATEGORY_CHIHIRO_LABEL_BG NULL
+#define CATEGORY_CHIHIRO_INFO_0_BG NULL
 #define XEMU_MEMORY_LABEL_BG NULL
 #define XEMU_MEMORY_INFO_0_BG NULL
 #define OPTION_VAL_64_BG NULL
@@ -938,15 +1869,23 @@ struct retro_core_options_v2 options_be = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_BG NULL
 #define XEMU_HARD_FPU_LABEL_BG NULL
 #define XEMU_HARD_FPU_INFO_0_BG NULL
+#define XEMU_CPU_BOOST_LABEL_BG NULL
+#define XEMU_CPU_BOOST_INFO_0_BG NULL
+#define XEMU_HDD_TRIM_LABEL_BG NULL
+#define XEMU_HDD_TRIM_INFO_0_BG NULL
 #define XEMU_RENDERER_LABEL_BG NULL
 #define XEMU_RENDERER_INFO_0_BG NULL
 #define OPTION_VAL_VULKAN_BG NULL
 #define OPTION_VAL_OPENGL_BG NULL
+#define XEMU_VIDEO_ASPECT_LABEL_BG NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_BG NULL
+#define OPTION_VAL_DASHBOARD_BG NULL
+#define OPTION_VAL_4_3_BG NULL
+#define OPTION_VAL_16_9_BG NULL
+#define OPTION_VAL_LETTERBOX_BG NULL
 #define XEMU_ASPECT_RATIO_LABEL_BG NULL
 #define XEMU_ASPECT_RATIO_INFO_0_BG NULL
 #define OPTION_VAL_AUTO_BG NULL
-#define OPTION_VAL_4_3_BG NULL
-#define OPTION_VAL_16_9_BG NULL
 #define XEMU_SURFACE_SCALE_LABEL_BG NULL
 #define XEMU_SURFACE_SCALE_INFO_0_BG NULL
 #define OPTION_VAL_1_BG NULL
@@ -966,12 +1905,18 @@ struct retro_core_options_v2 options_be = {
 #define OPTION_VAL_SVIDEO_BG NULL
 #define OPTION_VAL_SCART_BG NULL
 #define OPTION_VAL_VGA_BG NULL
+#define XEMU_AUDIO_THREAD_LABEL_BG NULL
+#define XEMU_AUDIO_THREAD_INFO_0_BG NULL
 #define XEMU_USE_DSP_LABEL_BG NULL
 #define XEMU_USE_DSP_INFO_0_BG NULL
-#define XEMU_CACHE_SHADERS_LABEL_BG NULL
-#define XEMU_CACHE_SHADERS_INFO_0_BG NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_BG NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_BG NULL
+#define XEMU_DSP_JIT_LABEL_BG NULL
+#define XEMU_DSP_JIT_INFO_0_BG NULL
+#define XEMU_HRTF_LABEL_BG NULL
+#define XEMU_HRTF_INFO_0_BG NULL
+#define XEMU_VP_WORKERS_LABEL_BG NULL
+#define XEMU_VP_WORKERS_INFO_0_BG NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_BG NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_BG NULL
 #define XEMU_AUDIO_VOLUME_LABEL_BG NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_BG NULL
 #define OPTION_VAL_100_BG NULL
@@ -980,10 +1925,40 @@ struct retro_core_options_v2 options_be = {
 #define OPTION_VAL_40_BG NULL
 #define OPTION_VAL_20_BG NULL
 #define OPTION_VAL_0_BG NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_BG NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_BG NULL
-#define OPTION_VAL_LINEAR_BG NULL
-#define OPTION_VAL_NEAREST_BG NULL
+#define XEMU_VK_FAST_PATHS_LABEL_BG NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_BG NULL
+#define OPTION_VAL_ALL_BG NULL
+#define OPTION_VAL_NO_GPL_BG NULL
+#define OPTION_VAL_NO_DYN_BG NULL
+#define OPTION_VAL_NONE_BG NULL
+#define XEMU_RUMBLE_P1_LABEL_BG NULL
+#define XEMU_RUMBLE_P1_INFO_0_BG NULL
+#define XEMU_RUMBLE_P2_LABEL_BG NULL
+#define XEMU_RUMBLE_P2_INFO_0_BG NULL
+#define XEMU_DEADZONE_P1_LABEL_BG NULL
+#define XEMU_DEADZONE_P1_INFO_0_BG NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_BG NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_BG NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_BG NULL
+#define OPTION_VAL_15_BG NULL
+#define OPTION_VAL_25_BG NULL
+#define OPTION_VAL_30_BG NULL
+#define XEMU_DEADZONE_P2_LABEL_BG NULL
+#define XEMU_DEADZONE_P2_INFO_0_BG NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_BG NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_BG NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_BG NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_BG NULL
+#define OPTION_VAL_MOUSE_BG NULL
+#define OPTION_VAL_STICK_BG NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_BG NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_BG NULL
+#define XEMU_CHIHIRO_FFB_LABEL_BG NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_BG NULL
+#define OPTION_VAL_50_BG NULL
+#define OPTION_VAL_75_BG NULL
+#define OPTION_VAL_150_BG NULL
+#define OPTION_VAL_200_BG NULL
 
 struct retro_core_option_v2_category option_cats_bg[] = {
     {
@@ -1001,13 +1976,19 @@ struct retro_core_option_v2_category option_cats_bg[] = {
         CATEGORY_AUDIO_LABEL_BG,
         CATEGORY_AUDIO_INFO_0_BG
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_BG,
+        CATEGORY_CONTROLS_INFO_0_BG
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_BG,
+        CATEGORY_CHIHIRO_INFO_0_BG
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_bg[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_BG,
@@ -1036,6 +2017,8 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_BG,
@@ -1048,7 +2031,7 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -1065,6 +2048,38 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_BG,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_BG,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_BG,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_BG,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_BG,
         NULL,
@@ -1077,6 +2092,25 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_BG,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_BG,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_BG },
+            { "4:3",       OPTION_VAL_4_3_BG },
+            { "16:9",      OPTION_VAL_16_9_BG },
+            { "letterbox", OPTION_VAL_LETTERBOX_BG },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -1132,6 +2166,25 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_BG,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_BG,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_BG,
@@ -1146,13 +2199,29 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_BG,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_BG,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_BG,
+        XEMU_DSP_JIT_INFO_0_BG,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_BG,
+        NULL,
+        XEMU_HRTF_INFO_0_BG,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -1161,10 +2230,27 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_BG,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_BG,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_BG,
+        XEMU_VP_WORKERS_INFO_0_BG,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_BG },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_BG,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_BG,
         NULL,
         "video",
         {
@@ -1192,19 +2278,169 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_BG,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_BG,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_BG,
+        XEMU_VK_FAST_PATHS_INFO_0_BG,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_BG },
-            { "nearest", OPTION_VAL_NEAREST_BG },
+            { "all",      OPTION_VAL_ALL_BG },
+            { "no_gpl",   OPTION_VAL_NO_GPL_BG },
+            { "no_dyn",   OPTION_VAL_NO_DYN_BG },
+            { "none",     OPTION_VAL_NONE_BG },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_BG,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_BG,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_BG,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_BG,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_BG,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_BG,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_BG },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_BG },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_BG },
+            { "15", OPTION_VAL_15_BG },
+            { "20", OPTION_VAL_20_BG },
+            { "25", OPTION_VAL_25_BG },
+            { "30", OPTION_VAL_30_BG },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_BG,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_BG,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_BG },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_BG },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_BG },
+            { "15", OPTION_VAL_15_BG },
+            { "20", OPTION_VAL_20_BG },
+            { "25", OPTION_VAL_25_BG },
+            { "30", OPTION_VAL_30_BG },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_BG,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_BG,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_BG,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_BG,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_BG },
+            { "stick", OPTION_VAL_STICK_BG },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_BG,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_BG,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_BG,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_BG,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_BG },
+            { "50",  OPTION_VAL_50_BG },
+            { "75",  OPTION_VAL_75_BG },
+            { "100", OPTION_VAL_100_BG },
+            { "150", OPTION_VAL_150_BG },
+            { "200", OPTION_VAL_200_BG },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -1215,12 +2451,16 @@ struct retro_core_options_v2 options_bg = {
 
 /* RETRO_LANGUAGE_CA */
 
-#define CATEGORY_SYSTEM_LABEL_CA "Sistema"
-#define CATEGORY_SYSTEM_INFO_0_CA "Configureu els paràmetres a nivell de sistema, com ara els camins de la BIOS, la memòria i les opcions d'arrencada."
+#define CATEGORY_SYSTEM_LABEL_CA NULL
+#define CATEGORY_SYSTEM_INFO_0_CA NULL
 #define CATEGORY_VIDEO_LABEL_CA "Vídeo"
 #define CATEGORY_VIDEO_INFO_0_CA "Configura el renderitzat de vídeo."
 #define CATEGORY_AUDIO_LABEL_CA "Àudio"
 #define CATEGORY_AUDIO_INFO_0_CA "Configura l'emulació de vídeo."
+#define CATEGORY_CONTROLS_LABEL_CA NULL
+#define CATEGORY_CONTROLS_INFO_0_CA NULL
+#define CATEGORY_CHIHIRO_LABEL_CA NULL
+#define CATEGORY_CHIHIRO_INFO_0_CA NULL
 #define XEMU_MEMORY_LABEL_CA "Memòria del sistema (MB)"
 #define XEMU_MEMORY_INFO_0_CA "Quantitat de memòria RAM. L'estàndard és 64 MB; es fan servir 128 MB en cas de fer depuració."
 #define OPTION_VAL_64_CA NULL
@@ -1232,16 +2472,24 @@ struct retro_core_options_v2 options_bg = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_CA "Omet l'animació inicial de Xbox."
 #define XEMU_HARD_FPU_LABEL_CA "Emulació del maquinari FPU"
 #define XEMU_HARD_FPU_INFO_0_CA "Fes servir l'amfitrió FPU per l'emulació de x87. És més ràpid però pot provocar alguna imprecisió."
+#define XEMU_CPU_BOOST_LABEL_CA NULL
+#define XEMU_CPU_BOOST_INFO_0_CA NULL
+#define XEMU_HDD_TRIM_LABEL_CA NULL
+#define XEMU_HDD_TRIM_INFO_0_CA NULL
 #define XEMU_RENDERER_LABEL_CA "API de gràfics (Cal reiniciar)"
 #define XEMU_RENDERER_INFO_0_CA "El motor de renderització utilitzat per dibuixar la GPU emulada. Vulkan és l'opció predeterminada; OpenGL és l'alternativa per als controladors en què Vulkan no funciona correctament. Els canvis s'apliquen després de reiniciar RetroArch. Android utilitza sempre Vulkan, mentre que macOS utilitza sempre OpenGL."
 #define OPTION_VAL_VULKAN_CA NULL
 #define OPTION_VAL_OPENGL_CA NULL
-#define XEMU_ASPECT_RATIO_LABEL_CA "Relació d'aspecte"
-#define XEMU_ASPECT_RATIO_INFO_0_CA "La forma en què es mostra la imatge. L'opció «Automàtic» s'adapta al joc: 16:9 quan la consola canvia a format panoràmic (cal tenir activat el format panoràmic a la configuració de vídeo del tauler de control) i 4:3 en cas contrari. Tria 16:9 per a un joc que es genera en format panoràmic però que es mostra comprimit."
-#define OPTION_VAL_AUTO_CA "Automàtic"
+#define XEMU_VIDEO_ASPECT_LABEL_CA NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_CA NULL
+#define OPTION_VAL_DASHBOARD_CA NULL
 #define OPTION_VAL_4_3_CA NULL
 #define OPTION_VAL_16_9_CA NULL
-#define XEMU_SURFACE_SCALE_LABEL_CA "Escala de la resolució interna"
+#define OPTION_VAL_LETTERBOX_CA NULL
+#define XEMU_ASPECT_RATIO_LABEL_CA "Relació d'aspecte del nucli"
+#define XEMU_ASPECT_RATIO_INFO_0_CA NULL
+#define OPTION_VAL_AUTO_CA "Automàtic"
+#define XEMU_SURFACE_SCALE_LABEL_CA NULL
 #define XEMU_SURFACE_SCALE_INFO_0_CA "Escala la resolució interna de renderització. Valors alts poden millorar la qualitat per reduir el rendiment."
 #define OPTION_VAL_1_CA NULL
 #define OPTION_VAL_2_CA NULL
@@ -1253,19 +2501,25 @@ struct retro_core_options_v2 options_bg = {
 #define OPTION_VAL_8_CA NULL
 #define OPTION_VAL_9_CA NULL
 #define OPTION_VAL_10_CA NULL
-#define XEMU_AVPACK_LABEL_CA "Pack AV"
+#define XEMU_AVPACK_LABEL_CA NULL
 #define XEMU_AVPACK_INFO_0_CA "Selecciona el tipus de paquet AV. Afecta als modes de vídeo disponibles."
 #define OPTION_VAL_HDTV_CA NULL
 #define OPTION_VAL_COMPOSITE_CA "Composició"
 #define OPTION_VAL_SVIDEO_CA NULL
 #define OPTION_VAL_SCART_CA NULL
 #define OPTION_VAL_VGA_CA NULL
+#define XEMU_AUDIO_THREAD_LABEL_CA "Fil d'àudio (Cal reiniciar)"
+#define XEMU_AUDIO_THREAD_INFO_0_CA NULL
 #define XEMU_USE_DSP_LABEL_CA "Emulació de APU DSP"
 #define XEMU_USE_DSP_INFO_0_CA "Activa l'emulació DSP per millorar la precisió de l'àudio. Pot tenir un impacte en el rendiment."
-#define XEMU_CACHE_SHADERS_LABEL_CA "Memòria cau de shaders"
-#define XEMU_CACHE_SHADERS_INFO_0_CA "Emmagatzema al disc els shaders de GPU compilats. Redueix les estrebades en execucions posteriors."
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_CA "Redueix la memòria cau de Vulkan (Cal reiniciar)"
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_CA "El renderitzador Vulkan reserva els seus buffers de treball en iniciar-se, segons les necessitats del joc. Si està activat, el buffer per a dades de vèrtexs «en línia» es manté a una desena part de la mida utilitzada per xemu; això estalvia aproximadament 1,2 GB de memòria de vídeo i una quantitat equivalent de memòria del sistema. Si està desactivat, es reserva la mida completa de xemu en targetes gràfiques amb 4 GB o més; proveu de desactivar-lo si noteu que un joc funciona més lentament amb aquesta opció activada."
+#define XEMU_DSP_JIT_LABEL_CA NULL
+#define XEMU_DSP_JIT_INFO_0_CA NULL
+#define XEMU_HRTF_LABEL_CA NULL
+#define XEMU_HRTF_INFO_0_CA NULL
+#define XEMU_VP_WORKERS_LABEL_CA NULL
+#define XEMU_VP_WORKERS_INFO_0_CA NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_CA NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_CA NULL
 #define XEMU_AUDIO_VOLUME_LABEL_CA "Llindar del volum d'àudio (%)"
 #define XEMU_AUDIO_VOLUME_INFO_0_CA "Limita el volum de la sortida d'àudio de Xbox independentment del volum principal de RetroArch."
 #define OPTION_VAL_100_CA NULL
@@ -1274,10 +2528,40 @@ struct retro_core_options_v2 options_bg = {
 #define OPTION_VAL_40_CA NULL
 #define OPTION_VAL_20_CA NULL
 #define OPTION_VAL_0_CA "Silenciat"
-#define XEMU_DISPLAY_FILTERING_LABEL_CA "Filtratge de pantalla"
-#define XEMU_DISPLAY_FILTERING_INFO_0_CA "Mode del filtratge de textures per la sortida a pantalla."
-#define OPTION_VAL_LINEAR_CA "Bilineal"
-#define OPTION_VAL_NEAREST_CA "Veí més proper"
+#define XEMU_VK_FAST_PATHS_LABEL_CA NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_CA NULL
+#define OPTION_VAL_ALL_CA "Tots"
+#define OPTION_VAL_NO_GPL_CA NULL
+#define OPTION_VAL_NO_DYN_CA NULL
+#define OPTION_VAL_NONE_CA "Cap"
+#define XEMU_RUMBLE_P1_LABEL_CA NULL
+#define XEMU_RUMBLE_P1_INFO_0_CA NULL
+#define XEMU_RUMBLE_P2_LABEL_CA NULL
+#define XEMU_RUMBLE_P2_INFO_0_CA NULL
+#define XEMU_DEADZONE_P1_LABEL_CA NULL
+#define XEMU_DEADZONE_P1_INFO_0_CA NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_CA NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_CA NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_CA NULL
+#define OPTION_VAL_15_CA NULL
+#define OPTION_VAL_25_CA NULL
+#define OPTION_VAL_30_CA NULL
+#define XEMU_DEADZONE_P2_LABEL_CA NULL
+#define XEMU_DEADZONE_P2_INFO_0_CA NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_CA NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_CA NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_CA NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_CA NULL
+#define OPTION_VAL_MOUSE_CA "Ratolí"
+#define OPTION_VAL_STICK_CA NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_CA NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CA NULL
+#define XEMU_CHIHIRO_FFB_LABEL_CA NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_CA NULL
+#define OPTION_VAL_50_CA NULL
+#define OPTION_VAL_75_CA NULL
+#define OPTION_VAL_150_CA NULL
+#define OPTION_VAL_200_CA NULL
 
 struct retro_core_option_v2_category option_cats_ca[] = {
     {
@@ -1295,13 +2579,19 @@ struct retro_core_option_v2_category option_cats_ca[] = {
         CATEGORY_AUDIO_LABEL_CA,
         CATEGORY_AUDIO_INFO_0_CA
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_CA,
+        CATEGORY_CONTROLS_INFO_0_CA
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_CA,
+        CATEGORY_CHIHIRO_INFO_0_CA
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_ca[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_CA,
@@ -1330,6 +2620,8 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_CA,
@@ -1342,7 +2634,7 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -1359,6 +2651,38 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_CA,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_CA,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_CA,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_CA,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_CA,
         NULL,
@@ -1371,6 +2695,25 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_CA,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_CA,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_CA },
+            { "4:3",       OPTION_VAL_4_3_CA },
+            { "16:9",      OPTION_VAL_16_9_CA },
+            { "letterbox", OPTION_VAL_LETTERBOX_CA },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -1426,6 +2769,25 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_CA,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_CA,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_CA,
@@ -1440,13 +2802,29 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_CA,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_CA,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_CA,
+        XEMU_DSP_JIT_INFO_0_CA,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_CA,
+        NULL,
+        XEMU_HRTF_INFO_0_CA,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -1455,10 +2833,27 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_CA,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_CA,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_CA,
+        XEMU_VP_WORKERS_INFO_0_CA,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_CA },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_CA,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_CA,
         NULL,
         "video",
         {
@@ -1486,19 +2881,169 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_CA,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_CA,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_CA,
+        XEMU_VK_FAST_PATHS_INFO_0_CA,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_CA },
-            { "nearest", OPTION_VAL_NEAREST_CA },
+            { "all",      OPTION_VAL_ALL_CA },
+            { "no_gpl",   OPTION_VAL_NO_GPL_CA },
+            { "no_dyn",   OPTION_VAL_NO_DYN_CA },
+            { "none",     OPTION_VAL_NONE_CA },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_CA,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_CA,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_CA,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_CA,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_CA,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_CA,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CA },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CA },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CA },
+            { "15", OPTION_VAL_15_CA },
+            { "20", OPTION_VAL_20_CA },
+            { "25", OPTION_VAL_25_CA },
+            { "30", OPTION_VAL_30_CA },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_CA,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_CA,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CA },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CA },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CA },
+            { "15", OPTION_VAL_15_CA },
+            { "20", OPTION_VAL_20_CA },
+            { "25", OPTION_VAL_25_CA },
+            { "30", OPTION_VAL_30_CA },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_CA,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_CA,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_CA,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_CA,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_CA },
+            { "stick", OPTION_VAL_STICK_CA },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_CA,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_CA,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_CA,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_CA,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_CA },
+            { "50",  OPTION_VAL_50_CA },
+            { "75",  OPTION_VAL_75_CA },
+            { "100", OPTION_VAL_100_CA },
+            { "150", OPTION_VAL_150_CA },
+            { "200", OPTION_VAL_200_CA },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -1509,12 +3054,16 @@ struct retro_core_options_v2 options_ca = {
 
 /* RETRO_LANGUAGE_CHS */
 
-#define CATEGORY_SYSTEM_LABEL_CHS "系统"
-#define CATEGORY_SYSTEM_INFO_0_CHS "配置系统级设置，如 BIOS 路径、内存和启动选项。"
+#define CATEGORY_SYSTEM_LABEL_CHS NULL
+#define CATEGORY_SYSTEM_INFO_0_CHS NULL
 #define CATEGORY_VIDEO_LABEL_CHS "视频"
 #define CATEGORY_VIDEO_INFO_0_CHS "配置视频渲染设置。"
 #define CATEGORY_AUDIO_LABEL_CHS "音频"
 #define CATEGORY_AUDIO_INFO_0_CHS "配置音频模拟设置。"
+#define CATEGORY_CONTROLS_LABEL_CHS "控制"
+#define CATEGORY_CONTROLS_INFO_0_CHS NULL
+#define CATEGORY_CHIHIRO_LABEL_CHS "世嘉 Chihiro 基板"
+#define CATEGORY_CHIHIRO_INFO_0_CHS "世嘉 Chihiro 街机游戏相关设置：包含免费游玩、光枪游戏的瞄准方式以及赛车游戏的力反馈调节。"
 #define XEMU_MEMORY_LABEL_CHS "系统内存 (MB)"
 #define XEMU_MEMORY_INFO_0_CHS "系统内存容量。64 MB 为标准配置；128 MB 仅用于开发调试机。"
 #define OPTION_VAL_64_CHS NULL
@@ -1526,16 +3075,24 @@ struct retro_core_options_v2 options_ca = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_CHS "跳过 Xbox 开机动画。"
 #define XEMU_HARD_FPU_LABEL_CHS "硬件 FPU 模拟"
 #define XEMU_HARD_FPU_INFO_0_CHS "使用宿主机的 FPU 来模拟 x87 指令。速度更快，但可能会有轻微的精度偏差。"
+#define XEMU_CPU_BOOST_LABEL_CHS NULL
+#define XEMU_CPU_BOOST_INFO_0_CHS "为虚拟机 CPU 及音频处理器启用更快的执行路径：包括原生 SSE 指令集和更宽的跳转缓存。若游戏出现运行异常，请将其关闭。"
+#define XEMU_HDD_TRIM_LABEL_CHS NULL
+#define XEMU_HDD_TRIM_INFO_0_CHS NULL
 #define XEMU_RENDERER_LABEL_CHS "图形 API (需重启)"
 #define XEMU_RENDERER_INFO_0_CHS "用于绘制模拟 GPU 的渲染器。默认为 Vulkan；当驱动程序无法正常运行 Vulkan 时可回退使用 OpenGL。在重启 RetroArch 后生效。Android 始终使用 Vulkan，macOS 始终使用 OpenGL。"
 #define OPTION_VAL_VULKAN_CHS NULL
 #define OPTION_VAL_OPENGL_CHS NULL
-#define XEMU_ASPECT_RATIO_LABEL_CHS "宽高比"
-#define XEMU_ASPECT_RATIO_INFO_0_CHS "图像显示的画面比例。“自动”将跟随游戏：当游戏将主机切换至宽屏时显示为 16:9（需在 Xbox 系统界面/仪表盘的视频设置中开启宽屏），否则显示为 4:3。若游戏渲染的是宽屏画面但被挤压显示，请选择 16:9。"
-#define OPTION_VAL_AUTO_CHS "自动"
+#define XEMU_VIDEO_ASPECT_LABEL_CHS NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_CHS NULL
+#define OPTION_VAL_DASHBOARD_CHS NULL
 #define OPTION_VAL_4_3_CHS NULL
 #define OPTION_VAL_16_9_CHS NULL
-#define XEMU_SURFACE_SCALE_LABEL_CHS "内部分辨率"
+#define OPTION_VAL_LETTERBOX_CHS NULL
+#define XEMU_ASPECT_RATIO_LABEL_CHS "核心宽高比"
+#define XEMU_ASPECT_RATIO_INFO_0_CHS NULL
+#define OPTION_VAL_AUTO_CHS "自动"
+#define XEMU_SURFACE_SCALE_LABEL_CHS NULL
 #define XEMU_SURFACE_SCALE_INFO_0_CHS "缩放内部渲染分辨率。较高的数值可提升画质，但会降低运行性能。"
 #define OPTION_VAL_1_CHS NULL
 #define OPTION_VAL_2_CHS NULL
@@ -1547,19 +3104,25 @@ struct retro_core_options_v2 options_ca = {
 #define OPTION_VAL_8_CHS NULL
 #define OPTION_VAL_9_CHS NULL
 #define OPTION_VAL_10_CHS NULL
-#define XEMU_AVPACK_LABEL_CHS "影音输出线缆类型 (AV Pack)"
+#define XEMU_AVPACK_LABEL_CHS NULL
 #define XEMU_AVPACK_INFO_0_CHS "选择影音线缆类型。会影响可用的视频输出模式。"
 #define OPTION_VAL_HDTV_CHS "高清电视 (HDTV)"
 #define OPTION_VAL_COMPOSITE_CHS "复合"
 #define OPTION_VAL_SVIDEO_CHS "S-端子"
 #define OPTION_VAL_SCART_CHS NULL
 #define OPTION_VAL_VGA_CHS NULL
+#define XEMU_AUDIO_THREAD_LABEL_CHS "独立音频线程 (需重启)"
+#define XEMU_AUDIO_THREAD_INFO_0_CHS NULL
 #define XEMU_USE_DSP_LABEL_CHS "APU DSP 模拟"
 #define XEMU_USE_DSP_INFO_0_CHS "启用 DSP 模拟以提高音频精确度。可能会影响运行性能。"
-#define XEMU_CACHE_SHADERS_LABEL_CHS "着色器缓存"
-#define XEMU_CACHE_SHADERS_INFO_0_CHS "将已编译的 GPU 着色器缓存至磁盘。可减少后续运行时的卡顿现象。"
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_CHS "减少 Vulkan 缓冲区 (需重启)"
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_CHS "Vulkan 渲染器启动时会预留工作缓冲区（无论游戏实际需要多少）。启用此项会将内联顶点数据的缓冲区压缩至 xemu 默认大小的十分之一，可节省约 1.2 GB 的显存和等量的系统内存。禁用此项则会在 4 GB 或更高显存的显卡上预留完整缓冲区；若开启此项后游戏变慢，可尝试将其禁用。"
+#define XEMU_DSP_JIT_LABEL_CHS NULL
+#define XEMU_DSP_JIT_INFO_0_CHS NULL
+#define XEMU_HRTF_LABEL_CHS NULL
+#define XEMU_HRTF_INFO_0_CHS NULL
+#define XEMU_VP_WORKERS_LABEL_CHS NULL
+#define XEMU_VP_WORKERS_INFO_0_CHS NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_CHS "平滑首次游玩 (需重启)"
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_CHS NULL
 #define XEMU_AUDIO_VOLUME_LABEL_CHS "音频音量限制 (%)"
 #define XEMU_AUDIO_VOLUME_INFO_0_CHS "独立于 RetroArch 主音量限制 Xbox 的音频输出音量。"
 #define OPTION_VAL_100_CHS NULL
@@ -1568,10 +3131,40 @@ struct retro_core_options_v2 options_ca = {
 #define OPTION_VAL_40_CHS NULL
 #define OPTION_VAL_20_CHS NULL
 #define OPTION_VAL_0_CHS "已静音"
-#define XEMU_DISPLAY_FILTERING_LABEL_CHS "显示过滤"
-#define XEMU_DISPLAY_FILTERING_INFO_0_CHS "显示输出的纹理过滤模式。"
-#define OPTION_VAL_LINEAR_CHS "双线性"
-#define OPTION_VAL_NEAREST_CHS "最近邻"
+#define XEMU_VK_FAST_PATHS_LABEL_CHS "Vulkan 快速路径 (需重启)"
+#define XEMU_VK_FAST_PATHS_INFO_0_CHS NULL
+#define OPTION_VAL_ALL_CHS "全部"
+#define OPTION_VAL_NO_GPL_CHS "禁用管线库"
+#define OPTION_VAL_NO_DYN_CHS "禁用动态状态"
+#define OPTION_VAL_NONE_CHS "无"
+#define XEMU_RUMBLE_P1_LABEL_CHS NULL
+#define XEMU_RUMBLE_P1_INFO_0_CHS NULL
+#define XEMU_RUMBLE_P2_LABEL_CHS NULL
+#define XEMU_RUMBLE_P2_INFO_0_CHS NULL
+#define XEMU_DEADZONE_P1_LABEL_CHS NULL
+#define XEMU_DEADZONE_P1_INFO_0_CHS NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_CHS NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_CHS NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_CHS NULL
+#define OPTION_VAL_15_CHS NULL
+#define OPTION_VAL_25_CHS NULL
+#define OPTION_VAL_30_CHS NULL
+#define XEMU_DEADZONE_P2_LABEL_CHS NULL
+#define XEMU_DEADZONE_P2_INFO_0_CHS NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_CHS "免投币免费玩(需重启)"
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_CHS "启动世嘉 Chihiro 街机游戏时直接进入免费模式，无需投币。关闭此项时，按下 Select 键即可投币。"
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_CHS "光枪瞄准控制"
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_CHS "控制《死亡之屋 3》、《VR 战警 3》和《幽灵小队》等游戏的瞄准方式。“鼠标”：使用鼠标（或 RetroArch 的光枪）瞄准，左键射击，右键为枪械功能键（如上膛、换武器），中键为踏板或连发速率；“模拟摇杆”：使用左摇杆或方向键瞄准，R2 开火，L2 为枪械功能键，L 键为踏板或连发速率，R 键向屏幕外射击。"
+#define OPTION_VAL_MOUSE_CHS "鼠标"
+#define OPTION_VAL_STICK_CHS "模拟摇杆"
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_CHS "游戏准星显示"
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CHS "在画面上叠加绘制玩家的瞄准准星，1 号玩家显示为红色，2 号玩家显示为蓝色。"
+#define XEMU_CHIHIRO_FFB_LABEL_CHS "力反馈震动"
+#define XEMU_CHIHIRO_FFB_INFO_0_CHS "将 Chihiro 赛车游戏（如《OutRun 2》、《湾岸午夜最高极速》）的力反馈信号转换为端口 1 手柄的震动效果，强度为此处设定的百分比。"
+#define OPTION_VAL_50_CHS NULL
+#define OPTION_VAL_75_CHS NULL
+#define OPTION_VAL_150_CHS NULL
+#define OPTION_VAL_200_CHS NULL
 
 struct retro_core_option_v2_category option_cats_chs[] = {
     {
@@ -1589,13 +3182,19 @@ struct retro_core_option_v2_category option_cats_chs[] = {
         CATEGORY_AUDIO_LABEL_CHS,
         CATEGORY_AUDIO_INFO_0_CHS
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_CHS,
+        CATEGORY_CONTROLS_INFO_0_CHS
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_CHS,
+        CATEGORY_CHIHIRO_INFO_0_CHS
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_chs[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_CHS,
@@ -1624,6 +3223,8 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_CHS,
@@ -1636,7 +3237,7 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -1653,6 +3254,38 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_CHS,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_CHS,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_CHS,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_CHS,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_CHS,
         NULL,
@@ -1665,6 +3298,25 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_CHS,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_CHS,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_CHS },
+            { "4:3",       OPTION_VAL_4_3_CHS },
+            { "16:9",      OPTION_VAL_16_9_CHS },
+            { "letterbox", OPTION_VAL_LETTERBOX_CHS },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -1720,6 +3372,25 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_CHS,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_CHS,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_CHS,
@@ -1734,13 +3405,29 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_CHS,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_CHS,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_CHS,
+        XEMU_DSP_JIT_INFO_0_CHS,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_CHS,
+        NULL,
+        XEMU_HRTF_INFO_0_CHS,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -1749,10 +3436,27 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_CHS,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_CHS,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_CHS,
+        XEMU_VP_WORKERS_INFO_0_CHS,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_CHS },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_CHS,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_CHS,
         NULL,
         "video",
         {
@@ -1780,19 +3484,169 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_CHS,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_CHS,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_CHS,
+        XEMU_VK_FAST_PATHS_INFO_0_CHS,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_CHS },
-            { "nearest", OPTION_VAL_NEAREST_CHS },
+            { "all",      OPTION_VAL_ALL_CHS },
+            { "no_gpl",   OPTION_VAL_NO_GPL_CHS },
+            { "no_dyn",   OPTION_VAL_NO_DYN_CHS },
+            { "none",     OPTION_VAL_NONE_CHS },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_CHS,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_CHS,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_CHS,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_CHS,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_CHS,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_CHS,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CHS },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CHS },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CHS },
+            { "15", OPTION_VAL_15_CHS },
+            { "20", OPTION_VAL_20_CHS },
+            { "25", OPTION_VAL_25_CHS },
+            { "30", OPTION_VAL_30_CHS },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_CHS,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_CHS,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CHS },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CHS },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CHS },
+            { "15", OPTION_VAL_15_CHS },
+            { "20", OPTION_VAL_20_CHS },
+            { "25", OPTION_VAL_25_CHS },
+            { "30", OPTION_VAL_30_CHS },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_CHS,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_CHS,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_CHS,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_CHS,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_CHS },
+            { "stick", OPTION_VAL_STICK_CHS },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_CHS,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_CHS,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_CHS,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_CHS,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_CHS },
+            { "50",  OPTION_VAL_50_CHS },
+            { "75",  OPTION_VAL_75_CHS },
+            { "100", OPTION_VAL_100_CHS },
+            { "150", OPTION_VAL_150_CHS },
+            { "200", OPTION_VAL_200_CHS },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -1803,12 +3657,16 @@ struct retro_core_options_v2 options_chs = {
 
 /* RETRO_LANGUAGE_CHT */
 
-#define CATEGORY_SYSTEM_LABEL_CHT "系統"
+#define CATEGORY_SYSTEM_LABEL_CHT NULL
 #define CATEGORY_SYSTEM_INFO_0_CHT NULL
 #define CATEGORY_VIDEO_LABEL_CHT "顯示"
 #define CATEGORY_VIDEO_INFO_0_CHT NULL
 #define CATEGORY_AUDIO_LABEL_CHT "音效"
 #define CATEGORY_AUDIO_INFO_0_CHT NULL
+#define CATEGORY_CONTROLS_LABEL_CHT "控制器 (核心預設)"
+#define CATEGORY_CONTROLS_INFO_0_CHT NULL
+#define CATEGORY_CHIHIRO_LABEL_CHT NULL
+#define CATEGORY_CHIHIRO_INFO_0_CHT NULL
 #define XEMU_MEMORY_LABEL_CHT NULL
 #define XEMU_MEMORY_INFO_0_CHT NULL
 #define OPTION_VAL_64_CHT NULL
@@ -1820,15 +3678,23 @@ struct retro_core_options_v2 options_chs = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_CHT NULL
 #define XEMU_HARD_FPU_LABEL_CHT NULL
 #define XEMU_HARD_FPU_INFO_0_CHT NULL
+#define XEMU_CPU_BOOST_LABEL_CHT NULL
+#define XEMU_CPU_BOOST_INFO_0_CHT NULL
+#define XEMU_HDD_TRIM_LABEL_CHT NULL
+#define XEMU_HDD_TRIM_INFO_0_CHT NULL
 #define XEMU_RENDERER_LABEL_CHT NULL
 #define XEMU_RENDERER_INFO_0_CHT NULL
 #define OPTION_VAL_VULKAN_CHT NULL
 #define OPTION_VAL_OPENGL_CHT NULL
-#define XEMU_ASPECT_RATIO_LABEL_CHT "寬高比"
-#define XEMU_ASPECT_RATIO_INFO_0_CHT NULL
-#define OPTION_VAL_AUTO_CHT "自動"
+#define XEMU_VIDEO_ASPECT_LABEL_CHT NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_CHT NULL
+#define OPTION_VAL_DASHBOARD_CHT NULL
 #define OPTION_VAL_4_3_CHT NULL
 #define OPTION_VAL_16_9_CHT NULL
+#define OPTION_VAL_LETTERBOX_CHT NULL
+#define XEMU_ASPECT_RATIO_LABEL_CHT NULL
+#define XEMU_ASPECT_RATIO_INFO_0_CHT NULL
+#define OPTION_VAL_AUTO_CHT "自動"
 #define XEMU_SURFACE_SCALE_LABEL_CHT NULL
 #define XEMU_SURFACE_SCALE_INFO_0_CHT NULL
 #define OPTION_VAL_1_CHT NULL
@@ -1848,12 +3714,18 @@ struct retro_core_options_v2 options_chs = {
 #define OPTION_VAL_SVIDEO_CHT "S-端子 (獨立視訊端子)"
 #define OPTION_VAL_SCART_CHT NULL
 #define OPTION_VAL_VGA_CHT NULL
+#define XEMU_AUDIO_THREAD_LABEL_CHT NULL
+#define XEMU_AUDIO_THREAD_INFO_0_CHT NULL
 #define XEMU_USE_DSP_LABEL_CHT NULL
 #define XEMU_USE_DSP_INFO_0_CHT NULL
-#define XEMU_CACHE_SHADERS_LABEL_CHT NULL
-#define XEMU_CACHE_SHADERS_INFO_0_CHT NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_CHT NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_CHT NULL
+#define XEMU_DSP_JIT_LABEL_CHT NULL
+#define XEMU_DSP_JIT_INFO_0_CHT NULL
+#define XEMU_HRTF_LABEL_CHT NULL
+#define XEMU_HRTF_INFO_0_CHT NULL
+#define XEMU_VP_WORKERS_LABEL_CHT NULL
+#define XEMU_VP_WORKERS_INFO_0_CHT NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_CHT NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_CHT NULL
 #define XEMU_AUDIO_VOLUME_LABEL_CHT NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_CHT NULL
 #define OPTION_VAL_100_CHT NULL
@@ -1862,10 +3734,40 @@ struct retro_core_options_v2 options_chs = {
 #define OPTION_VAL_40_CHT NULL
 #define OPTION_VAL_20_CHT NULL
 #define OPTION_VAL_0_CHT NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_CHT NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_CHT NULL
-#define OPTION_VAL_LINEAR_CHT "雙線性"
-#define OPTION_VAL_NEAREST_CHT "最近鄰法"
+#define XEMU_VK_FAST_PATHS_LABEL_CHT NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_CHT NULL
+#define OPTION_VAL_ALL_CHT "全部"
+#define OPTION_VAL_NO_GPL_CHT NULL
+#define OPTION_VAL_NO_DYN_CHT NULL
+#define OPTION_VAL_NONE_CHT "無"
+#define XEMU_RUMBLE_P1_LABEL_CHT NULL
+#define XEMU_RUMBLE_P1_INFO_0_CHT NULL
+#define XEMU_RUMBLE_P2_LABEL_CHT NULL
+#define XEMU_RUMBLE_P2_INFO_0_CHT NULL
+#define XEMU_DEADZONE_P1_LABEL_CHT NULL
+#define XEMU_DEADZONE_P1_INFO_0_CHT NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_CHT NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_CHT NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_CHT NULL
+#define OPTION_VAL_15_CHT NULL
+#define OPTION_VAL_25_CHT NULL
+#define OPTION_VAL_30_CHT NULL
+#define XEMU_DEADZONE_P2_LABEL_CHT NULL
+#define XEMU_DEADZONE_P2_INFO_0_CHT NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_CHT NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_CHT NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_CHT NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_CHT NULL
+#define OPTION_VAL_MOUSE_CHT "滑鼠"
+#define OPTION_VAL_STICK_CHT NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_CHT NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CHT NULL
+#define XEMU_CHIHIRO_FFB_LABEL_CHT NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_CHT NULL
+#define OPTION_VAL_50_CHT NULL
+#define OPTION_VAL_75_CHT NULL
+#define OPTION_VAL_150_CHT NULL
+#define OPTION_VAL_200_CHT NULL
 
 struct retro_core_option_v2_category option_cats_cht[] = {
     {
@@ -1883,13 +3785,19 @@ struct retro_core_option_v2_category option_cats_cht[] = {
         CATEGORY_AUDIO_LABEL_CHT,
         CATEGORY_AUDIO_INFO_0_CHT
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_CHT,
+        CATEGORY_CONTROLS_INFO_0_CHT
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_CHT,
+        CATEGORY_CHIHIRO_INFO_0_CHT
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_cht[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_CHT,
@@ -1918,6 +3826,8 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_CHT,
@@ -1930,7 +3840,7 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -1947,6 +3857,38 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_CHT,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_CHT,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_CHT,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_CHT,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_CHT,
         NULL,
@@ -1959,6 +3901,25 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_CHT,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_CHT,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_CHT },
+            { "4:3",       OPTION_VAL_4_3_CHT },
+            { "16:9",      OPTION_VAL_16_9_CHT },
+            { "letterbox", OPTION_VAL_LETTERBOX_CHT },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -2014,6 +3975,25 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_CHT,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_CHT,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_CHT,
@@ -2028,13 +4008,29 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_CHT,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_CHT,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_CHT,
+        XEMU_DSP_JIT_INFO_0_CHT,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_CHT,
+        NULL,
+        XEMU_HRTF_INFO_0_CHT,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -2043,10 +4039,27 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_CHT,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_CHT,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_CHT,
+        XEMU_VP_WORKERS_INFO_0_CHT,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_CHT },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_CHT,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_CHT,
         NULL,
         "video",
         {
@@ -2074,19 +4087,169 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_CHT,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_CHT,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_CHT,
+        XEMU_VK_FAST_PATHS_INFO_0_CHT,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_CHT },
-            { "nearest", OPTION_VAL_NEAREST_CHT },
+            { "all",      OPTION_VAL_ALL_CHT },
+            { "no_gpl",   OPTION_VAL_NO_GPL_CHT },
+            { "no_dyn",   OPTION_VAL_NO_DYN_CHT },
+            { "none",     OPTION_VAL_NONE_CHT },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_CHT,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_CHT,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_CHT,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_CHT,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_CHT,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_CHT,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CHT },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CHT },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CHT },
+            { "15", OPTION_VAL_15_CHT },
+            { "20", OPTION_VAL_20_CHT },
+            { "25", OPTION_VAL_25_CHT },
+            { "30", OPTION_VAL_30_CHT },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_CHT,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_CHT,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CHT },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CHT },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CHT },
+            { "15", OPTION_VAL_15_CHT },
+            { "20", OPTION_VAL_20_CHT },
+            { "25", OPTION_VAL_25_CHT },
+            { "30", OPTION_VAL_30_CHT },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_CHT,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_CHT,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_CHT,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_CHT,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_CHT },
+            { "stick", OPTION_VAL_STICK_CHT },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_CHT,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_CHT,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_CHT,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_CHT,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_CHT },
+            { "50",  OPTION_VAL_50_CHT },
+            { "75",  OPTION_VAL_75_CHT },
+            { "100", OPTION_VAL_100_CHT },
+            { "150", OPTION_VAL_150_CHT },
+            { "200", OPTION_VAL_200_CHT },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -2097,12 +4260,16 @@ struct retro_core_options_v2 options_cht = {
 
 /* RETRO_LANGUAGE_CS */
 
-#define CATEGORY_SYSTEM_LABEL_CS "Systém"
+#define CATEGORY_SYSTEM_LABEL_CS NULL
 #define CATEGORY_SYSTEM_INFO_0_CS NULL
 #define CATEGORY_VIDEO_LABEL_CS NULL
 #define CATEGORY_VIDEO_INFO_0_CS NULL
 #define CATEGORY_AUDIO_LABEL_CS "Zvuk"
 #define CATEGORY_AUDIO_INFO_0_CS NULL
+#define CATEGORY_CONTROLS_LABEL_CS "Her. ovladače"
+#define CATEGORY_CONTROLS_INFO_0_CS NULL
+#define CATEGORY_CHIHIRO_LABEL_CS NULL
+#define CATEGORY_CHIHIRO_INFO_0_CS NULL
 #define XEMU_MEMORY_LABEL_CS NULL
 #define XEMU_MEMORY_INFO_0_CS NULL
 #define OPTION_VAL_64_CS NULL
@@ -2114,15 +4281,23 @@ struct retro_core_options_v2 options_cht = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_CS NULL
 #define XEMU_HARD_FPU_LABEL_CS NULL
 #define XEMU_HARD_FPU_INFO_0_CS NULL
+#define XEMU_CPU_BOOST_LABEL_CS NULL
+#define XEMU_CPU_BOOST_INFO_0_CS NULL
+#define XEMU_HDD_TRIM_LABEL_CS NULL
+#define XEMU_HDD_TRIM_INFO_0_CS NULL
 #define XEMU_RENDERER_LABEL_CS NULL
 #define XEMU_RENDERER_INFO_0_CS NULL
 #define OPTION_VAL_VULKAN_CS NULL
 #define OPTION_VAL_OPENGL_CS NULL
-#define XEMU_ASPECT_RATIO_LABEL_CS "Poměr stran"
-#define XEMU_ASPECT_RATIO_INFO_0_CS NULL
-#define OPTION_VAL_AUTO_CS NULL
+#define XEMU_VIDEO_ASPECT_LABEL_CS NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_CS NULL
+#define OPTION_VAL_DASHBOARD_CS NULL
 #define OPTION_VAL_4_3_CS NULL
 #define OPTION_VAL_16_9_CS NULL
+#define OPTION_VAL_LETTERBOX_CS NULL
+#define XEMU_ASPECT_RATIO_LABEL_CS "Poměr Stran Jádra"
+#define XEMU_ASPECT_RATIO_INFO_0_CS NULL
+#define OPTION_VAL_AUTO_CS NULL
 #define XEMU_SURFACE_SCALE_LABEL_CS NULL
 #define XEMU_SURFACE_SCALE_INFO_0_CS NULL
 #define OPTION_VAL_1_CS NULL
@@ -2142,12 +4317,18 @@ struct retro_core_options_v2 options_cht = {
 #define OPTION_VAL_SVIDEO_CS NULL
 #define OPTION_VAL_SCART_CS NULL
 #define OPTION_VAL_VGA_CS NULL
+#define XEMU_AUDIO_THREAD_LABEL_CS NULL
+#define XEMU_AUDIO_THREAD_INFO_0_CS NULL
 #define XEMU_USE_DSP_LABEL_CS NULL
 #define XEMU_USE_DSP_INFO_0_CS NULL
-#define XEMU_CACHE_SHADERS_LABEL_CS NULL
-#define XEMU_CACHE_SHADERS_INFO_0_CS NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_CS NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_CS NULL
+#define XEMU_DSP_JIT_LABEL_CS NULL
+#define XEMU_DSP_JIT_INFO_0_CS NULL
+#define XEMU_HRTF_LABEL_CS NULL
+#define XEMU_HRTF_INFO_0_CS NULL
+#define XEMU_VP_WORKERS_LABEL_CS NULL
+#define XEMU_VP_WORKERS_INFO_0_CS NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_CS NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_CS NULL
 #define XEMU_AUDIO_VOLUME_LABEL_CS NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_CS NULL
 #define OPTION_VAL_100_CS NULL
@@ -2156,10 +4337,40 @@ struct retro_core_options_v2 options_cht = {
 #define OPTION_VAL_40_CS NULL
 #define OPTION_VAL_20_CS NULL
 #define OPTION_VAL_0_CS NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_CS NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_CS NULL
-#define OPTION_VAL_LINEAR_CS "Bilineární"
-#define OPTION_VAL_NEAREST_CS "Nejbližší soused"
+#define XEMU_VK_FAST_PATHS_LABEL_CS NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_CS NULL
+#define OPTION_VAL_ALL_CS "Vše"
+#define OPTION_VAL_NO_GPL_CS NULL
+#define OPTION_VAL_NO_DYN_CS NULL
+#define OPTION_VAL_NONE_CS "Žádné"
+#define XEMU_RUMBLE_P1_LABEL_CS NULL
+#define XEMU_RUMBLE_P1_INFO_0_CS NULL
+#define XEMU_RUMBLE_P2_LABEL_CS NULL
+#define XEMU_RUMBLE_P2_INFO_0_CS NULL
+#define XEMU_DEADZONE_P1_LABEL_CS NULL
+#define XEMU_DEADZONE_P1_INFO_0_CS NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_CS NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_CS NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_CS NULL
+#define OPTION_VAL_15_CS NULL
+#define OPTION_VAL_25_CS NULL
+#define OPTION_VAL_30_CS NULL
+#define XEMU_DEADZONE_P2_LABEL_CS NULL
+#define XEMU_DEADZONE_P2_INFO_0_CS NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_CS NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_CS NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_CS NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_CS NULL
+#define OPTION_VAL_MOUSE_CS "Myš"
+#define OPTION_VAL_STICK_CS NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_CS NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CS NULL
+#define XEMU_CHIHIRO_FFB_LABEL_CS NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_CS NULL
+#define OPTION_VAL_50_CS NULL
+#define OPTION_VAL_75_CS NULL
+#define OPTION_VAL_150_CS NULL
+#define OPTION_VAL_200_CS NULL
 
 struct retro_core_option_v2_category option_cats_cs[] = {
     {
@@ -2177,13 +4388,19 @@ struct retro_core_option_v2_category option_cats_cs[] = {
         CATEGORY_AUDIO_LABEL_CS,
         CATEGORY_AUDIO_INFO_0_CS
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_CS,
+        CATEGORY_CONTROLS_INFO_0_CS
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_CS,
+        CATEGORY_CHIHIRO_INFO_0_CS
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_cs[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_CS,
@@ -2212,6 +4429,8 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_CS,
@@ -2224,7 +4443,7 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -2241,6 +4460,38 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_CS,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_CS,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_CS,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_CS,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_CS,
         NULL,
@@ -2253,6 +4504,25 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_CS,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_CS,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_CS },
+            { "4:3",       OPTION_VAL_4_3_CS },
+            { "16:9",      OPTION_VAL_16_9_CS },
+            { "letterbox", OPTION_VAL_LETTERBOX_CS },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -2308,6 +4578,25 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_CS,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_CS,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_CS,
@@ -2322,13 +4611,29 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_CS,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_CS,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_CS,
+        XEMU_DSP_JIT_INFO_0_CS,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_CS,
+        NULL,
+        XEMU_HRTF_INFO_0_CS,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -2337,10 +4642,27 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_CS,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_CS,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_CS,
+        XEMU_VP_WORKERS_INFO_0_CS,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_CS },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_CS,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_CS,
         NULL,
         "video",
         {
@@ -2368,19 +4690,169 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_CS,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_CS,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_CS,
+        XEMU_VK_FAST_PATHS_INFO_0_CS,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_CS },
-            { "nearest", OPTION_VAL_NEAREST_CS },
+            { "all",      OPTION_VAL_ALL_CS },
+            { "no_gpl",   OPTION_VAL_NO_GPL_CS },
+            { "no_dyn",   OPTION_VAL_NO_DYN_CS },
+            { "none",     OPTION_VAL_NONE_CS },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_CS,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_CS,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_CS,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_CS,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_CS,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_CS,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CS },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CS },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CS },
+            { "15", OPTION_VAL_15_CS },
+            { "20", OPTION_VAL_20_CS },
+            { "25", OPTION_VAL_25_CS },
+            { "30", OPTION_VAL_30_CS },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_CS,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_CS,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CS },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CS },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CS },
+            { "15", OPTION_VAL_15_CS },
+            { "20", OPTION_VAL_20_CS },
+            { "25", OPTION_VAL_25_CS },
+            { "30", OPTION_VAL_30_CS },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_CS,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_CS,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_CS,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_CS,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_CS },
+            { "stick", OPTION_VAL_STICK_CS },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_CS,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_CS,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_CS,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_CS,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_CS },
+            { "50",  OPTION_VAL_50_CS },
+            { "75",  OPTION_VAL_75_CS },
+            { "100", OPTION_VAL_100_CS },
+            { "150", OPTION_VAL_150_CS },
+            { "200", OPTION_VAL_200_CS },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -2397,6 +4869,10 @@ struct retro_core_options_v2 options_cs = {
 #define CATEGORY_VIDEO_INFO_0_CY NULL
 #define CATEGORY_AUDIO_LABEL_CY NULL
 #define CATEGORY_AUDIO_INFO_0_CY NULL
+#define CATEGORY_CONTROLS_LABEL_CY NULL
+#define CATEGORY_CONTROLS_INFO_0_CY NULL
+#define CATEGORY_CHIHIRO_LABEL_CY NULL
+#define CATEGORY_CHIHIRO_INFO_0_CY NULL
 #define XEMU_MEMORY_LABEL_CY NULL
 #define XEMU_MEMORY_INFO_0_CY NULL
 #define OPTION_VAL_64_CY NULL
@@ -2408,15 +4884,23 @@ struct retro_core_options_v2 options_cs = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_CY NULL
 #define XEMU_HARD_FPU_LABEL_CY NULL
 #define XEMU_HARD_FPU_INFO_0_CY NULL
+#define XEMU_CPU_BOOST_LABEL_CY NULL
+#define XEMU_CPU_BOOST_INFO_0_CY NULL
+#define XEMU_HDD_TRIM_LABEL_CY NULL
+#define XEMU_HDD_TRIM_INFO_0_CY NULL
 #define XEMU_RENDERER_LABEL_CY NULL
 #define XEMU_RENDERER_INFO_0_CY NULL
 #define OPTION_VAL_VULKAN_CY NULL
 #define OPTION_VAL_OPENGL_CY NULL
+#define XEMU_VIDEO_ASPECT_LABEL_CY NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_CY NULL
+#define OPTION_VAL_DASHBOARD_CY NULL
+#define OPTION_VAL_4_3_CY NULL
+#define OPTION_VAL_16_9_CY NULL
+#define OPTION_VAL_LETTERBOX_CY NULL
 #define XEMU_ASPECT_RATIO_LABEL_CY NULL
 #define XEMU_ASPECT_RATIO_INFO_0_CY NULL
 #define OPTION_VAL_AUTO_CY NULL
-#define OPTION_VAL_4_3_CY NULL
-#define OPTION_VAL_16_9_CY NULL
 #define XEMU_SURFACE_SCALE_LABEL_CY NULL
 #define XEMU_SURFACE_SCALE_INFO_0_CY NULL
 #define OPTION_VAL_1_CY NULL
@@ -2436,12 +4920,18 @@ struct retro_core_options_v2 options_cs = {
 #define OPTION_VAL_SVIDEO_CY NULL
 #define OPTION_VAL_SCART_CY NULL
 #define OPTION_VAL_VGA_CY NULL
+#define XEMU_AUDIO_THREAD_LABEL_CY NULL
+#define XEMU_AUDIO_THREAD_INFO_0_CY NULL
 #define XEMU_USE_DSP_LABEL_CY NULL
 #define XEMU_USE_DSP_INFO_0_CY NULL
-#define XEMU_CACHE_SHADERS_LABEL_CY NULL
-#define XEMU_CACHE_SHADERS_INFO_0_CY NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_CY NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_CY NULL
+#define XEMU_DSP_JIT_LABEL_CY NULL
+#define XEMU_DSP_JIT_INFO_0_CY NULL
+#define XEMU_HRTF_LABEL_CY NULL
+#define XEMU_HRTF_INFO_0_CY NULL
+#define XEMU_VP_WORKERS_LABEL_CY NULL
+#define XEMU_VP_WORKERS_INFO_0_CY NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_CY NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_CY NULL
 #define XEMU_AUDIO_VOLUME_LABEL_CY NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_CY NULL
 #define OPTION_VAL_100_CY NULL
@@ -2450,10 +4940,40 @@ struct retro_core_options_v2 options_cs = {
 #define OPTION_VAL_40_CY NULL
 #define OPTION_VAL_20_CY NULL
 #define OPTION_VAL_0_CY NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_CY NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_CY NULL
-#define OPTION_VAL_LINEAR_CY NULL
-#define OPTION_VAL_NEAREST_CY NULL
+#define XEMU_VK_FAST_PATHS_LABEL_CY NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_CY NULL
+#define OPTION_VAL_ALL_CY "Popeth"
+#define OPTION_VAL_NO_GPL_CY NULL
+#define OPTION_VAL_NO_DYN_CY NULL
+#define OPTION_VAL_NONE_CY "Dim"
+#define XEMU_RUMBLE_P1_LABEL_CY NULL
+#define XEMU_RUMBLE_P1_INFO_0_CY NULL
+#define XEMU_RUMBLE_P2_LABEL_CY NULL
+#define XEMU_RUMBLE_P2_INFO_0_CY NULL
+#define XEMU_DEADZONE_P1_LABEL_CY NULL
+#define XEMU_DEADZONE_P1_INFO_0_CY NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_CY NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_CY NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_CY NULL
+#define OPTION_VAL_15_CY NULL
+#define OPTION_VAL_25_CY NULL
+#define OPTION_VAL_30_CY NULL
+#define XEMU_DEADZONE_P2_LABEL_CY NULL
+#define XEMU_DEADZONE_P2_INFO_0_CY NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_CY NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_CY NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_CY NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_CY NULL
+#define OPTION_VAL_MOUSE_CY NULL
+#define OPTION_VAL_STICK_CY NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_CY NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CY NULL
+#define XEMU_CHIHIRO_FFB_LABEL_CY NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_CY NULL
+#define OPTION_VAL_50_CY NULL
+#define OPTION_VAL_75_CY NULL
+#define OPTION_VAL_150_CY NULL
+#define OPTION_VAL_200_CY NULL
 
 struct retro_core_option_v2_category option_cats_cy[] = {
     {
@@ -2471,13 +4991,19 @@ struct retro_core_option_v2_category option_cats_cy[] = {
         CATEGORY_AUDIO_LABEL_CY,
         CATEGORY_AUDIO_INFO_0_CY
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_CY,
+        CATEGORY_CONTROLS_INFO_0_CY
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_CY,
+        CATEGORY_CHIHIRO_INFO_0_CY
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_cy[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_CY,
@@ -2506,6 +5032,8 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_CY,
@@ -2518,7 +5046,7 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -2535,6 +5063,38 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_CY,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_CY,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_CY,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_CY,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_CY,
         NULL,
@@ -2547,6 +5107,25 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_CY,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_CY,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_CY },
+            { "4:3",       OPTION_VAL_4_3_CY },
+            { "16:9",      OPTION_VAL_16_9_CY },
+            { "letterbox", OPTION_VAL_LETTERBOX_CY },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -2602,6 +5181,25 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_CY,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_CY,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_CY,
@@ -2616,13 +5214,29 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_CY,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_CY,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_CY,
+        XEMU_DSP_JIT_INFO_0_CY,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_CY,
+        NULL,
+        XEMU_HRTF_INFO_0_CY,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -2631,10 +5245,27 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_CY,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_CY,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_CY,
+        XEMU_VP_WORKERS_INFO_0_CY,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_CY },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_CY,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_CY,
         NULL,
         "video",
         {
@@ -2662,19 +5293,169 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_CY,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_CY,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_CY,
+        XEMU_VK_FAST_PATHS_INFO_0_CY,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_CY },
-            { "nearest", OPTION_VAL_NEAREST_CY },
+            { "all",      OPTION_VAL_ALL_CY },
+            { "no_gpl",   OPTION_VAL_NO_GPL_CY },
+            { "no_dyn",   OPTION_VAL_NO_DYN_CY },
+            { "none",     OPTION_VAL_NONE_CY },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_CY,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_CY,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_CY,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_CY,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_CY,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_CY,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CY },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CY },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CY },
+            { "15", OPTION_VAL_15_CY },
+            { "20", OPTION_VAL_20_CY },
+            { "25", OPTION_VAL_25_CY },
+            { "30", OPTION_VAL_30_CY },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_CY,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_CY,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CY },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CY },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CY },
+            { "15", OPTION_VAL_15_CY },
+            { "20", OPTION_VAL_20_CY },
+            { "25", OPTION_VAL_25_CY },
+            { "30", OPTION_VAL_30_CY },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_CY,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_CY,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_CY,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_CY,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_CY },
+            { "stick", OPTION_VAL_STICK_CY },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_CY,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_CY,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_CY,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_CY,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_CY },
+            { "50",  OPTION_VAL_50_CY },
+            { "75",  OPTION_VAL_75_CY },
+            { "100", OPTION_VAL_100_CY },
+            { "150", OPTION_VAL_150_CY },
+            { "200", OPTION_VAL_200_CY },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -2691,6 +5472,10 @@ struct retro_core_options_v2 options_cy = {
 #define CATEGORY_VIDEO_INFO_0_DA NULL
 #define CATEGORY_AUDIO_LABEL_DA "Lyd"
 #define CATEGORY_AUDIO_INFO_0_DA NULL
+#define CATEGORY_CONTROLS_LABEL_DA NULL
+#define CATEGORY_CONTROLS_INFO_0_DA NULL
+#define CATEGORY_CHIHIRO_LABEL_DA NULL
+#define CATEGORY_CHIHIRO_INFO_0_DA NULL
 #define XEMU_MEMORY_LABEL_DA NULL
 #define XEMU_MEMORY_INFO_0_DA NULL
 #define OPTION_VAL_64_DA NULL
@@ -2702,15 +5487,23 @@ struct retro_core_options_v2 options_cy = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_DA NULL
 #define XEMU_HARD_FPU_LABEL_DA NULL
 #define XEMU_HARD_FPU_INFO_0_DA NULL
+#define XEMU_CPU_BOOST_LABEL_DA NULL
+#define XEMU_CPU_BOOST_INFO_0_DA NULL
+#define XEMU_HDD_TRIM_LABEL_DA NULL
+#define XEMU_HDD_TRIM_INFO_0_DA NULL
 #define XEMU_RENDERER_LABEL_DA NULL
 #define XEMU_RENDERER_INFO_0_DA NULL
 #define OPTION_VAL_VULKAN_DA NULL
 #define OPTION_VAL_OPENGL_DA NULL
+#define XEMU_VIDEO_ASPECT_LABEL_DA NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_DA NULL
+#define OPTION_VAL_DASHBOARD_DA NULL
+#define OPTION_VAL_4_3_DA NULL
+#define OPTION_VAL_16_9_DA NULL
+#define OPTION_VAL_LETTERBOX_DA NULL
 #define XEMU_ASPECT_RATIO_LABEL_DA NULL
 #define XEMU_ASPECT_RATIO_INFO_0_DA NULL
 #define OPTION_VAL_AUTO_DA NULL
-#define OPTION_VAL_4_3_DA NULL
-#define OPTION_VAL_16_9_DA NULL
 #define XEMU_SURFACE_SCALE_LABEL_DA NULL
 #define XEMU_SURFACE_SCALE_INFO_0_DA NULL
 #define OPTION_VAL_1_DA NULL
@@ -2730,12 +5523,18 @@ struct retro_core_options_v2 options_cy = {
 #define OPTION_VAL_SVIDEO_DA NULL
 #define OPTION_VAL_SCART_DA NULL
 #define OPTION_VAL_VGA_DA NULL
+#define XEMU_AUDIO_THREAD_LABEL_DA NULL
+#define XEMU_AUDIO_THREAD_INFO_0_DA NULL
 #define XEMU_USE_DSP_LABEL_DA NULL
 #define XEMU_USE_DSP_INFO_0_DA NULL
-#define XEMU_CACHE_SHADERS_LABEL_DA NULL
-#define XEMU_CACHE_SHADERS_INFO_0_DA NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_DA NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_DA NULL
+#define XEMU_DSP_JIT_LABEL_DA NULL
+#define XEMU_DSP_JIT_INFO_0_DA NULL
+#define XEMU_HRTF_LABEL_DA NULL
+#define XEMU_HRTF_INFO_0_DA NULL
+#define XEMU_VP_WORKERS_LABEL_DA NULL
+#define XEMU_VP_WORKERS_INFO_0_DA NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_DA NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_DA NULL
 #define XEMU_AUDIO_VOLUME_LABEL_DA NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_DA NULL
 #define OPTION_VAL_100_DA NULL
@@ -2744,10 +5543,40 @@ struct retro_core_options_v2 options_cy = {
 #define OPTION_VAL_40_DA NULL
 #define OPTION_VAL_20_DA NULL
 #define OPTION_VAL_0_DA NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_DA NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_DA NULL
-#define OPTION_VAL_LINEAR_DA NULL
-#define OPTION_VAL_NEAREST_DA NULL
+#define XEMU_VK_FAST_PATHS_LABEL_DA NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_DA NULL
+#define OPTION_VAL_ALL_DA NULL
+#define OPTION_VAL_NO_GPL_DA NULL
+#define OPTION_VAL_NO_DYN_DA NULL
+#define OPTION_VAL_NONE_DA NULL
+#define XEMU_RUMBLE_P1_LABEL_DA NULL
+#define XEMU_RUMBLE_P1_INFO_0_DA NULL
+#define XEMU_RUMBLE_P2_LABEL_DA NULL
+#define XEMU_RUMBLE_P2_INFO_0_DA NULL
+#define XEMU_DEADZONE_P1_LABEL_DA NULL
+#define XEMU_DEADZONE_P1_INFO_0_DA NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_DA NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_DA NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_DA NULL
+#define OPTION_VAL_15_DA NULL
+#define OPTION_VAL_25_DA NULL
+#define OPTION_VAL_30_DA NULL
+#define XEMU_DEADZONE_P2_LABEL_DA NULL
+#define XEMU_DEADZONE_P2_INFO_0_DA NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_DA NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_DA NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_DA NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_DA NULL
+#define OPTION_VAL_MOUSE_DA NULL
+#define OPTION_VAL_STICK_DA NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_DA NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_DA NULL
+#define XEMU_CHIHIRO_FFB_LABEL_DA NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_DA NULL
+#define OPTION_VAL_50_DA NULL
+#define OPTION_VAL_75_DA NULL
+#define OPTION_VAL_150_DA NULL
+#define OPTION_VAL_200_DA NULL
 
 struct retro_core_option_v2_category option_cats_da[] = {
     {
@@ -2765,13 +5594,19 @@ struct retro_core_option_v2_category option_cats_da[] = {
         CATEGORY_AUDIO_LABEL_DA,
         CATEGORY_AUDIO_INFO_0_DA
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_DA,
+        CATEGORY_CONTROLS_INFO_0_DA
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_DA,
+        CATEGORY_CHIHIRO_INFO_0_DA
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_da[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_DA,
@@ -2800,6 +5635,8 @@ struct retro_core_option_v2_definition option_defs_da[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_DA,
@@ -2812,7 +5649,7 @@ struct retro_core_option_v2_definition option_defs_da[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -2829,6 +5666,38 @@ struct retro_core_option_v2_definition option_defs_da[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_DA,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_DA,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_DA,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_DA,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_DA,
         NULL,
@@ -2841,6 +5710,25 @@ struct retro_core_option_v2_definition option_defs_da[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_DA,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_DA,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_DA },
+            { "4:3",       OPTION_VAL_4_3_DA },
+            { "16:9",      OPTION_VAL_16_9_DA },
+            { "letterbox", OPTION_VAL_LETTERBOX_DA },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -2896,6 +5784,25 @@ struct retro_core_option_v2_definition option_defs_da[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_DA,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_DA,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_DA,
@@ -2910,13 +5817,29 @@ struct retro_core_option_v2_definition option_defs_da[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_DA,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_DA,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_DA,
+        XEMU_DSP_JIT_INFO_0_DA,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_DA,
+        NULL,
+        XEMU_HRTF_INFO_0_DA,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -2925,10 +5848,27 @@ struct retro_core_option_v2_definition option_defs_da[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_DA,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_DA,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_DA,
+        XEMU_VP_WORKERS_INFO_0_DA,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_DA },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_DA,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_DA,
         NULL,
         "video",
         {
@@ -2956,19 +5896,169 @@ struct retro_core_option_v2_definition option_defs_da[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_DA,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_DA,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_DA,
+        XEMU_VK_FAST_PATHS_INFO_0_DA,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_DA },
-            { "nearest", OPTION_VAL_NEAREST_DA },
+            { "all",      OPTION_VAL_ALL_DA },
+            { "no_gpl",   OPTION_VAL_NO_GPL_DA },
+            { "no_dyn",   OPTION_VAL_NO_DYN_DA },
+            { "none",     OPTION_VAL_NONE_DA },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_DA,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_DA,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_DA,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_DA,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_DA,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_DA,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_DA },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_DA },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_DA },
+            { "15", OPTION_VAL_15_DA },
+            { "20", OPTION_VAL_20_DA },
+            { "25", OPTION_VAL_25_DA },
+            { "30", OPTION_VAL_30_DA },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_DA,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_DA,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_DA },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_DA },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_DA },
+            { "15", OPTION_VAL_15_DA },
+            { "20", OPTION_VAL_20_DA },
+            { "25", OPTION_VAL_25_DA },
+            { "30", OPTION_VAL_30_DA },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_DA,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_DA,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_DA,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_DA,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_DA },
+            { "stick", OPTION_VAL_STICK_DA },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_DA,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_DA,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_DA,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_DA,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_DA },
+            { "50",  OPTION_VAL_50_DA },
+            { "75",  OPTION_VAL_75_DA },
+            { "100", OPTION_VAL_100_DA },
+            { "150", OPTION_VAL_150_DA },
+            { "200", OPTION_VAL_200_DA },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -2980,11 +6070,15 @@ struct retro_core_options_v2 options_da = {
 /* RETRO_LANGUAGE_DE */
 
 #define CATEGORY_SYSTEM_LABEL_DE NULL
-#define CATEGORY_SYSTEM_INFO_0_DE "Systemweite Einstellungen wie BIOS-Pfade, Speicher und Startoptionen konfigurieren."
+#define CATEGORY_SYSTEM_INFO_0_DE NULL
 #define CATEGORY_VIDEO_LABEL_DE NULL
 #define CATEGORY_VIDEO_INFO_0_DE "Videorendering-Einstellungen konfigurieren."
 #define CATEGORY_AUDIO_LABEL_DE NULL
 #define CATEGORY_AUDIO_INFO_0_DE "Audioemulationseinstellungen konfigurieren."
+#define CATEGORY_CONTROLS_LABEL_DE "Steuerung"
+#define CATEGORY_CONTROLS_INFO_0_DE NULL
+#define CATEGORY_CHIHIRO_LABEL_DE NULL
+#define CATEGORY_CHIHIRO_INFO_0_DE NULL
 #define XEMU_MEMORY_LABEL_DE "Systemspeicher (MB)"
 #define XEMU_MEMORY_INFO_0_DE "Größe des Systemspeichers. 64 MB ist der Standardwert; Debug-Kits verwenden 128 MB."
 #define OPTION_VAL_64_DE NULL
@@ -2996,16 +6090,24 @@ struct retro_core_options_v2 options_da = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_DE "Die Xbox-Startanimation überspringen."
 #define XEMU_HARD_FPU_LABEL_DE "Hardware-FPU-Emulation"
 #define XEMU_HARD_FPU_INFO_0_DE "Für die x87-Emulation die Host-FPU verwenden. Schneller, aber möglicherweise mit geringfügigen Ungenauigkeiten."
+#define XEMU_CPU_BOOST_LABEL_DE NULL
+#define XEMU_CPU_BOOST_INFO_0_DE NULL
+#define XEMU_HDD_TRIM_LABEL_DE NULL
+#define XEMU_HDD_TRIM_INFO_0_DE NULL
 #define XEMU_RENDERER_LABEL_DE "Grafik-API (Neustart)"
 #define XEMU_RENDERER_INFO_0_DE "Renderer für die Darstellung der emulierten GPU. Vulkan ist die Standardeinstellung; OpenGL dient als Ausweichlösung bei Treibern, mit denen Vulkan Probleme verursacht. Änderung wird nach einem Neustart von RetroArch wirksam. Unter Android wird immer Vulkan verwendet, unter macOS immer OpenGL."
 #define OPTION_VAL_VULKAN_DE NULL
 #define OPTION_VAL_OPENGL_DE NULL
-#define XEMU_ASPECT_RATIO_LABEL_DE "Bildseitenverhältnis"
-#define XEMU_ASPECT_RATIO_INFO_0_DE "Seitenverhältnis der Bildanzeige. „Automatisch“ richtet sich nach dem Spiel: 16:9, wenn die Konsole auf Breitbild umschaltet (Breitbild muss in den Videoeinstellungen des Dashboards aktiviert sein), andernfalls 4:3. „16:9“ wählen, wenn ein Spiel im Breitbildformat rendert, aber gestaucht angezeigt wird."
-#define OPTION_VAL_AUTO_DE NULL
+#define XEMU_VIDEO_ASPECT_LABEL_DE NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_DE NULL
+#define OPTION_VAL_DASHBOARD_DE NULL
 #define OPTION_VAL_4_3_DE NULL
 #define OPTION_VAL_16_9_DE NULL
-#define XEMU_SURFACE_SCALE_LABEL_DE "Interne Auflösungsskalierung"
+#define OPTION_VAL_LETTERBOX_DE NULL
+#define XEMU_ASPECT_RATIO_LABEL_DE "Core-Seitenverhältnis"
+#define XEMU_ASPECT_RATIO_INFO_0_DE NULL
+#define OPTION_VAL_AUTO_DE NULL
+#define XEMU_SURFACE_SCALE_LABEL_DE NULL
 #define XEMU_SURFACE_SCALE_INFO_0_DE "Skaliert die interne Renderauflösung. Höhere Werte verbessern die Bildqualität, verringern aber die Leistung."
 #define OPTION_VAL_1_DE "1× (640 × 480)"
 #define OPTION_VAL_2_DE "2× (1280 × 960)"
@@ -3017,19 +6119,25 @@ struct retro_core_options_v2 options_da = {
 #define OPTION_VAL_8_DE "8× (5120 × 3840)"
 #define OPTION_VAL_9_DE "9× (5760 × 4320)"
 #define OPTION_VAL_10_DE "10× (6400 × 4800)"
-#define XEMU_AVPACK_LABEL_DE "AV-Paket"
+#define XEMU_AVPACK_LABEL_DE NULL
 #define XEMU_AVPACK_INFO_0_DE "AV-Pakettyp auswählen. Beeinflusst die verfügbaren Videomodi."
 #define OPTION_VAL_HDTV_DE NULL
 #define OPTION_VAL_COMPOSITE_DE NULL
 #define OPTION_VAL_SVIDEO_DE NULL
 #define OPTION_VAL_SCART_DE NULL
 #define OPTION_VAL_VGA_DE NULL
+#define XEMU_AUDIO_THREAD_LABEL_DE "Audiothread (Neustart)"
+#define XEMU_AUDIO_THREAD_INFO_0_DE NULL
 #define XEMU_USE_DSP_LABEL_DE "APU-DSP-Emulation"
 #define XEMU_USE_DSP_INFO_0_DE "DSP-Emulation für eine höhere Audiogenauigkeit aktivieren. Kann die Leistung beeinträchtigen."
-#define XEMU_CACHE_SHADERS_LABEL_DE "Shadercache"
-#define XEMU_CACHE_SHADERS_INFO_0_DE "Kompilierte GPU-Shader auf dem Datenträger zwischenspeichern. Verringert Ruckler bei späteren Starts."
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_DE "Reduzierte Vulkan-Puffer (Neustart erforderlich)"
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_DE "Der Vulkan-Renderer reserviert beim Start seine Arbeitspuffer unabhängig davon, was das Spiel benötigt. Bei aktivierter Option wird der Puffer für Inline-Vertexdaten auf ein Zehntel der Größe von xemu begrenzt. Dadurch wird etwa 1,2 GB weniger Videospeicher und ebenso viel weniger Systemspeicher belegt. Bei deaktivierter Option wird auf Grafikkarten mit mindestens 4 GB Videospeicher die volle Puffergröße von xemu reserviert. Diese Einstellung ausprobieren, wenn ein Spiel bei aktivierter Option langsamer läuft."
+#define XEMU_DSP_JIT_LABEL_DE NULL
+#define XEMU_DSP_JIT_INFO_0_DE NULL
+#define XEMU_HRTF_LABEL_DE NULL
+#define XEMU_HRTF_INFO_0_DE NULL
+#define XEMU_VP_WORKERS_LABEL_DE NULL
+#define XEMU_VP_WORKERS_INFO_0_DE NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_DE NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_DE NULL
 #define XEMU_AUDIO_VOLUME_LABEL_DE "Maximale Audiolautstärke (%)"
 #define XEMU_AUDIO_VOLUME_INFO_0_DE "Lautstärke der Xbox-Audioausgabe unabhängig von der RetroArch-Gesamtlautstärke begrenzen."
 #define OPTION_VAL_100_DE "100 %"
@@ -3038,10 +6146,40 @@ struct retro_core_options_v2 options_da = {
 #define OPTION_VAL_40_DE "40 %"
 #define OPTION_VAL_20_DE "20 %"
 #define OPTION_VAL_0_DE "Stummgeschaltet"
-#define XEMU_DISPLAY_FILTERING_LABEL_DE "Anzeigefilterung"
-#define XEMU_DISPLAY_FILTERING_INFO_0_DE "Texturfiltermodus für die Bildschirmausgabe."
-#define OPTION_VAL_LINEAR_DE NULL
-#define OPTION_VAL_NEAREST_DE "Nächste-Nachbarn"
+#define XEMU_VK_FAST_PATHS_LABEL_DE "Vulkan-Schnellpfade (Neustart)"
+#define XEMU_VK_FAST_PATHS_INFO_0_DE NULL
+#define OPTION_VAL_ALL_DE "Alle"
+#define OPTION_VAL_NO_GPL_DE "Keine Pipelinebibliotheken"
+#define OPTION_VAL_NO_DYN_DE "Keine dynamischen Zustände"
+#define OPTION_VAL_NONE_DE "Nein"
+#define XEMU_RUMBLE_P1_LABEL_DE NULL
+#define XEMU_RUMBLE_P1_INFO_0_DE NULL
+#define XEMU_RUMBLE_P2_LABEL_DE NULL
+#define XEMU_RUMBLE_P2_INFO_0_DE NULL
+#define XEMU_DEADZONE_P1_LABEL_DE NULL
+#define XEMU_DEADZONE_P1_INFO_0_DE NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_DE "0 %"
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_DE "5 %"
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_DE "10 %"
+#define OPTION_VAL_15_DE "15 %"
+#define OPTION_VAL_25_DE "25 %"
+#define OPTION_VAL_30_DE "30 %"
+#define XEMU_DEADZONE_P2_LABEL_DE NULL
+#define XEMU_DEADZONE_P2_INFO_0_DE NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_DE "Freispiel (Neustart)"
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_DE "Startet Sega-Chihiro-Spiele im Freispielmodus, ohne Münzeinwurf. Bei „Aus“ wird mit „Auswählen“ eine Münze eingeworfen."
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_DE "Lightgun-Zielpunkt"
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_DE NULL
+#define OPTION_VAL_MOUSE_DE "Maus"
+#define OPTION_VAL_STICK_DE NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_DE NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_DE NULL
+#define XEMU_CHIHIRO_FFB_LABEL_DE NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_DE NULL
+#define OPTION_VAL_50_DE "50 %"
+#define OPTION_VAL_75_DE "75 %"
+#define OPTION_VAL_150_DE "150 %"
+#define OPTION_VAL_200_DE "200 %"
 
 struct retro_core_option_v2_category option_cats_de[] = {
     {
@@ -3059,13 +6197,19 @@ struct retro_core_option_v2_category option_cats_de[] = {
         CATEGORY_AUDIO_LABEL_DE,
         CATEGORY_AUDIO_INFO_0_DE
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_DE,
+        CATEGORY_CONTROLS_INFO_0_DE
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_DE,
+        CATEGORY_CHIHIRO_INFO_0_DE
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_de[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_DE,
@@ -3094,6 +6238,8 @@ struct retro_core_option_v2_definition option_defs_de[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_DE,
@@ -3106,7 +6252,7 @@ struct retro_core_option_v2_definition option_defs_de[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -3123,6 +6269,38 @@ struct retro_core_option_v2_definition option_defs_de[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_DE,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_DE,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_DE,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_DE,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_DE,
         NULL,
@@ -3135,6 +6313,25 @@ struct retro_core_option_v2_definition option_defs_de[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_DE,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_DE,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_DE },
+            { "4:3",       OPTION_VAL_4_3_DE },
+            { "16:9",      OPTION_VAL_16_9_DE },
+            { "letterbox", OPTION_VAL_LETTERBOX_DE },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -3190,6 +6387,25 @@ struct retro_core_option_v2_definition option_defs_de[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_DE,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_DE,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_DE,
@@ -3204,13 +6420,29 @@ struct retro_core_option_v2_definition option_defs_de[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_DE,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_DE,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_DE,
+        XEMU_DSP_JIT_INFO_0_DE,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_DE,
+        NULL,
+        XEMU_HRTF_INFO_0_DE,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -3219,10 +6451,27 @@ struct retro_core_option_v2_definition option_defs_de[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_DE,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_DE,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_DE,
+        XEMU_VP_WORKERS_INFO_0_DE,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_DE },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_DE,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_DE,
         NULL,
         "video",
         {
@@ -3250,19 +6499,169 @@ struct retro_core_option_v2_definition option_defs_de[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_DE,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_DE,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_DE,
+        XEMU_VK_FAST_PATHS_INFO_0_DE,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_DE },
-            { "nearest", OPTION_VAL_NEAREST_DE },
+            { "all",      OPTION_VAL_ALL_DE },
+            { "no_gpl",   OPTION_VAL_NO_GPL_DE },
+            { "no_dyn",   OPTION_VAL_NO_DYN_DE },
+            { "none",     OPTION_VAL_NONE_DE },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_DE,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_DE,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_DE,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_DE,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_DE,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_DE,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_DE },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_DE },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_DE },
+            { "15", OPTION_VAL_15_DE },
+            { "20", OPTION_VAL_20_DE },
+            { "25", OPTION_VAL_25_DE },
+            { "30", OPTION_VAL_30_DE },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_DE,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_DE,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_DE },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_DE },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_DE },
+            { "15", OPTION_VAL_15_DE },
+            { "20", OPTION_VAL_20_DE },
+            { "25", OPTION_VAL_25_DE },
+            { "30", OPTION_VAL_30_DE },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_DE,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_DE,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_DE,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_DE,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_DE },
+            { "stick", OPTION_VAL_STICK_DE },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_DE,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_DE,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_DE,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_DE,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_DE },
+            { "50",  OPTION_VAL_50_DE },
+            { "75",  OPTION_VAL_75_DE },
+            { "100", OPTION_VAL_100_DE },
+            { "150", OPTION_VAL_150_DE },
+            { "200", OPTION_VAL_200_DE },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -3273,12 +6672,16 @@ struct retro_core_options_v2 options_de = {
 
 /* RETRO_LANGUAGE_EL */
 
-#define CATEGORY_SYSTEM_LABEL_EL "Σύστημα"
+#define CATEGORY_SYSTEM_LABEL_EL NULL
 #define CATEGORY_SYSTEM_INFO_0_EL NULL
 #define CATEGORY_VIDEO_LABEL_EL "Βίντεο"
 #define CATEGORY_VIDEO_INFO_0_EL NULL
 #define CATEGORY_AUDIO_LABEL_EL "Ήχος"
 #define CATEGORY_AUDIO_INFO_0_EL NULL
+#define CATEGORY_CONTROLS_LABEL_EL "Χειρισμοί"
+#define CATEGORY_CONTROLS_INFO_0_EL NULL
+#define CATEGORY_CHIHIRO_LABEL_EL NULL
+#define CATEGORY_CHIHIRO_INFO_0_EL NULL
 #define XEMU_MEMORY_LABEL_EL NULL
 #define XEMU_MEMORY_INFO_0_EL NULL
 #define OPTION_VAL_64_EL NULL
@@ -3290,15 +6693,23 @@ struct retro_core_options_v2 options_de = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_EL NULL
 #define XEMU_HARD_FPU_LABEL_EL NULL
 #define XEMU_HARD_FPU_INFO_0_EL NULL
+#define XEMU_CPU_BOOST_LABEL_EL NULL
+#define XEMU_CPU_BOOST_INFO_0_EL NULL
+#define XEMU_HDD_TRIM_LABEL_EL NULL
+#define XEMU_HDD_TRIM_INFO_0_EL NULL
 #define XEMU_RENDERER_LABEL_EL NULL
 #define XEMU_RENDERER_INFO_0_EL NULL
 #define OPTION_VAL_VULKAN_EL NULL
 #define OPTION_VAL_OPENGL_EL NULL
-#define XEMU_ASPECT_RATIO_LABEL_EL "Αναλογία Οθόνης"
-#define XEMU_ASPECT_RATIO_INFO_0_EL NULL
-#define OPTION_VAL_AUTO_EL "Αυτόματο"
+#define XEMU_VIDEO_ASPECT_LABEL_EL NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_EL NULL
+#define OPTION_VAL_DASHBOARD_EL NULL
 #define OPTION_VAL_4_3_EL NULL
 #define OPTION_VAL_16_9_EL NULL
+#define OPTION_VAL_LETTERBOX_EL NULL
+#define XEMU_ASPECT_RATIO_LABEL_EL NULL
+#define XEMU_ASPECT_RATIO_INFO_0_EL NULL
+#define OPTION_VAL_AUTO_EL "Αυτόματο"
 #define XEMU_SURFACE_SCALE_LABEL_EL NULL
 #define XEMU_SURFACE_SCALE_INFO_0_EL NULL
 #define OPTION_VAL_1_EL NULL
@@ -3318,12 +6729,18 @@ struct retro_core_options_v2 options_de = {
 #define OPTION_VAL_SVIDEO_EL NULL
 #define OPTION_VAL_SCART_EL NULL
 #define OPTION_VAL_VGA_EL NULL
+#define XEMU_AUDIO_THREAD_LABEL_EL NULL
+#define XEMU_AUDIO_THREAD_INFO_0_EL NULL
 #define XEMU_USE_DSP_LABEL_EL NULL
 #define XEMU_USE_DSP_INFO_0_EL NULL
-#define XEMU_CACHE_SHADERS_LABEL_EL NULL
-#define XEMU_CACHE_SHADERS_INFO_0_EL NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_EL NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_EL NULL
+#define XEMU_DSP_JIT_LABEL_EL NULL
+#define XEMU_DSP_JIT_INFO_0_EL NULL
+#define XEMU_HRTF_LABEL_EL NULL
+#define XEMU_HRTF_INFO_0_EL NULL
+#define XEMU_VP_WORKERS_LABEL_EL NULL
+#define XEMU_VP_WORKERS_INFO_0_EL NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_EL NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_EL NULL
 #define XEMU_AUDIO_VOLUME_LABEL_EL NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_EL NULL
 #define OPTION_VAL_100_EL NULL
@@ -3332,10 +6749,40 @@ struct retro_core_options_v2 options_de = {
 #define OPTION_VAL_40_EL NULL
 #define OPTION_VAL_20_EL NULL
 #define OPTION_VAL_0_EL NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_EL NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_EL NULL
-#define OPTION_VAL_LINEAR_EL NULL
-#define OPTION_VAL_NEAREST_EL NULL
+#define XEMU_VK_FAST_PATHS_LABEL_EL NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_EL NULL
+#define OPTION_VAL_ALL_EL "Όλα"
+#define OPTION_VAL_NO_GPL_EL NULL
+#define OPTION_VAL_NO_DYN_EL NULL
+#define OPTION_VAL_NONE_EL "Κανείς"
+#define XEMU_RUMBLE_P1_LABEL_EL NULL
+#define XEMU_RUMBLE_P1_INFO_0_EL NULL
+#define XEMU_RUMBLE_P2_LABEL_EL NULL
+#define XEMU_RUMBLE_P2_INFO_0_EL NULL
+#define XEMU_DEADZONE_P1_LABEL_EL NULL
+#define XEMU_DEADZONE_P1_INFO_0_EL NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_EL NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_EL NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_EL NULL
+#define OPTION_VAL_15_EL NULL
+#define OPTION_VAL_25_EL NULL
+#define OPTION_VAL_30_EL NULL
+#define XEMU_DEADZONE_P2_LABEL_EL NULL
+#define XEMU_DEADZONE_P2_INFO_0_EL NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_EL NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_EL NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_EL NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_EL NULL
+#define OPTION_VAL_MOUSE_EL NULL
+#define OPTION_VAL_STICK_EL NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_EL NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_EL NULL
+#define XEMU_CHIHIRO_FFB_LABEL_EL NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_EL NULL
+#define OPTION_VAL_50_EL NULL
+#define OPTION_VAL_75_EL NULL
+#define OPTION_VAL_150_EL NULL
+#define OPTION_VAL_200_EL NULL
 
 struct retro_core_option_v2_category option_cats_el[] = {
     {
@@ -3353,13 +6800,19 @@ struct retro_core_option_v2_category option_cats_el[] = {
         CATEGORY_AUDIO_LABEL_EL,
         CATEGORY_AUDIO_INFO_0_EL
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_EL,
+        CATEGORY_CONTROLS_INFO_0_EL
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_EL,
+        CATEGORY_CHIHIRO_INFO_0_EL
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_el[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_EL,
@@ -3388,6 +6841,8 @@ struct retro_core_option_v2_definition option_defs_el[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_EL,
@@ -3400,7 +6855,7 @@ struct retro_core_option_v2_definition option_defs_el[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -3417,6 +6872,38 @@ struct retro_core_option_v2_definition option_defs_el[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_EL,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_EL,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_EL,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_EL,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_EL,
         NULL,
@@ -3429,6 +6916,25 @@ struct retro_core_option_v2_definition option_defs_el[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_EL,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_EL,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_EL },
+            { "4:3",       OPTION_VAL_4_3_EL },
+            { "16:9",      OPTION_VAL_16_9_EL },
+            { "letterbox", OPTION_VAL_LETTERBOX_EL },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -3484,6 +6990,25 @@ struct retro_core_option_v2_definition option_defs_el[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_EL,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_EL,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_EL,
@@ -3498,13 +7023,29 @@ struct retro_core_option_v2_definition option_defs_el[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_EL,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_EL,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_EL,
+        XEMU_DSP_JIT_INFO_0_EL,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_EL,
+        NULL,
+        XEMU_HRTF_INFO_0_EL,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -3513,10 +7054,27 @@ struct retro_core_option_v2_definition option_defs_el[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_EL,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_EL,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_EL,
+        XEMU_VP_WORKERS_INFO_0_EL,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_EL },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_EL,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_EL,
         NULL,
         "video",
         {
@@ -3544,19 +7102,169 @@ struct retro_core_option_v2_definition option_defs_el[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_EL,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_EL,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_EL,
+        XEMU_VK_FAST_PATHS_INFO_0_EL,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_EL },
-            { "nearest", OPTION_VAL_NEAREST_EL },
+            { "all",      OPTION_VAL_ALL_EL },
+            { "no_gpl",   OPTION_VAL_NO_GPL_EL },
+            { "no_dyn",   OPTION_VAL_NO_DYN_EL },
+            { "none",     OPTION_VAL_NONE_EL },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_EL,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_EL,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_EL,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_EL,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_EL,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_EL,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_EL },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_EL },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_EL },
+            { "15", OPTION_VAL_15_EL },
+            { "20", OPTION_VAL_20_EL },
+            { "25", OPTION_VAL_25_EL },
+            { "30", OPTION_VAL_30_EL },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_EL,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_EL,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_EL },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_EL },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_EL },
+            { "15", OPTION_VAL_15_EL },
+            { "20", OPTION_VAL_20_EL },
+            { "25", OPTION_VAL_25_EL },
+            { "30", OPTION_VAL_30_EL },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_EL,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_EL,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_EL,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_EL,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_EL },
+            { "stick", OPTION_VAL_STICK_EL },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_EL,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_EL,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_EL,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_EL,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_EL },
+            { "50",  OPTION_VAL_50_EL },
+            { "75",  OPTION_VAL_75_EL },
+            { "100", OPTION_VAL_100_EL },
+            { "150", OPTION_VAL_150_EL },
+            { "200", OPTION_VAL_200_EL },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -3573,6 +7281,10 @@ struct retro_core_options_v2 options_el = {
 #define CATEGORY_VIDEO_INFO_0_EN NULL
 #define CATEGORY_AUDIO_LABEL_EN NULL
 #define CATEGORY_AUDIO_INFO_0_EN NULL
+#define CATEGORY_CONTROLS_LABEL_EN NULL
+#define CATEGORY_CONTROLS_INFO_0_EN NULL
+#define CATEGORY_CHIHIRO_LABEL_EN NULL
+#define CATEGORY_CHIHIRO_INFO_0_EN NULL
 #define XEMU_MEMORY_LABEL_EN NULL
 #define XEMU_MEMORY_INFO_0_EN NULL
 #define OPTION_VAL_64_EN NULL
@@ -3584,15 +7296,23 @@ struct retro_core_options_v2 options_el = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_EN NULL
 #define XEMU_HARD_FPU_LABEL_EN NULL
 #define XEMU_HARD_FPU_INFO_0_EN NULL
+#define XEMU_CPU_BOOST_LABEL_EN NULL
+#define XEMU_CPU_BOOST_INFO_0_EN NULL
+#define XEMU_HDD_TRIM_LABEL_EN NULL
+#define XEMU_HDD_TRIM_INFO_0_EN NULL
 #define XEMU_RENDERER_LABEL_EN NULL
 #define XEMU_RENDERER_INFO_0_EN NULL
 #define OPTION_VAL_VULKAN_EN NULL
 #define OPTION_VAL_OPENGL_EN NULL
+#define XEMU_VIDEO_ASPECT_LABEL_EN NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_EN NULL
+#define OPTION_VAL_DASHBOARD_EN NULL
+#define OPTION_VAL_4_3_EN NULL
+#define OPTION_VAL_16_9_EN NULL
+#define OPTION_VAL_LETTERBOX_EN NULL
 #define XEMU_ASPECT_RATIO_LABEL_EN NULL
 #define XEMU_ASPECT_RATIO_INFO_0_EN NULL
 #define OPTION_VAL_AUTO_EN NULL
-#define OPTION_VAL_4_3_EN NULL
-#define OPTION_VAL_16_9_EN NULL
 #define XEMU_SURFACE_SCALE_LABEL_EN NULL
 #define XEMU_SURFACE_SCALE_INFO_0_EN NULL
 #define OPTION_VAL_1_EN NULL
@@ -3612,12 +7332,18 @@ struct retro_core_options_v2 options_el = {
 #define OPTION_VAL_SVIDEO_EN NULL
 #define OPTION_VAL_SCART_EN NULL
 #define OPTION_VAL_VGA_EN NULL
+#define XEMU_AUDIO_THREAD_LABEL_EN NULL
+#define XEMU_AUDIO_THREAD_INFO_0_EN NULL
 #define XEMU_USE_DSP_LABEL_EN NULL
 #define XEMU_USE_DSP_INFO_0_EN NULL
-#define XEMU_CACHE_SHADERS_LABEL_EN NULL
-#define XEMU_CACHE_SHADERS_INFO_0_EN NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_EN NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_EN NULL
+#define XEMU_DSP_JIT_LABEL_EN NULL
+#define XEMU_DSP_JIT_INFO_0_EN NULL
+#define XEMU_HRTF_LABEL_EN NULL
+#define XEMU_HRTF_INFO_0_EN NULL
+#define XEMU_VP_WORKERS_LABEL_EN NULL
+#define XEMU_VP_WORKERS_INFO_0_EN NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_EN NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_EN NULL
 #define XEMU_AUDIO_VOLUME_LABEL_EN NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_EN NULL
 #define OPTION_VAL_100_EN NULL
@@ -3626,10 +7352,40 @@ struct retro_core_options_v2 options_el = {
 #define OPTION_VAL_40_EN NULL
 #define OPTION_VAL_20_EN NULL
 #define OPTION_VAL_0_EN NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_EN NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_EN NULL
-#define OPTION_VAL_LINEAR_EN NULL
-#define OPTION_VAL_NEAREST_EN "Nearest Neighbour"
+#define XEMU_VK_FAST_PATHS_LABEL_EN NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_EN NULL
+#define OPTION_VAL_ALL_EN NULL
+#define OPTION_VAL_NO_GPL_EN NULL
+#define OPTION_VAL_NO_DYN_EN NULL
+#define OPTION_VAL_NONE_EN NULL
+#define XEMU_RUMBLE_P1_LABEL_EN NULL
+#define XEMU_RUMBLE_P1_INFO_0_EN NULL
+#define XEMU_RUMBLE_P2_LABEL_EN NULL
+#define XEMU_RUMBLE_P2_INFO_0_EN NULL
+#define XEMU_DEADZONE_P1_LABEL_EN NULL
+#define XEMU_DEADZONE_P1_INFO_0_EN NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_EN NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_EN NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_EN NULL
+#define OPTION_VAL_15_EN NULL
+#define OPTION_VAL_25_EN NULL
+#define OPTION_VAL_30_EN NULL
+#define XEMU_DEADZONE_P2_LABEL_EN NULL
+#define XEMU_DEADZONE_P2_INFO_0_EN NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_EN NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_EN NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_EN NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_EN NULL
+#define OPTION_VAL_MOUSE_EN NULL
+#define OPTION_VAL_STICK_EN NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_EN NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_EN NULL
+#define XEMU_CHIHIRO_FFB_LABEL_EN NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_EN NULL
+#define OPTION_VAL_50_EN NULL
+#define OPTION_VAL_75_EN NULL
+#define OPTION_VAL_150_EN NULL
+#define OPTION_VAL_200_EN NULL
 
 struct retro_core_option_v2_category option_cats_en[] = {
     {
@@ -3647,13 +7403,19 @@ struct retro_core_option_v2_category option_cats_en[] = {
         CATEGORY_AUDIO_LABEL_EN,
         CATEGORY_AUDIO_INFO_0_EN
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_EN,
+        CATEGORY_CONTROLS_INFO_0_EN
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_EN,
+        CATEGORY_CHIHIRO_INFO_0_EN
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_en[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_EN,
@@ -3682,6 +7444,8 @@ struct retro_core_option_v2_definition option_defs_en[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_EN,
@@ -3694,7 +7458,7 @@ struct retro_core_option_v2_definition option_defs_en[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -3711,6 +7475,38 @@ struct retro_core_option_v2_definition option_defs_en[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_EN,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_EN,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_EN,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_EN,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_EN,
         NULL,
@@ -3723,6 +7519,25 @@ struct retro_core_option_v2_definition option_defs_en[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_EN,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_EN,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_EN },
+            { "4:3",       OPTION_VAL_4_3_EN },
+            { "16:9",      OPTION_VAL_16_9_EN },
+            { "letterbox", OPTION_VAL_LETTERBOX_EN },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -3778,6 +7593,25 @@ struct retro_core_option_v2_definition option_defs_en[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_EN,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_EN,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_EN,
@@ -3792,13 +7626,29 @@ struct retro_core_option_v2_definition option_defs_en[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_EN,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_EN,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_EN,
+        XEMU_DSP_JIT_INFO_0_EN,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_EN,
+        NULL,
+        XEMU_HRTF_INFO_0_EN,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -3807,10 +7657,27 @@ struct retro_core_option_v2_definition option_defs_en[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_EN,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_EN,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_EN,
+        XEMU_VP_WORKERS_INFO_0_EN,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_EN },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_EN,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_EN,
         NULL,
         "video",
         {
@@ -3838,19 +7705,169 @@ struct retro_core_option_v2_definition option_defs_en[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_EN,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_EN,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_EN,
+        XEMU_VK_FAST_PATHS_INFO_0_EN,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_EN },
-            { "nearest", OPTION_VAL_NEAREST_EN },
+            { "all",      OPTION_VAL_ALL_EN },
+            { "no_gpl",   OPTION_VAL_NO_GPL_EN },
+            { "no_dyn",   OPTION_VAL_NO_DYN_EN },
+            { "none",     OPTION_VAL_NONE_EN },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_EN,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_EN,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_EN,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_EN,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_EN,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_EN,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_EN },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_EN },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_EN },
+            { "15", OPTION_VAL_15_EN },
+            { "20", OPTION_VAL_20_EN },
+            { "25", OPTION_VAL_25_EN },
+            { "30", OPTION_VAL_30_EN },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_EN,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_EN,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_EN },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_EN },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_EN },
+            { "15", OPTION_VAL_15_EN },
+            { "20", OPTION_VAL_20_EN },
+            { "25", OPTION_VAL_25_EN },
+            { "30", OPTION_VAL_30_EN },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_EN,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_EN,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_EN,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_EN,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_EN },
+            { "stick", OPTION_VAL_STICK_EN },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_EN,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_EN,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_EN,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_EN,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_EN },
+            { "50",  OPTION_VAL_50_EN },
+            { "75",  OPTION_VAL_75_EN },
+            { "100", OPTION_VAL_100_EN },
+            { "150", OPTION_VAL_150_EN },
+            { "200", OPTION_VAL_200_EN },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -3861,12 +7878,16 @@ struct retro_core_options_v2 options_en = {
 
 /* RETRO_LANGUAGE_EO */
 
-#define CATEGORY_SYSTEM_LABEL_EO "Sistemo"
+#define CATEGORY_SYSTEM_LABEL_EO NULL
 #define CATEGORY_SYSTEM_INFO_0_EO NULL
 #define CATEGORY_VIDEO_LABEL_EO NULL
 #define CATEGORY_VIDEO_INFO_0_EO NULL
 #define CATEGORY_AUDIO_LABEL_EO "Sono"
 #define CATEGORY_AUDIO_INFO_0_EO NULL
+#define CATEGORY_CONTROLS_LABEL_EO "Regiloj"
+#define CATEGORY_CONTROLS_INFO_0_EO NULL
+#define CATEGORY_CHIHIRO_LABEL_EO NULL
+#define CATEGORY_CHIHIRO_INFO_0_EO NULL
 #define XEMU_MEMORY_LABEL_EO NULL
 #define XEMU_MEMORY_INFO_0_EO NULL
 #define OPTION_VAL_64_EO NULL
@@ -3878,15 +7899,23 @@ struct retro_core_options_v2 options_en = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_EO NULL
 #define XEMU_HARD_FPU_LABEL_EO NULL
 #define XEMU_HARD_FPU_INFO_0_EO NULL
+#define XEMU_CPU_BOOST_LABEL_EO NULL
+#define XEMU_CPU_BOOST_INFO_0_EO NULL
+#define XEMU_HDD_TRIM_LABEL_EO NULL
+#define XEMU_HDD_TRIM_INFO_0_EO NULL
 #define XEMU_RENDERER_LABEL_EO NULL
 #define XEMU_RENDERER_INFO_0_EO NULL
 #define OPTION_VAL_VULKAN_EO NULL
 #define OPTION_VAL_OPENGL_EO NULL
-#define XEMU_ASPECT_RATIO_LABEL_EO "Bilda proporcio"
-#define XEMU_ASPECT_RATIO_INFO_0_EO NULL
-#define OPTION_VAL_AUTO_EO "Aŭtomata"
+#define XEMU_VIDEO_ASPECT_LABEL_EO NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_EO NULL
+#define OPTION_VAL_DASHBOARD_EO NULL
 #define OPTION_VAL_4_3_EO NULL
 #define OPTION_VAL_16_9_EO NULL
+#define OPTION_VAL_LETTERBOX_EO NULL
+#define XEMU_ASPECT_RATIO_LABEL_EO "Kerna bilda proporcio"
+#define XEMU_ASPECT_RATIO_INFO_0_EO NULL
+#define OPTION_VAL_AUTO_EO "Aŭtomata"
 #define XEMU_SURFACE_SCALE_LABEL_EO NULL
 #define XEMU_SURFACE_SCALE_INFO_0_EO NULL
 #define OPTION_VAL_1_EO NULL
@@ -3906,12 +7935,18 @@ struct retro_core_options_v2 options_en = {
 #define OPTION_VAL_SVIDEO_EO NULL
 #define OPTION_VAL_SCART_EO NULL
 #define OPTION_VAL_VGA_EO NULL
+#define XEMU_AUDIO_THREAD_LABEL_EO NULL
+#define XEMU_AUDIO_THREAD_INFO_0_EO NULL
 #define XEMU_USE_DSP_LABEL_EO NULL
 #define XEMU_USE_DSP_INFO_0_EO NULL
-#define XEMU_CACHE_SHADERS_LABEL_EO NULL
-#define XEMU_CACHE_SHADERS_INFO_0_EO NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_EO NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_EO NULL
+#define XEMU_DSP_JIT_LABEL_EO NULL
+#define XEMU_DSP_JIT_INFO_0_EO NULL
+#define XEMU_HRTF_LABEL_EO NULL
+#define XEMU_HRTF_INFO_0_EO NULL
+#define XEMU_VP_WORKERS_LABEL_EO NULL
+#define XEMU_VP_WORKERS_INFO_0_EO NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_EO NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_EO NULL
 #define XEMU_AUDIO_VOLUME_LABEL_EO NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_EO NULL
 #define OPTION_VAL_100_EO NULL
@@ -3920,10 +7955,40 @@ struct retro_core_options_v2 options_en = {
 #define OPTION_VAL_40_EO NULL
 #define OPTION_VAL_20_EO NULL
 #define OPTION_VAL_0_EO NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_EO NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_EO NULL
-#define OPTION_VAL_LINEAR_EO "Dulineara"
-#define OPTION_VAL_NEAREST_EO "Plej proksima najbaro"
+#define XEMU_VK_FAST_PATHS_LABEL_EO NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_EO NULL
+#define OPTION_VAL_ALL_EO "Ĉiuj"
+#define OPTION_VAL_NO_GPL_EO NULL
+#define OPTION_VAL_NO_DYN_EO NULL
+#define OPTION_VAL_NONE_EO "Neniom"
+#define XEMU_RUMBLE_P1_LABEL_EO NULL
+#define XEMU_RUMBLE_P1_INFO_0_EO NULL
+#define XEMU_RUMBLE_P2_LABEL_EO NULL
+#define XEMU_RUMBLE_P2_INFO_0_EO NULL
+#define XEMU_DEADZONE_P1_LABEL_EO NULL
+#define XEMU_DEADZONE_P1_INFO_0_EO NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_EO NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_EO NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_EO NULL
+#define OPTION_VAL_15_EO NULL
+#define OPTION_VAL_25_EO NULL
+#define OPTION_VAL_30_EO NULL
+#define XEMU_DEADZONE_P2_LABEL_EO NULL
+#define XEMU_DEADZONE_P2_INFO_0_EO NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_EO NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_EO NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_EO NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_EO NULL
+#define OPTION_VAL_MOUSE_EO "Muso"
+#define OPTION_VAL_STICK_EO NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_EO NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_EO NULL
+#define XEMU_CHIHIRO_FFB_LABEL_EO NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_EO NULL
+#define OPTION_VAL_50_EO NULL
+#define OPTION_VAL_75_EO NULL
+#define OPTION_VAL_150_EO NULL
+#define OPTION_VAL_200_EO NULL
 
 struct retro_core_option_v2_category option_cats_eo[] = {
     {
@@ -3941,13 +8006,19 @@ struct retro_core_option_v2_category option_cats_eo[] = {
         CATEGORY_AUDIO_LABEL_EO,
         CATEGORY_AUDIO_INFO_0_EO
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_EO,
+        CATEGORY_CONTROLS_INFO_0_EO
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_EO,
+        CATEGORY_CHIHIRO_INFO_0_EO
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_eo[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_EO,
@@ -3976,6 +8047,8 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_EO,
@@ -3988,7 +8061,7 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -4005,6 +8078,38 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_EO,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_EO,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_EO,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_EO,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_EO,
         NULL,
@@ -4017,6 +8122,25 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_EO,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_EO,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_EO },
+            { "4:3",       OPTION_VAL_4_3_EO },
+            { "16:9",      OPTION_VAL_16_9_EO },
+            { "letterbox", OPTION_VAL_LETTERBOX_EO },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -4072,6 +8196,25 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_EO,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_EO,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_EO,
@@ -4086,13 +8229,29 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_EO,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_EO,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_EO,
+        XEMU_DSP_JIT_INFO_0_EO,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_EO,
+        NULL,
+        XEMU_HRTF_INFO_0_EO,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -4101,10 +8260,27 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_EO,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_EO,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_EO,
+        XEMU_VP_WORKERS_INFO_0_EO,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_EO },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_EO,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_EO,
         NULL,
         "video",
         {
@@ -4132,19 +8308,169 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_EO,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_EO,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_EO,
+        XEMU_VK_FAST_PATHS_INFO_0_EO,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_EO },
-            { "nearest", OPTION_VAL_NEAREST_EO },
+            { "all",      OPTION_VAL_ALL_EO },
+            { "no_gpl",   OPTION_VAL_NO_GPL_EO },
+            { "no_dyn",   OPTION_VAL_NO_DYN_EO },
+            { "none",     OPTION_VAL_NONE_EO },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_EO,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_EO,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_EO,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_EO,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_EO,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_EO,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_EO },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_EO },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_EO },
+            { "15", OPTION_VAL_15_EO },
+            { "20", OPTION_VAL_20_EO },
+            { "25", OPTION_VAL_25_EO },
+            { "30", OPTION_VAL_30_EO },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_EO,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_EO,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_EO },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_EO },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_EO },
+            { "15", OPTION_VAL_15_EO },
+            { "20", OPTION_VAL_20_EO },
+            { "25", OPTION_VAL_25_EO },
+            { "30", OPTION_VAL_30_EO },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_EO,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_EO,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_EO,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_EO,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_EO },
+            { "stick", OPTION_VAL_STICK_EO },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_EO,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_EO,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_EO,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_EO,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_EO },
+            { "50",  OPTION_VAL_50_EO },
+            { "75",  OPTION_VAL_75_EO },
+            { "100", OPTION_VAL_100_EO },
+            { "150", OPTION_VAL_150_EO },
+            { "200", OPTION_VAL_200_EO },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -4155,12 +8481,16 @@ struct retro_core_options_v2 options_eo = {
 
 /* RETRO_LANGUAGE_ES */
 
-#define CATEGORY_SYSTEM_LABEL_ES "Sistema"
-#define CATEGORY_SYSTEM_INFO_0_ES "Configura los ajustes de sistema, como las rutas de la BIOS, la memoria y las opciones de arranque."
+#define CATEGORY_SYSTEM_LABEL_ES NULL
+#define CATEGORY_SYSTEM_INFO_0_ES NULL
 #define CATEGORY_VIDEO_LABEL_ES "Vídeo"
 #define CATEGORY_VIDEO_INFO_0_ES "Configura el renderizado de vídeo."
 #define CATEGORY_AUDIO_LABEL_ES NULL
 #define CATEGORY_AUDIO_INFO_0_ES "Configura la emulación de audio."
+#define CATEGORY_CONTROLS_LABEL_ES "Controles"
+#define CATEGORY_CONTROLS_INFO_0_ES NULL
+#define CATEGORY_CHIHIRO_LABEL_ES NULL
+#define CATEGORY_CHIHIRO_INFO_0_ES "Los juegos arcade de Sega Chihiro: el juego libre, el apuntado de los juegos de lightgun y el force feedback para los juegos de conducción."
 #define XEMU_MEMORY_LABEL_ES "Memoria del sistema (MB)"
 #define XEMU_MEMORY_INFO_0_ES "La cantidad de memoria RAM que tendrá el sistema. 64 MB es el valor estándar, 128 MB es para kits de depuración."
 #define OPTION_VAL_64_ES NULL
@@ -4172,16 +8502,24 @@ struct retro_core_options_v2 options_eo = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_ES "Omite la animación de arranque de Xbox."
 #define XEMU_HARD_FPU_LABEL_ES "Emulación de FPU de hardware"
 #define XEMU_HARD_FPU_INFO_0_ES "Utiliza la FPU del host para emular el código x87. Es más rápido, pero tendrá pequeñas pérdidas de precisión."
+#define XEMU_CPU_BOOST_LABEL_ES NULL
+#define XEMU_CPU_BOOST_INFO_0_ES "Rutas más rápidas para la CPU invitada y para el procesador de audio: SSE nativo y una mayor caché de saltos. Desactiva esta opción si un juego empieza a dar problemas."
+#define XEMU_HDD_TRIM_LABEL_ES NULL
+#define XEMU_HDD_TRIM_INFO_0_ES NULL
 #define XEMU_RENDERER_LABEL_ES "API de gráficos (es necesario reiniciar)"
 #define XEMU_RENDERER_INFO_0_ES "El renderizador con el que se dibujará la GPU emulada. Vulkan es el predeterminado, OpenGL es el de respaldo para aquellos controladores en los que Vulkan dé problemas. Es necesario reiniciar RetroArch. Android utilizará siempre Vulkan y macOS utilizará OpenGL."
 #define OPTION_VAL_VULKAN_ES NULL
 #define OPTION_VAL_OPENGL_ES NULL
-#define XEMU_ASPECT_RATIO_LABEL_ES "Relación de aspecto"
-#define XEMU_ASPECT_RATIO_INFO_0_ES "La forma de dibujar la imagen. Automática respetará al juego: 16:9 cuando la consola se muestre en modo panorámico (es necesario activarlo dentro de la configuración de vídeo de la interfaz de Xbox), en caso contrario se utilizará 4:3. Selecciona 16:9 en aquellos juegos que se muestren con una relación panorámica, pero aplastada."
-#define OPTION_VAL_AUTO_ES "Automática"
+#define XEMU_VIDEO_ASPECT_LABEL_ES NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_ES NULL
+#define OPTION_VAL_DASHBOARD_ES NULL
 #define OPTION_VAL_4_3_ES NULL
 #define OPTION_VAL_16_9_ES NULL
-#define XEMU_SURFACE_SCALE_LABEL_ES "Escala de resolución interna"
+#define OPTION_VAL_LETTERBOX_ES NULL
+#define XEMU_ASPECT_RATIO_LABEL_ES "Relación de aspecto del núcleo"
+#define XEMU_ASPECT_RATIO_INFO_0_ES NULL
+#define OPTION_VAL_AUTO_ES "Automática"
+#define XEMU_SURFACE_SCALE_LABEL_ES NULL
 #define XEMU_SURFACE_SCALE_INFO_0_ES "Escala la resolución interna de renderizado. Un valor más alto mejorará la calidad, pero reducirá el rendimiento."
 #define OPTION_VAL_1_ES "× 1 (640 × 480)"
 #define OPTION_VAL_2_ES "× 2 (1280 × 960)"
@@ -4193,19 +8531,25 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_8_ES "× 8 (5120 × 3840)"
 #define OPTION_VAL_9_ES "× 9 (5760 × 4320)"
 #define OPTION_VAL_10_ES "× 10 (6400 × 4800)"
-#define XEMU_AVPACK_LABEL_ES "Cable AV"
+#define XEMU_AVPACK_LABEL_ES NULL
 #define XEMU_AVPACK_INFO_0_ES "Selecciona el tipo de cable AV. Afectará a los modos de vídeo disponibles."
 #define OPTION_VAL_HDTV_ES NULL
 #define OPTION_VAL_COMPOSITE_ES "Vídeo compuesto"
 #define OPTION_VAL_SVIDEO_ES NULL
 #define OPTION_VAL_SCART_ES NULL
 #define OPTION_VAL_VGA_ES NULL
+#define XEMU_AUDIO_THREAD_LABEL_ES "Hilo para audio (es necesario reiniciar)"
+#define XEMU_AUDIO_THREAD_INFO_0_ES NULL
 #define XEMU_USE_DSP_LABEL_ES "Emulación del DSP de la APU"
 #define XEMU_USE_DSP_INFO_0_ES "Activa la emulación del DSP para mejorar la fidelidad del audio. Podría afectar al rendimiento."
-#define XEMU_CACHE_SHADERS_LABEL_ES "Caché de shaders"
-#define XEMU_CACHE_SHADERS_INFO_0_ES "Almacena los shaders de la GPU compilados en una caché en disco. Reducirá los tirones de partidas posteriores."
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_ES "Reducir búferes de Vulkan (es necesario reiniciar)"
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_ES "El renderizador de Vulkan se reserva sus búferes de trabajo al arrancar en función de las necesidades del juego. Activa esta opción para que el búfer de datos de vértices insertados ocupe una décima parte del tamaño de xemu, que ocupará unos 1,2 GB menos de memoria de vídeo y una cantidad similar de memoria del sistema. Desactívala para reservar el tamaño total de xemu en aquellas gráficas que tengan 4 GB de memoria o más. Si un juego funciona más lento con esta opción activada, prueba a desactivarla."
+#define XEMU_DSP_JIT_LABEL_ES NULL
+#define XEMU_DSP_JIT_INFO_0_ES NULL
+#define XEMU_HRTF_LABEL_ES NULL
+#define XEMU_HRTF_INFO_0_ES NULL
+#define XEMU_VP_WORKERS_LABEL_ES NULL
+#define XEMU_VP_WORKERS_INFO_0_ES NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_ES "Primera ejecución fluida (es necesario reiniciar)"
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_ES NULL
 #define XEMU_AUDIO_VOLUME_LABEL_ES "Límite de volumen de audio (%)"
 #define XEMU_AUDIO_VOLUME_INFO_0_ES "Limita el volumen de la salida de audio de Xbox de forma independiente al volumen maestro de RetroArch."
 #define OPTION_VAL_100_ES "100 %"
@@ -4214,10 +8558,40 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_40_ES "40 %"
 #define OPTION_VAL_20_ES "20 %"
 #define OPTION_VAL_0_ES "Silenciado"
-#define XEMU_DISPLAY_FILTERING_LABEL_ES "Filtro de imagen"
-#define XEMU_DISPLAY_FILTERING_INFO_0_ES "El modo de filtrado de la salida de imagen."
-#define OPTION_VAL_LINEAR_ES "Bilineal"
-#define OPTION_VAL_NEAREST_ES "Vecino más próximo"
+#define XEMU_VK_FAST_PATHS_LABEL_ES "Rutas rápidas de Vulkan (es necesario reiniciar)"
+#define XEMU_VK_FAST_PATHS_INFO_0_ES NULL
+#define OPTION_VAL_ALL_ES "Todos"
+#define OPTION_VAL_NO_GPL_ES "Sin bibliotecas de canalización"
+#define OPTION_VAL_NO_DYN_ES "Sin estados dinámicos"
+#define OPTION_VAL_NONE_ES "No compartir"
+#define XEMU_RUMBLE_P1_LABEL_ES NULL
+#define XEMU_RUMBLE_P1_INFO_0_ES NULL
+#define XEMU_RUMBLE_P2_LABEL_ES NULL
+#define XEMU_RUMBLE_P2_INFO_0_ES NULL
+#define XEMU_DEADZONE_P1_LABEL_ES NULL
+#define XEMU_DEADZONE_P1_INFO_0_ES NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_ES "0 %"
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_ES "5 %"
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_ES "10 %"
+#define OPTION_VAL_15_ES "15 %"
+#define OPTION_VAL_25_ES "25 %"
+#define OPTION_VAL_30_ES "30 %"
+#define XEMU_DEADZONE_P2_LABEL_ES NULL
+#define XEMU_DEADZONE_P2_INFO_0_ES NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_ES "Juego libre (es necesario reiniciar)"
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_ES "Arranca los juegos de Sega Chihiro en modo de juego libre, sin necesitar introducir monedas. Desactiva esta opción y pulsa el botón SELECT para introducir una moneda."
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_ES "Método de apuntado de lightguns"
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_ES "Indica qué es lo que apunta a la pantalla en House of the Dead III, Virtua Cop 3 y Ghost Squad. Ratón: apunta con el ratón (o la lightgun de RetroArch), dispara con el botón izquierdo, el botón derecho es el botón del arma (para empujar la corredera del arma o cambiar de arma), el botón central es el pedal o el selector de disparo. Stick analógico: apunta con el stick izquierdo o con la cruceta, dispara con R2, L2 es el botón del arma, L el pedal o el selector de disparo, y con R dispararás fuera de la pantalla."
+#define OPTION_VAL_MOUSE_ES "Ratón"
+#define OPTION_VAL_STICK_ES "Stick analógico"
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_ES "Punto de mira"
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_ES "Dibuja la posición de la lightgun de cada jugador en pantalla: el punto de mira del jugador 1 es rojo y el del jugador 2 es azul."
+#define XEMU_CHIHIRO_FFB_LABEL_ES "Vibración con force feedback"
+#define XEMU_CHIHIRO_FFB_INFO_0_ES "Transmite la señal de force feedback de los juegos de carreras (OutRun 2, Maximum Tune) de Chihiro a la vibración del mando del puerto 1 con la fuerza indicada."
+#define OPTION_VAL_50_ES "50 %"
+#define OPTION_VAL_75_ES "75 %"
+#define OPTION_VAL_150_ES "150 %"
+#define OPTION_VAL_200_ES "200 %"
 
 struct retro_core_option_v2_category option_cats_es[] = {
     {
@@ -4235,13 +8609,19 @@ struct retro_core_option_v2_category option_cats_es[] = {
         CATEGORY_AUDIO_LABEL_ES,
         CATEGORY_AUDIO_INFO_0_ES
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_ES,
+        CATEGORY_CONTROLS_INFO_0_ES
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_ES,
+        CATEGORY_CHIHIRO_INFO_0_ES
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_es[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_ES,
@@ -4270,6 +8650,8 @@ struct retro_core_option_v2_definition option_defs_es[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_ES,
@@ -4282,7 +8664,7 @@ struct retro_core_option_v2_definition option_defs_es[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -4299,6 +8681,38 @@ struct retro_core_option_v2_definition option_defs_es[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_ES,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_ES,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_ES,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_ES,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_ES,
         NULL,
@@ -4311,6 +8725,25 @@ struct retro_core_option_v2_definition option_defs_es[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_ES,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_ES,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_ES },
+            { "4:3",       OPTION_VAL_4_3_ES },
+            { "16:9",      OPTION_VAL_16_9_ES },
+            { "letterbox", OPTION_VAL_LETTERBOX_ES },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -4366,6 +8799,25 @@ struct retro_core_option_v2_definition option_defs_es[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_ES,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_ES,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_ES,
@@ -4380,13 +8832,29 @@ struct retro_core_option_v2_definition option_defs_es[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_ES,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_ES,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_ES,
+        XEMU_DSP_JIT_INFO_0_ES,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_ES,
+        NULL,
+        XEMU_HRTF_INFO_0_ES,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -4395,10 +8863,27 @@ struct retro_core_option_v2_definition option_defs_es[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_ES,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_ES,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_ES,
+        XEMU_VP_WORKERS_INFO_0_ES,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_ES },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_ES,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_ES,
         NULL,
         "video",
         {
@@ -4426,19 +8911,169 @@ struct retro_core_option_v2_definition option_defs_es[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_ES,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_ES,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_ES,
+        XEMU_VK_FAST_PATHS_INFO_0_ES,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_ES },
-            { "nearest", OPTION_VAL_NEAREST_ES },
+            { "all",      OPTION_VAL_ALL_ES },
+            { "no_gpl",   OPTION_VAL_NO_GPL_ES },
+            { "no_dyn",   OPTION_VAL_NO_DYN_ES },
+            { "none",     OPTION_VAL_NONE_ES },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_ES,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_ES,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_ES,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_ES,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_ES,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_ES,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_ES },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_ES },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_ES },
+            { "15", OPTION_VAL_15_ES },
+            { "20", OPTION_VAL_20_ES },
+            { "25", OPTION_VAL_25_ES },
+            { "30", OPTION_VAL_30_ES },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_ES,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_ES,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_ES },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_ES },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_ES },
+            { "15", OPTION_VAL_15_ES },
+            { "20", OPTION_VAL_20_ES },
+            { "25", OPTION_VAL_25_ES },
+            { "30", OPTION_VAL_30_ES },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_ES,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_ES,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_ES,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_ES,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_ES },
+            { "stick", OPTION_VAL_STICK_ES },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_ES,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_ES,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_ES,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_ES,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_ES },
+            { "50",  OPTION_VAL_50_ES },
+            { "75",  OPTION_VAL_75_ES },
+            { "100", OPTION_VAL_100_ES },
+            { "150", OPTION_VAL_150_ES },
+            { "200", OPTION_VAL_200_ES },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -4449,12 +9084,16 @@ struct retro_core_options_v2 options_es = {
 
 /* RETRO_LANGUAGE_FA */
 
-#define CATEGORY_SYSTEM_LABEL_FA "سیستم"
+#define CATEGORY_SYSTEM_LABEL_FA NULL
 #define CATEGORY_SYSTEM_INFO_0_FA NULL
 #define CATEGORY_VIDEO_LABEL_FA "ویدیو"
 #define CATEGORY_VIDEO_INFO_0_FA NULL
 #define CATEGORY_AUDIO_LABEL_FA "صدا"
 #define CATEGORY_AUDIO_INFO_0_FA NULL
+#define CATEGORY_CONTROLS_LABEL_FA "کنترل‌ها"
+#define CATEGORY_CONTROLS_INFO_0_FA NULL
+#define CATEGORY_CHIHIRO_LABEL_FA NULL
+#define CATEGORY_CHIHIRO_INFO_0_FA NULL
 #define XEMU_MEMORY_LABEL_FA NULL
 #define XEMU_MEMORY_INFO_0_FA NULL
 #define OPTION_VAL_64_FA NULL
@@ -4466,15 +9105,23 @@ struct retro_core_options_v2 options_es = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_FA NULL
 #define XEMU_HARD_FPU_LABEL_FA NULL
 #define XEMU_HARD_FPU_INFO_0_FA NULL
+#define XEMU_CPU_BOOST_LABEL_FA NULL
+#define XEMU_CPU_BOOST_INFO_0_FA NULL
+#define XEMU_HDD_TRIM_LABEL_FA NULL
+#define XEMU_HDD_TRIM_INFO_0_FA NULL
 #define XEMU_RENDERER_LABEL_FA NULL
 #define XEMU_RENDERER_INFO_0_FA NULL
 #define OPTION_VAL_VULKAN_FA NULL
 #define OPTION_VAL_OPENGL_FA NULL
-#define XEMU_ASPECT_RATIO_LABEL_FA "نسبت تصویر"
-#define XEMU_ASPECT_RATIO_INFO_0_FA NULL
-#define OPTION_VAL_AUTO_FA "خودکار"
+#define XEMU_VIDEO_ASPECT_LABEL_FA NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_FA NULL
+#define OPTION_VAL_DASHBOARD_FA NULL
 #define OPTION_VAL_4_3_FA NULL
 #define OPTION_VAL_16_9_FA NULL
+#define OPTION_VAL_LETTERBOX_FA NULL
+#define XEMU_ASPECT_RATIO_LABEL_FA NULL
+#define XEMU_ASPECT_RATIO_INFO_0_FA NULL
+#define OPTION_VAL_AUTO_FA "خودکار"
 #define XEMU_SURFACE_SCALE_LABEL_FA NULL
 #define XEMU_SURFACE_SCALE_INFO_0_FA NULL
 #define OPTION_VAL_1_FA NULL
@@ -4494,12 +9141,18 @@ struct retro_core_options_v2 options_es = {
 #define OPTION_VAL_SVIDEO_FA NULL
 #define OPTION_VAL_SCART_FA NULL
 #define OPTION_VAL_VGA_FA NULL
+#define XEMU_AUDIO_THREAD_LABEL_FA NULL
+#define XEMU_AUDIO_THREAD_INFO_0_FA NULL
 #define XEMU_USE_DSP_LABEL_FA NULL
 #define XEMU_USE_DSP_INFO_0_FA NULL
-#define XEMU_CACHE_SHADERS_LABEL_FA NULL
-#define XEMU_CACHE_SHADERS_INFO_0_FA NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_FA NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_FA NULL
+#define XEMU_DSP_JIT_LABEL_FA NULL
+#define XEMU_DSP_JIT_INFO_0_FA NULL
+#define XEMU_HRTF_LABEL_FA NULL
+#define XEMU_HRTF_INFO_0_FA NULL
+#define XEMU_VP_WORKERS_LABEL_FA NULL
+#define XEMU_VP_WORKERS_INFO_0_FA NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_FA NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_FA NULL
 #define XEMU_AUDIO_VOLUME_LABEL_FA NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_FA NULL
 #define OPTION_VAL_100_FA NULL
@@ -4508,10 +9161,40 @@ struct retro_core_options_v2 options_es = {
 #define OPTION_VAL_40_FA NULL
 #define OPTION_VAL_20_FA NULL
 #define OPTION_VAL_0_FA NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_FA NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_FA NULL
-#define OPTION_VAL_LINEAR_FA NULL
-#define OPTION_VAL_NEAREST_FA "نزدیک‌ترین همسایه"
+#define XEMU_VK_FAST_PATHS_LABEL_FA NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_FA NULL
+#define OPTION_VAL_ALL_FA NULL
+#define OPTION_VAL_NO_GPL_FA NULL
+#define OPTION_VAL_NO_DYN_FA NULL
+#define OPTION_VAL_NONE_FA "هیچکدام"
+#define XEMU_RUMBLE_P1_LABEL_FA NULL
+#define XEMU_RUMBLE_P1_INFO_0_FA NULL
+#define XEMU_RUMBLE_P2_LABEL_FA NULL
+#define XEMU_RUMBLE_P2_INFO_0_FA NULL
+#define XEMU_DEADZONE_P1_LABEL_FA NULL
+#define XEMU_DEADZONE_P1_INFO_0_FA NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_FA NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_FA NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_FA NULL
+#define OPTION_VAL_15_FA NULL
+#define OPTION_VAL_25_FA NULL
+#define OPTION_VAL_30_FA NULL
+#define XEMU_DEADZONE_P2_LABEL_FA NULL
+#define XEMU_DEADZONE_P2_INFO_0_FA NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_FA NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_FA NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_FA NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_FA NULL
+#define OPTION_VAL_MOUSE_FA NULL
+#define OPTION_VAL_STICK_FA NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_FA NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_FA NULL
+#define XEMU_CHIHIRO_FFB_LABEL_FA NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_FA NULL
+#define OPTION_VAL_50_FA NULL
+#define OPTION_VAL_75_FA NULL
+#define OPTION_VAL_150_FA NULL
+#define OPTION_VAL_200_FA NULL
 
 struct retro_core_option_v2_category option_cats_fa[] = {
     {
@@ -4529,13 +9212,19 @@ struct retro_core_option_v2_category option_cats_fa[] = {
         CATEGORY_AUDIO_LABEL_FA,
         CATEGORY_AUDIO_INFO_0_FA
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_FA,
+        CATEGORY_CONTROLS_INFO_0_FA
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_FA,
+        CATEGORY_CHIHIRO_INFO_0_FA
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_fa[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_FA,
@@ -4564,6 +9253,8 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_FA,
@@ -4576,7 +9267,7 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -4593,6 +9284,38 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_FA,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_FA,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_FA,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_FA,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_FA,
         NULL,
@@ -4605,6 +9328,25 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_FA,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_FA,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_FA },
+            { "4:3",       OPTION_VAL_4_3_FA },
+            { "16:9",      OPTION_VAL_16_9_FA },
+            { "letterbox", OPTION_VAL_LETTERBOX_FA },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -4660,6 +9402,25 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_FA,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_FA,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_FA,
@@ -4674,13 +9435,29 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_FA,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_FA,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_FA,
+        XEMU_DSP_JIT_INFO_0_FA,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_FA,
+        NULL,
+        XEMU_HRTF_INFO_0_FA,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -4689,10 +9466,27 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_FA,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_FA,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_FA,
+        XEMU_VP_WORKERS_INFO_0_FA,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_FA },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_FA,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_FA,
         NULL,
         "video",
         {
@@ -4720,19 +9514,169 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_FA,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_FA,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_FA,
+        XEMU_VK_FAST_PATHS_INFO_0_FA,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_FA },
-            { "nearest", OPTION_VAL_NEAREST_FA },
+            { "all",      OPTION_VAL_ALL_FA },
+            { "no_gpl",   OPTION_VAL_NO_GPL_FA },
+            { "no_dyn",   OPTION_VAL_NO_DYN_FA },
+            { "none",     OPTION_VAL_NONE_FA },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_FA,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_FA,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_FA,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_FA,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_FA,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_FA,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_FA },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_FA },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_FA },
+            { "15", OPTION_VAL_15_FA },
+            { "20", OPTION_VAL_20_FA },
+            { "25", OPTION_VAL_25_FA },
+            { "30", OPTION_VAL_30_FA },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_FA,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_FA,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_FA },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_FA },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_FA },
+            { "15", OPTION_VAL_15_FA },
+            { "20", OPTION_VAL_20_FA },
+            { "25", OPTION_VAL_25_FA },
+            { "30", OPTION_VAL_30_FA },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_FA,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_FA,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_FA,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_FA,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_FA },
+            { "stick", OPTION_VAL_STICK_FA },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_FA,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_FA,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_FA,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_FA,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_FA },
+            { "50",  OPTION_VAL_50_FA },
+            { "75",  OPTION_VAL_75_FA },
+            { "100", OPTION_VAL_100_FA },
+            { "150", OPTION_VAL_150_FA },
+            { "200", OPTION_VAL_200_FA },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -4743,12 +9687,16 @@ struct retro_core_options_v2 options_fa = {
 
 /* RETRO_LANGUAGE_FI */
 
-#define CATEGORY_SYSTEM_LABEL_FI "Järjestelmä"
+#define CATEGORY_SYSTEM_LABEL_FI NULL
 #define CATEGORY_SYSTEM_INFO_0_FI NULL
 #define CATEGORY_VIDEO_LABEL_FI NULL
 #define CATEGORY_VIDEO_INFO_0_FI NULL
 #define CATEGORY_AUDIO_LABEL_FI "Ääni"
 #define CATEGORY_AUDIO_INFO_0_FI NULL
+#define CATEGORY_CONTROLS_LABEL_FI "Ohjaus"
+#define CATEGORY_CONTROLS_INFO_0_FI NULL
+#define CATEGORY_CHIHIRO_LABEL_FI NULL
+#define CATEGORY_CHIHIRO_INFO_0_FI NULL
 #define XEMU_MEMORY_LABEL_FI NULL
 #define XEMU_MEMORY_INFO_0_FI NULL
 #define OPTION_VAL_64_FI "64 Mt"
@@ -4760,15 +9708,23 @@ struct retro_core_options_v2 options_fa = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_FI NULL
 #define XEMU_HARD_FPU_LABEL_FI NULL
 #define XEMU_HARD_FPU_INFO_0_FI NULL
+#define XEMU_CPU_BOOST_LABEL_FI NULL
+#define XEMU_CPU_BOOST_INFO_0_FI NULL
+#define XEMU_HDD_TRIM_LABEL_FI NULL
+#define XEMU_HDD_TRIM_INFO_0_FI NULL
 #define XEMU_RENDERER_LABEL_FI NULL
 #define XEMU_RENDERER_INFO_0_FI NULL
 #define OPTION_VAL_VULKAN_FI NULL
 #define OPTION_VAL_OPENGL_FI NULL
-#define XEMU_ASPECT_RATIO_LABEL_FI "Kuvasuhde"
-#define XEMU_ASPECT_RATIO_INFO_0_FI NULL
-#define OPTION_VAL_AUTO_FI "Automaattinen"
+#define XEMU_VIDEO_ASPECT_LABEL_FI NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_FI NULL
+#define OPTION_VAL_DASHBOARD_FI NULL
 #define OPTION_VAL_4_3_FI NULL
 #define OPTION_VAL_16_9_FI NULL
+#define OPTION_VAL_LETTERBOX_FI NULL
+#define XEMU_ASPECT_RATIO_LABEL_FI "Ytimen kuvasuhde"
+#define XEMU_ASPECT_RATIO_INFO_0_FI NULL
+#define OPTION_VAL_AUTO_FI "Automaattinen"
 #define XEMU_SURFACE_SCALE_LABEL_FI NULL
 #define XEMU_SURFACE_SCALE_INFO_0_FI NULL
 #define OPTION_VAL_1_FI NULL
@@ -4788,12 +9744,18 @@ struct retro_core_options_v2 options_fa = {
 #define OPTION_VAL_SVIDEO_FI NULL
 #define OPTION_VAL_SCART_FI NULL
 #define OPTION_VAL_VGA_FI NULL
+#define XEMU_AUDIO_THREAD_LABEL_FI NULL
+#define XEMU_AUDIO_THREAD_INFO_0_FI NULL
 #define XEMU_USE_DSP_LABEL_FI NULL
 #define XEMU_USE_DSP_INFO_0_FI NULL
-#define XEMU_CACHE_SHADERS_LABEL_FI NULL
-#define XEMU_CACHE_SHADERS_INFO_0_FI NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_FI NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_FI NULL
+#define XEMU_DSP_JIT_LABEL_FI NULL
+#define XEMU_DSP_JIT_INFO_0_FI NULL
+#define XEMU_HRTF_LABEL_FI NULL
+#define XEMU_HRTF_INFO_0_FI NULL
+#define XEMU_VP_WORKERS_LABEL_FI NULL
+#define XEMU_VP_WORKERS_INFO_0_FI NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_FI NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_FI NULL
 #define XEMU_AUDIO_VOLUME_LABEL_FI NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_FI NULL
 #define OPTION_VAL_100_FI "100 %"
@@ -4802,10 +9764,40 @@ struct retro_core_options_v2 options_fa = {
 #define OPTION_VAL_40_FI "40 %"
 #define OPTION_VAL_20_FI "20 %"
 #define OPTION_VAL_0_FI NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_FI NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_FI NULL
-#define OPTION_VAL_LINEAR_FI "Bilineaarinen"
-#define OPTION_VAL_NEAREST_FI "Lähin naapuri"
+#define XEMU_VK_FAST_PATHS_LABEL_FI NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_FI NULL
+#define OPTION_VAL_ALL_FI "Kaikki"
+#define OPTION_VAL_NO_GPL_FI NULL
+#define OPTION_VAL_NO_DYN_FI NULL
+#define OPTION_VAL_NONE_FI "Ei mitään"
+#define XEMU_RUMBLE_P1_LABEL_FI NULL
+#define XEMU_RUMBLE_P1_INFO_0_FI NULL
+#define XEMU_RUMBLE_P2_LABEL_FI NULL
+#define XEMU_RUMBLE_P2_INFO_0_FI NULL
+#define XEMU_DEADZONE_P1_LABEL_FI NULL
+#define XEMU_DEADZONE_P1_INFO_0_FI NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_FI NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_FI NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_FI NULL
+#define OPTION_VAL_15_FI "15 %"
+#define OPTION_VAL_25_FI NULL
+#define OPTION_VAL_30_FI "30 %"
+#define XEMU_DEADZONE_P2_LABEL_FI NULL
+#define XEMU_DEADZONE_P2_INFO_0_FI NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_FI NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_FI NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_FI NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_FI NULL
+#define OPTION_VAL_MOUSE_FI "Hiiri"
+#define OPTION_VAL_STICK_FI NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_FI NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_FI NULL
+#define XEMU_CHIHIRO_FFB_LABEL_FI NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_FI NULL
+#define OPTION_VAL_50_FI "50 %"
+#define OPTION_VAL_75_FI "75 %"
+#define OPTION_VAL_150_FI "150 %"
+#define OPTION_VAL_200_FI "200 %"
 
 struct retro_core_option_v2_category option_cats_fi[] = {
     {
@@ -4823,13 +9815,19 @@ struct retro_core_option_v2_category option_cats_fi[] = {
         CATEGORY_AUDIO_LABEL_FI,
         CATEGORY_AUDIO_INFO_0_FI
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_FI,
+        CATEGORY_CONTROLS_INFO_0_FI
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_FI,
+        CATEGORY_CHIHIRO_INFO_0_FI
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_fi[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_FI,
@@ -4858,6 +9856,8 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_FI,
@@ -4870,7 +9870,7 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -4887,6 +9887,38 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_FI,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_FI,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_FI,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_FI,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_FI,
         NULL,
@@ -4899,6 +9931,25 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_FI,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_FI,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_FI },
+            { "4:3",       OPTION_VAL_4_3_FI },
+            { "16:9",      OPTION_VAL_16_9_FI },
+            { "letterbox", OPTION_VAL_LETTERBOX_FI },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -4954,6 +10005,25 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_FI,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_FI,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_FI,
@@ -4968,13 +10038,29 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_FI,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_FI,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_FI,
+        XEMU_DSP_JIT_INFO_0_FI,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_FI,
+        NULL,
+        XEMU_HRTF_INFO_0_FI,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -4983,10 +10069,27 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_FI,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_FI,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_FI,
+        XEMU_VP_WORKERS_INFO_0_FI,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_FI },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_FI,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_FI,
         NULL,
         "video",
         {
@@ -5014,19 +10117,169 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_FI,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_FI,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_FI,
+        XEMU_VK_FAST_PATHS_INFO_0_FI,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_FI },
-            { "nearest", OPTION_VAL_NEAREST_FI },
+            { "all",      OPTION_VAL_ALL_FI },
+            { "no_gpl",   OPTION_VAL_NO_GPL_FI },
+            { "no_dyn",   OPTION_VAL_NO_DYN_FI },
+            { "none",     OPTION_VAL_NONE_FI },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_FI,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_FI,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_FI,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_FI,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_FI,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_FI,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_FI },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_FI },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_FI },
+            { "15", OPTION_VAL_15_FI },
+            { "20", OPTION_VAL_20_FI },
+            { "25", OPTION_VAL_25_FI },
+            { "30", OPTION_VAL_30_FI },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_FI,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_FI,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_FI },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_FI },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_FI },
+            { "15", OPTION_VAL_15_FI },
+            { "20", OPTION_VAL_20_FI },
+            { "25", OPTION_VAL_25_FI },
+            { "30", OPTION_VAL_30_FI },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_FI,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_FI,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_FI,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_FI,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_FI },
+            { "stick", OPTION_VAL_STICK_FI },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_FI,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_FI,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_FI,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_FI,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_FI },
+            { "50",  OPTION_VAL_50_FI },
+            { "75",  OPTION_VAL_75_FI },
+            { "100", OPTION_VAL_100_FI },
+            { "150", OPTION_VAL_150_FI },
+            { "200", OPTION_VAL_200_FI },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -5037,12 +10290,16 @@ struct retro_core_options_v2 options_fi = {
 
 /* RETRO_LANGUAGE_FR */
 
-#define CATEGORY_SYSTEM_LABEL_FR "Système"
-#define CATEGORY_SYSTEM_INFO_0_FR "Configurer les réglages du système tels que les chemins d'accès du BIOS, la mémoire et les options de démarrage."
+#define CATEGORY_SYSTEM_LABEL_FR NULL
+#define CATEGORY_SYSTEM_INFO_0_FR NULL
 #define CATEGORY_VIDEO_LABEL_FR "Vidéo"
 #define CATEGORY_VIDEO_INFO_0_FR "Configurer les réglages de rendu vidéo."
 #define CATEGORY_AUDIO_LABEL_FR "Audio "
 #define CATEGORY_AUDIO_INFO_0_FR "Configurer les réglages d'émulation audio."
+#define CATEGORY_CONTROLS_LABEL_FR "Touches"
+#define CATEGORY_CONTROLS_INFO_0_FR NULL
+#define CATEGORY_CHIHIRO_LABEL_FR NULL
+#define CATEGORY_CHIHIRO_INFO_0_FR NULL
 #define XEMU_MEMORY_LABEL_FR "Mémoire système (Mo)"
 #define XEMU_MEMORY_INFO_0_FR "Quantité de RAM du système. 64 Mo est la norme ; 128 Mo sont utilisés par les kits de débogage."
 #define OPTION_VAL_64_FR "64 Mo"
@@ -5054,16 +10311,24 @@ struct retro_core_options_v2 options_fi = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_FR "Passer l'animation de démarrage de la Xbox."
 #define XEMU_HARD_FPU_LABEL_FR "Émulation matérielle de FPU"
 #define XEMU_HARD_FPU_INFO_0_FR "Utiliser la FPU de l'hôte pour l'émulation x87. Plus rapide, mais peut entraîner de légères imprécisions."
+#define XEMU_CPU_BOOST_LABEL_FR NULL
+#define XEMU_CPU_BOOST_INFO_0_FR NULL
+#define XEMU_HDD_TRIM_LABEL_FR NULL
+#define XEMU_HDD_TRIM_INFO_0_FR NULL
 #define XEMU_RENDERER_LABEL_FR "API graphique (redémarrage)"
 #define XEMU_RENDERER_INFO_0_FR "Le moteur de rendu utilisé pour afficher le processeur graphique émulé. Vulkan est l'option par défaut ; OpenGL sert d'alternative lorsque Vulkan ne fonctionne pas correctement. La modification prend effet après le redémarrage de RetroArch. Android utilise toujours Vulkan, tandis que macOS utilise toujours OpenGL."
 #define OPTION_VAL_VULKAN_FR NULL
 #define OPTION_VAL_OPENGL_FR NULL
-#define XEMU_ASPECT_RATIO_LABEL_FR "Rapport d'aspect"
-#define XEMU_ASPECT_RATIO_INFO_0_FR "Le format d'affichage de l'image. Auto s'adapte au jeu : 16:9 lorsque la console bascule en mode écran large (Écran large doit être activé dans les paramètres vidéo du tableau de bord), et 4:3 dans le cas contraire. Choisissez le format 16:9 pour un jeu conçu pour l'écran large mais qui s'affiche de manière écrasée."
-#define OPTION_VAL_AUTO_FR NULL
+#define XEMU_VIDEO_ASPECT_LABEL_FR NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_FR NULL
+#define OPTION_VAL_DASHBOARD_FR NULL
 #define OPTION_VAL_4_3_FR NULL
 #define OPTION_VAL_16_9_FR NULL
-#define XEMU_SURFACE_SCALE_LABEL_FR "Échelle de résolution interne"
+#define OPTION_VAL_LETTERBOX_FR NULL
+#define XEMU_ASPECT_RATIO_LABEL_FR "Rapport d'aspect du cœur"
+#define XEMU_ASPECT_RATIO_INFO_0_FR NULL
+#define OPTION_VAL_AUTO_FR NULL
+#define XEMU_SURFACE_SCALE_LABEL_FR NULL
 #define XEMU_SURFACE_SCALE_INFO_0_FR "Ajuste l'échelle de la résolution de rendu interne. Des valeurs plus élevées améliorent la qualité mais réduisent les performances."
 #define OPTION_VAL_1_FR "x1 (640 x 480)"
 #define OPTION_VAL_2_FR "x2 (1280 x 960)"
@@ -5082,12 +10347,18 @@ struct retro_core_options_v2 options_fi = {
 #define OPTION_VAL_SVIDEO_FR NULL
 #define OPTION_VAL_SCART_FR "Péritel (SCART)"
 #define OPTION_VAL_VGA_FR NULL
+#define XEMU_AUDIO_THREAD_LABEL_FR NULL
+#define XEMU_AUDIO_THREAD_INFO_0_FR NULL
 #define XEMU_USE_DSP_LABEL_FR "Émulation du DSP de l'APU"
 #define XEMU_USE_DSP_INFO_0_FR "Activer l'émulation du DSP pour une meilleure fidélité audio. Cela peut affecter les performances."
-#define XEMU_CACHE_SHADERS_LABEL_FR "Cache de shaders"
-#define XEMU_CACHE_SHADERS_INFO_0_FR "Mettre en cache sur le disque les shaders de processeur graphique compilés. Réduit les saccades lors des exécutions ultérieures."
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_FR "Tampons Vulkan réduits (redémarrage)"
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_FR "Le moteur de rendu Vulkan réserve ses tampons de travail au démarrage, indépendamment des besoins du jeu. Lorsqu'elle est activée, cette option limite la taille du tampon pour les données de sommets (vertex) intégrées à un dixième de la taille utilisée par xemu, ce qui permet d'économiser environ 1,2 Go de mémoire vidéo ainsi qu'une quantité équivalente de mémoire système. Lorsqu'elle est désactivée, la taille totale requise par xemu est réservée sur les cartes graphiques disposant de 4 Go de mémoire ou plus ; essayez de la désactiver si un jeu fonctionne plus lentement avec cette option activée."
+#define XEMU_DSP_JIT_LABEL_FR NULL
+#define XEMU_DSP_JIT_INFO_0_FR NULL
+#define XEMU_HRTF_LABEL_FR NULL
+#define XEMU_HRTF_INFO_0_FR NULL
+#define XEMU_VP_WORKERS_LABEL_FR NULL
+#define XEMU_VP_WORKERS_INFO_0_FR NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_FR NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_FR NULL
 #define XEMU_AUDIO_VOLUME_LABEL_FR "Limite de volume audio (%)"
 #define XEMU_AUDIO_VOLUME_INFO_0_FR "Limiter le volume de sortie audio de la Xbox indépendamment du volume principal de RetroArch."
 #define OPTION_VAL_100_FR "100 %"
@@ -5096,10 +10367,40 @@ struct retro_core_options_v2 options_fi = {
 #define OPTION_VAL_40_FR "40 %"
 #define OPTION_VAL_20_FR "20 %"
 #define OPTION_VAL_0_FR "Muet"
-#define XEMU_DISPLAY_FILTERING_LABEL_FR "Filtrage d'affichage"
-#define XEMU_DISPLAY_FILTERING_INFO_0_FR "Mode de filtrage de texture pour la sortie d'affichage."
-#define OPTION_VAL_LINEAR_FR "Bilinéaire"
-#define OPTION_VAL_NEAREST_FR "Au plus proche"
+#define XEMU_VK_FAST_PATHS_LABEL_FR NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_FR NULL
+#define OPTION_VAL_ALL_FR "Tous"
+#define OPTION_VAL_NO_GPL_FR NULL
+#define OPTION_VAL_NO_DYN_FR NULL
+#define OPTION_VAL_NONE_FR "Ne pas partager"
+#define XEMU_RUMBLE_P1_LABEL_FR NULL
+#define XEMU_RUMBLE_P1_INFO_0_FR NULL
+#define XEMU_RUMBLE_P2_LABEL_FR NULL
+#define XEMU_RUMBLE_P2_INFO_0_FR NULL
+#define XEMU_DEADZONE_P1_LABEL_FR NULL
+#define XEMU_DEADZONE_P1_INFO_0_FR NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_FR NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_FR NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_FR NULL
+#define OPTION_VAL_15_FR "15 %"
+#define OPTION_VAL_25_FR NULL
+#define OPTION_VAL_30_FR "30 %"
+#define XEMU_DEADZONE_P2_LABEL_FR NULL
+#define XEMU_DEADZONE_P2_INFO_0_FR NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_FR NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_FR NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_FR NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_FR NULL
+#define OPTION_VAL_MOUSE_FR "Souris"
+#define OPTION_VAL_STICK_FR NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_FR NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_FR NULL
+#define XEMU_CHIHIRO_FFB_LABEL_FR NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_FR NULL
+#define OPTION_VAL_50_FR "50 %"
+#define OPTION_VAL_75_FR "75 %"
+#define OPTION_VAL_150_FR "150 %"
+#define OPTION_VAL_200_FR "200 %"
 
 struct retro_core_option_v2_category option_cats_fr[] = {
     {
@@ -5117,13 +10418,19 @@ struct retro_core_option_v2_category option_cats_fr[] = {
         CATEGORY_AUDIO_LABEL_FR,
         CATEGORY_AUDIO_INFO_0_FR
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_FR,
+        CATEGORY_CONTROLS_INFO_0_FR
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_FR,
+        CATEGORY_CHIHIRO_INFO_0_FR
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_fr[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_FR,
@@ -5152,6 +10459,8 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_FR,
@@ -5164,7 +10473,7 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -5181,6 +10490,38 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_FR,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_FR,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_FR,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_FR,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_FR,
         NULL,
@@ -5193,6 +10534,25 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_FR,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_FR,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_FR },
+            { "4:3",       OPTION_VAL_4_3_FR },
+            { "16:9",      OPTION_VAL_16_9_FR },
+            { "letterbox", OPTION_VAL_LETTERBOX_FR },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -5248,6 +10608,25 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_FR,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_FR,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_FR,
@@ -5262,13 +10641,29 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_FR,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_FR,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_FR,
+        XEMU_DSP_JIT_INFO_0_FR,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_FR,
+        NULL,
+        XEMU_HRTF_INFO_0_FR,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -5277,10 +10672,27 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_FR,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_FR,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_FR,
+        XEMU_VP_WORKERS_INFO_0_FR,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_FR },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_FR,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_FR,
         NULL,
         "video",
         {
@@ -5308,19 +10720,169 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_FR,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_FR,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_FR,
+        XEMU_VK_FAST_PATHS_INFO_0_FR,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_FR },
-            { "nearest", OPTION_VAL_NEAREST_FR },
+            { "all",      OPTION_VAL_ALL_FR },
+            { "no_gpl",   OPTION_VAL_NO_GPL_FR },
+            { "no_dyn",   OPTION_VAL_NO_DYN_FR },
+            { "none",     OPTION_VAL_NONE_FR },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_FR,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_FR,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_FR,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_FR,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_FR,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_FR,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_FR },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_FR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_FR },
+            { "15", OPTION_VAL_15_FR },
+            { "20", OPTION_VAL_20_FR },
+            { "25", OPTION_VAL_25_FR },
+            { "30", OPTION_VAL_30_FR },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_FR,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_FR,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_FR },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_FR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_FR },
+            { "15", OPTION_VAL_15_FR },
+            { "20", OPTION_VAL_20_FR },
+            { "25", OPTION_VAL_25_FR },
+            { "30", OPTION_VAL_30_FR },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_FR,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_FR,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_FR,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_FR,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_FR },
+            { "stick", OPTION_VAL_STICK_FR },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_FR,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_FR,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_FR,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_FR,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_FR },
+            { "50",  OPTION_VAL_50_FR },
+            { "75",  OPTION_VAL_75_FR },
+            { "100", OPTION_VAL_100_FR },
+            { "150", OPTION_VAL_150_FR },
+            { "200", OPTION_VAL_200_FR },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -5331,12 +10893,16 @@ struct retro_core_options_v2 options_fr = {
 
 /* RETRO_LANGUAGE_GA */
 
-#define CATEGORY_SYSTEM_LABEL_GA "Córas"
-#define CATEGORY_SYSTEM_INFO_0_GA "Cumraigh socruithe ar leibhéal an chórais, amhail conairí BIOS, cuimhne, agus roghanna tosaithe."
+#define CATEGORY_SYSTEM_LABEL_GA "Córas (Atosaigh)"
+#define CATEGORY_SYSTEM_INFO_0_GA "An meaisín féin: cuimhne, líonra, tosú agus LAP. Gabhtar é seo nuair a thosaíonn an t-ábhar (baintear úsáid as 'Trim HDD on Close' nuair a dhúntar é)."
 #define CATEGORY_VIDEO_LABEL_GA "Físeán"
 #define CATEGORY_VIDEO_INFO_0_GA "Cumraigh socruithe rindreála físe."
 #define CATEGORY_AUDIO_LABEL_GA "Fuaim"
 #define CATEGORY_AUDIO_INFO_0_GA "Cumraigh socruithe na haithrise fuaime."
+#define CATEGORY_CONTROLS_LABEL_GA "Rialuithe"
+#define CATEGORY_CONTROLS_INFO_0_GA "Creathadh agus crios marbh na luamhán, in aghaidh an imreora."
+#define CATEGORY_CHIHIRO_LABEL_GA NULL
+#define CATEGORY_CHIHIRO_INFO_0_GA "Cluichí áircéid Sega Chihiro: súgradh saor in aisce, díriú i gcluichí gunna, agus aiseolas fórsa i gcluichí rásaíochta."
 #define XEMU_MEMORY_LABEL_GA "Cuimhne an Chórais (MB)"
 #define XEMU_MEMORY_INFO_0_GA "Méid an RAM córais. Is é 64 MB an caighdeán; úsáideann feisteas dífhabhtaithe 128 MB."
 #define OPTION_VAL_64_GA NULL
@@ -5348,16 +10914,24 @@ struct retro_core_options_v2 options_fr = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_GA "Scipeáil an beochan tosaithe Xbox."
 #define XEMU_HARD_FPU_LABEL_GA "Aithris FPU trí Chrua-earraí"
 #define XEMU_HARD_FPU_INFO_0_GA "Bain úsáid as FPU an óstaigh le haghaidh aithrise x87. Bíonn sé níos tapúla, ach d’fhéadfadh mion-mhíchruinneas a bheith i gceist."
+#define XEMU_CPU_BOOST_LABEL_GA "Treisiú LAP"
+#define XEMU_CPU_BOOST_INFO_0_GA "Bealaí níos tapúla don LAP aíonna agus don phróiseálaí fuaime: SSE dúchasach agus taisce léimneach níos leithne. Múch é má bhíonn fadhbanna le cluiche."
+#define XEMU_HDD_TRIM_LABEL_GA "Trim an HDD agus é á dhúnadh"
+#define XEMU_HDD_TRIM_INFO_0_GA "Nuair a dhúntar an cluiche, glantar na deighiltí taisce X, Y agus Z ar an diosca crua (déanfaidh na cluichí iad a fhormáidiú arís nuair a bheidh siad ag teastáil uathu) agus athscríobhtar an íomhá gan an spás neamhúsáidte, rud a fhágann go laghdaítear méid an chomhaid. Teastaíonn méid spáis shaor atá comhionann le sonraí na híomhá, ar feadh tamaill. Ní dhéantar an próiseas seo má tá 'stát sábháilte' ag an íomhá. Déantar é seo nuair a dhúntar an cluiche, ní nuair a thosaítear arís é."
 #define XEMU_RENDERER_LABEL_GA "API Grafaice (Atosaigh)"
 #define XEMU_RENDERER_INFO_0_GA "An t-inneall rindreála a úsáidtear chun an GPU insamhlaithe a tharraingt. Is é Vulkan an rogha réamhshocraithe; úsáidtear OpenGL mar rogha chúltaca i gcás tiománaithe nach n-oibríonn i gceart le Vulkan. Tiocfaidh an t-athrú i bhfeidhm tar éis RetroArch a atosú. Úsáideann Android Vulkan i gcónaí, agus úsáideann macOS OpenGL i gcónaí."
 #define OPTION_VAL_VULKAN_GA NULL
 #define OPTION_VAL_OPENGL_GA NULL
-#define XEMU_ASPECT_RATIO_LABEL_GA "Cóimheas Gnéithe"
-#define XEMU_ASPECT_RATIO_INFO_0_GA "An cruth ina dtaispeántar an íomhá. Leanann an socrú 'Auto' an cluiche: 16:9 nuair a aistrítear an consól go dtí an fhairsingscáileán (ní mór an fhairsingscáileán a bheith curtha ar siúl i socruithe físe an deais), agus 4:3 murach sin. Roghnaigh 16:9 do chluiche a rindreáiltear i bhfairsingscáileán ach a thaispeántar i riocht comhbhrúite."
-#define OPTION_VAL_AUTO_GA "Uathoibríoch"
+#define XEMU_VIDEO_ASPECT_LABEL_GA "Cóimheas Gné an Chórais (Atosaigh)"
+#define XEMU_VIDEO_ASPECT_INFO_0_GA "Socraíonn sé seo an fhormáid taispeána a thuairiscíonn an consól do chluichí, in áit an tsocraithe atá ag an deais. Má roghnaítear 16:9, rithfidh cluichí a thacaíonn le scáileán leathan i bhformáid scáileáin leathain; má roghnaítear 4:3, rithfidh siad i bhformáid 4:3. Roghnaigh an socrú a fhreagraíonn do chruth do scáileáin. Úsáideann an rogha 'Letterbox' formáid 4:3 na deais, ach taispeántar cluichí scáileáin leathain le barraí dubha ag an mbarr agus ag an mbun. Coinníonn an rogha 'Dashboard' an socrú atá ag an deais féin."
+#define OPTION_VAL_DASHBOARD_GA "Painéal Rialúcháin"
 #define OPTION_VAL_4_3_GA NULL
 #define OPTION_VAL_16_9_GA NULL
-#define XEMU_SURFACE_SCALE_LABEL_GA "Scála Réitigh Inmheánaigh"
+#define OPTION_VAL_LETTERBOX_GA "Bosca litreacha"
+#define XEMU_ASPECT_RATIO_LABEL_GA "Cóimheas Gné Croí"
+#define XEMU_ASPECT_RATIO_INFO_0_GA "An cruth ina dtaispeántar an pictiúr. Is fearr é a fhágáil ar 'Auto', a leanann an cluiche: 16:9 nuair a bhíonn an consól socraithe ar scáileán leathan (Cóimheas Gné an Chórais nó an deais) agus an cluiche á rindreáil i 16:9; 4:3 ar shlí eile, nó ar chóras Chihiro. Síneann an suíomh 16:9 cluiche 4:3 amach chun an scáileán leathan a líonadh."
+#define OPTION_VAL_AUTO_GA "Uathoibríoch"
+#define XEMU_SURFACE_SCALE_LABEL_GA "Scála Réitigh Inmheánaigh (Atosaigh)"
 #define XEMU_SURFACE_SCALE_INFO_0_GA "Déanann sé scálú ar an réiteach inmheánach rindreála. Feabhsaíonn luachanna níos airde an caighdeán ach laghdaíonn siad an fheidhmíocht."
 #define OPTION_VAL_1_GA NULL
 #define OPTION_VAL_2_GA NULL
@@ -5369,19 +10943,25 @@ struct retro_core_options_v2 options_fr = {
 #define OPTION_VAL_8_GA NULL
 #define OPTION_VAL_9_GA NULL
 #define OPTION_VAL_10_GA NULL
-#define XEMU_AVPACK_LABEL_GA "Pacáiste AV"
+#define XEMU_AVPACK_LABEL_GA "Pacáiste AV (Atosaigh)"
 #define XEMU_AVPACK_INFO_0_GA "Roghnaigh an cineál pacáiste AV. Bíonn tionchar aige ar na modhanna físe atá ar fáil."
 #define OPTION_VAL_HDTV_GA NULL
 #define OPTION_VAL_COMPOSITE_GA "Ilchodach"
 #define OPTION_VAL_SVIDEO_GA "S-Físeán"
 #define OPTION_VAL_SCART_GA NULL
 #define OPTION_VAL_VGA_GA NULL
+#define XEMU_AUDIO_THREAD_LABEL_GA "Snáithe Fuaime (Atosaigh)"
+#define XEMU_AUDIO_THREAD_INFO_0_GA "Tugann sé an fhuaim do shnáithe fuaime RetroArch agus an APU á mheascadh, agus é á sheinm go neamhspleách, seachas fráma amháin a bheith in aghaidh gach fráma: leanann an fhuaim ar aghaidh agus na frámaí ag stopadh, amhail is dá mba rud é go mbíonn scáthaitheoirí ag tiomsú."
 #define XEMU_USE_DSP_LABEL_GA "Aithris APU DSP"
 #define XEMU_USE_DSP_INFO_0_GA "Cumasaigh aithris DSP chun cruinneas fuaime a fheabhsú. D’fhéadfadh tionchar a bheith aige ar an bhfeidhmíocht."
-#define XEMU_CACHE_SHADERS_LABEL_GA "Taisce Scáthaitheora"
-#define XEMU_CACHE_SHADERS_INFO_0_GA "Stóráil scáthóirí GPU tiomsaithe ar an diosca. Laghdaíonn sé seo an mhoill nó an preabadh (stutter) le linn rithanna ina dhiaidh sin."
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_GA "Maoláin Vulkan Laghdaithe (Atosaigh)"
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_GA "Cuireann an t-inneall rindreála Vulkan a chuid maolán oibre in áirithe nuair a thosaíonn sé, de réir riachtanais an chluiche. Má bhíonn an ghné seo cumasaithe, coimeádtar an maolán do shonraí ingearán (vertex data) ag an deichiú cuid de mhéid xemu; sábhálann sé sin thart ar 1.2 GB de chuimhne físe agus an méid céanna de chuimhne an chórais. Má bhíonn an ghné díchumasaithe, cuirtear méid iomlán xemu in áirithe ar chártaí grafaicí a bhfuil 4 GB nó níos mó acu; bain triail as sin má ritheann cluiche níos moille agus an ghné seo cumasaithe."
+#define XEMU_DSP_JIT_LABEL_GA NULL
+#define XEMU_DSP_JIT_INFO_0_GA "Ritheann sé cláir Aithriseoireachta DSP an APU mar chód tiomsaithe in áit iad a léirmhíniú: tá sé níos tapúla, cosúil le JIT DSP i bhfeidhmchlár neamhspleách. Ní dhéanann sé aon rud mura bhfuil Aithriseoireacht DSP an APU casta air."
+#define XEMU_HRTF_LABEL_GA NULL
+#define XEMU_HRTF_INFO_0_GA "Cuireann sé guthanna 3D i gcluichí a bhaineann úsáid astu ina n-ionad cuí, ag baint úsáide as feidhmeanna aistrithe a bhaineann leis an gceann — díreach mar a dhéantar ar an gconsól — le haghaidh cluasán agus callairí steirió."
+#define XEMU_VP_WORKERS_LABEL_GA "Snáitheanna Próiseálaí Gutha (Atosaigh)"
+#define XEMU_VP_WORKERS_INFO_0_GA "Snáitheanna a mheascann an próiseálaí gutha fuaime na guthanna orthu. Úsáideann an socrú uathoibríoch ceann amháin in aghaidh an chroíleacáin LAP."
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_GA "An Chéad Seinm Réidh (Atosaigh)"
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_GA "Tiomponn sé na *shaders* a úsáideann cluiche le linn an phróisis tosaithe, ionas nach mbeidh aon bhac ná preabadh sna chéad nóiméid agus iad á dtiomsú. Ar OpenGL coinníonn sé a bhfuil á thiomsú aige sa taisce scáthaithe, atá ar siúl i gcónaí."
 #define XEMU_AUDIO_VOLUME_LABEL_GA "Teorainn Airde Fuaime (%)"
 #define XEMU_AUDIO_VOLUME_INFO_0_GA "Cuir teorainn le leibhéal toirte aschuir fuaime an Xbox go neamhspleách ar phríomh-toirt RetroArch."
 #define OPTION_VAL_100_GA NULL
@@ -5390,10 +10970,40 @@ struct retro_core_options_v2 options_fr = {
 #define OPTION_VAL_40_GA NULL
 #define OPTION_VAL_20_GA NULL
 #define OPTION_VAL_0_GA "Balbhaithe"
-#define XEMU_DISPLAY_FILTERING_LABEL_GA "Scagadh Taispeána"
-#define XEMU_DISPLAY_FILTERING_INFO_0_GA "Modh scagtha uigeachta don aschur taispeána."
-#define OPTION_VAL_LINEAR_GA "Délíneach"
-#define OPTION_VAL_NEAREST_GA "Comharsa is Gaire"
+#define XEMU_VK_FAST_PATHS_LABEL_GA "Conairí Tapa Vulkan (Atosaigh)"
+#define XEMU_VK_FAST_PATHS_INFO_0_GA "Bíonn tionchar aige ar luas tiomsaithe scáthaithe ar Vulkan. Is é \"All\" an rogha is tapúla, ach d'fhéadfadh sé a chur faoi deara go dteipfeadh ar chluichí áirithe."
+#define OPTION_VAL_ALL_GA "Gach"
+#define OPTION_VAL_NO_GPL_GA "Gan Leabharlanna Píblíne"
+#define OPTION_VAL_NO_DYN_GA "Gan Stáit Dhinimiciúla"
+#define OPTION_VAL_NONE_GA "Dada"
+#define XEMU_RUMBLE_P1_LABEL_GA "Rumble (Imreoir 1)"
+#define XEMU_RUMBLE_P1_INFO_0_GA "Crithfidh rialtán Imreoir 1 — de bharr cluichí Xbox agus aiseolas fórsa ó chluiche rásaíochta Chihiro. Má bhíonn sé múchta, ní bheidh ceachtar acu i gceist."
+#define XEMU_RUMBLE_P2_LABEL_GA "Creathadh (Imreoir 2)"
+#define XEMU_RUMBLE_P2_INFO_0_GA "Tá ceap Imreoir 2 ag torann, ó na cluichí Xbox agus ó aiseolas fórsa i gcluiche rásaíochta Chihiro. Mura bhfuil sé ar siúl, ní bhíonn ceachtar acu i gceist."
+#define XEMU_DEADZONE_P1_LABEL_GA "Crios Marbh Analógach (Imreoir 1)"
+#define XEMU_DEADZONE_P1_INFO_0_GA "Cé chomh fada is féidir bataí imreora 1 a bhrú sula bhfeiceann an cluiche é, an dá bhata, ar an Xbox agus an Chihiro araon; déantar an chuid eile den ghluaiseacht a scálú suas go dtí an t-uasmhéid."
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_GA NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_GA NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_GA NULL
+#define OPTION_VAL_15_GA NULL
+#define OPTION_VAL_25_GA NULL
+#define OPTION_VAL_30_GA NULL
+#define XEMU_DEADZONE_P2_LABEL_GA "Crios Marbh Analógach (Imreoir 2)"
+#define XEMU_DEADZONE_P2_INFO_0_GA "Cé chomh fada is féidir bataí imreoir 2 a bhrú sula bhfeiceann an cluiche é, an dá bhata, ar an Xbox agus an Chihiro araon; déantar an chuid eile den ghluaiseacht a scálú suas go dtí an t-uasmhéid."
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_GA "Imirt Shaor (Atosaigh)"
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_GA "Cuireann sé tús le cluichí Sega Chihiro i mód súgartha saor in aisce, gan boinn. Nuair atá sé múchta, cuireann an cnaipe 'Select' bonn isteach."
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_GA "Díriú le Gunna Solais"
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_GA "Cad iad na haidhmeanna atá i House of the Dead III, Virtua Cop 3 agus Ghost Squad? Luch: déantar díriú leis an luch (nó le gunna solais *RetroArch*); scaoileann an cnaipe clé, feidhmíonn an cnaipe deas mar chnaipe an ghunna (chun an gunna a luchtú nó airm a athrú), agus rialaíonn an cnaipe lár an peadal nó an ráta scaoilte. Bata Analógach: déantar díriú leis an mbata clé nó leis an eochaircheap treo D-pad; scaoileann *R2*, feidhmíonn *L2* mar chnaipe an ghunna, rialaíonn *L* an peadal nó an ráta scaoilte, agus scaoileann *R* lasmuigh den scáileán."
+#define OPTION_VAL_MOUSE_GA "Luch"
+#define OPTION_VAL_STICK_GA "Maide Analógach"
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_GA "Croisghléas"
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_GA "Tarraingíonn sé sprioc gach imreora thar an bpictiúr; dearg d'Imreoir 1, gorm d'Imreoir 2."
+#define XEMU_CHIHIRO_FFB_LABEL_GA "Creathadh le haiseolas fórsa"
+#define XEMU_CHIHIRO_FFB_INFO_0_GA "Cuireann sé aiseolas fórsa ó chluiche rásaíochta Chihiro (OutRun 2, Maximum Tune) ar fáil mar chreathadh ar an rialtóir i bport 1, ag an déine seo."
+#define OPTION_VAL_50_GA NULL
+#define OPTION_VAL_75_GA NULL
+#define OPTION_VAL_150_GA NULL
+#define OPTION_VAL_200_GA NULL
 
 struct retro_core_option_v2_category option_cats_ga[] = {
     {
@@ -5411,13 +11021,19 @@ struct retro_core_option_v2_category option_cats_ga[] = {
         CATEGORY_AUDIO_LABEL_GA,
         CATEGORY_AUDIO_INFO_0_GA
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_GA,
+        CATEGORY_CONTROLS_INFO_0_GA
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_GA,
+        CATEGORY_CHIHIRO_INFO_0_GA
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_ga[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_GA,
@@ -5446,6 +11062,8 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_GA,
@@ -5458,7 +11076,7 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -5475,6 +11093,38 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_GA,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_GA,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_GA,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_GA,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_GA,
         NULL,
@@ -5487,6 +11137,25 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_GA,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_GA,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_GA },
+            { "4:3",       OPTION_VAL_4_3_GA },
+            { "16:9",      OPTION_VAL_16_9_GA },
+            { "letterbox", OPTION_VAL_LETTERBOX_GA },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -5542,6 +11211,25 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_GA,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_GA,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_GA,
@@ -5556,13 +11244,29 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_GA,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_GA,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_GA,
+        XEMU_DSP_JIT_INFO_0_GA,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_GA,
+        NULL,
+        XEMU_HRTF_INFO_0_GA,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -5571,10 +11275,27 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_GA,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_GA,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_GA,
+        XEMU_VP_WORKERS_INFO_0_GA,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_GA },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_GA,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_GA,
         NULL,
         "video",
         {
@@ -5602,19 +11323,169 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_GA,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_GA,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_GA,
+        XEMU_VK_FAST_PATHS_INFO_0_GA,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_GA },
-            { "nearest", OPTION_VAL_NEAREST_GA },
+            { "all",      OPTION_VAL_ALL_GA },
+            { "no_gpl",   OPTION_VAL_NO_GPL_GA },
+            { "no_dyn",   OPTION_VAL_NO_DYN_GA },
+            { "none",     OPTION_VAL_NONE_GA },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_GA,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_GA,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_GA,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_GA,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_GA,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_GA,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_GA },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_GA },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_GA },
+            { "15", OPTION_VAL_15_GA },
+            { "20", OPTION_VAL_20_GA },
+            { "25", OPTION_VAL_25_GA },
+            { "30", OPTION_VAL_30_GA },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_GA,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_GA,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_GA },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_GA },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_GA },
+            { "15", OPTION_VAL_15_GA },
+            { "20", OPTION_VAL_20_GA },
+            { "25", OPTION_VAL_25_GA },
+            { "30", OPTION_VAL_30_GA },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_GA,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_GA,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_GA,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_GA,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_GA },
+            { "stick", OPTION_VAL_STICK_GA },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_GA,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_GA,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_GA,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_GA,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_GA },
+            { "50",  OPTION_VAL_50_GA },
+            { "75",  OPTION_VAL_75_GA },
+            { "100", OPTION_VAL_100_GA },
+            { "150", OPTION_VAL_150_GA },
+            { "200", OPTION_VAL_200_GA },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -5625,12 +11496,16 @@ struct retro_core_options_v2 options_ga = {
 
 /* RETRO_LANGUAGE_GL */
 
-#define CATEGORY_SYSTEM_LABEL_GL "Sistema"
+#define CATEGORY_SYSTEM_LABEL_GL NULL
 #define CATEGORY_SYSTEM_INFO_0_GL NULL
 #define CATEGORY_VIDEO_LABEL_GL "Vídeo"
 #define CATEGORY_VIDEO_INFO_0_GL NULL
 #define CATEGORY_AUDIO_LABEL_GL "Son"
 #define CATEGORY_AUDIO_INFO_0_GL NULL
+#define CATEGORY_CONTROLS_LABEL_GL "Controis"
+#define CATEGORY_CONTROLS_INFO_0_GL NULL
+#define CATEGORY_CHIHIRO_LABEL_GL NULL
+#define CATEGORY_CHIHIRO_INFO_0_GL NULL
 #define XEMU_MEMORY_LABEL_GL NULL
 #define XEMU_MEMORY_INFO_0_GL NULL
 #define OPTION_VAL_64_GL NULL
@@ -5642,15 +11517,23 @@ struct retro_core_options_v2 options_ga = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_GL NULL
 #define XEMU_HARD_FPU_LABEL_GL NULL
 #define XEMU_HARD_FPU_INFO_0_GL NULL
+#define XEMU_CPU_BOOST_LABEL_GL NULL
+#define XEMU_CPU_BOOST_INFO_0_GL NULL
+#define XEMU_HDD_TRIM_LABEL_GL NULL
+#define XEMU_HDD_TRIM_INFO_0_GL NULL
 #define XEMU_RENDERER_LABEL_GL NULL
 #define XEMU_RENDERER_INFO_0_GL NULL
 #define OPTION_VAL_VULKAN_GL NULL
 #define OPTION_VAL_OPENGL_GL NULL
-#define XEMU_ASPECT_RATIO_LABEL_GL "Relación de aspecto"
-#define XEMU_ASPECT_RATIO_INFO_0_GL NULL
-#define OPTION_VAL_AUTO_GL NULL
+#define XEMU_VIDEO_ASPECT_LABEL_GL NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_GL NULL
+#define OPTION_VAL_DASHBOARD_GL NULL
 #define OPTION_VAL_4_3_GL NULL
 #define OPTION_VAL_16_9_GL NULL
+#define OPTION_VAL_LETTERBOX_GL NULL
+#define XEMU_ASPECT_RATIO_LABEL_GL "Relación de aspecto do núcleo"
+#define XEMU_ASPECT_RATIO_INFO_0_GL NULL
+#define OPTION_VAL_AUTO_GL NULL
 #define XEMU_SURFACE_SCALE_LABEL_GL NULL
 #define XEMU_SURFACE_SCALE_INFO_0_GL NULL
 #define OPTION_VAL_1_GL NULL
@@ -5670,12 +11553,18 @@ struct retro_core_options_v2 options_ga = {
 #define OPTION_VAL_SVIDEO_GL NULL
 #define OPTION_VAL_SCART_GL NULL
 #define OPTION_VAL_VGA_GL NULL
+#define XEMU_AUDIO_THREAD_LABEL_GL NULL
+#define XEMU_AUDIO_THREAD_INFO_0_GL NULL
 #define XEMU_USE_DSP_LABEL_GL NULL
 #define XEMU_USE_DSP_INFO_0_GL NULL
-#define XEMU_CACHE_SHADERS_LABEL_GL NULL
-#define XEMU_CACHE_SHADERS_INFO_0_GL NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_GL NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_GL NULL
+#define XEMU_DSP_JIT_LABEL_GL NULL
+#define XEMU_DSP_JIT_INFO_0_GL NULL
+#define XEMU_HRTF_LABEL_GL NULL
+#define XEMU_HRTF_INFO_0_GL NULL
+#define XEMU_VP_WORKERS_LABEL_GL NULL
+#define XEMU_VP_WORKERS_INFO_0_GL NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_GL NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_GL NULL
 #define XEMU_AUDIO_VOLUME_LABEL_GL NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_GL NULL
 #define OPTION_VAL_100_GL NULL
@@ -5684,10 +11573,40 @@ struct retro_core_options_v2 options_ga = {
 #define OPTION_VAL_40_GL NULL
 #define OPTION_VAL_20_GL NULL
 #define OPTION_VAL_0_GL NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_GL NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_GL NULL
-#define OPTION_VAL_LINEAR_GL NULL
-#define OPTION_VAL_NEAREST_GL "Veciño máis próximo"
+#define XEMU_VK_FAST_PATHS_LABEL_GL NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_GL NULL
+#define OPTION_VAL_ALL_GL "Todo"
+#define OPTION_VAL_NO_GPL_GL NULL
+#define OPTION_VAL_NO_DYN_GL NULL
+#define OPTION_VAL_NONE_GL "Ningún"
+#define XEMU_RUMBLE_P1_LABEL_GL NULL
+#define XEMU_RUMBLE_P1_INFO_0_GL NULL
+#define XEMU_RUMBLE_P2_LABEL_GL NULL
+#define XEMU_RUMBLE_P2_INFO_0_GL NULL
+#define XEMU_DEADZONE_P1_LABEL_GL NULL
+#define XEMU_DEADZONE_P1_INFO_0_GL NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_GL NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_GL NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_GL NULL
+#define OPTION_VAL_15_GL NULL
+#define OPTION_VAL_25_GL NULL
+#define OPTION_VAL_30_GL NULL
+#define XEMU_DEADZONE_P2_LABEL_GL NULL
+#define XEMU_DEADZONE_P2_INFO_0_GL NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_GL NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_GL NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_GL NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_GL NULL
+#define OPTION_VAL_MOUSE_GL "Rato"
+#define OPTION_VAL_STICK_GL NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_GL NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_GL NULL
+#define XEMU_CHIHIRO_FFB_LABEL_GL NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_GL NULL
+#define OPTION_VAL_50_GL NULL
+#define OPTION_VAL_75_GL NULL
+#define OPTION_VAL_150_GL NULL
+#define OPTION_VAL_200_GL NULL
 
 struct retro_core_option_v2_category option_cats_gl[] = {
     {
@@ -5705,13 +11624,19 @@ struct retro_core_option_v2_category option_cats_gl[] = {
         CATEGORY_AUDIO_LABEL_GL,
         CATEGORY_AUDIO_INFO_0_GL
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_GL,
+        CATEGORY_CONTROLS_INFO_0_GL
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_GL,
+        CATEGORY_CHIHIRO_INFO_0_GL
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_gl[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_GL,
@@ -5740,6 +11665,8 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_GL,
@@ -5752,7 +11679,7 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -5769,6 +11696,38 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_GL,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_GL,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_GL,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_GL,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_GL,
         NULL,
@@ -5781,6 +11740,25 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_GL,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_GL,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_GL },
+            { "4:3",       OPTION_VAL_4_3_GL },
+            { "16:9",      OPTION_VAL_16_9_GL },
+            { "letterbox", OPTION_VAL_LETTERBOX_GL },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -5836,6 +11814,25 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_GL,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_GL,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_GL,
@@ -5850,13 +11847,29 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_GL,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_GL,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_GL,
+        XEMU_DSP_JIT_INFO_0_GL,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_GL,
+        NULL,
+        XEMU_HRTF_INFO_0_GL,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -5865,10 +11878,27 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_GL,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_GL,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_GL,
+        XEMU_VP_WORKERS_INFO_0_GL,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_GL },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_GL,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_GL,
         NULL,
         "video",
         {
@@ -5896,19 +11926,169 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_GL,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_GL,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_GL,
+        XEMU_VK_FAST_PATHS_INFO_0_GL,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_GL },
-            { "nearest", OPTION_VAL_NEAREST_GL },
+            { "all",      OPTION_VAL_ALL_GL },
+            { "no_gpl",   OPTION_VAL_NO_GPL_GL },
+            { "no_dyn",   OPTION_VAL_NO_DYN_GL },
+            { "none",     OPTION_VAL_NONE_GL },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_GL,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_GL,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_GL,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_GL,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_GL,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_GL,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_GL },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_GL },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_GL },
+            { "15", OPTION_VAL_15_GL },
+            { "20", OPTION_VAL_20_GL },
+            { "25", OPTION_VAL_25_GL },
+            { "30", OPTION_VAL_30_GL },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_GL,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_GL,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_GL },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_GL },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_GL },
+            { "15", OPTION_VAL_15_GL },
+            { "20", OPTION_VAL_20_GL },
+            { "25", OPTION_VAL_25_GL },
+            { "30", OPTION_VAL_30_GL },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_GL,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_GL,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_GL,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_GL,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_GL },
+            { "stick", OPTION_VAL_STICK_GL },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_GL,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_GL,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_GL,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_GL,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_GL },
+            { "50",  OPTION_VAL_50_GL },
+            { "75",  OPTION_VAL_75_GL },
+            { "100", OPTION_VAL_100_GL },
+            { "150", OPTION_VAL_150_GL },
+            { "200", OPTION_VAL_200_GL },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -5925,6 +12105,10 @@ struct retro_core_options_v2 options_gl = {
 #define CATEGORY_VIDEO_INFO_0_HE NULL
 #define CATEGORY_AUDIO_LABEL_HE "שמע"
 #define CATEGORY_AUDIO_INFO_0_HE NULL
+#define CATEGORY_CONTROLS_LABEL_HE NULL
+#define CATEGORY_CONTROLS_INFO_0_HE NULL
+#define CATEGORY_CHIHIRO_LABEL_HE NULL
+#define CATEGORY_CHIHIRO_INFO_0_HE NULL
 #define XEMU_MEMORY_LABEL_HE NULL
 #define XEMU_MEMORY_INFO_0_HE NULL
 #define OPTION_VAL_64_HE NULL
@@ -5936,15 +12120,23 @@ struct retro_core_options_v2 options_gl = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_HE NULL
 #define XEMU_HARD_FPU_LABEL_HE NULL
 #define XEMU_HARD_FPU_INFO_0_HE NULL
+#define XEMU_CPU_BOOST_LABEL_HE NULL
+#define XEMU_CPU_BOOST_INFO_0_HE NULL
+#define XEMU_HDD_TRIM_LABEL_HE NULL
+#define XEMU_HDD_TRIM_INFO_0_HE NULL
 #define XEMU_RENDERER_LABEL_HE NULL
 #define XEMU_RENDERER_INFO_0_HE NULL
 #define OPTION_VAL_VULKAN_HE NULL
 #define OPTION_VAL_OPENGL_HE NULL
-#define XEMU_ASPECT_RATIO_LABEL_HE "יחס גובה-רוחב"
-#define XEMU_ASPECT_RATIO_INFO_0_HE NULL
-#define OPTION_VAL_AUTO_HE NULL
+#define XEMU_VIDEO_ASPECT_LABEL_HE NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_HE NULL
+#define OPTION_VAL_DASHBOARD_HE NULL
 #define OPTION_VAL_4_3_HE NULL
 #define OPTION_VAL_16_9_HE NULL
+#define OPTION_VAL_LETTERBOX_HE NULL
+#define XEMU_ASPECT_RATIO_LABEL_HE NULL
+#define XEMU_ASPECT_RATIO_INFO_0_HE NULL
+#define OPTION_VAL_AUTO_HE NULL
 #define XEMU_SURFACE_SCALE_LABEL_HE NULL
 #define XEMU_SURFACE_SCALE_INFO_0_HE NULL
 #define OPTION_VAL_1_HE NULL
@@ -5964,12 +12156,18 @@ struct retro_core_options_v2 options_gl = {
 #define OPTION_VAL_SVIDEO_HE NULL
 #define OPTION_VAL_SCART_HE NULL
 #define OPTION_VAL_VGA_HE NULL
+#define XEMU_AUDIO_THREAD_LABEL_HE NULL
+#define XEMU_AUDIO_THREAD_INFO_0_HE NULL
 #define XEMU_USE_DSP_LABEL_HE NULL
 #define XEMU_USE_DSP_INFO_0_HE NULL
-#define XEMU_CACHE_SHADERS_LABEL_HE NULL
-#define XEMU_CACHE_SHADERS_INFO_0_HE NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_HE NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_HE NULL
+#define XEMU_DSP_JIT_LABEL_HE NULL
+#define XEMU_DSP_JIT_INFO_0_HE NULL
+#define XEMU_HRTF_LABEL_HE NULL
+#define XEMU_HRTF_INFO_0_HE NULL
+#define XEMU_VP_WORKERS_LABEL_HE NULL
+#define XEMU_VP_WORKERS_INFO_0_HE NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_HE NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_HE NULL
 #define XEMU_AUDIO_VOLUME_LABEL_HE NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_HE NULL
 #define OPTION_VAL_100_HE NULL
@@ -5978,10 +12176,40 @@ struct retro_core_options_v2 options_gl = {
 #define OPTION_VAL_40_HE NULL
 #define OPTION_VAL_20_HE NULL
 #define OPTION_VAL_0_HE NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_HE NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_HE NULL
-#define OPTION_VAL_LINEAR_HE NULL
-#define OPTION_VAL_NEAREST_HE NULL
+#define XEMU_VK_FAST_PATHS_LABEL_HE NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_HE NULL
+#define OPTION_VAL_ALL_HE NULL
+#define OPTION_VAL_NO_GPL_HE NULL
+#define OPTION_VAL_NO_DYN_HE NULL
+#define OPTION_VAL_NONE_HE NULL
+#define XEMU_RUMBLE_P1_LABEL_HE NULL
+#define XEMU_RUMBLE_P1_INFO_0_HE NULL
+#define XEMU_RUMBLE_P2_LABEL_HE NULL
+#define XEMU_RUMBLE_P2_INFO_0_HE NULL
+#define XEMU_DEADZONE_P1_LABEL_HE NULL
+#define XEMU_DEADZONE_P1_INFO_0_HE NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_HE NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_HE NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_HE NULL
+#define OPTION_VAL_15_HE NULL
+#define OPTION_VAL_25_HE NULL
+#define OPTION_VAL_30_HE NULL
+#define XEMU_DEADZONE_P2_LABEL_HE NULL
+#define XEMU_DEADZONE_P2_INFO_0_HE NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_HE NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_HE NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_HE NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_HE NULL
+#define OPTION_VAL_MOUSE_HE NULL
+#define OPTION_VAL_STICK_HE NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_HE NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_HE NULL
+#define XEMU_CHIHIRO_FFB_LABEL_HE NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_HE NULL
+#define OPTION_VAL_50_HE NULL
+#define OPTION_VAL_75_HE NULL
+#define OPTION_VAL_150_HE NULL
+#define OPTION_VAL_200_HE NULL
 
 struct retro_core_option_v2_category option_cats_he[] = {
     {
@@ -5999,13 +12227,19 @@ struct retro_core_option_v2_category option_cats_he[] = {
         CATEGORY_AUDIO_LABEL_HE,
         CATEGORY_AUDIO_INFO_0_HE
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_HE,
+        CATEGORY_CONTROLS_INFO_0_HE
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_HE,
+        CATEGORY_CHIHIRO_INFO_0_HE
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_he[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_HE,
@@ -6034,6 +12268,8 @@ struct retro_core_option_v2_definition option_defs_he[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_HE,
@@ -6046,7 +12282,7 @@ struct retro_core_option_v2_definition option_defs_he[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -6063,6 +12299,38 @@ struct retro_core_option_v2_definition option_defs_he[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_HE,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_HE,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_HE,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_HE,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_HE,
         NULL,
@@ -6075,6 +12343,25 @@ struct retro_core_option_v2_definition option_defs_he[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_HE,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_HE,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_HE },
+            { "4:3",       OPTION_VAL_4_3_HE },
+            { "16:9",      OPTION_VAL_16_9_HE },
+            { "letterbox", OPTION_VAL_LETTERBOX_HE },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -6130,6 +12417,25 @@ struct retro_core_option_v2_definition option_defs_he[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_HE,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_HE,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_HE,
@@ -6144,13 +12450,29 @@ struct retro_core_option_v2_definition option_defs_he[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_HE,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_HE,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_HE,
+        XEMU_DSP_JIT_INFO_0_HE,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_HE,
+        NULL,
+        XEMU_HRTF_INFO_0_HE,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -6159,10 +12481,27 @@ struct retro_core_option_v2_definition option_defs_he[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_HE,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_HE,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_HE,
+        XEMU_VP_WORKERS_INFO_0_HE,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_HE },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_HE,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_HE,
         NULL,
         "video",
         {
@@ -6190,19 +12529,169 @@ struct retro_core_option_v2_definition option_defs_he[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_HE,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_HE,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_HE,
+        XEMU_VK_FAST_PATHS_INFO_0_HE,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_HE },
-            { "nearest", OPTION_VAL_NEAREST_HE },
+            { "all",      OPTION_VAL_ALL_HE },
+            { "no_gpl",   OPTION_VAL_NO_GPL_HE },
+            { "no_dyn",   OPTION_VAL_NO_DYN_HE },
+            { "none",     OPTION_VAL_NONE_HE },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_HE,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_HE,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_HE,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_HE,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_HE,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_HE,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_HE },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_HE },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_HE },
+            { "15", OPTION_VAL_15_HE },
+            { "20", OPTION_VAL_20_HE },
+            { "25", OPTION_VAL_25_HE },
+            { "30", OPTION_VAL_30_HE },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_HE,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_HE,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_HE },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_HE },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_HE },
+            { "15", OPTION_VAL_15_HE },
+            { "20", OPTION_VAL_20_HE },
+            { "25", OPTION_VAL_25_HE },
+            { "30", OPTION_VAL_30_HE },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_HE,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_HE,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_HE,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_HE,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_HE },
+            { "stick", OPTION_VAL_STICK_HE },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_HE,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_HE,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_HE,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_HE,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_HE },
+            { "50",  OPTION_VAL_50_HE },
+            { "75",  OPTION_VAL_75_HE },
+            { "100", OPTION_VAL_100_HE },
+            { "150", OPTION_VAL_150_HE },
+            { "200", OPTION_VAL_200_HE },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -6213,12 +12702,16 @@ struct retro_core_options_v2 options_he = {
 
 /* RETRO_LANGUAGE_HR */
 
-#define CATEGORY_SYSTEM_LABEL_HR "Sustav"
+#define CATEGORY_SYSTEM_LABEL_HR NULL
 #define CATEGORY_SYSTEM_INFO_0_HR NULL
 #define CATEGORY_VIDEO_LABEL_HR NULL
 #define CATEGORY_VIDEO_INFO_0_HR NULL
 #define CATEGORY_AUDIO_LABEL_HR "Zvuk"
 #define CATEGORY_AUDIO_INFO_0_HR NULL
+#define CATEGORY_CONTROLS_LABEL_HR NULL
+#define CATEGORY_CONTROLS_INFO_0_HR NULL
+#define CATEGORY_CHIHIRO_LABEL_HR NULL
+#define CATEGORY_CHIHIRO_INFO_0_HR NULL
 #define XEMU_MEMORY_LABEL_HR NULL
 #define XEMU_MEMORY_INFO_0_HR NULL
 #define OPTION_VAL_64_HR NULL
@@ -6230,15 +12723,23 @@ struct retro_core_options_v2 options_he = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_HR NULL
 #define XEMU_HARD_FPU_LABEL_HR NULL
 #define XEMU_HARD_FPU_INFO_0_HR NULL
+#define XEMU_CPU_BOOST_LABEL_HR NULL
+#define XEMU_CPU_BOOST_INFO_0_HR NULL
+#define XEMU_HDD_TRIM_LABEL_HR NULL
+#define XEMU_HDD_TRIM_INFO_0_HR NULL
 #define XEMU_RENDERER_LABEL_HR NULL
 #define XEMU_RENDERER_INFO_0_HR NULL
 #define OPTION_VAL_VULKAN_HR NULL
 #define OPTION_VAL_OPENGL_HR NULL
-#define XEMU_ASPECT_RATIO_LABEL_HR "Omjer slike"
-#define XEMU_ASPECT_RATIO_INFO_0_HR NULL
-#define OPTION_VAL_AUTO_HR NULL
+#define XEMU_VIDEO_ASPECT_LABEL_HR NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_HR NULL
+#define OPTION_VAL_DASHBOARD_HR NULL
 #define OPTION_VAL_4_3_HR NULL
 #define OPTION_VAL_16_9_HR NULL
+#define OPTION_VAL_LETTERBOX_HR NULL
+#define XEMU_ASPECT_RATIO_LABEL_HR NULL
+#define XEMU_ASPECT_RATIO_INFO_0_HR NULL
+#define OPTION_VAL_AUTO_HR NULL
 #define XEMU_SURFACE_SCALE_LABEL_HR NULL
 #define XEMU_SURFACE_SCALE_INFO_0_HR NULL
 #define OPTION_VAL_1_HR NULL
@@ -6258,12 +12759,18 @@ struct retro_core_options_v2 options_he = {
 #define OPTION_VAL_SVIDEO_HR NULL
 #define OPTION_VAL_SCART_HR NULL
 #define OPTION_VAL_VGA_HR NULL
+#define XEMU_AUDIO_THREAD_LABEL_HR NULL
+#define XEMU_AUDIO_THREAD_INFO_0_HR NULL
 #define XEMU_USE_DSP_LABEL_HR NULL
 #define XEMU_USE_DSP_INFO_0_HR NULL
-#define XEMU_CACHE_SHADERS_LABEL_HR NULL
-#define XEMU_CACHE_SHADERS_INFO_0_HR NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_HR NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_HR NULL
+#define XEMU_DSP_JIT_LABEL_HR NULL
+#define XEMU_DSP_JIT_INFO_0_HR NULL
+#define XEMU_HRTF_LABEL_HR NULL
+#define XEMU_HRTF_INFO_0_HR NULL
+#define XEMU_VP_WORKERS_LABEL_HR NULL
+#define XEMU_VP_WORKERS_INFO_0_HR NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_HR NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_HR NULL
 #define XEMU_AUDIO_VOLUME_LABEL_HR NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_HR NULL
 #define OPTION_VAL_100_HR NULL
@@ -6272,10 +12779,40 @@ struct retro_core_options_v2 options_he = {
 #define OPTION_VAL_40_HR NULL
 #define OPTION_VAL_20_HR NULL
 #define OPTION_VAL_0_HR NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_HR NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_HR NULL
-#define OPTION_VAL_LINEAR_HR NULL
-#define OPTION_VAL_NEAREST_HR NULL
+#define XEMU_VK_FAST_PATHS_LABEL_HR NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_HR NULL
+#define OPTION_VAL_ALL_HR NULL
+#define OPTION_VAL_NO_GPL_HR NULL
+#define OPTION_VAL_NO_DYN_HR NULL
+#define OPTION_VAL_NONE_HR "Ništa"
+#define XEMU_RUMBLE_P1_LABEL_HR NULL
+#define XEMU_RUMBLE_P1_INFO_0_HR NULL
+#define XEMU_RUMBLE_P2_LABEL_HR NULL
+#define XEMU_RUMBLE_P2_INFO_0_HR NULL
+#define XEMU_DEADZONE_P1_LABEL_HR NULL
+#define XEMU_DEADZONE_P1_INFO_0_HR NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_HR NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_HR NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_HR NULL
+#define OPTION_VAL_15_HR NULL
+#define OPTION_VAL_25_HR NULL
+#define OPTION_VAL_30_HR NULL
+#define XEMU_DEADZONE_P2_LABEL_HR NULL
+#define XEMU_DEADZONE_P2_INFO_0_HR NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_HR NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_HR NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_HR NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_HR NULL
+#define OPTION_VAL_MOUSE_HR "Miš"
+#define OPTION_VAL_STICK_HR NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_HR NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_HR NULL
+#define XEMU_CHIHIRO_FFB_LABEL_HR NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_HR NULL
+#define OPTION_VAL_50_HR NULL
+#define OPTION_VAL_75_HR NULL
+#define OPTION_VAL_150_HR NULL
+#define OPTION_VAL_200_HR NULL
 
 struct retro_core_option_v2_category option_cats_hr[] = {
     {
@@ -6293,13 +12830,19 @@ struct retro_core_option_v2_category option_cats_hr[] = {
         CATEGORY_AUDIO_LABEL_HR,
         CATEGORY_AUDIO_INFO_0_HR
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_HR,
+        CATEGORY_CONTROLS_INFO_0_HR
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_HR,
+        CATEGORY_CHIHIRO_INFO_0_HR
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_hr[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_HR,
@@ -6328,6 +12871,8 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_HR,
@@ -6340,7 +12885,7 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -6357,6 +12902,38 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_HR,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_HR,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_HR,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_HR,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_HR,
         NULL,
@@ -6369,6 +12946,25 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_HR,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_HR,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_HR },
+            { "4:3",       OPTION_VAL_4_3_HR },
+            { "16:9",      OPTION_VAL_16_9_HR },
+            { "letterbox", OPTION_VAL_LETTERBOX_HR },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -6424,6 +13020,25 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_HR,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_HR,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_HR,
@@ -6438,13 +13053,29 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_HR,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_HR,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_HR,
+        XEMU_DSP_JIT_INFO_0_HR,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_HR,
+        NULL,
+        XEMU_HRTF_INFO_0_HR,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -6453,10 +13084,27 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_HR,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_HR,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_HR,
+        XEMU_VP_WORKERS_INFO_0_HR,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_HR },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_HR,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_HR,
         NULL,
         "video",
         {
@@ -6484,19 +13132,169 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_HR,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_HR,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_HR,
+        XEMU_VK_FAST_PATHS_INFO_0_HR,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_HR },
-            { "nearest", OPTION_VAL_NEAREST_HR },
+            { "all",      OPTION_VAL_ALL_HR },
+            { "no_gpl",   OPTION_VAL_NO_GPL_HR },
+            { "no_dyn",   OPTION_VAL_NO_DYN_HR },
+            { "none",     OPTION_VAL_NONE_HR },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_HR,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_HR,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_HR,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_HR,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_HR,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_HR,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_HR },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_HR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_HR },
+            { "15", OPTION_VAL_15_HR },
+            { "20", OPTION_VAL_20_HR },
+            { "25", OPTION_VAL_25_HR },
+            { "30", OPTION_VAL_30_HR },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_HR,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_HR,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_HR },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_HR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_HR },
+            { "15", OPTION_VAL_15_HR },
+            { "20", OPTION_VAL_20_HR },
+            { "25", OPTION_VAL_25_HR },
+            { "30", OPTION_VAL_30_HR },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_HR,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_HR,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_HR,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_HR,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_HR },
+            { "stick", OPTION_VAL_STICK_HR },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_HR,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_HR,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_HR,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_HR,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_HR },
+            { "50",  OPTION_VAL_50_HR },
+            { "75",  OPTION_VAL_75_HR },
+            { "100", OPTION_VAL_100_HR },
+            { "150", OPTION_VAL_150_HR },
+            { "200", OPTION_VAL_200_HR },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -6507,12 +13305,16 @@ struct retro_core_options_v2 options_hr = {
 
 /* RETRO_LANGUAGE_HU */
 
-#define CATEGORY_SYSTEM_LABEL_HU "Rendszer"
+#define CATEGORY_SYSTEM_LABEL_HU NULL
 #define CATEGORY_SYSTEM_INFO_0_HU NULL
 #define CATEGORY_VIDEO_LABEL_HU "Kép"
 #define CATEGORY_VIDEO_INFO_0_HU NULL
 #define CATEGORY_AUDIO_LABEL_HU "Hang"
 #define CATEGORY_AUDIO_INFO_0_HU NULL
+#define CATEGORY_CONTROLS_LABEL_HU "Irányítás"
+#define CATEGORY_CONTROLS_INFO_0_HU NULL
+#define CATEGORY_CHIHIRO_LABEL_HU NULL
+#define CATEGORY_CHIHIRO_INFO_0_HU NULL
 #define XEMU_MEMORY_LABEL_HU NULL
 #define XEMU_MEMORY_INFO_0_HU NULL
 #define OPTION_VAL_64_HU NULL
@@ -6524,15 +13326,23 @@ struct retro_core_options_v2 options_hr = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_HU NULL
 #define XEMU_HARD_FPU_LABEL_HU NULL
 #define XEMU_HARD_FPU_INFO_0_HU NULL
+#define XEMU_CPU_BOOST_LABEL_HU NULL
+#define XEMU_CPU_BOOST_INFO_0_HU NULL
+#define XEMU_HDD_TRIM_LABEL_HU NULL
+#define XEMU_HDD_TRIM_INFO_0_HU NULL
 #define XEMU_RENDERER_LABEL_HU NULL
 #define XEMU_RENDERER_INFO_0_HU NULL
 #define OPTION_VAL_VULKAN_HU NULL
 #define OPTION_VAL_OPENGL_HU NULL
-#define XEMU_ASPECT_RATIO_LABEL_HU "Képarány"
-#define XEMU_ASPECT_RATIO_INFO_0_HU NULL
-#define OPTION_VAL_AUTO_HU "Automatikus"
+#define XEMU_VIDEO_ASPECT_LABEL_HU NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_HU NULL
+#define OPTION_VAL_DASHBOARD_HU NULL
 #define OPTION_VAL_4_3_HU NULL
 #define OPTION_VAL_16_9_HU NULL
+#define OPTION_VAL_LETTERBOX_HU NULL
+#define XEMU_ASPECT_RATIO_LABEL_HU "A mag képaránya"
+#define XEMU_ASPECT_RATIO_INFO_0_HU NULL
+#define OPTION_VAL_AUTO_HU "Automatikus"
 #define XEMU_SURFACE_SCALE_LABEL_HU NULL
 #define XEMU_SURFACE_SCALE_INFO_0_HU NULL
 #define OPTION_VAL_1_HU NULL
@@ -6552,12 +13362,18 @@ struct retro_core_options_v2 options_hr = {
 #define OPTION_VAL_SVIDEO_HU NULL
 #define OPTION_VAL_SCART_HU NULL
 #define OPTION_VAL_VGA_HU NULL
+#define XEMU_AUDIO_THREAD_LABEL_HU NULL
+#define XEMU_AUDIO_THREAD_INFO_0_HU NULL
 #define XEMU_USE_DSP_LABEL_HU NULL
 #define XEMU_USE_DSP_INFO_0_HU NULL
-#define XEMU_CACHE_SHADERS_LABEL_HU NULL
-#define XEMU_CACHE_SHADERS_INFO_0_HU NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_HU NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_HU NULL
+#define XEMU_DSP_JIT_LABEL_HU NULL
+#define XEMU_DSP_JIT_INFO_0_HU NULL
+#define XEMU_HRTF_LABEL_HU NULL
+#define XEMU_HRTF_INFO_0_HU NULL
+#define XEMU_VP_WORKERS_LABEL_HU NULL
+#define XEMU_VP_WORKERS_INFO_0_HU NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_HU NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_HU NULL
 #define XEMU_AUDIO_VOLUME_LABEL_HU NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_HU NULL
 #define OPTION_VAL_100_HU NULL
@@ -6566,10 +13382,40 @@ struct retro_core_options_v2 options_hr = {
 #define OPTION_VAL_40_HU NULL
 #define OPTION_VAL_20_HU NULL
 #define OPTION_VAL_0_HU NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_HU NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_HU NULL
-#define OPTION_VAL_LINEAR_HU "Bilineáris"
-#define OPTION_VAL_NEAREST_HU "Legközelebbi szomszéd"
+#define XEMU_VK_FAST_PATHS_LABEL_HU NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_HU NULL
+#define OPTION_VAL_ALL_HU "Összes"
+#define OPTION_VAL_NO_GPL_HU NULL
+#define OPTION_VAL_NO_DYN_HU NULL
+#define OPTION_VAL_NONE_HU "Nincs"
+#define XEMU_RUMBLE_P1_LABEL_HU NULL
+#define XEMU_RUMBLE_P1_INFO_0_HU NULL
+#define XEMU_RUMBLE_P2_LABEL_HU NULL
+#define XEMU_RUMBLE_P2_INFO_0_HU NULL
+#define XEMU_DEADZONE_P1_LABEL_HU NULL
+#define XEMU_DEADZONE_P1_INFO_0_HU NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_HU NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_HU NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_HU NULL
+#define OPTION_VAL_15_HU NULL
+#define OPTION_VAL_25_HU NULL
+#define OPTION_VAL_30_HU NULL
+#define XEMU_DEADZONE_P2_LABEL_HU NULL
+#define XEMU_DEADZONE_P2_INFO_0_HU NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_HU NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_HU NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_HU NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_HU NULL
+#define OPTION_VAL_MOUSE_HU "Egér"
+#define OPTION_VAL_STICK_HU NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_HU NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_HU NULL
+#define XEMU_CHIHIRO_FFB_LABEL_HU NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_HU NULL
+#define OPTION_VAL_50_HU NULL
+#define OPTION_VAL_75_HU NULL
+#define OPTION_VAL_150_HU NULL
+#define OPTION_VAL_200_HU NULL
 
 struct retro_core_option_v2_category option_cats_hu[] = {
     {
@@ -6587,13 +13433,19 @@ struct retro_core_option_v2_category option_cats_hu[] = {
         CATEGORY_AUDIO_LABEL_HU,
         CATEGORY_AUDIO_INFO_0_HU
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_HU,
+        CATEGORY_CONTROLS_INFO_0_HU
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_HU,
+        CATEGORY_CHIHIRO_INFO_0_HU
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_hu[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_HU,
@@ -6622,6 +13474,8 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_HU,
@@ -6634,7 +13488,7 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -6651,6 +13505,38 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_HU,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_HU,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_HU,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_HU,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_HU,
         NULL,
@@ -6663,6 +13549,25 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_HU,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_HU,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_HU },
+            { "4:3",       OPTION_VAL_4_3_HU },
+            { "16:9",      OPTION_VAL_16_9_HU },
+            { "letterbox", OPTION_VAL_LETTERBOX_HU },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -6718,6 +13623,25 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_HU,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_HU,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_HU,
@@ -6732,13 +13656,29 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_HU,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_HU,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_HU,
+        XEMU_DSP_JIT_INFO_0_HU,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_HU,
+        NULL,
+        XEMU_HRTF_INFO_0_HU,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -6747,10 +13687,27 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_HU,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_HU,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_HU,
+        XEMU_VP_WORKERS_INFO_0_HU,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_HU },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_HU,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_HU,
         NULL,
         "video",
         {
@@ -6778,19 +13735,169 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_HU,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_HU,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_HU,
+        XEMU_VK_FAST_PATHS_INFO_0_HU,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_HU },
-            { "nearest", OPTION_VAL_NEAREST_HU },
+            { "all",      OPTION_VAL_ALL_HU },
+            { "no_gpl",   OPTION_VAL_NO_GPL_HU },
+            { "no_dyn",   OPTION_VAL_NO_DYN_HU },
+            { "none",     OPTION_VAL_NONE_HU },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_HU,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_HU,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_HU,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_HU,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_HU,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_HU,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_HU },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_HU },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_HU },
+            { "15", OPTION_VAL_15_HU },
+            { "20", OPTION_VAL_20_HU },
+            { "25", OPTION_VAL_25_HU },
+            { "30", OPTION_VAL_30_HU },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_HU,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_HU,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_HU },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_HU },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_HU },
+            { "15", OPTION_VAL_15_HU },
+            { "20", OPTION_VAL_20_HU },
+            { "25", OPTION_VAL_25_HU },
+            { "30", OPTION_VAL_30_HU },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_HU,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_HU,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_HU,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_HU,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_HU },
+            { "stick", OPTION_VAL_STICK_HU },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_HU,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_HU,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_HU,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_HU,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_HU },
+            { "50",  OPTION_VAL_50_HU },
+            { "75",  OPTION_VAL_75_HU },
+            { "100", OPTION_VAL_100_HU },
+            { "150", OPTION_VAL_150_HU },
+            { "200", OPTION_VAL_200_HU },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -6801,12 +13908,16 @@ struct retro_core_options_v2 options_hu = {
 
 /* RETRO_LANGUAGE_ID */
 
-#define CATEGORY_SYSTEM_LABEL_ID "Sistem"
+#define CATEGORY_SYSTEM_LABEL_ID NULL
 #define CATEGORY_SYSTEM_INFO_0_ID NULL
 #define CATEGORY_VIDEO_LABEL_ID NULL
 #define CATEGORY_VIDEO_INFO_0_ID NULL
 #define CATEGORY_AUDIO_LABEL_ID "Suara"
 #define CATEGORY_AUDIO_INFO_0_ID NULL
+#define CATEGORY_CONTROLS_LABEL_ID "Tombol Kendali"
+#define CATEGORY_CONTROLS_INFO_0_ID NULL
+#define CATEGORY_CHIHIRO_LABEL_ID NULL
+#define CATEGORY_CHIHIRO_INFO_0_ID NULL
 #define XEMU_MEMORY_LABEL_ID NULL
 #define XEMU_MEMORY_INFO_0_ID NULL
 #define OPTION_VAL_64_ID NULL
@@ -6818,15 +13929,23 @@ struct retro_core_options_v2 options_hu = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_ID NULL
 #define XEMU_HARD_FPU_LABEL_ID NULL
 #define XEMU_HARD_FPU_INFO_0_ID NULL
+#define XEMU_CPU_BOOST_LABEL_ID NULL
+#define XEMU_CPU_BOOST_INFO_0_ID NULL
+#define XEMU_HDD_TRIM_LABEL_ID NULL
+#define XEMU_HDD_TRIM_INFO_0_ID NULL
 #define XEMU_RENDERER_LABEL_ID NULL
 #define XEMU_RENDERER_INFO_0_ID NULL
 #define OPTION_VAL_VULKAN_ID NULL
 #define OPTION_VAL_OPENGL_ID NULL
-#define XEMU_ASPECT_RATIO_LABEL_ID "Rasio Aspek"
-#define XEMU_ASPECT_RATIO_INFO_0_ID NULL
-#define OPTION_VAL_AUTO_ID "Otomatis"
+#define XEMU_VIDEO_ASPECT_LABEL_ID NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_ID NULL
+#define OPTION_VAL_DASHBOARD_ID NULL
 #define OPTION_VAL_4_3_ID NULL
 #define OPTION_VAL_16_9_ID NULL
+#define OPTION_VAL_LETTERBOX_ID NULL
+#define XEMU_ASPECT_RATIO_LABEL_ID NULL
+#define XEMU_ASPECT_RATIO_INFO_0_ID NULL
+#define OPTION_VAL_AUTO_ID "Otomatis"
 #define XEMU_SURFACE_SCALE_LABEL_ID NULL
 #define XEMU_SURFACE_SCALE_INFO_0_ID NULL
 #define OPTION_VAL_1_ID NULL
@@ -6846,12 +13965,18 @@ struct retro_core_options_v2 options_hu = {
 #define OPTION_VAL_SVIDEO_ID NULL
 #define OPTION_VAL_SCART_ID NULL
 #define OPTION_VAL_VGA_ID NULL
+#define XEMU_AUDIO_THREAD_LABEL_ID NULL
+#define XEMU_AUDIO_THREAD_INFO_0_ID NULL
 #define XEMU_USE_DSP_LABEL_ID NULL
 #define XEMU_USE_DSP_INFO_0_ID NULL
-#define XEMU_CACHE_SHADERS_LABEL_ID NULL
-#define XEMU_CACHE_SHADERS_INFO_0_ID NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_ID NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_ID NULL
+#define XEMU_DSP_JIT_LABEL_ID NULL
+#define XEMU_DSP_JIT_INFO_0_ID NULL
+#define XEMU_HRTF_LABEL_ID NULL
+#define XEMU_HRTF_INFO_0_ID NULL
+#define XEMU_VP_WORKERS_LABEL_ID NULL
+#define XEMU_VP_WORKERS_INFO_0_ID NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_ID NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_ID NULL
 #define XEMU_AUDIO_VOLUME_LABEL_ID NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_ID NULL
 #define OPTION_VAL_100_ID NULL
@@ -6860,10 +13985,40 @@ struct retro_core_options_v2 options_hu = {
 #define OPTION_VAL_40_ID NULL
 #define OPTION_VAL_20_ID NULL
 #define OPTION_VAL_0_ID NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_ID NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_ID NULL
-#define OPTION_VAL_LINEAR_ID NULL
-#define OPTION_VAL_NEAREST_ID NULL
+#define XEMU_VK_FAST_PATHS_LABEL_ID NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_ID NULL
+#define OPTION_VAL_ALL_ID NULL
+#define OPTION_VAL_NO_GPL_ID NULL
+#define OPTION_VAL_NO_DYN_ID NULL
+#define OPTION_VAL_NONE_ID "Tak ada"
+#define XEMU_RUMBLE_P1_LABEL_ID NULL
+#define XEMU_RUMBLE_P1_INFO_0_ID NULL
+#define XEMU_RUMBLE_P2_LABEL_ID NULL
+#define XEMU_RUMBLE_P2_INFO_0_ID NULL
+#define XEMU_DEADZONE_P1_LABEL_ID NULL
+#define XEMU_DEADZONE_P1_INFO_0_ID NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_ID NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_ID NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_ID NULL
+#define OPTION_VAL_15_ID NULL
+#define OPTION_VAL_25_ID NULL
+#define OPTION_VAL_30_ID NULL
+#define XEMU_DEADZONE_P2_LABEL_ID NULL
+#define XEMU_DEADZONE_P2_INFO_0_ID NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_ID NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_ID NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_ID NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_ID NULL
+#define OPTION_VAL_MOUSE_ID NULL
+#define OPTION_VAL_STICK_ID NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_ID NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_ID NULL
+#define XEMU_CHIHIRO_FFB_LABEL_ID NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_ID NULL
+#define OPTION_VAL_50_ID NULL
+#define OPTION_VAL_75_ID NULL
+#define OPTION_VAL_150_ID NULL
+#define OPTION_VAL_200_ID NULL
 
 struct retro_core_option_v2_category option_cats_id[] = {
     {
@@ -6881,13 +14036,19 @@ struct retro_core_option_v2_category option_cats_id[] = {
         CATEGORY_AUDIO_LABEL_ID,
         CATEGORY_AUDIO_INFO_0_ID
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_ID,
+        CATEGORY_CONTROLS_INFO_0_ID
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_ID,
+        CATEGORY_CHIHIRO_INFO_0_ID
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_id[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_ID,
@@ -6916,6 +14077,8 @@ struct retro_core_option_v2_definition option_defs_id[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_ID,
@@ -6928,7 +14091,7 @@ struct retro_core_option_v2_definition option_defs_id[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -6945,6 +14108,38 @@ struct retro_core_option_v2_definition option_defs_id[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_ID,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_ID,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_ID,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_ID,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_ID,
         NULL,
@@ -6957,6 +14152,25 @@ struct retro_core_option_v2_definition option_defs_id[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_ID,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_ID,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_ID },
+            { "4:3",       OPTION_VAL_4_3_ID },
+            { "16:9",      OPTION_VAL_16_9_ID },
+            { "letterbox", OPTION_VAL_LETTERBOX_ID },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -7012,6 +14226,25 @@ struct retro_core_option_v2_definition option_defs_id[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_ID,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_ID,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_ID,
@@ -7026,13 +14259,29 @@ struct retro_core_option_v2_definition option_defs_id[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_ID,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_ID,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_ID,
+        XEMU_DSP_JIT_INFO_0_ID,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_ID,
+        NULL,
+        XEMU_HRTF_INFO_0_ID,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -7041,10 +14290,27 @@ struct retro_core_option_v2_definition option_defs_id[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_ID,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_ID,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_ID,
+        XEMU_VP_WORKERS_INFO_0_ID,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_ID },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_ID,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_ID,
         NULL,
         "video",
         {
@@ -7072,19 +14338,169 @@ struct retro_core_option_v2_definition option_defs_id[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_ID,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_ID,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_ID,
+        XEMU_VK_FAST_PATHS_INFO_0_ID,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_ID },
-            { "nearest", OPTION_VAL_NEAREST_ID },
+            { "all",      OPTION_VAL_ALL_ID },
+            { "no_gpl",   OPTION_VAL_NO_GPL_ID },
+            { "no_dyn",   OPTION_VAL_NO_DYN_ID },
+            { "none",     OPTION_VAL_NONE_ID },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_ID,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_ID,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_ID,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_ID,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_ID,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_ID,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_ID },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_ID },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_ID },
+            { "15", OPTION_VAL_15_ID },
+            { "20", OPTION_VAL_20_ID },
+            { "25", OPTION_VAL_25_ID },
+            { "30", OPTION_VAL_30_ID },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_ID,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_ID,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_ID },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_ID },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_ID },
+            { "15", OPTION_VAL_15_ID },
+            { "20", OPTION_VAL_20_ID },
+            { "25", OPTION_VAL_25_ID },
+            { "30", OPTION_VAL_30_ID },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_ID,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_ID,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_ID,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_ID,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_ID },
+            { "stick", OPTION_VAL_STICK_ID },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_ID,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_ID,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_ID,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_ID,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_ID },
+            { "50",  OPTION_VAL_50_ID },
+            { "75",  OPTION_VAL_75_ID },
+            { "100", OPTION_VAL_100_ID },
+            { "150", OPTION_VAL_150_ID },
+            { "200", OPTION_VAL_200_ID },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -7095,12 +14511,16 @@ struct retro_core_options_v2 options_id = {
 
 /* RETRO_LANGUAGE_IT */
 
-#define CATEGORY_SYSTEM_LABEL_IT "Sistema"
+#define CATEGORY_SYSTEM_LABEL_IT NULL
 #define CATEGORY_SYSTEM_INFO_0_IT NULL
 #define CATEGORY_VIDEO_LABEL_IT NULL
 #define CATEGORY_VIDEO_INFO_0_IT NULL
 #define CATEGORY_AUDIO_LABEL_IT NULL
 #define CATEGORY_AUDIO_INFO_0_IT NULL
+#define CATEGORY_CONTROLS_LABEL_IT "Controlli"
+#define CATEGORY_CONTROLS_INFO_0_IT NULL
+#define CATEGORY_CHIHIRO_LABEL_IT NULL
+#define CATEGORY_CHIHIRO_INFO_0_IT NULL
 #define XEMU_MEMORY_LABEL_IT NULL
 #define XEMU_MEMORY_INFO_0_IT NULL
 #define OPTION_VAL_64_IT NULL
@@ -7112,15 +14532,23 @@ struct retro_core_options_v2 options_id = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_IT NULL
 #define XEMU_HARD_FPU_LABEL_IT NULL
 #define XEMU_HARD_FPU_INFO_0_IT NULL
+#define XEMU_CPU_BOOST_LABEL_IT NULL
+#define XEMU_CPU_BOOST_INFO_0_IT NULL
+#define XEMU_HDD_TRIM_LABEL_IT NULL
+#define XEMU_HDD_TRIM_INFO_0_IT NULL
 #define XEMU_RENDERER_LABEL_IT NULL
 #define XEMU_RENDERER_INFO_0_IT NULL
 #define OPTION_VAL_VULKAN_IT NULL
 #define OPTION_VAL_OPENGL_IT NULL
-#define XEMU_ASPECT_RATIO_LABEL_IT "Rapporto d'aspetto"
-#define XEMU_ASPECT_RATIO_INFO_0_IT NULL
-#define OPTION_VAL_AUTO_IT NULL
+#define XEMU_VIDEO_ASPECT_LABEL_IT NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_IT NULL
+#define OPTION_VAL_DASHBOARD_IT NULL
 #define OPTION_VAL_4_3_IT NULL
 #define OPTION_VAL_16_9_IT NULL
+#define OPTION_VAL_LETTERBOX_IT NULL
+#define XEMU_ASPECT_RATIO_LABEL_IT "Rapporto d'aspetto Core"
+#define XEMU_ASPECT_RATIO_INFO_0_IT NULL
+#define OPTION_VAL_AUTO_IT NULL
 #define XEMU_SURFACE_SCALE_LABEL_IT NULL
 #define XEMU_SURFACE_SCALE_INFO_0_IT NULL
 #define OPTION_VAL_1_IT NULL
@@ -7140,12 +14568,18 @@ struct retro_core_options_v2 options_id = {
 #define OPTION_VAL_SVIDEO_IT NULL
 #define OPTION_VAL_SCART_IT NULL
 #define OPTION_VAL_VGA_IT NULL
+#define XEMU_AUDIO_THREAD_LABEL_IT NULL
+#define XEMU_AUDIO_THREAD_INFO_0_IT NULL
 #define XEMU_USE_DSP_LABEL_IT NULL
 #define XEMU_USE_DSP_INFO_0_IT NULL
-#define XEMU_CACHE_SHADERS_LABEL_IT NULL
-#define XEMU_CACHE_SHADERS_INFO_0_IT NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_IT NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_IT NULL
+#define XEMU_DSP_JIT_LABEL_IT NULL
+#define XEMU_DSP_JIT_INFO_0_IT NULL
+#define XEMU_HRTF_LABEL_IT NULL
+#define XEMU_HRTF_INFO_0_IT NULL
+#define XEMU_VP_WORKERS_LABEL_IT NULL
+#define XEMU_VP_WORKERS_INFO_0_IT NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_IT NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_IT NULL
 #define XEMU_AUDIO_VOLUME_LABEL_IT NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_IT NULL
 #define OPTION_VAL_100_IT NULL
@@ -7154,10 +14588,40 @@ struct retro_core_options_v2 options_id = {
 #define OPTION_VAL_40_IT NULL
 #define OPTION_VAL_20_IT NULL
 #define OPTION_VAL_0_IT NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_IT NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_IT NULL
-#define OPTION_VAL_LINEAR_IT "Bilineare"
-#define OPTION_VAL_NEAREST_IT "Vicino più prossimo"
+#define XEMU_VK_FAST_PATHS_LABEL_IT NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_IT NULL
+#define OPTION_VAL_ALL_IT "Tutti"
+#define OPTION_VAL_NO_GPL_IT NULL
+#define OPTION_VAL_NO_DYN_IT NULL
+#define OPTION_VAL_NONE_IT "Nessuno"
+#define XEMU_RUMBLE_P1_LABEL_IT NULL
+#define XEMU_RUMBLE_P1_INFO_0_IT NULL
+#define XEMU_RUMBLE_P2_LABEL_IT NULL
+#define XEMU_RUMBLE_P2_INFO_0_IT NULL
+#define XEMU_DEADZONE_P1_LABEL_IT NULL
+#define XEMU_DEADZONE_P1_INFO_0_IT NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_IT NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_IT NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_IT NULL
+#define OPTION_VAL_15_IT NULL
+#define OPTION_VAL_25_IT NULL
+#define OPTION_VAL_30_IT NULL
+#define XEMU_DEADZONE_P2_LABEL_IT NULL
+#define XEMU_DEADZONE_P2_INFO_0_IT NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_IT NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_IT NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_IT NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_IT NULL
+#define OPTION_VAL_MOUSE_IT NULL
+#define OPTION_VAL_STICK_IT NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_IT NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_IT NULL
+#define XEMU_CHIHIRO_FFB_LABEL_IT NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_IT NULL
+#define OPTION_VAL_50_IT NULL
+#define OPTION_VAL_75_IT NULL
+#define OPTION_VAL_150_IT NULL
+#define OPTION_VAL_200_IT NULL
 
 struct retro_core_option_v2_category option_cats_it[] = {
     {
@@ -7175,13 +14639,19 @@ struct retro_core_option_v2_category option_cats_it[] = {
         CATEGORY_AUDIO_LABEL_IT,
         CATEGORY_AUDIO_INFO_0_IT
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_IT,
+        CATEGORY_CONTROLS_INFO_0_IT
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_IT,
+        CATEGORY_CHIHIRO_INFO_0_IT
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_it[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_IT,
@@ -7210,6 +14680,8 @@ struct retro_core_option_v2_definition option_defs_it[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_IT,
@@ -7222,7 +14694,7 @@ struct retro_core_option_v2_definition option_defs_it[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -7239,6 +14711,38 @@ struct retro_core_option_v2_definition option_defs_it[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_IT,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_IT,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_IT,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_IT,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_IT,
         NULL,
@@ -7251,6 +14755,25 @@ struct retro_core_option_v2_definition option_defs_it[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_IT,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_IT,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_IT },
+            { "4:3",       OPTION_VAL_4_3_IT },
+            { "16:9",      OPTION_VAL_16_9_IT },
+            { "letterbox", OPTION_VAL_LETTERBOX_IT },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -7306,6 +14829,25 @@ struct retro_core_option_v2_definition option_defs_it[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_IT,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_IT,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_IT,
@@ -7320,13 +14862,29 @@ struct retro_core_option_v2_definition option_defs_it[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_IT,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_IT,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_IT,
+        XEMU_DSP_JIT_INFO_0_IT,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_IT,
+        NULL,
+        XEMU_HRTF_INFO_0_IT,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -7335,10 +14893,27 @@ struct retro_core_option_v2_definition option_defs_it[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_IT,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_IT,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_IT,
+        XEMU_VP_WORKERS_INFO_0_IT,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_IT },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_IT,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_IT,
         NULL,
         "video",
         {
@@ -7366,19 +14941,169 @@ struct retro_core_option_v2_definition option_defs_it[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_IT,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_IT,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_IT,
+        XEMU_VK_FAST_PATHS_INFO_0_IT,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_IT },
-            { "nearest", OPTION_VAL_NEAREST_IT },
+            { "all",      OPTION_VAL_ALL_IT },
+            { "no_gpl",   OPTION_VAL_NO_GPL_IT },
+            { "no_dyn",   OPTION_VAL_NO_DYN_IT },
+            { "none",     OPTION_VAL_NONE_IT },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_IT,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_IT,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_IT,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_IT,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_IT,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_IT,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_IT },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_IT },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_IT },
+            { "15", OPTION_VAL_15_IT },
+            { "20", OPTION_VAL_20_IT },
+            { "25", OPTION_VAL_25_IT },
+            { "30", OPTION_VAL_30_IT },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_IT,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_IT,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_IT },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_IT },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_IT },
+            { "15", OPTION_VAL_15_IT },
+            { "20", OPTION_VAL_20_IT },
+            { "25", OPTION_VAL_25_IT },
+            { "30", OPTION_VAL_30_IT },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_IT,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_IT,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_IT,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_IT,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_IT },
+            { "stick", OPTION_VAL_STICK_IT },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_IT,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_IT,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_IT,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_IT,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_IT },
+            { "50",  OPTION_VAL_50_IT },
+            { "75",  OPTION_VAL_75_IT },
+            { "100", OPTION_VAL_100_IT },
+            { "150", OPTION_VAL_150_IT },
+            { "200", OPTION_VAL_200_IT },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -7389,12 +15114,16 @@ struct retro_core_options_v2 options_it = {
 
 /* RETRO_LANGUAGE_JA */
 
-#define CATEGORY_SYSTEM_LABEL_JA "システム"
+#define CATEGORY_SYSTEM_LABEL_JA NULL
 #define CATEGORY_SYSTEM_INFO_0_JA NULL
 #define CATEGORY_VIDEO_LABEL_JA "ビデオ"
 #define CATEGORY_VIDEO_INFO_0_JA NULL
 #define CATEGORY_AUDIO_LABEL_JA "オーディオ"
 #define CATEGORY_AUDIO_INFO_0_JA NULL
+#define CATEGORY_CONTROLS_LABEL_JA "コントロール"
+#define CATEGORY_CONTROLS_INFO_0_JA NULL
+#define CATEGORY_CHIHIRO_LABEL_JA NULL
+#define CATEGORY_CHIHIRO_INFO_0_JA NULL
 #define XEMU_MEMORY_LABEL_JA NULL
 #define XEMU_MEMORY_INFO_0_JA NULL
 #define OPTION_VAL_64_JA NULL
@@ -7406,15 +15135,23 @@ struct retro_core_options_v2 options_it = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_JA NULL
 #define XEMU_HARD_FPU_LABEL_JA NULL
 #define XEMU_HARD_FPU_INFO_0_JA NULL
+#define XEMU_CPU_BOOST_LABEL_JA NULL
+#define XEMU_CPU_BOOST_INFO_0_JA NULL
+#define XEMU_HDD_TRIM_LABEL_JA NULL
+#define XEMU_HDD_TRIM_INFO_0_JA NULL
 #define XEMU_RENDERER_LABEL_JA NULL
 #define XEMU_RENDERER_INFO_0_JA NULL
 #define OPTION_VAL_VULKAN_JA NULL
 #define OPTION_VAL_OPENGL_JA NULL
-#define XEMU_ASPECT_RATIO_LABEL_JA "アスペクト比"
-#define XEMU_ASPECT_RATIO_INFO_0_JA NULL
-#define OPTION_VAL_AUTO_JA "自動"
+#define XEMU_VIDEO_ASPECT_LABEL_JA NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_JA NULL
+#define OPTION_VAL_DASHBOARD_JA NULL
 #define OPTION_VAL_4_3_JA NULL
 #define OPTION_VAL_16_9_JA NULL
+#define OPTION_VAL_LETTERBOX_JA NULL
+#define XEMU_ASPECT_RATIO_LABEL_JA "コアアスペクト比"
+#define XEMU_ASPECT_RATIO_INFO_0_JA NULL
+#define OPTION_VAL_AUTO_JA "自動"
 #define XEMU_SURFACE_SCALE_LABEL_JA NULL
 #define XEMU_SURFACE_SCALE_INFO_0_JA NULL
 #define OPTION_VAL_1_JA NULL
@@ -7434,12 +15171,18 @@ struct retro_core_options_v2 options_it = {
 #define OPTION_VAL_SVIDEO_JA "S端子"
 #define OPTION_VAL_SCART_JA NULL
 #define OPTION_VAL_VGA_JA NULL
+#define XEMU_AUDIO_THREAD_LABEL_JA NULL
+#define XEMU_AUDIO_THREAD_INFO_0_JA NULL
 #define XEMU_USE_DSP_LABEL_JA NULL
 #define XEMU_USE_DSP_INFO_0_JA NULL
-#define XEMU_CACHE_SHADERS_LABEL_JA NULL
-#define XEMU_CACHE_SHADERS_INFO_0_JA NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_JA NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_JA NULL
+#define XEMU_DSP_JIT_LABEL_JA NULL
+#define XEMU_DSP_JIT_INFO_0_JA NULL
+#define XEMU_HRTF_LABEL_JA NULL
+#define XEMU_HRTF_INFO_0_JA NULL
+#define XEMU_VP_WORKERS_LABEL_JA NULL
+#define XEMU_VP_WORKERS_INFO_0_JA NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_JA NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_JA NULL
 #define XEMU_AUDIO_VOLUME_LABEL_JA NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_JA NULL
 #define OPTION_VAL_100_JA NULL
@@ -7448,10 +15191,40 @@ struct retro_core_options_v2 options_it = {
 #define OPTION_VAL_40_JA NULL
 #define OPTION_VAL_20_JA NULL
 #define OPTION_VAL_0_JA NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_JA NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_JA NULL
-#define OPTION_VAL_LINEAR_JA "バイリニア"
-#define OPTION_VAL_NEAREST_JA "ニアレストネイバー"
+#define XEMU_VK_FAST_PATHS_LABEL_JA NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_JA NULL
+#define OPTION_VAL_ALL_JA "すべて"
+#define OPTION_VAL_NO_GPL_JA NULL
+#define OPTION_VAL_NO_DYN_JA NULL
+#define OPTION_VAL_NONE_JA "なし"
+#define XEMU_RUMBLE_P1_LABEL_JA NULL
+#define XEMU_RUMBLE_P1_INFO_0_JA NULL
+#define XEMU_RUMBLE_P2_LABEL_JA NULL
+#define XEMU_RUMBLE_P2_INFO_0_JA NULL
+#define XEMU_DEADZONE_P1_LABEL_JA NULL
+#define XEMU_DEADZONE_P1_INFO_0_JA NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_JA NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_JA NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_JA NULL
+#define OPTION_VAL_15_JA NULL
+#define OPTION_VAL_25_JA NULL
+#define OPTION_VAL_30_JA NULL
+#define XEMU_DEADZONE_P2_LABEL_JA NULL
+#define XEMU_DEADZONE_P2_INFO_0_JA NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_JA NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_JA NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_JA NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_JA NULL
+#define OPTION_VAL_MOUSE_JA "マウス"
+#define OPTION_VAL_STICK_JA NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_JA NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_JA NULL
+#define XEMU_CHIHIRO_FFB_LABEL_JA NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_JA NULL
+#define OPTION_VAL_50_JA NULL
+#define OPTION_VAL_75_JA NULL
+#define OPTION_VAL_150_JA NULL
+#define OPTION_VAL_200_JA NULL
 
 struct retro_core_option_v2_category option_cats_ja[] = {
     {
@@ -7469,13 +15242,19 @@ struct retro_core_option_v2_category option_cats_ja[] = {
         CATEGORY_AUDIO_LABEL_JA,
         CATEGORY_AUDIO_INFO_0_JA
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_JA,
+        CATEGORY_CONTROLS_INFO_0_JA
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_JA,
+        CATEGORY_CHIHIRO_INFO_0_JA
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_ja[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_JA,
@@ -7504,6 +15283,8 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_JA,
@@ -7516,7 +15297,7 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -7533,6 +15314,38 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_JA,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_JA,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_JA,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_JA,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_JA,
         NULL,
@@ -7545,6 +15358,25 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_JA,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_JA,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_JA },
+            { "4:3",       OPTION_VAL_4_3_JA },
+            { "16:9",      OPTION_VAL_16_9_JA },
+            { "letterbox", OPTION_VAL_LETTERBOX_JA },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -7600,6 +15432,25 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_JA,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_JA,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_JA,
@@ -7614,13 +15465,29 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_JA,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_JA,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_JA,
+        XEMU_DSP_JIT_INFO_0_JA,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_JA,
+        NULL,
+        XEMU_HRTF_INFO_0_JA,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -7629,10 +15496,27 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_JA,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_JA,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_JA,
+        XEMU_VP_WORKERS_INFO_0_JA,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_JA },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_JA,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_JA,
         NULL,
         "video",
         {
@@ -7660,19 +15544,169 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_JA,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_JA,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_JA,
+        XEMU_VK_FAST_PATHS_INFO_0_JA,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_JA },
-            { "nearest", OPTION_VAL_NEAREST_JA },
+            { "all",      OPTION_VAL_ALL_JA },
+            { "no_gpl",   OPTION_VAL_NO_GPL_JA },
+            { "no_dyn",   OPTION_VAL_NO_DYN_JA },
+            { "none",     OPTION_VAL_NONE_JA },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_JA,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_JA,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_JA,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_JA,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_JA,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_JA,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_JA },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_JA },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_JA },
+            { "15", OPTION_VAL_15_JA },
+            { "20", OPTION_VAL_20_JA },
+            { "25", OPTION_VAL_25_JA },
+            { "30", OPTION_VAL_30_JA },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_JA,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_JA,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_JA },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_JA },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_JA },
+            { "15", OPTION_VAL_15_JA },
+            { "20", OPTION_VAL_20_JA },
+            { "25", OPTION_VAL_25_JA },
+            { "30", OPTION_VAL_30_JA },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_JA,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_JA,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_JA,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_JA,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_JA },
+            { "stick", OPTION_VAL_STICK_JA },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_JA,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_JA,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_JA,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_JA,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_JA },
+            { "50",  OPTION_VAL_50_JA },
+            { "75",  OPTION_VAL_75_JA },
+            { "100", OPTION_VAL_100_JA },
+            { "150", OPTION_VAL_150_JA },
+            { "200", OPTION_VAL_200_JA },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -7683,12 +15717,16 @@ struct retro_core_options_v2 options_ja = {
 
 /* RETRO_LANGUAGE_KO */
 
-#define CATEGORY_SYSTEM_LABEL_KO "시스템"
+#define CATEGORY_SYSTEM_LABEL_KO NULL
 #define CATEGORY_SYSTEM_INFO_0_KO NULL
 #define CATEGORY_VIDEO_LABEL_KO "비디오"
 #define CATEGORY_VIDEO_INFO_0_KO NULL
 #define CATEGORY_AUDIO_LABEL_KO "오디오"
 #define CATEGORY_AUDIO_INFO_0_KO NULL
+#define CATEGORY_CONTROLS_LABEL_KO "컨트롤"
+#define CATEGORY_CONTROLS_INFO_0_KO NULL
+#define CATEGORY_CHIHIRO_LABEL_KO NULL
+#define CATEGORY_CHIHIRO_INFO_0_KO NULL
 #define XEMU_MEMORY_LABEL_KO NULL
 #define XEMU_MEMORY_INFO_0_KO NULL
 #define OPTION_VAL_64_KO NULL
@@ -7700,15 +15738,23 @@ struct retro_core_options_v2 options_ja = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_KO NULL
 #define XEMU_HARD_FPU_LABEL_KO NULL
 #define XEMU_HARD_FPU_INFO_0_KO NULL
+#define XEMU_CPU_BOOST_LABEL_KO NULL
+#define XEMU_CPU_BOOST_INFO_0_KO NULL
+#define XEMU_HDD_TRIM_LABEL_KO NULL
+#define XEMU_HDD_TRIM_INFO_0_KO NULL
 #define XEMU_RENDERER_LABEL_KO NULL
 #define XEMU_RENDERER_INFO_0_KO NULL
 #define OPTION_VAL_VULKAN_KO NULL
 #define OPTION_VAL_OPENGL_KO NULL
-#define XEMU_ASPECT_RATIO_LABEL_KO "화면비"
-#define XEMU_ASPECT_RATIO_INFO_0_KO NULL
-#define OPTION_VAL_AUTO_KO "자동"
+#define XEMU_VIDEO_ASPECT_LABEL_KO NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_KO NULL
+#define OPTION_VAL_DASHBOARD_KO NULL
 #define OPTION_VAL_4_3_KO NULL
 #define OPTION_VAL_16_9_KO NULL
+#define OPTION_VAL_LETTERBOX_KO NULL
+#define XEMU_ASPECT_RATIO_LABEL_KO "코어 화면비"
+#define XEMU_ASPECT_RATIO_INFO_0_KO NULL
+#define OPTION_VAL_AUTO_KO "자동"
 #define XEMU_SURFACE_SCALE_LABEL_KO NULL
 #define XEMU_SURFACE_SCALE_INFO_0_KO NULL
 #define OPTION_VAL_1_KO NULL
@@ -7728,12 +15774,18 @@ struct retro_core_options_v2 options_ja = {
 #define OPTION_VAL_SVIDEO_KO "S-비디오"
 #define OPTION_VAL_SCART_KO NULL
 #define OPTION_VAL_VGA_KO NULL
+#define XEMU_AUDIO_THREAD_LABEL_KO NULL
+#define XEMU_AUDIO_THREAD_INFO_0_KO NULL
 #define XEMU_USE_DSP_LABEL_KO NULL
 #define XEMU_USE_DSP_INFO_0_KO NULL
-#define XEMU_CACHE_SHADERS_LABEL_KO NULL
-#define XEMU_CACHE_SHADERS_INFO_0_KO NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_KO NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_KO NULL
+#define XEMU_DSP_JIT_LABEL_KO NULL
+#define XEMU_DSP_JIT_INFO_0_KO NULL
+#define XEMU_HRTF_LABEL_KO NULL
+#define XEMU_HRTF_INFO_0_KO NULL
+#define XEMU_VP_WORKERS_LABEL_KO NULL
+#define XEMU_VP_WORKERS_INFO_0_KO NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_KO NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_KO NULL
 #define XEMU_AUDIO_VOLUME_LABEL_KO NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_KO NULL
 #define OPTION_VAL_100_KO NULL
@@ -7742,10 +15794,40 @@ struct retro_core_options_v2 options_ja = {
 #define OPTION_VAL_40_KO NULL
 #define OPTION_VAL_20_KO NULL
 #define OPTION_VAL_0_KO NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_KO NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_KO NULL
-#define OPTION_VAL_LINEAR_KO "이중선형보간"
-#define OPTION_VAL_NEAREST_KO "최근접 이웃"
+#define XEMU_VK_FAST_PATHS_LABEL_KO NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_KO NULL
+#define OPTION_VAL_ALL_KO "전체"
+#define OPTION_VAL_NO_GPL_KO NULL
+#define OPTION_VAL_NO_DYN_KO NULL
+#define OPTION_VAL_NONE_KO "없음"
+#define XEMU_RUMBLE_P1_LABEL_KO NULL
+#define XEMU_RUMBLE_P1_INFO_0_KO NULL
+#define XEMU_RUMBLE_P2_LABEL_KO NULL
+#define XEMU_RUMBLE_P2_INFO_0_KO NULL
+#define XEMU_DEADZONE_P1_LABEL_KO NULL
+#define XEMU_DEADZONE_P1_INFO_0_KO NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_KO NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_KO NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_KO NULL
+#define OPTION_VAL_15_KO NULL
+#define OPTION_VAL_25_KO NULL
+#define OPTION_VAL_30_KO NULL
+#define XEMU_DEADZONE_P2_LABEL_KO NULL
+#define XEMU_DEADZONE_P2_INFO_0_KO NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_KO NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_KO NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_KO NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_KO NULL
+#define OPTION_VAL_MOUSE_KO "마우스"
+#define OPTION_VAL_STICK_KO NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_KO NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_KO NULL
+#define XEMU_CHIHIRO_FFB_LABEL_KO NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_KO NULL
+#define OPTION_VAL_50_KO NULL
+#define OPTION_VAL_75_KO NULL
+#define OPTION_VAL_150_KO NULL
+#define OPTION_VAL_200_KO NULL
 
 struct retro_core_option_v2_category option_cats_ko[] = {
     {
@@ -7763,13 +15845,19 @@ struct retro_core_option_v2_category option_cats_ko[] = {
         CATEGORY_AUDIO_LABEL_KO,
         CATEGORY_AUDIO_INFO_0_KO
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_KO,
+        CATEGORY_CONTROLS_INFO_0_KO
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_KO,
+        CATEGORY_CHIHIRO_INFO_0_KO
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_ko[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_KO,
@@ -7798,6 +15886,8 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_KO,
@@ -7810,7 +15900,7 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -7827,6 +15917,38 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_KO,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_KO,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_KO,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_KO,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_KO,
         NULL,
@@ -7839,6 +15961,25 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_KO,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_KO,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_KO },
+            { "4:3",       OPTION_VAL_4_3_KO },
+            { "16:9",      OPTION_VAL_16_9_KO },
+            { "letterbox", OPTION_VAL_LETTERBOX_KO },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -7894,6 +16035,25 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_KO,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_KO,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_KO,
@@ -7908,13 +16068,29 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_KO,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_KO,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_KO,
+        XEMU_DSP_JIT_INFO_0_KO,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_KO,
+        NULL,
+        XEMU_HRTF_INFO_0_KO,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -7923,10 +16099,27 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_KO,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_KO,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_KO,
+        XEMU_VP_WORKERS_INFO_0_KO,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_KO },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_KO,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_KO,
         NULL,
         "video",
         {
@@ -7954,19 +16147,169 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_KO,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_KO,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_KO,
+        XEMU_VK_FAST_PATHS_INFO_0_KO,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_KO },
-            { "nearest", OPTION_VAL_NEAREST_KO },
+            { "all",      OPTION_VAL_ALL_KO },
+            { "no_gpl",   OPTION_VAL_NO_GPL_KO },
+            { "no_dyn",   OPTION_VAL_NO_DYN_KO },
+            { "none",     OPTION_VAL_NONE_KO },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_KO,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_KO,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_KO,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_KO,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_KO,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_KO,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_KO },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_KO },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_KO },
+            { "15", OPTION_VAL_15_KO },
+            { "20", OPTION_VAL_20_KO },
+            { "25", OPTION_VAL_25_KO },
+            { "30", OPTION_VAL_30_KO },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_KO,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_KO,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_KO },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_KO },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_KO },
+            { "15", OPTION_VAL_15_KO },
+            { "20", OPTION_VAL_20_KO },
+            { "25", OPTION_VAL_25_KO },
+            { "30", OPTION_VAL_30_KO },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_KO,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_KO,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_KO,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_KO,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_KO },
+            { "stick", OPTION_VAL_STICK_KO },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_KO,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_KO,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_KO,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_KO,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_KO },
+            { "50",  OPTION_VAL_50_KO },
+            { "75",  OPTION_VAL_75_KO },
+            { "100", OPTION_VAL_100_KO },
+            { "150", OPTION_VAL_150_KO },
+            { "200", OPTION_VAL_200_KO },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -7977,12 +16320,16 @@ struct retro_core_options_v2 options_ko = {
 
 /* RETRO_LANGUAGE_NL */
 
-#define CATEGORY_SYSTEM_LABEL_NL "Systeem"
+#define CATEGORY_SYSTEM_LABEL_NL NULL
 #define CATEGORY_SYSTEM_INFO_0_NL NULL
 #define CATEGORY_VIDEO_LABEL_NL NULL
 #define CATEGORY_VIDEO_INFO_0_NL NULL
 #define CATEGORY_AUDIO_LABEL_NL "Geluid"
 #define CATEGORY_AUDIO_INFO_0_NL NULL
+#define CATEGORY_CONTROLS_LABEL_NL "Besturingselementen"
+#define CATEGORY_CONTROLS_INFO_0_NL NULL
+#define CATEGORY_CHIHIRO_LABEL_NL NULL
+#define CATEGORY_CHIHIRO_INFO_0_NL NULL
 #define XEMU_MEMORY_LABEL_NL NULL
 #define XEMU_MEMORY_INFO_0_NL NULL
 #define OPTION_VAL_64_NL NULL
@@ -7994,15 +16341,23 @@ struct retro_core_options_v2 options_ko = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_NL NULL
 #define XEMU_HARD_FPU_LABEL_NL NULL
 #define XEMU_HARD_FPU_INFO_0_NL NULL
+#define XEMU_CPU_BOOST_LABEL_NL NULL
+#define XEMU_CPU_BOOST_INFO_0_NL NULL
+#define XEMU_HDD_TRIM_LABEL_NL NULL
+#define XEMU_HDD_TRIM_INFO_0_NL NULL
 #define XEMU_RENDERER_LABEL_NL NULL
 #define XEMU_RENDERER_INFO_0_NL NULL
 #define OPTION_VAL_VULKAN_NL NULL
 #define OPTION_VAL_OPENGL_NL NULL
-#define XEMU_ASPECT_RATIO_LABEL_NL "Beeldverhouding"
-#define XEMU_ASPECT_RATIO_INFO_0_NL NULL
-#define OPTION_VAL_AUTO_NL "Automatisch"
+#define XEMU_VIDEO_ASPECT_LABEL_NL NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_NL NULL
+#define OPTION_VAL_DASHBOARD_NL NULL
 #define OPTION_VAL_4_3_NL NULL
 #define OPTION_VAL_16_9_NL NULL
+#define OPTION_VAL_LETTERBOX_NL NULL
+#define XEMU_ASPECT_RATIO_LABEL_NL NULL
+#define XEMU_ASPECT_RATIO_INFO_0_NL NULL
+#define OPTION_VAL_AUTO_NL "Automatisch"
 #define XEMU_SURFACE_SCALE_LABEL_NL NULL
 #define XEMU_SURFACE_SCALE_INFO_0_NL NULL
 #define OPTION_VAL_1_NL NULL
@@ -8022,12 +16377,18 @@ struct retro_core_options_v2 options_ko = {
 #define OPTION_VAL_SVIDEO_NL NULL
 #define OPTION_VAL_SCART_NL NULL
 #define OPTION_VAL_VGA_NL NULL
+#define XEMU_AUDIO_THREAD_LABEL_NL NULL
+#define XEMU_AUDIO_THREAD_INFO_0_NL NULL
 #define XEMU_USE_DSP_LABEL_NL NULL
 #define XEMU_USE_DSP_INFO_0_NL NULL
-#define XEMU_CACHE_SHADERS_LABEL_NL NULL
-#define XEMU_CACHE_SHADERS_INFO_0_NL NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_NL NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_NL NULL
+#define XEMU_DSP_JIT_LABEL_NL NULL
+#define XEMU_DSP_JIT_INFO_0_NL NULL
+#define XEMU_HRTF_LABEL_NL NULL
+#define XEMU_HRTF_INFO_0_NL NULL
+#define XEMU_VP_WORKERS_LABEL_NL NULL
+#define XEMU_VP_WORKERS_INFO_0_NL NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_NL NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_NL NULL
 #define XEMU_AUDIO_VOLUME_LABEL_NL NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_NL NULL
 #define OPTION_VAL_100_NL NULL
@@ -8036,10 +16397,40 @@ struct retro_core_options_v2 options_ko = {
 #define OPTION_VAL_40_NL NULL
 #define OPTION_VAL_20_NL NULL
 #define OPTION_VAL_0_NL NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_NL NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_NL NULL
-#define OPTION_VAL_LINEAR_NL "Bilineair"
-#define OPTION_VAL_NEAREST_NL "Naaste-buur"
+#define XEMU_VK_FAST_PATHS_LABEL_NL NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_NL NULL
+#define OPTION_VAL_ALL_NL "Alle"
+#define OPTION_VAL_NO_GPL_NL NULL
+#define OPTION_VAL_NO_DYN_NL NULL
+#define OPTION_VAL_NONE_NL "Geen"
+#define XEMU_RUMBLE_P1_LABEL_NL NULL
+#define XEMU_RUMBLE_P1_INFO_0_NL NULL
+#define XEMU_RUMBLE_P2_LABEL_NL NULL
+#define XEMU_RUMBLE_P2_INFO_0_NL NULL
+#define XEMU_DEADZONE_P1_LABEL_NL NULL
+#define XEMU_DEADZONE_P1_INFO_0_NL NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_NL NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_NL NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_NL NULL
+#define OPTION_VAL_15_NL NULL
+#define OPTION_VAL_25_NL NULL
+#define OPTION_VAL_30_NL NULL
+#define XEMU_DEADZONE_P2_LABEL_NL NULL
+#define XEMU_DEADZONE_P2_INFO_0_NL NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_NL NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_NL NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_NL NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_NL NULL
+#define OPTION_VAL_MOUSE_NL NULL
+#define OPTION_VAL_STICK_NL NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_NL NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_NL NULL
+#define XEMU_CHIHIRO_FFB_LABEL_NL NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_NL NULL
+#define OPTION_VAL_50_NL NULL
+#define OPTION_VAL_75_NL NULL
+#define OPTION_VAL_150_NL NULL
+#define OPTION_VAL_200_NL NULL
 
 struct retro_core_option_v2_category option_cats_nl[] = {
     {
@@ -8057,13 +16448,19 @@ struct retro_core_option_v2_category option_cats_nl[] = {
         CATEGORY_AUDIO_LABEL_NL,
         CATEGORY_AUDIO_INFO_0_NL
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_NL,
+        CATEGORY_CONTROLS_INFO_0_NL
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_NL,
+        CATEGORY_CHIHIRO_INFO_0_NL
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_nl[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_NL,
@@ -8092,6 +16489,8 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_NL,
@@ -8104,7 +16503,7 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -8121,6 +16520,38 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_NL,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_NL,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_NL,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_NL,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_NL,
         NULL,
@@ -8133,6 +16564,25 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_NL,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_NL,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_NL },
+            { "4:3",       OPTION_VAL_4_3_NL },
+            { "16:9",      OPTION_VAL_16_9_NL },
+            { "letterbox", OPTION_VAL_LETTERBOX_NL },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -8188,6 +16638,25 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_NL,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_NL,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_NL,
@@ -8202,13 +16671,29 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_NL,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_NL,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_NL,
+        XEMU_DSP_JIT_INFO_0_NL,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_NL,
+        NULL,
+        XEMU_HRTF_INFO_0_NL,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -8217,10 +16702,27 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_NL,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_NL,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_NL,
+        XEMU_VP_WORKERS_INFO_0_NL,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_NL },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_NL,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_NL,
         NULL,
         "video",
         {
@@ -8248,19 +16750,169 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_NL,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_NL,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_NL,
+        XEMU_VK_FAST_PATHS_INFO_0_NL,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_NL },
-            { "nearest", OPTION_VAL_NEAREST_NL },
+            { "all",      OPTION_VAL_ALL_NL },
+            { "no_gpl",   OPTION_VAL_NO_GPL_NL },
+            { "no_dyn",   OPTION_VAL_NO_DYN_NL },
+            { "none",     OPTION_VAL_NONE_NL },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_NL,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_NL,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_NL,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_NL,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_NL,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_NL,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_NL },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_NL },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_NL },
+            { "15", OPTION_VAL_15_NL },
+            { "20", OPTION_VAL_20_NL },
+            { "25", OPTION_VAL_25_NL },
+            { "30", OPTION_VAL_30_NL },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_NL,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_NL,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_NL },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_NL },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_NL },
+            { "15", OPTION_VAL_15_NL },
+            { "20", OPTION_VAL_20_NL },
+            { "25", OPTION_VAL_25_NL },
+            { "30", OPTION_VAL_30_NL },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_NL,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_NL,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_NL,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_NL,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_NL },
+            { "stick", OPTION_VAL_STICK_NL },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_NL,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_NL,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_NL,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_NL,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_NL },
+            { "50",  OPTION_VAL_50_NL },
+            { "75",  OPTION_VAL_75_NL },
+            { "100", OPTION_VAL_100_NL },
+            { "150", OPTION_VAL_150_NL },
+            { "200", OPTION_VAL_200_NL },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -8277,6 +16929,10 @@ struct retro_core_options_v2 options_nl = {
 #define CATEGORY_VIDEO_INFO_0_NO NULL
 #define CATEGORY_AUDIO_LABEL_NO "Lyd"
 #define CATEGORY_AUDIO_INFO_0_NO NULL
+#define CATEGORY_CONTROLS_LABEL_NO NULL
+#define CATEGORY_CONTROLS_INFO_0_NO NULL
+#define CATEGORY_CHIHIRO_LABEL_NO NULL
+#define CATEGORY_CHIHIRO_INFO_0_NO NULL
 #define XEMU_MEMORY_LABEL_NO NULL
 #define XEMU_MEMORY_INFO_0_NO NULL
 #define OPTION_VAL_64_NO NULL
@@ -8288,15 +16944,23 @@ struct retro_core_options_v2 options_nl = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_NO NULL
 #define XEMU_HARD_FPU_LABEL_NO NULL
 #define XEMU_HARD_FPU_INFO_0_NO NULL
+#define XEMU_CPU_BOOST_LABEL_NO NULL
+#define XEMU_CPU_BOOST_INFO_0_NO NULL
+#define XEMU_HDD_TRIM_LABEL_NO NULL
+#define XEMU_HDD_TRIM_INFO_0_NO NULL
 #define XEMU_RENDERER_LABEL_NO NULL
 #define XEMU_RENDERER_INFO_0_NO NULL
 #define OPTION_VAL_VULKAN_NO NULL
 #define OPTION_VAL_OPENGL_NO NULL
-#define XEMU_ASPECT_RATIO_LABEL_NO "Størrelsesforhold"
-#define XEMU_ASPECT_RATIO_INFO_0_NO NULL
-#define OPTION_VAL_AUTO_NO NULL
+#define XEMU_VIDEO_ASPECT_LABEL_NO NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_NO NULL
+#define OPTION_VAL_DASHBOARD_NO NULL
 #define OPTION_VAL_4_3_NO NULL
 #define OPTION_VAL_16_9_NO NULL
+#define OPTION_VAL_LETTERBOX_NO NULL
+#define XEMU_ASPECT_RATIO_LABEL_NO NULL
+#define XEMU_ASPECT_RATIO_INFO_0_NO NULL
+#define OPTION_VAL_AUTO_NO NULL
 #define XEMU_SURFACE_SCALE_LABEL_NO NULL
 #define XEMU_SURFACE_SCALE_INFO_0_NO NULL
 #define OPTION_VAL_1_NO NULL
@@ -8316,12 +16980,18 @@ struct retro_core_options_v2 options_nl = {
 #define OPTION_VAL_SVIDEO_NO NULL
 #define OPTION_VAL_SCART_NO NULL
 #define OPTION_VAL_VGA_NO NULL
+#define XEMU_AUDIO_THREAD_LABEL_NO NULL
+#define XEMU_AUDIO_THREAD_INFO_0_NO NULL
 #define XEMU_USE_DSP_LABEL_NO NULL
 #define XEMU_USE_DSP_INFO_0_NO NULL
-#define XEMU_CACHE_SHADERS_LABEL_NO NULL
-#define XEMU_CACHE_SHADERS_INFO_0_NO NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_NO NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_NO NULL
+#define XEMU_DSP_JIT_LABEL_NO NULL
+#define XEMU_DSP_JIT_INFO_0_NO NULL
+#define XEMU_HRTF_LABEL_NO NULL
+#define XEMU_HRTF_INFO_0_NO NULL
+#define XEMU_VP_WORKERS_LABEL_NO NULL
+#define XEMU_VP_WORKERS_INFO_0_NO NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_NO NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_NO NULL
 #define XEMU_AUDIO_VOLUME_LABEL_NO NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_NO NULL
 #define OPTION_VAL_100_NO NULL
@@ -8330,10 +17000,40 @@ struct retro_core_options_v2 options_nl = {
 #define OPTION_VAL_40_NO NULL
 #define OPTION_VAL_20_NO NULL
 #define OPTION_VAL_0_NO NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_NO NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_NO NULL
-#define OPTION_VAL_LINEAR_NO "Bilineær"
-#define OPTION_VAL_NEAREST_NO "Nærmeste nabo"
+#define XEMU_VK_FAST_PATHS_LABEL_NO NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_NO NULL
+#define OPTION_VAL_ALL_NO "Alle"
+#define OPTION_VAL_NO_GPL_NO NULL
+#define OPTION_VAL_NO_DYN_NO NULL
+#define OPTION_VAL_NONE_NO "Ingen"
+#define XEMU_RUMBLE_P1_LABEL_NO NULL
+#define XEMU_RUMBLE_P1_INFO_0_NO NULL
+#define XEMU_RUMBLE_P2_LABEL_NO NULL
+#define XEMU_RUMBLE_P2_INFO_0_NO NULL
+#define XEMU_DEADZONE_P1_LABEL_NO NULL
+#define XEMU_DEADZONE_P1_INFO_0_NO NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_NO NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_NO NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_NO NULL
+#define OPTION_VAL_15_NO NULL
+#define OPTION_VAL_25_NO NULL
+#define OPTION_VAL_30_NO NULL
+#define XEMU_DEADZONE_P2_LABEL_NO NULL
+#define XEMU_DEADZONE_P2_INFO_0_NO NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_NO NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_NO NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_NO NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_NO NULL
+#define OPTION_VAL_MOUSE_NO NULL
+#define OPTION_VAL_STICK_NO NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_NO NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_NO NULL
+#define XEMU_CHIHIRO_FFB_LABEL_NO NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_NO NULL
+#define OPTION_VAL_50_NO NULL
+#define OPTION_VAL_75_NO NULL
+#define OPTION_VAL_150_NO NULL
+#define OPTION_VAL_200_NO NULL
 
 struct retro_core_option_v2_category option_cats_no[] = {
     {
@@ -8351,13 +17051,19 @@ struct retro_core_option_v2_category option_cats_no[] = {
         CATEGORY_AUDIO_LABEL_NO,
         CATEGORY_AUDIO_INFO_0_NO
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_NO,
+        CATEGORY_CONTROLS_INFO_0_NO
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_NO,
+        CATEGORY_CHIHIRO_INFO_0_NO
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_no[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_NO,
@@ -8386,6 +17092,8 @@ struct retro_core_option_v2_definition option_defs_no[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_NO,
@@ -8398,7 +17106,7 @@ struct retro_core_option_v2_definition option_defs_no[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -8415,6 +17123,38 @@ struct retro_core_option_v2_definition option_defs_no[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_NO,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_NO,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_NO,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_NO,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_NO,
         NULL,
@@ -8427,6 +17167,25 @@ struct retro_core_option_v2_definition option_defs_no[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_NO,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_NO,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_NO },
+            { "4:3",       OPTION_VAL_4_3_NO },
+            { "16:9",      OPTION_VAL_16_9_NO },
+            { "letterbox", OPTION_VAL_LETTERBOX_NO },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -8482,6 +17241,25 @@ struct retro_core_option_v2_definition option_defs_no[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_NO,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_NO,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_NO,
@@ -8496,13 +17274,29 @@ struct retro_core_option_v2_definition option_defs_no[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_NO,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_NO,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_NO,
+        XEMU_DSP_JIT_INFO_0_NO,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_NO,
+        NULL,
+        XEMU_HRTF_INFO_0_NO,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -8511,10 +17305,27 @@ struct retro_core_option_v2_definition option_defs_no[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_NO,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_NO,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_NO,
+        XEMU_VP_WORKERS_INFO_0_NO,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_NO },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_NO,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_NO,
         NULL,
         "video",
         {
@@ -8542,19 +17353,169 @@ struct retro_core_option_v2_definition option_defs_no[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_NO,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_NO,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_NO,
+        XEMU_VK_FAST_PATHS_INFO_0_NO,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_NO },
-            { "nearest", OPTION_VAL_NEAREST_NO },
+            { "all",      OPTION_VAL_ALL_NO },
+            { "no_gpl",   OPTION_VAL_NO_GPL_NO },
+            { "no_dyn",   OPTION_VAL_NO_DYN_NO },
+            { "none",     OPTION_VAL_NONE_NO },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_NO,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_NO,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_NO,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_NO,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_NO,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_NO,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_NO },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_NO },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_NO },
+            { "15", OPTION_VAL_15_NO },
+            { "20", OPTION_VAL_20_NO },
+            { "25", OPTION_VAL_25_NO },
+            { "30", OPTION_VAL_30_NO },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_NO,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_NO,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_NO },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_NO },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_NO },
+            { "15", OPTION_VAL_15_NO },
+            { "20", OPTION_VAL_20_NO },
+            { "25", OPTION_VAL_25_NO },
+            { "30", OPTION_VAL_30_NO },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_NO,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_NO,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_NO,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_NO,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_NO },
+            { "stick", OPTION_VAL_STICK_NO },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_NO,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_NO,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_NO,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_NO,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_NO },
+            { "50",  OPTION_VAL_50_NO },
+            { "75",  OPTION_VAL_75_NO },
+            { "100", OPTION_VAL_100_NO },
+            { "150", OPTION_VAL_150_NO },
+            { "200", OPTION_VAL_200_NO },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -8571,6 +17532,10 @@ struct retro_core_options_v2 options_no = {
 #define CATEGORY_VIDEO_INFO_0_OR NULL
 #define CATEGORY_AUDIO_LABEL_OR "ଅଡ଼ିଓ"
 #define CATEGORY_AUDIO_INFO_0_OR NULL
+#define CATEGORY_CONTROLS_LABEL_OR NULL
+#define CATEGORY_CONTROLS_INFO_0_OR NULL
+#define CATEGORY_CHIHIRO_LABEL_OR NULL
+#define CATEGORY_CHIHIRO_INFO_0_OR NULL
 #define XEMU_MEMORY_LABEL_OR NULL
 #define XEMU_MEMORY_INFO_0_OR NULL
 #define OPTION_VAL_64_OR NULL
@@ -8582,15 +17547,23 @@ struct retro_core_options_v2 options_no = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_OR NULL
 #define XEMU_HARD_FPU_LABEL_OR NULL
 #define XEMU_HARD_FPU_INFO_0_OR NULL
+#define XEMU_CPU_BOOST_LABEL_OR NULL
+#define XEMU_CPU_BOOST_INFO_0_OR NULL
+#define XEMU_HDD_TRIM_LABEL_OR NULL
+#define XEMU_HDD_TRIM_INFO_0_OR NULL
 #define XEMU_RENDERER_LABEL_OR NULL
 #define XEMU_RENDERER_INFO_0_OR NULL
 #define OPTION_VAL_VULKAN_OR NULL
 #define OPTION_VAL_OPENGL_OR NULL
+#define XEMU_VIDEO_ASPECT_LABEL_OR NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_OR NULL
+#define OPTION_VAL_DASHBOARD_OR NULL
+#define OPTION_VAL_4_3_OR NULL
+#define OPTION_VAL_16_9_OR NULL
+#define OPTION_VAL_LETTERBOX_OR NULL
 #define XEMU_ASPECT_RATIO_LABEL_OR NULL
 #define XEMU_ASPECT_RATIO_INFO_0_OR NULL
 #define OPTION_VAL_AUTO_OR NULL
-#define OPTION_VAL_4_3_OR NULL
-#define OPTION_VAL_16_9_OR NULL
 #define XEMU_SURFACE_SCALE_LABEL_OR NULL
 #define XEMU_SURFACE_SCALE_INFO_0_OR NULL
 #define OPTION_VAL_1_OR NULL
@@ -8610,12 +17583,18 @@ struct retro_core_options_v2 options_no = {
 #define OPTION_VAL_SVIDEO_OR NULL
 #define OPTION_VAL_SCART_OR NULL
 #define OPTION_VAL_VGA_OR NULL
+#define XEMU_AUDIO_THREAD_LABEL_OR NULL
+#define XEMU_AUDIO_THREAD_INFO_0_OR NULL
 #define XEMU_USE_DSP_LABEL_OR NULL
 #define XEMU_USE_DSP_INFO_0_OR NULL
-#define XEMU_CACHE_SHADERS_LABEL_OR NULL
-#define XEMU_CACHE_SHADERS_INFO_0_OR NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_OR NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_OR NULL
+#define XEMU_DSP_JIT_LABEL_OR NULL
+#define XEMU_DSP_JIT_INFO_0_OR NULL
+#define XEMU_HRTF_LABEL_OR NULL
+#define XEMU_HRTF_INFO_0_OR NULL
+#define XEMU_VP_WORKERS_LABEL_OR NULL
+#define XEMU_VP_WORKERS_INFO_0_OR NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_OR NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_OR NULL
 #define XEMU_AUDIO_VOLUME_LABEL_OR NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_OR NULL
 #define OPTION_VAL_100_OR NULL
@@ -8624,10 +17603,40 @@ struct retro_core_options_v2 options_no = {
 #define OPTION_VAL_40_OR NULL
 #define OPTION_VAL_20_OR NULL
 #define OPTION_VAL_0_OR NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_OR NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_OR NULL
-#define OPTION_VAL_LINEAR_OR NULL
-#define OPTION_VAL_NEAREST_OR NULL
+#define XEMU_VK_FAST_PATHS_LABEL_OR NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_OR NULL
+#define OPTION_VAL_ALL_OR NULL
+#define OPTION_VAL_NO_GPL_OR NULL
+#define OPTION_VAL_NO_DYN_OR NULL
+#define OPTION_VAL_NONE_OR NULL
+#define XEMU_RUMBLE_P1_LABEL_OR NULL
+#define XEMU_RUMBLE_P1_INFO_0_OR NULL
+#define XEMU_RUMBLE_P2_LABEL_OR NULL
+#define XEMU_RUMBLE_P2_INFO_0_OR NULL
+#define XEMU_DEADZONE_P1_LABEL_OR NULL
+#define XEMU_DEADZONE_P1_INFO_0_OR NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_OR NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_OR NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_OR NULL
+#define OPTION_VAL_15_OR NULL
+#define OPTION_VAL_25_OR NULL
+#define OPTION_VAL_30_OR NULL
+#define XEMU_DEADZONE_P2_LABEL_OR NULL
+#define XEMU_DEADZONE_P2_INFO_0_OR NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_OR NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_OR NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_OR NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_OR NULL
+#define OPTION_VAL_MOUSE_OR NULL
+#define OPTION_VAL_STICK_OR NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_OR NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_OR NULL
+#define XEMU_CHIHIRO_FFB_LABEL_OR NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_OR NULL
+#define OPTION_VAL_50_OR NULL
+#define OPTION_VAL_75_OR NULL
+#define OPTION_VAL_150_OR NULL
+#define OPTION_VAL_200_OR NULL
 
 struct retro_core_option_v2_category option_cats_or[] = {
     {
@@ -8645,13 +17654,19 @@ struct retro_core_option_v2_category option_cats_or[] = {
         CATEGORY_AUDIO_LABEL_OR,
         CATEGORY_AUDIO_INFO_0_OR
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_OR,
+        CATEGORY_CONTROLS_INFO_0_OR
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_OR,
+        CATEGORY_CHIHIRO_INFO_0_OR
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_or[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_OR,
@@ -8680,6 +17695,8 @@ struct retro_core_option_v2_definition option_defs_or[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_OR,
@@ -8692,7 +17709,7 @@ struct retro_core_option_v2_definition option_defs_or[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -8709,6 +17726,38 @@ struct retro_core_option_v2_definition option_defs_or[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_OR,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_OR,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_OR,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_OR,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_OR,
         NULL,
@@ -8721,6 +17770,25 @@ struct retro_core_option_v2_definition option_defs_or[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_OR,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_OR,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_OR },
+            { "4:3",       OPTION_VAL_4_3_OR },
+            { "16:9",      OPTION_VAL_16_9_OR },
+            { "letterbox", OPTION_VAL_LETTERBOX_OR },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -8776,6 +17844,25 @@ struct retro_core_option_v2_definition option_defs_or[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_OR,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_OR,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_OR,
@@ -8790,13 +17877,29 @@ struct retro_core_option_v2_definition option_defs_or[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_OR,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_OR,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_OR,
+        XEMU_DSP_JIT_INFO_0_OR,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_OR,
+        NULL,
+        XEMU_HRTF_INFO_0_OR,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -8805,10 +17908,27 @@ struct retro_core_option_v2_definition option_defs_or[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_OR,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_OR,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_OR,
+        XEMU_VP_WORKERS_INFO_0_OR,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_OR },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_OR,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_OR,
         NULL,
         "video",
         {
@@ -8836,19 +17956,169 @@ struct retro_core_option_v2_definition option_defs_or[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_OR,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_OR,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_OR,
+        XEMU_VK_FAST_PATHS_INFO_0_OR,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_OR },
-            { "nearest", OPTION_VAL_NEAREST_OR },
+            { "all",      OPTION_VAL_ALL_OR },
+            { "no_gpl",   OPTION_VAL_NO_GPL_OR },
+            { "no_dyn",   OPTION_VAL_NO_DYN_OR },
+            { "none",     OPTION_VAL_NONE_OR },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_OR,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_OR,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_OR,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_OR,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_OR,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_OR,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_OR },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_OR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_OR },
+            { "15", OPTION_VAL_15_OR },
+            { "20", OPTION_VAL_20_OR },
+            { "25", OPTION_VAL_25_OR },
+            { "30", OPTION_VAL_30_OR },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_OR,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_OR,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_OR },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_OR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_OR },
+            { "15", OPTION_VAL_15_OR },
+            { "20", OPTION_VAL_20_OR },
+            { "25", OPTION_VAL_25_OR },
+            { "30", OPTION_VAL_30_OR },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_OR,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_OR,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_OR,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_OR,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_OR },
+            { "stick", OPTION_VAL_STICK_OR },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_OR,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_OR,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_OR,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_OR,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_OR },
+            { "50",  OPTION_VAL_50_OR },
+            { "75",  OPTION_VAL_75_OR },
+            { "100", OPTION_VAL_100_OR },
+            { "150", OPTION_VAL_150_OR },
+            { "200", OPTION_VAL_200_OR },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -8865,6 +18135,10 @@ struct retro_core_options_v2 options_or = {
 #define CATEGORY_VIDEO_INFO_0_PL NULL
 #define CATEGORY_AUDIO_LABEL_PL "Dźwięk"
 #define CATEGORY_AUDIO_INFO_0_PL NULL
+#define CATEGORY_CONTROLS_LABEL_PL "Elementy sterujące"
+#define CATEGORY_CONTROLS_INFO_0_PL NULL
+#define CATEGORY_CHIHIRO_LABEL_PL NULL
+#define CATEGORY_CHIHIRO_INFO_0_PL NULL
 #define XEMU_MEMORY_LABEL_PL NULL
 #define XEMU_MEMORY_INFO_0_PL NULL
 #define OPTION_VAL_64_PL NULL
@@ -8876,15 +18150,23 @@ struct retro_core_options_v2 options_or = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_PL NULL
 #define XEMU_HARD_FPU_LABEL_PL NULL
 #define XEMU_HARD_FPU_INFO_0_PL NULL
+#define XEMU_CPU_BOOST_LABEL_PL NULL
+#define XEMU_CPU_BOOST_INFO_0_PL NULL
+#define XEMU_HDD_TRIM_LABEL_PL NULL
+#define XEMU_HDD_TRIM_INFO_0_PL NULL
 #define XEMU_RENDERER_LABEL_PL NULL
 #define XEMU_RENDERER_INFO_0_PL NULL
 #define OPTION_VAL_VULKAN_PL NULL
 #define OPTION_VAL_OPENGL_PL NULL
-#define XEMU_ASPECT_RATIO_LABEL_PL "Współczynnik proporcji"
-#define XEMU_ASPECT_RATIO_INFO_0_PL NULL
-#define OPTION_VAL_AUTO_PL "Automatyczny"
+#define XEMU_VIDEO_ASPECT_LABEL_PL NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_PL NULL
+#define OPTION_VAL_DASHBOARD_PL NULL
 #define OPTION_VAL_4_3_PL NULL
 #define OPTION_VAL_16_9_PL NULL
+#define OPTION_VAL_LETTERBOX_PL NULL
+#define XEMU_ASPECT_RATIO_LABEL_PL "Proporcje rdzenia"
+#define XEMU_ASPECT_RATIO_INFO_0_PL NULL
+#define OPTION_VAL_AUTO_PL "Automatyczny"
 #define XEMU_SURFACE_SCALE_LABEL_PL NULL
 #define XEMU_SURFACE_SCALE_INFO_0_PL NULL
 #define OPTION_VAL_1_PL NULL
@@ -8904,12 +18186,18 @@ struct retro_core_options_v2 options_or = {
 #define OPTION_VAL_SVIDEO_PL NULL
 #define OPTION_VAL_SCART_PL NULL
 #define OPTION_VAL_VGA_PL NULL
+#define XEMU_AUDIO_THREAD_LABEL_PL NULL
+#define XEMU_AUDIO_THREAD_INFO_0_PL NULL
 #define XEMU_USE_DSP_LABEL_PL NULL
 #define XEMU_USE_DSP_INFO_0_PL NULL
-#define XEMU_CACHE_SHADERS_LABEL_PL NULL
-#define XEMU_CACHE_SHADERS_INFO_0_PL NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_PL NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_PL NULL
+#define XEMU_DSP_JIT_LABEL_PL NULL
+#define XEMU_DSP_JIT_INFO_0_PL NULL
+#define XEMU_HRTF_LABEL_PL NULL
+#define XEMU_HRTF_INFO_0_PL NULL
+#define XEMU_VP_WORKERS_LABEL_PL NULL
+#define XEMU_VP_WORKERS_INFO_0_PL NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_PL NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_PL NULL
 #define XEMU_AUDIO_VOLUME_LABEL_PL NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_PL NULL
 #define OPTION_VAL_100_PL NULL
@@ -8918,10 +18206,40 @@ struct retro_core_options_v2 options_or = {
 #define OPTION_VAL_40_PL NULL
 #define OPTION_VAL_20_PL NULL
 #define OPTION_VAL_0_PL NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_PL NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_PL NULL
-#define OPTION_VAL_LINEAR_PL "Dwuliniowy"
-#define OPTION_VAL_NEAREST_PL "Najbliższy sąsiad"
+#define XEMU_VK_FAST_PATHS_LABEL_PL NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_PL NULL
+#define OPTION_VAL_ALL_PL "Wszystkie"
+#define OPTION_VAL_NO_GPL_PL NULL
+#define OPTION_VAL_NO_DYN_PL NULL
+#define OPTION_VAL_NONE_PL "Brak"
+#define XEMU_RUMBLE_P1_LABEL_PL NULL
+#define XEMU_RUMBLE_P1_INFO_0_PL NULL
+#define XEMU_RUMBLE_P2_LABEL_PL NULL
+#define XEMU_RUMBLE_P2_INFO_0_PL NULL
+#define XEMU_DEADZONE_P1_LABEL_PL NULL
+#define XEMU_DEADZONE_P1_INFO_0_PL NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_PL NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_PL NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_PL NULL
+#define OPTION_VAL_15_PL NULL
+#define OPTION_VAL_25_PL NULL
+#define OPTION_VAL_30_PL "30 %"
+#define XEMU_DEADZONE_P2_LABEL_PL NULL
+#define XEMU_DEADZONE_P2_INFO_0_PL NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_PL NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_PL NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_PL NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_PL NULL
+#define OPTION_VAL_MOUSE_PL "Mysz"
+#define OPTION_VAL_STICK_PL NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_PL NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_PL NULL
+#define XEMU_CHIHIRO_FFB_LABEL_PL NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_PL NULL
+#define OPTION_VAL_50_PL "50 %"
+#define OPTION_VAL_75_PL NULL
+#define OPTION_VAL_150_PL NULL
+#define OPTION_VAL_200_PL NULL
 
 struct retro_core_option_v2_category option_cats_pl[] = {
     {
@@ -8939,13 +18257,19 @@ struct retro_core_option_v2_category option_cats_pl[] = {
         CATEGORY_AUDIO_LABEL_PL,
         CATEGORY_AUDIO_INFO_0_PL
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_PL,
+        CATEGORY_CONTROLS_INFO_0_PL
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_PL,
+        CATEGORY_CHIHIRO_INFO_0_PL
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_pl[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_PL,
@@ -8974,6 +18298,8 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_PL,
@@ -8986,7 +18312,7 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -9003,6 +18329,38 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_PL,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_PL,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_PL,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_PL,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_PL,
         NULL,
@@ -9015,6 +18373,25 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_PL,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_PL,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_PL },
+            { "4:3",       OPTION_VAL_4_3_PL },
+            { "16:9",      OPTION_VAL_16_9_PL },
+            { "letterbox", OPTION_VAL_LETTERBOX_PL },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -9070,6 +18447,25 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_PL,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_PL,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_PL,
@@ -9084,13 +18480,29 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_PL,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_PL,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_PL,
+        XEMU_DSP_JIT_INFO_0_PL,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_PL,
+        NULL,
+        XEMU_HRTF_INFO_0_PL,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -9099,10 +18511,27 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_PL,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_PL,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_PL,
+        XEMU_VP_WORKERS_INFO_0_PL,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_PL },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_PL,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_PL,
         NULL,
         "video",
         {
@@ -9130,19 +18559,169 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_PL,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_PL,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_PL,
+        XEMU_VK_FAST_PATHS_INFO_0_PL,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_PL },
-            { "nearest", OPTION_VAL_NEAREST_PL },
+            { "all",      OPTION_VAL_ALL_PL },
+            { "no_gpl",   OPTION_VAL_NO_GPL_PL },
+            { "no_dyn",   OPTION_VAL_NO_DYN_PL },
+            { "none",     OPTION_VAL_NONE_PL },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_PL,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_PL,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_PL,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_PL,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_PL,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_PL,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_PL },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_PL },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_PL },
+            { "15", OPTION_VAL_15_PL },
+            { "20", OPTION_VAL_20_PL },
+            { "25", OPTION_VAL_25_PL },
+            { "30", OPTION_VAL_30_PL },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_PL,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_PL,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_PL },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_PL },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_PL },
+            { "15", OPTION_VAL_15_PL },
+            { "20", OPTION_VAL_20_PL },
+            { "25", OPTION_VAL_25_PL },
+            { "30", OPTION_VAL_30_PL },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_PL,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_PL,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_PL,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_PL,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_PL },
+            { "stick", OPTION_VAL_STICK_PL },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_PL,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_PL,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_PL,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_PL,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_PL },
+            { "50",  OPTION_VAL_50_PL },
+            { "75",  OPTION_VAL_75_PL },
+            { "100", OPTION_VAL_100_PL },
+            { "150", OPTION_VAL_150_PL },
+            { "200", OPTION_VAL_200_PL },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -9153,12 +18732,16 @@ struct retro_core_options_v2 options_pl = {
 
 /* RETRO_LANGUAGE_PT_BR */
 
-#define CATEGORY_SYSTEM_LABEL_PT_BR "Sistema"
+#define CATEGORY_SYSTEM_LABEL_PT_BR NULL
 #define CATEGORY_SYSTEM_INFO_0_PT_BR NULL
 #define CATEGORY_VIDEO_LABEL_PT_BR "Vídeo"
 #define CATEGORY_VIDEO_INFO_0_PT_BR NULL
 #define CATEGORY_AUDIO_LABEL_PT_BR "Áudio"
 #define CATEGORY_AUDIO_INFO_0_PT_BR NULL
+#define CATEGORY_CONTROLS_LABEL_PT_BR "Controles"
+#define CATEGORY_CONTROLS_INFO_0_PT_BR NULL
+#define CATEGORY_CHIHIRO_LABEL_PT_BR NULL
+#define CATEGORY_CHIHIRO_INFO_0_PT_BR NULL
 #define XEMU_MEMORY_LABEL_PT_BR NULL
 #define XEMU_MEMORY_INFO_0_PT_BR NULL
 #define OPTION_VAL_64_PT_BR NULL
@@ -9170,15 +18753,23 @@ struct retro_core_options_v2 options_pl = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_PT_BR NULL
 #define XEMU_HARD_FPU_LABEL_PT_BR NULL
 #define XEMU_HARD_FPU_INFO_0_PT_BR NULL
+#define XEMU_CPU_BOOST_LABEL_PT_BR NULL
+#define XEMU_CPU_BOOST_INFO_0_PT_BR NULL
+#define XEMU_HDD_TRIM_LABEL_PT_BR NULL
+#define XEMU_HDD_TRIM_INFO_0_PT_BR NULL
 #define XEMU_RENDERER_LABEL_PT_BR NULL
 #define XEMU_RENDERER_INFO_0_PT_BR NULL
 #define OPTION_VAL_VULKAN_PT_BR NULL
 #define OPTION_VAL_OPENGL_PT_BR NULL
-#define XEMU_ASPECT_RATIO_LABEL_PT_BR "Proporção de tela"
-#define XEMU_ASPECT_RATIO_INFO_0_PT_BR NULL
-#define OPTION_VAL_AUTO_PT_BR "Automático"
+#define XEMU_VIDEO_ASPECT_LABEL_PT_BR NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_PT_BR NULL
+#define OPTION_VAL_DASHBOARD_PT_BR NULL
 #define OPTION_VAL_4_3_PT_BR NULL
 #define OPTION_VAL_16_9_PT_BR NULL
+#define OPTION_VAL_LETTERBOX_PT_BR NULL
+#define XEMU_ASPECT_RATIO_LABEL_PT_BR "Proporção de tela do núcleo"
+#define XEMU_ASPECT_RATIO_INFO_0_PT_BR NULL
+#define OPTION_VAL_AUTO_PT_BR "Automático"
 #define XEMU_SURFACE_SCALE_LABEL_PT_BR NULL
 #define XEMU_SURFACE_SCALE_INFO_0_PT_BR NULL
 #define OPTION_VAL_1_PT_BR NULL
@@ -9198,12 +18789,18 @@ struct retro_core_options_v2 options_pl = {
 #define OPTION_VAL_SVIDEO_PT_BR NULL
 #define OPTION_VAL_SCART_PT_BR NULL
 #define OPTION_VAL_VGA_PT_BR NULL
+#define XEMU_AUDIO_THREAD_LABEL_PT_BR NULL
+#define XEMU_AUDIO_THREAD_INFO_0_PT_BR NULL
 #define XEMU_USE_DSP_LABEL_PT_BR NULL
 #define XEMU_USE_DSP_INFO_0_PT_BR NULL
-#define XEMU_CACHE_SHADERS_LABEL_PT_BR NULL
-#define XEMU_CACHE_SHADERS_INFO_0_PT_BR NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_PT_BR NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_PT_BR NULL
+#define XEMU_DSP_JIT_LABEL_PT_BR NULL
+#define XEMU_DSP_JIT_INFO_0_PT_BR NULL
+#define XEMU_HRTF_LABEL_PT_BR NULL
+#define XEMU_HRTF_INFO_0_PT_BR NULL
+#define XEMU_VP_WORKERS_LABEL_PT_BR NULL
+#define XEMU_VP_WORKERS_INFO_0_PT_BR NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_PT_BR NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_PT_BR NULL
 #define XEMU_AUDIO_VOLUME_LABEL_PT_BR NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_PT_BR NULL
 #define OPTION_VAL_100_PT_BR NULL
@@ -9212,10 +18809,40 @@ struct retro_core_options_v2 options_pl = {
 #define OPTION_VAL_40_PT_BR NULL
 #define OPTION_VAL_20_PT_BR NULL
 #define OPTION_VAL_0_PT_BR NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_PT_BR NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_PT_BR NULL
-#define OPTION_VAL_LINEAR_PT_BR NULL
-#define OPTION_VAL_NEAREST_PT_BR NULL
+#define XEMU_VK_FAST_PATHS_LABEL_PT_BR NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_PT_BR NULL
+#define OPTION_VAL_ALL_PT_BR "Todas"
+#define OPTION_VAL_NO_GPL_PT_BR NULL
+#define OPTION_VAL_NO_DYN_PT_BR NULL
+#define OPTION_VAL_NONE_PT_BR "Nenhum"
+#define XEMU_RUMBLE_P1_LABEL_PT_BR NULL
+#define XEMU_RUMBLE_P1_INFO_0_PT_BR NULL
+#define XEMU_RUMBLE_P2_LABEL_PT_BR NULL
+#define XEMU_RUMBLE_P2_INFO_0_PT_BR NULL
+#define XEMU_DEADZONE_P1_LABEL_PT_BR NULL
+#define XEMU_DEADZONE_P1_INFO_0_PT_BR NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_PT_BR NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_PT_BR NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_PT_BR NULL
+#define OPTION_VAL_15_PT_BR NULL
+#define OPTION_VAL_25_PT_BR NULL
+#define OPTION_VAL_30_PT_BR NULL
+#define XEMU_DEADZONE_P2_LABEL_PT_BR NULL
+#define XEMU_DEADZONE_P2_INFO_0_PT_BR NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_PT_BR NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_PT_BR NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_PT_BR NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_PT_BR NULL
+#define OPTION_VAL_MOUSE_PT_BR NULL
+#define OPTION_VAL_STICK_PT_BR NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_PT_BR NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_PT_BR NULL
+#define XEMU_CHIHIRO_FFB_LABEL_PT_BR NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_PT_BR NULL
+#define OPTION_VAL_50_PT_BR NULL
+#define OPTION_VAL_75_PT_BR NULL
+#define OPTION_VAL_150_PT_BR NULL
+#define OPTION_VAL_200_PT_BR NULL
 
 struct retro_core_option_v2_category option_cats_pt_br[] = {
     {
@@ -9233,13 +18860,19 @@ struct retro_core_option_v2_category option_cats_pt_br[] = {
         CATEGORY_AUDIO_LABEL_PT_BR,
         CATEGORY_AUDIO_INFO_0_PT_BR
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_PT_BR,
+        CATEGORY_CONTROLS_INFO_0_PT_BR
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_PT_BR,
+        CATEGORY_CHIHIRO_INFO_0_PT_BR
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_pt_br[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_PT_BR,
@@ -9268,6 +18901,8 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_PT_BR,
@@ -9280,7 +18915,7 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -9297,6 +18932,38 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_PT_BR,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_PT_BR,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_PT_BR,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_PT_BR,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_PT_BR,
         NULL,
@@ -9309,6 +18976,25 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_PT_BR,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_PT_BR,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_PT_BR },
+            { "4:3",       OPTION_VAL_4_3_PT_BR },
+            { "16:9",      OPTION_VAL_16_9_PT_BR },
+            { "letterbox", OPTION_VAL_LETTERBOX_PT_BR },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -9364,6 +19050,25 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_PT_BR,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_PT_BR,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_PT_BR,
@@ -9378,13 +19083,29 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_PT_BR,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_PT_BR,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_PT_BR,
+        XEMU_DSP_JIT_INFO_0_PT_BR,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_PT_BR,
+        NULL,
+        XEMU_HRTF_INFO_0_PT_BR,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -9393,10 +19114,27 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_PT_BR,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_PT_BR,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_PT_BR,
+        XEMU_VP_WORKERS_INFO_0_PT_BR,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_PT_BR },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_PT_BR,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_PT_BR,
         NULL,
         "video",
         {
@@ -9424,19 +19162,169 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_PT_BR,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_PT_BR,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_PT_BR,
+        XEMU_VK_FAST_PATHS_INFO_0_PT_BR,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_PT_BR },
-            { "nearest", OPTION_VAL_NEAREST_PT_BR },
+            { "all",      OPTION_VAL_ALL_PT_BR },
+            { "no_gpl",   OPTION_VAL_NO_GPL_PT_BR },
+            { "no_dyn",   OPTION_VAL_NO_DYN_PT_BR },
+            { "none",     OPTION_VAL_NONE_PT_BR },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_PT_BR,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_PT_BR,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_PT_BR,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_PT_BR,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_PT_BR,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_PT_BR,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_PT_BR },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_PT_BR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_PT_BR },
+            { "15", OPTION_VAL_15_PT_BR },
+            { "20", OPTION_VAL_20_PT_BR },
+            { "25", OPTION_VAL_25_PT_BR },
+            { "30", OPTION_VAL_30_PT_BR },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_PT_BR,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_PT_BR,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_PT_BR },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_PT_BR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_PT_BR },
+            { "15", OPTION_VAL_15_PT_BR },
+            { "20", OPTION_VAL_20_PT_BR },
+            { "25", OPTION_VAL_25_PT_BR },
+            { "30", OPTION_VAL_30_PT_BR },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_PT_BR,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_PT_BR,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_PT_BR,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_PT_BR,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_PT_BR },
+            { "stick", OPTION_VAL_STICK_PT_BR },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_PT_BR,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_PT_BR,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_PT_BR,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_PT_BR,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_PT_BR },
+            { "50",  OPTION_VAL_50_PT_BR },
+            { "75",  OPTION_VAL_75_PT_BR },
+            { "100", OPTION_VAL_100_PT_BR },
+            { "150", OPTION_VAL_150_PT_BR },
+            { "200", OPTION_VAL_200_PT_BR },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -9453,6 +19341,10 @@ struct retro_core_options_v2 options_pt_br = {
 #define CATEGORY_VIDEO_INFO_0_PT_PT NULL
 #define CATEGORY_AUDIO_LABEL_PT_PT "Áudio"
 #define CATEGORY_AUDIO_INFO_0_PT_PT NULL
+#define CATEGORY_CONTROLS_LABEL_PT_PT "Mapeamento de teclas"
+#define CATEGORY_CONTROLS_INFO_0_PT_PT NULL
+#define CATEGORY_CHIHIRO_LABEL_PT_PT NULL
+#define CATEGORY_CHIHIRO_INFO_0_PT_PT NULL
 #define XEMU_MEMORY_LABEL_PT_PT NULL
 #define XEMU_MEMORY_INFO_0_PT_PT NULL
 #define OPTION_VAL_64_PT_PT NULL
@@ -9464,15 +19356,23 @@ struct retro_core_options_v2 options_pt_br = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_PT_PT NULL
 #define XEMU_HARD_FPU_LABEL_PT_PT NULL
 #define XEMU_HARD_FPU_INFO_0_PT_PT NULL
+#define XEMU_CPU_BOOST_LABEL_PT_PT NULL
+#define XEMU_CPU_BOOST_INFO_0_PT_PT NULL
+#define XEMU_HDD_TRIM_LABEL_PT_PT NULL
+#define XEMU_HDD_TRIM_INFO_0_PT_PT NULL
 #define XEMU_RENDERER_LABEL_PT_PT NULL
 #define XEMU_RENDERER_INFO_0_PT_PT NULL
 #define OPTION_VAL_VULKAN_PT_PT NULL
 #define OPTION_VAL_OPENGL_PT_PT NULL
-#define XEMU_ASPECT_RATIO_LABEL_PT_PT "Proporção do ecrã"
-#define XEMU_ASPECT_RATIO_INFO_0_PT_PT NULL
-#define OPTION_VAL_AUTO_PT_PT "Automático"
+#define XEMU_VIDEO_ASPECT_LABEL_PT_PT NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_PT_PT NULL
+#define OPTION_VAL_DASHBOARD_PT_PT NULL
 #define OPTION_VAL_4_3_PT_PT NULL
 #define OPTION_VAL_16_9_PT_PT NULL
+#define OPTION_VAL_LETTERBOX_PT_PT NULL
+#define XEMU_ASPECT_RATIO_LABEL_PT_PT NULL
+#define XEMU_ASPECT_RATIO_INFO_0_PT_PT NULL
+#define OPTION_VAL_AUTO_PT_PT "Automático"
 #define XEMU_SURFACE_SCALE_LABEL_PT_PT NULL
 #define XEMU_SURFACE_SCALE_INFO_0_PT_PT NULL
 #define OPTION_VAL_1_PT_PT NULL
@@ -9492,12 +19392,18 @@ struct retro_core_options_v2 options_pt_br = {
 #define OPTION_VAL_SVIDEO_PT_PT NULL
 #define OPTION_VAL_SCART_PT_PT NULL
 #define OPTION_VAL_VGA_PT_PT NULL
+#define XEMU_AUDIO_THREAD_LABEL_PT_PT NULL
+#define XEMU_AUDIO_THREAD_INFO_0_PT_PT NULL
 #define XEMU_USE_DSP_LABEL_PT_PT NULL
 #define XEMU_USE_DSP_INFO_0_PT_PT NULL
-#define XEMU_CACHE_SHADERS_LABEL_PT_PT NULL
-#define XEMU_CACHE_SHADERS_INFO_0_PT_PT NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_PT_PT NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_PT_PT NULL
+#define XEMU_DSP_JIT_LABEL_PT_PT NULL
+#define XEMU_DSP_JIT_INFO_0_PT_PT NULL
+#define XEMU_HRTF_LABEL_PT_PT NULL
+#define XEMU_HRTF_INFO_0_PT_PT NULL
+#define XEMU_VP_WORKERS_LABEL_PT_PT NULL
+#define XEMU_VP_WORKERS_INFO_0_PT_PT NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_PT_PT NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_PT_PT NULL
 #define XEMU_AUDIO_VOLUME_LABEL_PT_PT NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_PT_PT NULL
 #define OPTION_VAL_100_PT_PT NULL
@@ -9506,10 +19412,40 @@ struct retro_core_options_v2 options_pt_br = {
 #define OPTION_VAL_40_PT_PT NULL
 #define OPTION_VAL_20_PT_PT NULL
 #define OPTION_VAL_0_PT_PT NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_PT_PT NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_PT_PT NULL
-#define OPTION_VAL_LINEAR_PT_PT NULL
-#define OPTION_VAL_NEAREST_PT_PT "Vizinho mais próximo"
+#define XEMU_VK_FAST_PATHS_LABEL_PT_PT NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_PT_PT NULL
+#define OPTION_VAL_ALL_PT_PT NULL
+#define OPTION_VAL_NO_GPL_PT_PT NULL
+#define OPTION_VAL_NO_DYN_PT_PT NULL
+#define OPTION_VAL_NONE_PT_PT "Não partilhar"
+#define XEMU_RUMBLE_P1_LABEL_PT_PT NULL
+#define XEMU_RUMBLE_P1_INFO_0_PT_PT NULL
+#define XEMU_RUMBLE_P2_LABEL_PT_PT NULL
+#define XEMU_RUMBLE_P2_INFO_0_PT_PT NULL
+#define XEMU_DEADZONE_P1_LABEL_PT_PT NULL
+#define XEMU_DEADZONE_P1_INFO_0_PT_PT NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_PT_PT NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_PT_PT NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_PT_PT NULL
+#define OPTION_VAL_15_PT_PT NULL
+#define OPTION_VAL_25_PT_PT NULL
+#define OPTION_VAL_30_PT_PT NULL
+#define XEMU_DEADZONE_P2_LABEL_PT_PT NULL
+#define XEMU_DEADZONE_P2_INFO_0_PT_PT NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_PT_PT NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_PT_PT NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_PT_PT NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_PT_PT NULL
+#define OPTION_VAL_MOUSE_PT_PT NULL
+#define OPTION_VAL_STICK_PT_PT NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_PT_PT NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_PT_PT NULL
+#define XEMU_CHIHIRO_FFB_LABEL_PT_PT NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_PT_PT NULL
+#define OPTION_VAL_50_PT_PT NULL
+#define OPTION_VAL_75_PT_PT NULL
+#define OPTION_VAL_150_PT_PT NULL
+#define OPTION_VAL_200_PT_PT NULL
 
 struct retro_core_option_v2_category option_cats_pt_pt[] = {
     {
@@ -9527,13 +19463,19 @@ struct retro_core_option_v2_category option_cats_pt_pt[] = {
         CATEGORY_AUDIO_LABEL_PT_PT,
         CATEGORY_AUDIO_INFO_0_PT_PT
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_PT_PT,
+        CATEGORY_CONTROLS_INFO_0_PT_PT
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_PT_PT,
+        CATEGORY_CHIHIRO_INFO_0_PT_PT
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_pt_pt[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_PT_PT,
@@ -9562,6 +19504,8 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_PT_PT,
@@ -9574,7 +19518,7 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -9591,6 +19535,38 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_PT_PT,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_PT_PT,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_PT_PT,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_PT_PT,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_PT_PT,
         NULL,
@@ -9603,6 +19579,25 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_PT_PT,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_PT_PT,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_PT_PT },
+            { "4:3",       OPTION_VAL_4_3_PT_PT },
+            { "16:9",      OPTION_VAL_16_9_PT_PT },
+            { "letterbox", OPTION_VAL_LETTERBOX_PT_PT },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -9658,6 +19653,25 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_PT_PT,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_PT_PT,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_PT_PT,
@@ -9672,13 +19686,29 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_PT_PT,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_PT_PT,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_PT_PT,
+        XEMU_DSP_JIT_INFO_0_PT_PT,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_PT_PT,
+        NULL,
+        XEMU_HRTF_INFO_0_PT_PT,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -9687,10 +19717,27 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_PT_PT,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_PT_PT,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_PT_PT,
+        XEMU_VP_WORKERS_INFO_0_PT_PT,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_PT_PT },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_PT_PT,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_PT_PT,
         NULL,
         "video",
         {
@@ -9718,19 +19765,169 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_PT_PT,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_PT_PT,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_PT_PT,
+        XEMU_VK_FAST_PATHS_INFO_0_PT_PT,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_PT_PT },
-            { "nearest", OPTION_VAL_NEAREST_PT_PT },
+            { "all",      OPTION_VAL_ALL_PT_PT },
+            { "no_gpl",   OPTION_VAL_NO_GPL_PT_PT },
+            { "no_dyn",   OPTION_VAL_NO_DYN_PT_PT },
+            { "none",     OPTION_VAL_NONE_PT_PT },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_PT_PT,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_PT_PT,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_PT_PT,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_PT_PT,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_PT_PT,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_PT_PT,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_PT_PT },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_PT_PT },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_PT_PT },
+            { "15", OPTION_VAL_15_PT_PT },
+            { "20", OPTION_VAL_20_PT_PT },
+            { "25", OPTION_VAL_25_PT_PT },
+            { "30", OPTION_VAL_30_PT_PT },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_PT_PT,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_PT_PT,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_PT_PT },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_PT_PT },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_PT_PT },
+            { "15", OPTION_VAL_15_PT_PT },
+            { "20", OPTION_VAL_20_PT_PT },
+            { "25", OPTION_VAL_25_PT_PT },
+            { "30", OPTION_VAL_30_PT_PT },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_PT_PT,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_PT_PT,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_PT_PT,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_PT_PT,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_PT_PT },
+            { "stick", OPTION_VAL_STICK_PT_PT },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_PT_PT,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_PT_PT,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_PT_PT,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_PT_PT,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_PT_PT },
+            { "50",  OPTION_VAL_50_PT_PT },
+            { "75",  OPTION_VAL_75_PT_PT },
+            { "100", OPTION_VAL_100_PT_PT },
+            { "150", OPTION_VAL_150_PT_PT },
+            { "200", OPTION_VAL_200_PT_PT },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -9741,12 +19938,16 @@ struct retro_core_options_v2 options_pt_pt = {
 
 /* RETRO_LANGUAGE_RU */
 
-#define CATEGORY_SYSTEM_LABEL_RU "Система"
+#define CATEGORY_SYSTEM_LABEL_RU NULL
 #define CATEGORY_SYSTEM_INFO_0_RU NULL
 #define CATEGORY_VIDEO_LABEL_RU "Видео"
 #define CATEGORY_VIDEO_INFO_0_RU NULL
 #define CATEGORY_AUDIO_LABEL_RU "Аудио"
 #define CATEGORY_AUDIO_INFO_0_RU NULL
+#define CATEGORY_CONTROLS_LABEL_RU "Управление"
+#define CATEGORY_CONTROLS_INFO_0_RU NULL
+#define CATEGORY_CHIHIRO_LABEL_RU NULL
+#define CATEGORY_CHIHIRO_INFO_0_RU NULL
 #define XEMU_MEMORY_LABEL_RU NULL
 #define XEMU_MEMORY_INFO_0_RU NULL
 #define OPTION_VAL_64_RU NULL
@@ -9758,15 +19959,23 @@ struct retro_core_options_v2 options_pt_pt = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_RU NULL
 #define XEMU_HARD_FPU_LABEL_RU NULL
 #define XEMU_HARD_FPU_INFO_0_RU NULL
+#define XEMU_CPU_BOOST_LABEL_RU NULL
+#define XEMU_CPU_BOOST_INFO_0_RU NULL
+#define XEMU_HDD_TRIM_LABEL_RU NULL
+#define XEMU_HDD_TRIM_INFO_0_RU NULL
 #define XEMU_RENDERER_LABEL_RU NULL
 #define XEMU_RENDERER_INFO_0_RU NULL
 #define OPTION_VAL_VULKAN_RU NULL
 #define OPTION_VAL_OPENGL_RU NULL
-#define XEMU_ASPECT_RATIO_LABEL_RU "Соотношение сторон"
-#define XEMU_ASPECT_RATIO_INFO_0_RU NULL
-#define OPTION_VAL_AUTO_RU "Автоматически"
+#define XEMU_VIDEO_ASPECT_LABEL_RU NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_RU NULL
+#define OPTION_VAL_DASHBOARD_RU NULL
 #define OPTION_VAL_4_3_RU NULL
 #define OPTION_VAL_16_9_RU NULL
+#define OPTION_VAL_LETTERBOX_RU NULL
+#define XEMU_ASPECT_RATIO_LABEL_RU "Соотношение сторон ядра"
+#define XEMU_ASPECT_RATIO_INFO_0_RU NULL
+#define OPTION_VAL_AUTO_RU "Автоматически"
 #define XEMU_SURFACE_SCALE_LABEL_RU NULL
 #define XEMU_SURFACE_SCALE_INFO_0_RU NULL
 #define OPTION_VAL_1_RU NULL
@@ -9786,12 +19995,18 @@ struct retro_core_options_v2 options_pt_pt = {
 #define OPTION_VAL_SVIDEO_RU NULL
 #define OPTION_VAL_SCART_RU NULL
 #define OPTION_VAL_VGA_RU NULL
+#define XEMU_AUDIO_THREAD_LABEL_RU NULL
+#define XEMU_AUDIO_THREAD_INFO_0_RU NULL
 #define XEMU_USE_DSP_LABEL_RU NULL
 #define XEMU_USE_DSP_INFO_0_RU NULL
-#define XEMU_CACHE_SHADERS_LABEL_RU NULL
-#define XEMU_CACHE_SHADERS_INFO_0_RU NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_RU NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_RU NULL
+#define XEMU_DSP_JIT_LABEL_RU NULL
+#define XEMU_DSP_JIT_INFO_0_RU NULL
+#define XEMU_HRTF_LABEL_RU NULL
+#define XEMU_HRTF_INFO_0_RU NULL
+#define XEMU_VP_WORKERS_LABEL_RU NULL
+#define XEMU_VP_WORKERS_INFO_0_RU NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_RU NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_RU NULL
 #define XEMU_AUDIO_VOLUME_LABEL_RU NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_RU NULL
 #define OPTION_VAL_100_RU NULL
@@ -9800,10 +20015,40 @@ struct retro_core_options_v2 options_pt_pt = {
 #define OPTION_VAL_40_RU NULL
 #define OPTION_VAL_20_RU NULL
 #define OPTION_VAL_0_RU NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_RU NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_RU NULL
-#define OPTION_VAL_LINEAR_RU "Билинейный"
-#define OPTION_VAL_NEAREST_RU "Метод ближайшего соседа"
+#define XEMU_VK_FAST_PATHS_LABEL_RU NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_RU NULL
+#define OPTION_VAL_ALL_RU "Все"
+#define OPTION_VAL_NO_GPL_RU NULL
+#define OPTION_VAL_NO_DYN_RU NULL
+#define OPTION_VAL_NONE_RU "Нет"
+#define XEMU_RUMBLE_P1_LABEL_RU NULL
+#define XEMU_RUMBLE_P1_INFO_0_RU NULL
+#define XEMU_RUMBLE_P2_LABEL_RU NULL
+#define XEMU_RUMBLE_P2_INFO_0_RU NULL
+#define XEMU_DEADZONE_P1_LABEL_RU NULL
+#define XEMU_DEADZONE_P1_INFO_0_RU NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_RU NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_RU NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_RU NULL
+#define OPTION_VAL_15_RU NULL
+#define OPTION_VAL_25_RU NULL
+#define OPTION_VAL_30_RU NULL
+#define XEMU_DEADZONE_P2_LABEL_RU NULL
+#define XEMU_DEADZONE_P2_INFO_0_RU NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_RU NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_RU NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_RU NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_RU NULL
+#define OPTION_VAL_MOUSE_RU "Мышь"
+#define OPTION_VAL_STICK_RU NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_RU NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_RU NULL
+#define XEMU_CHIHIRO_FFB_LABEL_RU NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_RU NULL
+#define OPTION_VAL_50_RU NULL
+#define OPTION_VAL_75_RU NULL
+#define OPTION_VAL_150_RU NULL
+#define OPTION_VAL_200_RU NULL
 
 struct retro_core_option_v2_category option_cats_ru[] = {
     {
@@ -9821,13 +20066,19 @@ struct retro_core_option_v2_category option_cats_ru[] = {
         CATEGORY_AUDIO_LABEL_RU,
         CATEGORY_AUDIO_INFO_0_RU
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_RU,
+        CATEGORY_CONTROLS_INFO_0_RU
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_RU,
+        CATEGORY_CHIHIRO_INFO_0_RU
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_ru[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_RU,
@@ -9856,6 +20107,8 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_RU,
@@ -9868,7 +20121,7 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -9885,6 +20138,38 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_RU,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_RU,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_RU,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_RU,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_RU,
         NULL,
@@ -9897,6 +20182,25 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_RU,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_RU,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_RU },
+            { "4:3",       OPTION_VAL_4_3_RU },
+            { "16:9",      OPTION_VAL_16_9_RU },
+            { "letterbox", OPTION_VAL_LETTERBOX_RU },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -9952,6 +20256,25 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_RU,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_RU,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_RU,
@@ -9966,13 +20289,29 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_RU,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_RU,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_RU,
+        XEMU_DSP_JIT_INFO_0_RU,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_RU,
+        NULL,
+        XEMU_HRTF_INFO_0_RU,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -9981,10 +20320,27 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_RU,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_RU,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_RU,
+        XEMU_VP_WORKERS_INFO_0_RU,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_RU },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_RU,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_RU,
         NULL,
         "video",
         {
@@ -10012,19 +20368,169 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_RU,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_RU,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_RU,
+        XEMU_VK_FAST_PATHS_INFO_0_RU,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_RU },
-            { "nearest", OPTION_VAL_NEAREST_RU },
+            { "all",      OPTION_VAL_ALL_RU },
+            { "no_gpl",   OPTION_VAL_NO_GPL_RU },
+            { "no_dyn",   OPTION_VAL_NO_DYN_RU },
+            { "none",     OPTION_VAL_NONE_RU },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_RU,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_RU,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_RU,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_RU,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_RU,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_RU,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_RU },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_RU },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_RU },
+            { "15", OPTION_VAL_15_RU },
+            { "20", OPTION_VAL_20_RU },
+            { "25", OPTION_VAL_25_RU },
+            { "30", OPTION_VAL_30_RU },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_RU,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_RU,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_RU },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_RU },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_RU },
+            { "15", OPTION_VAL_15_RU },
+            { "20", OPTION_VAL_20_RU },
+            { "25", OPTION_VAL_25_RU },
+            { "30", OPTION_VAL_30_RU },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_RU,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_RU,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_RU,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_RU,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_RU },
+            { "stick", OPTION_VAL_STICK_RU },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_RU,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_RU,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_RU,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_RU,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_RU },
+            { "50",  OPTION_VAL_50_RU },
+            { "75",  OPTION_VAL_75_RU },
+            { "100", OPTION_VAL_100_RU },
+            { "150", OPTION_VAL_150_RU },
+            { "200", OPTION_VAL_200_RU },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -10035,12 +20541,16 @@ struct retro_core_options_v2 options_ru = {
 
 /* RETRO_LANGUAGE_SK */
 
-#define CATEGORY_SYSTEM_LABEL_SK "Systém"
-#define CATEGORY_SYSTEM_INFO_0_SK "Nastavenia na úrovni systému, ako cesty k BIOSu, pamäť a voľby zavádzania."
+#define CATEGORY_SYSTEM_LABEL_SK "Systém (reštart)"
+#define CATEGORY_SYSTEM_INFO_0_SK "Samotný stroj: pamäť, sieť, štart a procesor. Berie sa pri spustení obsahu (Orezať HDD pri zatvorení pri jeho zatvorení)."
 #define CATEGORY_VIDEO_LABEL_SK NULL
 #define CATEGORY_VIDEO_INFO_0_SK "Nastavenia vykresľovania videa."
 #define CATEGORY_AUDIO_LABEL_SK "Zvuk"
 #define CATEGORY_AUDIO_INFO_0_SK "Nastavenia emulácie zvuku."
+#define CATEGORY_CONTROLS_LABEL_SK "Ovládanie"
+#define CATEGORY_CONTROLS_INFO_0_SK "Vibrácie a mŕtva zóna páčok, pre každého hráča."
+#define CATEGORY_CHIHIRO_LABEL_SK NULL
+#define CATEGORY_CHIHIRO_INFO_0_SK "Arkádové hry Sega Chihiro: hra zadarmo, mierenie v strieľačkách a spätná väzba v pretekárskych hrách."
 #define XEMU_MEMORY_LABEL_SK "Systémová pamäť (MB)"
 #define XEMU_MEMORY_INFO_0_SK "Veľkosť systémovej RAM. 64 MB je štandard; 128 MB používajú vývojárske súpravy."
 #define OPTION_VAL_64_SK NULL
@@ -10052,16 +20562,24 @@ struct retro_core_options_v2 options_ru = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_SK "Preskočí úvodnú animáciu Xboxu."
 #define XEMU_HARD_FPU_LABEL_SK "Hardvérová emulácia FPU"
 #define XEMU_HARD_FPU_INFO_0_SK "Použije FPU hostiteľa na emuláciu x87. Rýchlejšie, ale môže mať drobné nepresnosti."
+#define XEMU_CPU_BOOST_LABEL_SK "Zrýchlenie CPU"
+#define XEMU_CPU_BOOST_INFO_0_SK "Rýchlejšie cesty pre emulovaný procesor a zvukový procesor: natívne SSE a väčšia vyrovnávacia pamäť skokov. Vypnite, ak sa hra správa nesprávne."
+#define XEMU_HDD_TRIM_LABEL_SK "Orezať HDD pri zatvorení"
+#define XEMU_HDD_TRIM_INFO_0_SK "Po zatvorení hry vyprázdni vyrovnávacie oddiely X, Y a Z pevného disku (hry ich pri potrebe znova naformátujú) a prepíše obraz bez nevyužitého miesta, takže súbor sa zmenší. Na chvíľu potrebuje toľko voľného miesta, koľko dát obraz obsahuje. Preskočí sa, kým obraz obsahuje savestate. Robí sa pri zatvorení hry, nie pri jej ďalšom spustení."
 #define XEMU_RENDERER_LABEL_SK "Grafické API (reštart)"
 #define XEMU_RENDERER_INFO_0_SK "Renderer, ktorým sa kreslí emulované GPU. Vulkan je predvolený; OpenGL je záloha pre ovládače, kde Vulkan nefunguje správne. Prejaví sa po reštarte RetroArchu. Android vždy používa Vulkan, macOS vždy OpenGL."
 #define OPTION_VAL_VULKAN_SK NULL
 #define OPTION_VAL_OPENGL_SK NULL
-#define XEMU_ASPECT_RATIO_LABEL_SK "Pomer strán"
-#define XEMU_ASPECT_RATIO_INFO_0_SK "Tvar, v akom sa obraz zobrazuje. Auto sleduje hru: 16:9, keď prepne konzolu na širokouhlý režim (v nastaveniach videa dashboardu musí byť zapnuté Widescreen), inak 4:3. Zvoľte 16:9 pre hru, ktorá kreslí širokouhlo, ale zobrazuje sa stlačená."
-#define OPTION_VAL_AUTO_SK NULL
+#define XEMU_VIDEO_ASPECT_LABEL_SK "Systémový pomer strán (reštart)"
+#define XEMU_VIDEO_ASPECT_INFO_0_SK "Tvar obrazovky, ktorý video nastavenia konzoly hlásia hrám, namiesto nastavenia v dashboarde. Pri 16:9 bežia hry podporujúce široký obraz v širokom obraze, pri 4:3 v 4:3. Nastavte podľa tvaru vášho displeja. Letterbox je 4:3 z dashboardu s hrami v širokom obraze s čiernymi pruhmi. Dashboard ponechá nastavenie dashboardu."
+#define OPTION_VAL_DASHBOARD_SK NULL
 #define OPTION_VAL_4_3_SK NULL
 #define OPTION_VAL_16_9_SK NULL
-#define XEMU_SURFACE_SCALE_LABEL_SK "Mierka interného rozlíšenia"
+#define OPTION_VAL_LETTERBOX_SK NULL
+#define XEMU_ASPECT_RATIO_LABEL_SK "Pomer strán jadra"
+#define XEMU_ASPECT_RATIO_INFO_0_SK "Tvar, v ktorom sa obraz zobrazuje. Najlepšie je nechať Auto, ktoré sa riadi hrou: 16:9, keď je konzola nastavená na široký obraz (Systémový pomer strán alebo dashboard) a hra vykresľuje 16:9, inak 4:3, a na Chihiro tiež 4:3. 16:9 roztiahne hru v 4:3 na široký obraz."
+#define OPTION_VAL_AUTO_SK NULL
+#define XEMU_SURFACE_SCALE_LABEL_SK "Mierka interného rozlíšenia (reštart)"
 #define XEMU_SURFACE_SCALE_INFO_0_SK "Škáluje interné rozlíšenie vykresľovania. Vyššie hodnoty zlepšujú kvalitu, ale znižujú výkon."
 #define OPTION_VAL_1_SK NULL
 #define OPTION_VAL_2_SK NULL
@@ -10073,19 +20591,25 @@ struct retro_core_options_v2 options_ru = {
 #define OPTION_VAL_8_SK NULL
 #define OPTION_VAL_9_SK NULL
 #define OPTION_VAL_10_SK NULL
-#define XEMU_AVPACK_LABEL_SK NULL
+#define XEMU_AVPACK_LABEL_SK "AV kábel (reštart)"
 #define XEMU_AVPACK_INFO_0_SK "Vyberte typ AV Packu. Ovplyvňuje dostupné režimy videa."
 #define OPTION_VAL_HDTV_SK NULL
 #define OPTION_VAL_COMPOSITE_SK "Kompozit"
 #define OPTION_VAL_SVIDEO_SK NULL
 #define OPTION_VAL_SCART_SK NULL
 #define OPTION_VAL_VGA_SK NULL
+#define XEMU_AUDIO_THREAD_LABEL_SK "Zvukové vlákno (reštart)"
+#define XEMU_AUDIO_THREAD_INFO_0_SK "Odovzdáva zvuk zvukovému vláknu RetroArchu tak, ako ho APU mixuje, ako ho prehráva samostatné xemu, namiesto dávky jednej snímky za snímku: zvuk pokračuje, aj keď sa snímky zastavia, napríklad pri kompilácii shaderov."
 #define XEMU_USE_DSP_LABEL_SK "Emulácia DSP v APU"
 #define XEMU_USE_DSP_INFO_0_SK "Zapne emuláciu DSP pre presnejší zvuk. Môže ovplyvniť výkon."
-#define XEMU_CACHE_SHADERS_LABEL_SK "Vyrovnávacia pamäť shaderov"
-#define XEMU_CACHE_SHADERS_INFO_0_SK "Ukladá skompilované shadery GPU na disk. Znižuje trhanie pri ďalších spusteniach."
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_SK "Zmenšené zásobníky Vulkanu (reštart)"
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_SK "Renderer Vulkan si pri štarte rezervuje pracovné zásobníky bez ohľadu na to, čo hra potrebuje. Zapnuté drží zásobník pre inline dáta vrcholov na desatine veľkosti, akú má xemu, čo zaberie asi o 1,2 GB menej video pamäte a rovnako menej systémovej pamäte. Vypnuté rezervuje plnú veľkosť xemu na grafických kartách so 4 GB alebo viac; skúste to, ak je hra so zapnutou voľbou pomalšia."
+#define XEMU_DSP_JIT_LABEL_SK NULL
+#define XEMU_DSP_JIT_INFO_0_SK "Spúšťa programy Emulácie DSP v APU ako skompilovaný kód namiesto ich interpretovania: rýchlejšie, ako DSP JIT samostatného xemu. Prejaví sa iba so zapnutou Emuláciou DSP v APU."
+#define XEMU_HRTF_LABEL_SK NULL
+#define XEMU_HRTF_INFO_0_SK "Umiestňuje 3D hlasy hier, ktoré ich používajú, pomocou funkcií prenosu vzhľadom na hlavu, ako na konzole, pre slúchadlá a stereo reproduktory."
+#define XEMU_VP_WORKERS_LABEL_SK "Vlákna hlasového procesora (reštart)"
+#define XEMU_VP_WORKERS_INFO_0_SK "Vlákna, na ktorých zvukový hlasový procesor mixuje hlasy. Auto použije jedno na každé jadro procesora."
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_SK "Plynulé prvé hranie (reštart)"
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_SK "Počas štartu hry skompiluje shadery, o ktorých je známe, že ich hra používa, aby sa prvé minúty nesekali pri ich kompilácii. Na OpenGL uchová to, čo skompiluje, vo vyrovnávacej pamäti shaderov, ktorá je vždy zapnutá."
 #define XEMU_AUDIO_VOLUME_LABEL_SK "Limit hlasitosti zvuku (%)"
 #define XEMU_AUDIO_VOLUME_INFO_0_SK "Obmedzí hlasitosť zvukového výstupu Xboxu nezávisle od hlavnej hlasitosti RetroArchu."
 #define OPTION_VAL_100_SK NULL
@@ -10094,10 +20618,40 @@ struct retro_core_options_v2 options_ru = {
 #define OPTION_VAL_40_SK NULL
 #define OPTION_VAL_20_SK NULL
 #define OPTION_VAL_0_SK "Stlmené"
-#define XEMU_DISPLAY_FILTERING_LABEL_SK "Filtrovanie zobrazenia"
-#define XEMU_DISPLAY_FILTERING_INFO_0_SK "Režim filtrovania textúr pre výstup zobrazenia."
-#define OPTION_VAL_LINEAR_SK "Bilineárna"
-#define OPTION_VAL_NEAREST_SK "Najbližší sused"
+#define XEMU_VK_FAST_PATHS_LABEL_SK "Rýchle cesty Vulkanu (reštart)"
+#define XEMU_VK_FAST_PATHS_INFO_0_SK "Ovplyvňuje rýchlosť kompilácie shaderov na Vulkane. „Všetko“ je najrýchlejšie, ale niektoré hry môže zhodiť."
+#define OPTION_VAL_ALL_SK "Všetko"
+#define OPTION_VAL_NO_GPL_SK "Bez knižníc pipeline"
+#define OPTION_VAL_NO_DYN_SK "Bez dynamických stavov"
+#define OPTION_VAL_NONE_SK "Žiadne"
+#define XEMU_RUMBLE_P1_LABEL_SK "Vibrácie (hráč 1)"
+#define XEMU_RUMBLE_P1_INFO_0_SK "Gamepad hráča 1 vibruje z hier pre Xbox aj zo spätnej väzby pretekárskych hier Chihiro. Vypnuté: ani jedno."
+#define XEMU_RUMBLE_P2_LABEL_SK "Vibrácie (hráč 2)"
+#define XEMU_RUMBLE_P2_INFO_0_SK "Gamepad hráča 2 vibruje z hier pre Xbox aj zo spätnej väzby pretekárskych hier Chihiro. Vypnuté: ani jedno."
+#define XEMU_DEADZONE_P1_LABEL_SK "Mŕtva zóna analógu (hráč 1)"
+#define XEMU_DEADZONE_P1_INFO_0_SK "Ako ďaleko sa dajú páčky hráča 1 vychýliť, kým to hra zaregistruje, obe páčky, na Xboxe aj na Chihiro; zvyšok pohybu sa roztiahne na celý rozsah."
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_SK NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_SK NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_SK NULL
+#define OPTION_VAL_15_SK NULL
+#define OPTION_VAL_25_SK NULL
+#define OPTION_VAL_30_SK NULL
+#define XEMU_DEADZONE_P2_LABEL_SK "Mŕtva zóna analógu (hráč 2)"
+#define XEMU_DEADZONE_P2_INFO_0_SK "Ako ďaleko sa dajú páčky hráča 2 vychýliť, kým to hra zaregistruje, obe páčky, na Xboxe aj na Chihiro; zvyšok pohybu sa roztiahne na celý rozsah."
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_SK "Hra zadarmo (reštart)"
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_SK "Spustí hry Sega Chihiro v režime hry zadarmo, bez mincí. Vypnuté: Select vhodí mincu."
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_SK "Mierenie svetelnej pištole"
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_SK "Čím sa mieri v House of the Dead III, Virtua Cop 3 a Ghost Squad. Myš: mieri myš (alebo svetelná pištoľ RetroArchu), ľavé tlačidlo strieľa, pravé je tlačidlo pištole (prebitie, zmena zbrane), stredné pedál alebo rýchlosť streľby. Analógová páčka: mieri ľavá páčka alebo D-pad, R2 strieľa, L2 je tlačidlo pištole, L pedál alebo rýchlosť streľby, R strieľa mimo obrazovky."
+#define OPTION_VAL_MOUSE_SK "Myš"
+#define OPTION_VAL_STICK_SK "Analógová páčka"
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_SK "Zameriavač"
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_SK "Vykreslí mierenie každého hráča cez obraz, hráč 1 červený, hráč 2 modrý."
+#define XEMU_CHIHIRO_FFB_LABEL_SK "Spätná väzba ako vibrácie"
+#define XEMU_CHIHIRO_FFB_INFO_0_SK "Spätnú väzbu pretekárskych hier Chihiro (OutRun 2, Maximum Tune) dáva ako vibrácie na gamepad portu 1, s touto silou."
+#define OPTION_VAL_50_SK NULL
+#define OPTION_VAL_75_SK NULL
+#define OPTION_VAL_150_SK NULL
+#define OPTION_VAL_200_SK NULL
 
 struct retro_core_option_v2_category option_cats_sk[] = {
     {
@@ -10115,13 +20669,19 @@ struct retro_core_option_v2_category option_cats_sk[] = {
         CATEGORY_AUDIO_LABEL_SK,
         CATEGORY_AUDIO_INFO_0_SK
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_SK,
+        CATEGORY_CONTROLS_INFO_0_SK
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_SK,
+        CATEGORY_CHIHIRO_INFO_0_SK
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_sk[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_SK,
@@ -10150,6 +20710,8 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_SK,
@@ -10162,7 +20724,7 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -10179,6 +20741,38 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_SK,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_SK,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_SK,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_SK,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_SK,
         NULL,
@@ -10191,6 +20785,25 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_SK,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_SK,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_SK },
+            { "4:3",       OPTION_VAL_4_3_SK },
+            { "16:9",      OPTION_VAL_16_9_SK },
+            { "letterbox", OPTION_VAL_LETTERBOX_SK },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -10246,6 +20859,25 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_SK,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_SK,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_SK,
@@ -10260,13 +20892,29 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_SK,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_SK,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_SK,
+        XEMU_DSP_JIT_INFO_0_SK,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_SK,
+        NULL,
+        XEMU_HRTF_INFO_0_SK,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -10275,10 +20923,27 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_SK,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_SK,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_SK,
+        XEMU_VP_WORKERS_INFO_0_SK,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_SK },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_SK,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_SK,
         NULL,
         "video",
         {
@@ -10306,19 +20971,169 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_SK,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_SK,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_SK,
+        XEMU_VK_FAST_PATHS_INFO_0_SK,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_SK },
-            { "nearest", OPTION_VAL_NEAREST_SK },
+            { "all",      OPTION_VAL_ALL_SK },
+            { "no_gpl",   OPTION_VAL_NO_GPL_SK },
+            { "no_dyn",   OPTION_VAL_NO_DYN_SK },
+            { "none",     OPTION_VAL_NONE_SK },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_SK,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_SK,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_SK,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_SK,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_SK,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_SK,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_SK },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_SK },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_SK },
+            { "15", OPTION_VAL_15_SK },
+            { "20", OPTION_VAL_20_SK },
+            { "25", OPTION_VAL_25_SK },
+            { "30", OPTION_VAL_30_SK },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_SK,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_SK,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_SK },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_SK },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_SK },
+            { "15", OPTION_VAL_15_SK },
+            { "20", OPTION_VAL_20_SK },
+            { "25", OPTION_VAL_25_SK },
+            { "30", OPTION_VAL_30_SK },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_SK,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_SK,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_SK,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_SK,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_SK },
+            { "stick", OPTION_VAL_STICK_SK },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_SK,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_SK,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_SK,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_SK,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_SK },
+            { "50",  OPTION_VAL_50_SK },
+            { "75",  OPTION_VAL_75_SK },
+            { "100", OPTION_VAL_100_SK },
+            { "150", OPTION_VAL_150_SK },
+            { "200", OPTION_VAL_200_SK },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -10335,6 +21150,10 @@ struct retro_core_options_v2 options_sk = {
 #define CATEGORY_VIDEO_INFO_0_SR NULL
 #define CATEGORY_AUDIO_LABEL_SR "Zvuk"
 #define CATEGORY_AUDIO_INFO_0_SR NULL
+#define CATEGORY_CONTROLS_LABEL_SR NULL
+#define CATEGORY_CONTROLS_INFO_0_SR NULL
+#define CATEGORY_CHIHIRO_LABEL_SR NULL
+#define CATEGORY_CHIHIRO_INFO_0_SR NULL
 #define XEMU_MEMORY_LABEL_SR NULL
 #define XEMU_MEMORY_INFO_0_SR NULL
 #define OPTION_VAL_64_SR NULL
@@ -10346,15 +21165,23 @@ struct retro_core_options_v2 options_sk = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_SR NULL
 #define XEMU_HARD_FPU_LABEL_SR NULL
 #define XEMU_HARD_FPU_INFO_0_SR NULL
+#define XEMU_CPU_BOOST_LABEL_SR NULL
+#define XEMU_CPU_BOOST_INFO_0_SR NULL
+#define XEMU_HDD_TRIM_LABEL_SR NULL
+#define XEMU_HDD_TRIM_INFO_0_SR NULL
 #define XEMU_RENDERER_LABEL_SR NULL
 #define XEMU_RENDERER_INFO_0_SR NULL
 #define OPTION_VAL_VULKAN_SR NULL
 #define OPTION_VAL_OPENGL_SR NULL
-#define XEMU_ASPECT_RATIO_LABEL_SR "Odnos ekrana"
-#define XEMU_ASPECT_RATIO_INFO_0_SR NULL
-#define OPTION_VAL_AUTO_SR NULL
+#define XEMU_VIDEO_ASPECT_LABEL_SR NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_SR NULL
+#define OPTION_VAL_DASHBOARD_SR NULL
 #define OPTION_VAL_4_3_SR NULL
 #define OPTION_VAL_16_9_SR NULL
+#define OPTION_VAL_LETTERBOX_SR NULL
+#define XEMU_ASPECT_RATIO_LABEL_SR NULL
+#define XEMU_ASPECT_RATIO_INFO_0_SR NULL
+#define OPTION_VAL_AUTO_SR NULL
 #define XEMU_SURFACE_SCALE_LABEL_SR NULL
 #define XEMU_SURFACE_SCALE_INFO_0_SR NULL
 #define OPTION_VAL_1_SR NULL
@@ -10374,12 +21201,18 @@ struct retro_core_options_v2 options_sk = {
 #define OPTION_VAL_SVIDEO_SR NULL
 #define OPTION_VAL_SCART_SR NULL
 #define OPTION_VAL_VGA_SR NULL
+#define XEMU_AUDIO_THREAD_LABEL_SR NULL
+#define XEMU_AUDIO_THREAD_INFO_0_SR NULL
 #define XEMU_USE_DSP_LABEL_SR NULL
 #define XEMU_USE_DSP_INFO_0_SR NULL
-#define XEMU_CACHE_SHADERS_LABEL_SR NULL
-#define XEMU_CACHE_SHADERS_INFO_0_SR NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_SR NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_SR NULL
+#define XEMU_DSP_JIT_LABEL_SR NULL
+#define XEMU_DSP_JIT_INFO_0_SR NULL
+#define XEMU_HRTF_LABEL_SR NULL
+#define XEMU_HRTF_INFO_0_SR NULL
+#define XEMU_VP_WORKERS_LABEL_SR NULL
+#define XEMU_VP_WORKERS_INFO_0_SR NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_SR NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_SR NULL
 #define XEMU_AUDIO_VOLUME_LABEL_SR NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_SR NULL
 #define OPTION_VAL_100_SR NULL
@@ -10388,10 +21221,40 @@ struct retro_core_options_v2 options_sk = {
 #define OPTION_VAL_40_SR NULL
 #define OPTION_VAL_20_SR NULL
 #define OPTION_VAL_0_SR NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_SR NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_SR NULL
-#define OPTION_VAL_LINEAR_SR "Bilinearno"
-#define OPTION_VAL_NEAREST_SR "Najbliži sused"
+#define XEMU_VK_FAST_PATHS_LABEL_SR NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_SR NULL
+#define OPTION_VAL_ALL_SR NULL
+#define OPTION_VAL_NO_GPL_SR NULL
+#define OPTION_VAL_NO_DYN_SR NULL
+#define OPTION_VAL_NONE_SR NULL
+#define XEMU_RUMBLE_P1_LABEL_SR NULL
+#define XEMU_RUMBLE_P1_INFO_0_SR NULL
+#define XEMU_RUMBLE_P2_LABEL_SR NULL
+#define XEMU_RUMBLE_P2_INFO_0_SR NULL
+#define XEMU_DEADZONE_P1_LABEL_SR NULL
+#define XEMU_DEADZONE_P1_INFO_0_SR NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_SR NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_SR NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_SR NULL
+#define OPTION_VAL_15_SR NULL
+#define OPTION_VAL_25_SR NULL
+#define OPTION_VAL_30_SR NULL
+#define XEMU_DEADZONE_P2_LABEL_SR NULL
+#define XEMU_DEADZONE_P2_INFO_0_SR NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_SR NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_SR NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_SR NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_SR NULL
+#define OPTION_VAL_MOUSE_SR NULL
+#define OPTION_VAL_STICK_SR NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_SR NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_SR NULL
+#define XEMU_CHIHIRO_FFB_LABEL_SR NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_SR NULL
+#define OPTION_VAL_50_SR NULL
+#define OPTION_VAL_75_SR NULL
+#define OPTION_VAL_150_SR NULL
+#define OPTION_VAL_200_SR NULL
 
 struct retro_core_option_v2_category option_cats_sr[] = {
     {
@@ -10409,13 +21272,19 @@ struct retro_core_option_v2_category option_cats_sr[] = {
         CATEGORY_AUDIO_LABEL_SR,
         CATEGORY_AUDIO_INFO_0_SR
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_SR,
+        CATEGORY_CONTROLS_INFO_0_SR
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_SR,
+        CATEGORY_CHIHIRO_INFO_0_SR
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_sr[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_SR,
@@ -10444,6 +21313,8 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_SR,
@@ -10456,7 +21327,7 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -10473,6 +21344,38 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_SR,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_SR,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_SR,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_SR,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_SR,
         NULL,
@@ -10485,6 +21388,25 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_SR,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_SR,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_SR },
+            { "4:3",       OPTION_VAL_4_3_SR },
+            { "16:9",      OPTION_VAL_16_9_SR },
+            { "letterbox", OPTION_VAL_LETTERBOX_SR },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -10540,6 +21462,25 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_SR,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_SR,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_SR,
@@ -10554,13 +21495,29 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_SR,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_SR,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_SR,
+        XEMU_DSP_JIT_INFO_0_SR,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_SR,
+        NULL,
+        XEMU_HRTF_INFO_0_SR,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -10569,10 +21526,27 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_SR,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_SR,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_SR,
+        XEMU_VP_WORKERS_INFO_0_SR,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_SR },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_SR,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_SR,
         NULL,
         "video",
         {
@@ -10600,19 +21574,169 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_SR,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_SR,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_SR,
+        XEMU_VK_FAST_PATHS_INFO_0_SR,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_SR },
-            { "nearest", OPTION_VAL_NEAREST_SR },
+            { "all",      OPTION_VAL_ALL_SR },
+            { "no_gpl",   OPTION_VAL_NO_GPL_SR },
+            { "no_dyn",   OPTION_VAL_NO_DYN_SR },
+            { "none",     OPTION_VAL_NONE_SR },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_SR,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_SR,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_SR,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_SR,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_SR,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_SR,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_SR },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_SR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_SR },
+            { "15", OPTION_VAL_15_SR },
+            { "20", OPTION_VAL_20_SR },
+            { "25", OPTION_VAL_25_SR },
+            { "30", OPTION_VAL_30_SR },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_SR,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_SR,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_SR },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_SR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_SR },
+            { "15", OPTION_VAL_15_SR },
+            { "20", OPTION_VAL_20_SR },
+            { "25", OPTION_VAL_25_SR },
+            { "30", OPTION_VAL_30_SR },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_SR,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_SR,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_SR,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_SR,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_SR },
+            { "stick", OPTION_VAL_STICK_SR },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_SR,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_SR,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_SR,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_SR,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_SR },
+            { "50",  OPTION_VAL_50_SR },
+            { "75",  OPTION_VAL_75_SR },
+            { "100", OPTION_VAL_100_SR },
+            { "150", OPTION_VAL_150_SR },
+            { "200", OPTION_VAL_200_SR },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -10624,32 +21748,44 @@ struct retro_core_options_v2 options_sr = {
 /* RETRO_LANGUAGE_SV */
 
 #define CATEGORY_SYSTEM_LABEL_SV NULL
-#define CATEGORY_SYSTEM_INFO_0_SV "Konfigurera systeminställningar som BIOS-sökvägar, minne och startalternativ."
+#define CATEGORY_SYSTEM_INFO_0_SV NULL
 #define CATEGORY_VIDEO_LABEL_SV NULL
 #define CATEGORY_VIDEO_INFO_0_SV "Konfigurera inställningar för videorendering."
 #define CATEGORY_AUDIO_LABEL_SV "Ljud"
 #define CATEGORY_AUDIO_INFO_0_SV "Konfigurera inställningar för ljudemulering."
+#define CATEGORY_CONTROLS_LABEL_SV "Spelkontroller"
+#define CATEGORY_CONTROLS_INFO_0_SV NULL
+#define CATEGORY_CHIHIRO_LABEL_SV NULL
+#define CATEGORY_CHIHIRO_INFO_0_SV "Sega Chihiro-arkadspel: gratisspel, sikte i skjutspel och kraftåterkoppling i racingspel."
 #define XEMU_MEMORY_LABEL_SV "Systemminne (MB)"
 #define XEMU_MEMORY_INFO_0_SV "Mängd system-RAM. 64 MB är standard; 128 MB används av utvecklingskit."
 #define OPTION_VAL_64_SV NULL
 #define OPTION_VAL_128_SV NULL
-#define XEMU_NETWORK_BACKEND_LABEL_SV "Nätverkslösning"
-#define XEMU_NETWORK_BACKEND_INFO_0_SV "Aktivera nätverksstöd för Xbox-spel med funktioner för LAN/System Link. NAT-lösningen ger grundläggande anslutning."
+#define XEMU_NETWORK_BACKEND_LABEL_SV "Nätverksbakände"
+#define XEMU_NETWORK_BACKEND_INFO_0_SV "Aktivera nätverksstöd för Xbox-spel med LAN- och System Link-funktioner. NAT-bakänden ger grundläggande anslutning."
 #define OPTION_VAL_NAT_SV NULL
 #define XEMU_SKIP_BOOT_ANIM_LABEL_SV "Hoppa över startanimering"
-#define XEMU_SKIP_BOOT_ANIM_INFO_0_SV "Hoppa över Xbox startanimering."
+#define XEMU_SKIP_BOOT_ANIM_INFO_0_SV "Hoppa över Xbox-startanimeringen."
 #define XEMU_HARD_FPU_LABEL_SV "Maskinvaruemulering av FPU"
-#define XEMU_HARD_FPU_INFO_0_SV "Använd värddatorns FPU för x87-emulering. Det går snabbare men kan ge mindre avvikelser."
-#define XEMU_RENDERER_LABEL_SV "Grafik-API (starta om)"
+#define XEMU_HARD_FPU_INFO_0_SV "Använd värdsystemets FPU för x87-emulering. Det går snabbare men kan ge mindre avvikelser."
+#define XEMU_CPU_BOOST_LABEL_SV NULL
+#define XEMU_CPU_BOOST_INFO_0_SV "Snabbare kodvägar för gästprocessorn och ljudprocessorn: inbyggd SSE och en större hoppcache. Stäng av om ett spel inte fungerar som det ska."
+#define XEMU_HDD_TRIM_LABEL_SV NULL
+#define XEMU_HDD_TRIM_INFO_0_SV NULL
+#define XEMU_RENDERER_LABEL_SV "Grafik-API (omstart)"
 #define XEMU_RENDERER_INFO_0_SV "Den renderare som används för den emulerade GPU:n. Vulkan är standard; OpenGL används när Vulkan inte fungerar korrekt med grafikdrivrutinen. Ändringen börjar gälla när RetroArch har startats om. Android använder alltid Vulkan och macOS alltid OpenGL."
 #define OPTION_VAL_VULKAN_SV NULL
 #define OPTION_VAL_OPENGL_SV NULL
-#define XEMU_ASPECT_RATIO_LABEL_SV "Bildformat"
-#define XEMU_ASPECT_RATIO_INFO_0_SV "Det format bilden visas i. Auto följer spelet: 16:9 när spelet växlar konsolen till bredbildsläge (bredbild måste vara aktiverat i instrumentpanelens videoinställningar), annars 4:3. Välj 16:9 för ett spel som renderas i bredbild men visas ihoptryckt."
-#define OPTION_VAL_AUTO_SV NULL
+#define XEMU_VIDEO_ASPECT_LABEL_SV NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_SV NULL
+#define OPTION_VAL_DASHBOARD_SV NULL
 #define OPTION_VAL_4_3_SV NULL
 #define OPTION_VAL_16_9_SV NULL
-#define XEMU_SURFACE_SCALE_LABEL_SV "Intern upplösningsskala"
+#define OPTION_VAL_LETTERBOX_SV NULL
+#define XEMU_ASPECT_RATIO_LABEL_SV "Kärnspecifikt bildformat"
+#define XEMU_ASPECT_RATIO_INFO_0_SV NULL
+#define OPTION_VAL_AUTO_SV "Automatiskt"
+#define XEMU_SURFACE_SCALE_LABEL_SV NULL
 #define XEMU_SURFACE_SCALE_INFO_0_SV "Skalar den interna renderingsupplösningen. Högre värden förbättrar kvaliteten men minskar prestandan."
 #define OPTION_VAL_1_SV NULL
 #define OPTION_VAL_2_SV NULL
@@ -10661,31 +21797,67 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_8_SV NULL
 #define OPTION_VAL_9_SV NULL
 #define OPTION_VAL_10_SV NULL
-#define XEMU_AVPACK_LABEL_SV "AV-paket"
+#define XEMU_AVPACK_LABEL_SV NULL
 #define XEMU_AVPACK_INFO_0_SV "Välj AV-paketets typ. Påverkar tillgängliga videolägen."
 #define OPTION_VAL_HDTV_SV NULL
 #define OPTION_VAL_COMPOSITE_SV "Komposit"
 #define OPTION_VAL_SVIDEO_SV NULL
 #define OPTION_VAL_SCART_SV NULL
 #define OPTION_VAL_VGA_SV NULL
+#define XEMU_AUDIO_THREAD_LABEL_SV "Ljudtråd (starta om)"
+#define XEMU_AUDIO_THREAD_INFO_0_SV NULL
 #define XEMU_USE_DSP_LABEL_SV "Emulering av APU-DSP"
 #define XEMU_USE_DSP_INFO_0_SV "Aktivera DSP-emulering för bättre ljudnoggrannhet. Kan påverka prestandan."
-#define XEMU_CACHE_SHADERS_LABEL_SV "Shadercache"
-#define XEMU_CACHE_SHADERS_INFO_0_SV "Mellanlagra kompilerade GPU-shadrar på disken. Minskar ryckighet vid senare körningar."
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_SV "Reducerade Vulkanbuffertar (Omstart)"
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_SV "Vulkanrenderaren reserverar sina arbetsbuffertar när den startar, oavsett vad spelet behöver. När detta är aktiverat hålls bufferten för inbäddade vertexdata på en tiondel av xemus storlek, vilket använder omkring 1,2 GB mindre grafikminne och lika mycket mindre systemminne. När detta är inaktiverat reserveras xemus fulla storlek på grafikkort med 4 GB eller mer. Prova detta om ett spel går långsammare när alternativet är aktiverat."
+#define XEMU_DSP_JIT_LABEL_SV NULL
+#define XEMU_DSP_JIT_INFO_0_SV NULL
+#define XEMU_HRTF_LABEL_SV NULL
+#define XEMU_HRTF_INFO_0_SV NULL
+#define XEMU_VP_WORKERS_LABEL_SV NULL
+#define XEMU_VP_WORKERS_INFO_0_SV NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_SV "Jämn första spelstart (omstart)"
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_SV NULL
 #define XEMU_AUDIO_VOLUME_LABEL_SV "Ljudvolymgräns (%)"
-#define XEMU_AUDIO_VOLUME_INFO_0_SV "Begränsa Xbox ljudutgångsvolym oberoende av RetroArchs huvudvolym."
+#define XEMU_AUDIO_VOLUME_INFO_0_SV "Begränsa Xbox-ljudutgångens volym oberoende av RetroArchs huvudvolym."
 #define OPTION_VAL_100_SV NULL
 #define OPTION_VAL_80_SV NULL
 #define OPTION_VAL_60_SV NULL
 #define OPTION_VAL_40_SV NULL
 #define OPTION_VAL_20_SV NULL
 #define OPTION_VAL_0_SV "Avstängd"
-#define XEMU_DISPLAY_FILTERING_LABEL_SV "Bildskärmsfiltrering"
-#define XEMU_DISPLAY_FILTERING_INFO_0_SV "Läge för texturfiltrering av bildskärmsutdata."
-#define OPTION_VAL_LINEAR_SV "Bilinjär"
-#define OPTION_VAL_NEAREST_SV "Närmsta granne"
+#define XEMU_VK_FAST_PATHS_LABEL_SV "Snabba Vulkan-kodvägar (omstart)"
+#define XEMU_VK_FAST_PATHS_INFO_0_SV NULL
+#define OPTION_VAL_ALL_SV "Alla"
+#define OPTION_VAL_NO_GPL_SV "Inga pipelinebibliotek"
+#define OPTION_VAL_NO_DYN_SV "Inga dynamiska tillstånd"
+#define OPTION_VAL_NONE_SV "Ingen"
+#define XEMU_RUMBLE_P1_LABEL_SV NULL
+#define XEMU_RUMBLE_P1_INFO_0_SV NULL
+#define XEMU_RUMBLE_P2_LABEL_SV NULL
+#define XEMU_RUMBLE_P2_INFO_0_SV NULL
+#define XEMU_DEADZONE_P1_LABEL_SV NULL
+#define XEMU_DEADZONE_P1_INFO_0_SV NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_SV "0 %"
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_SV "5 %"
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_SV "10 %"
+#define OPTION_VAL_15_SV NULL
+#define OPTION_VAL_25_SV "25 %"
+#define OPTION_VAL_30_SV NULL
+#define XEMU_DEADZONE_P2_LABEL_SV NULL
+#define XEMU_DEADZONE_P2_INFO_0_SV NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_SV "Gratisspel (omstart)"
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_SV "Startar Sega Chihiro-spel utan mynt. När alternativet är avstängt lägger Select in ett mynt."
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_SV "Sikta med ljuspistol"
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_SV "Välj hur du siktar i House of the Dead III, Virtua Cop 3 och Ghost Squad. Mus: sikta med musen (eller RetroArchs ljuspistol), skjut med vänster knapp, använd vapnets knapp med höger knapp (pumpa eller byt vapen) och använd pedalen eller eldhastigheten med mittenknappen. Analog spak: sikta med vänster spak eller styrkorset, skjut med R2, använd vapnets knapp med L2 och pedalen eller eldhastigheten med L. R skjuter utanför skärmen."
+#define OPTION_VAL_MOUSE_SV "Mus"
+#define OPTION_VAL_STICK_SV "Analog spak"
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_SV "Sikte"
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_SV "Visar spelarnas sikten över bilden: spelare 1 i rött och spelare 2 i blått."
+#define XEMU_CHIHIRO_FFB_LABEL_SV "Vibration från kraftåterkoppling"
+#define XEMU_CHIHIRO_FFB_INFO_0_SV "Återger kraftåterkoppling från ett Chihiro-racingspel (OutRun 2, Maximum Tune) som vibration med denna styrka på handkontrollen i port 1."
+#define OPTION_VAL_50_SV NULL
+#define OPTION_VAL_75_SV NULL
+#define OPTION_VAL_150_SV NULL
+#define OPTION_VAL_200_SV NULL
 
 struct retro_core_option_v2_category option_cats_sv[] = {
     {
@@ -10703,13 +21875,19 @@ struct retro_core_option_v2_category option_cats_sv[] = {
         CATEGORY_AUDIO_LABEL_SV,
         CATEGORY_AUDIO_INFO_0_SV
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_SV,
+        CATEGORY_CONTROLS_INFO_0_SV
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_SV,
+        CATEGORY_CHIHIRO_INFO_0_SV
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_sv[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_SV,
@@ -10738,6 +21916,8 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_SV,
@@ -10750,7 +21930,7 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -10767,6 +21947,38 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_SV,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_SV,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_SV,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_SV,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_SV,
         NULL,
@@ -10779,6 +21991,25 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_SV,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_SV,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_SV },
+            { "4:3",       OPTION_VAL_4_3_SV },
+            { "16:9",      OPTION_VAL_16_9_SV },
+            { "letterbox", OPTION_VAL_LETTERBOX_SV },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -10834,6 +22065,25 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_SV,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_SV,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_SV,
@@ -10848,13 +22098,29 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_SV,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_SV,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_SV,
+        XEMU_DSP_JIT_INFO_0_SV,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_SV,
+        NULL,
+        XEMU_HRTF_INFO_0_SV,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -10863,10 +22129,27 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_SV,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_SV,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_SV,
+        XEMU_VP_WORKERS_INFO_0_SV,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_SV },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_SV,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_SV,
         NULL,
         "video",
         {
@@ -10894,19 +22177,169 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_SV,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_SV,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_SV,
+        XEMU_VK_FAST_PATHS_INFO_0_SV,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_SV },
-            { "nearest", OPTION_VAL_NEAREST_SV },
+            { "all",      OPTION_VAL_ALL_SV },
+            { "no_gpl",   OPTION_VAL_NO_GPL_SV },
+            { "no_dyn",   OPTION_VAL_NO_DYN_SV },
+            { "none",     OPTION_VAL_NONE_SV },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_SV,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_SV,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_SV,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_SV,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_SV,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_SV,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_SV },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_SV },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_SV },
+            { "15", OPTION_VAL_15_SV },
+            { "20", OPTION_VAL_20_SV },
+            { "25", OPTION_VAL_25_SV },
+            { "30", OPTION_VAL_30_SV },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_SV,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_SV,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_SV },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_SV },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_SV },
+            { "15", OPTION_VAL_15_SV },
+            { "20", OPTION_VAL_20_SV },
+            { "25", OPTION_VAL_25_SV },
+            { "30", OPTION_VAL_30_SV },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_SV,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_SV,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_SV,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_SV,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_SV },
+            { "stick", OPTION_VAL_STICK_SV },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_SV,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_SV,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_SV,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_SV,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_SV },
+            { "50",  OPTION_VAL_50_SV },
+            { "75",  OPTION_VAL_75_SV },
+            { "100", OPTION_VAL_100_SV },
+            { "150", OPTION_VAL_150_SV },
+            { "200", OPTION_VAL_200_SV },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -10917,12 +22350,16 @@ struct retro_core_options_v2 options_sv = {
 
 /* RETRO_LANGUAGE_TH */
 
-#define CATEGORY_SYSTEM_LABEL_TH "ระบบ"
+#define CATEGORY_SYSTEM_LABEL_TH NULL
 #define CATEGORY_SYSTEM_INFO_0_TH NULL
 #define CATEGORY_VIDEO_LABEL_TH "วิดีโอ"
 #define CATEGORY_VIDEO_INFO_0_TH NULL
 #define CATEGORY_AUDIO_LABEL_TH "เสียง"
 #define CATEGORY_AUDIO_INFO_0_TH NULL
+#define CATEGORY_CONTROLS_LABEL_TH "การควบคุม"
+#define CATEGORY_CONTROLS_INFO_0_TH NULL
+#define CATEGORY_CHIHIRO_LABEL_TH NULL
+#define CATEGORY_CHIHIRO_INFO_0_TH NULL
 #define XEMU_MEMORY_LABEL_TH NULL
 #define XEMU_MEMORY_INFO_0_TH NULL
 #define OPTION_VAL_64_TH NULL
@@ -10934,15 +22371,23 @@ struct retro_core_options_v2 options_sv = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_TH NULL
 #define XEMU_HARD_FPU_LABEL_TH NULL
 #define XEMU_HARD_FPU_INFO_0_TH NULL
+#define XEMU_CPU_BOOST_LABEL_TH NULL
+#define XEMU_CPU_BOOST_INFO_0_TH NULL
+#define XEMU_HDD_TRIM_LABEL_TH NULL
+#define XEMU_HDD_TRIM_INFO_0_TH NULL
 #define XEMU_RENDERER_LABEL_TH NULL
 #define XEMU_RENDERER_INFO_0_TH NULL
 #define OPTION_VAL_VULKAN_TH NULL
 #define OPTION_VAL_OPENGL_TH NULL
-#define XEMU_ASPECT_RATIO_LABEL_TH "อัตราส่วนภาพ"
-#define XEMU_ASPECT_RATIO_INFO_0_TH NULL
-#define OPTION_VAL_AUTO_TH "อัตโนมัติ"
+#define XEMU_VIDEO_ASPECT_LABEL_TH NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_TH NULL
+#define OPTION_VAL_DASHBOARD_TH NULL
 #define OPTION_VAL_4_3_TH NULL
 #define OPTION_VAL_16_9_TH NULL
+#define OPTION_VAL_LETTERBOX_TH NULL
+#define XEMU_ASPECT_RATIO_LABEL_TH "อัตราส่วนภาพของคอร์"
+#define XEMU_ASPECT_RATIO_INFO_0_TH NULL
+#define OPTION_VAL_AUTO_TH "อัตโนมัติ"
 #define XEMU_SURFACE_SCALE_LABEL_TH NULL
 #define XEMU_SURFACE_SCALE_INFO_0_TH NULL
 #define OPTION_VAL_1_TH NULL
@@ -10962,12 +22407,18 @@ struct retro_core_options_v2 options_sv = {
 #define OPTION_VAL_SVIDEO_TH NULL
 #define OPTION_VAL_SCART_TH NULL
 #define OPTION_VAL_VGA_TH NULL
+#define XEMU_AUDIO_THREAD_LABEL_TH NULL
+#define XEMU_AUDIO_THREAD_INFO_0_TH NULL
 #define XEMU_USE_DSP_LABEL_TH NULL
 #define XEMU_USE_DSP_INFO_0_TH NULL
-#define XEMU_CACHE_SHADERS_LABEL_TH NULL
-#define XEMU_CACHE_SHADERS_INFO_0_TH NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_TH NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_TH NULL
+#define XEMU_DSP_JIT_LABEL_TH NULL
+#define XEMU_DSP_JIT_INFO_0_TH NULL
+#define XEMU_HRTF_LABEL_TH NULL
+#define XEMU_HRTF_INFO_0_TH NULL
+#define XEMU_VP_WORKERS_LABEL_TH NULL
+#define XEMU_VP_WORKERS_INFO_0_TH NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_TH NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_TH NULL
 #define XEMU_AUDIO_VOLUME_LABEL_TH NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_TH NULL
 #define OPTION_VAL_100_TH NULL
@@ -10976,10 +22427,40 @@ struct retro_core_options_v2 options_sv = {
 #define OPTION_VAL_40_TH NULL
 #define OPTION_VAL_20_TH NULL
 #define OPTION_VAL_0_TH NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_TH NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_TH NULL
-#define OPTION_VAL_LINEAR_TH NULL
-#define OPTION_VAL_NEAREST_TH "เนียร์เรสต์ เนเบอร์"
+#define XEMU_VK_FAST_PATHS_LABEL_TH NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_TH NULL
+#define OPTION_VAL_ALL_TH "ทั้งหมด"
+#define OPTION_VAL_NO_GPL_TH NULL
+#define OPTION_VAL_NO_DYN_TH NULL
+#define OPTION_VAL_NONE_TH "ไม่แชร์อินพุต"
+#define XEMU_RUMBLE_P1_LABEL_TH NULL
+#define XEMU_RUMBLE_P1_INFO_0_TH NULL
+#define XEMU_RUMBLE_P2_LABEL_TH NULL
+#define XEMU_RUMBLE_P2_INFO_0_TH NULL
+#define XEMU_DEADZONE_P1_LABEL_TH NULL
+#define XEMU_DEADZONE_P1_INFO_0_TH NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_TH NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_TH NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_TH NULL
+#define OPTION_VAL_15_TH NULL
+#define OPTION_VAL_25_TH NULL
+#define OPTION_VAL_30_TH NULL
+#define XEMU_DEADZONE_P2_LABEL_TH NULL
+#define XEMU_DEADZONE_P2_INFO_0_TH NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_TH NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_TH NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_TH NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_TH NULL
+#define OPTION_VAL_MOUSE_TH "เมาส์"
+#define OPTION_VAL_STICK_TH NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_TH NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_TH NULL
+#define XEMU_CHIHIRO_FFB_LABEL_TH NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_TH NULL
+#define OPTION_VAL_50_TH NULL
+#define OPTION_VAL_75_TH NULL
+#define OPTION_VAL_150_TH NULL
+#define OPTION_VAL_200_TH NULL
 
 struct retro_core_option_v2_category option_cats_th[] = {
     {
@@ -10997,13 +22478,19 @@ struct retro_core_option_v2_category option_cats_th[] = {
         CATEGORY_AUDIO_LABEL_TH,
         CATEGORY_AUDIO_INFO_0_TH
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_TH,
+        CATEGORY_CONTROLS_INFO_0_TH
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_TH,
+        CATEGORY_CHIHIRO_INFO_0_TH
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_th[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_TH,
@@ -11032,6 +22519,8 @@ struct retro_core_option_v2_definition option_defs_th[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_TH,
@@ -11044,7 +22533,7 @@ struct retro_core_option_v2_definition option_defs_th[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -11061,6 +22550,38 @@ struct retro_core_option_v2_definition option_defs_th[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_TH,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_TH,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_TH,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_TH,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_TH,
         NULL,
@@ -11073,6 +22594,25 @@ struct retro_core_option_v2_definition option_defs_th[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_TH,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_TH,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_TH },
+            { "4:3",       OPTION_VAL_4_3_TH },
+            { "16:9",      OPTION_VAL_16_9_TH },
+            { "letterbox", OPTION_VAL_LETTERBOX_TH },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -11128,6 +22668,25 @@ struct retro_core_option_v2_definition option_defs_th[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_TH,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_TH,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_TH,
@@ -11142,13 +22701,29 @@ struct retro_core_option_v2_definition option_defs_th[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_TH,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_TH,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_TH,
+        XEMU_DSP_JIT_INFO_0_TH,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_TH,
+        NULL,
+        XEMU_HRTF_INFO_0_TH,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -11157,10 +22732,27 @@ struct retro_core_option_v2_definition option_defs_th[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_TH,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_TH,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_TH,
+        XEMU_VP_WORKERS_INFO_0_TH,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_TH },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_TH,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_TH,
         NULL,
         "video",
         {
@@ -11188,19 +22780,169 @@ struct retro_core_option_v2_definition option_defs_th[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_TH,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_TH,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_TH,
+        XEMU_VK_FAST_PATHS_INFO_0_TH,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_TH },
-            { "nearest", OPTION_VAL_NEAREST_TH },
+            { "all",      OPTION_VAL_ALL_TH },
+            { "no_gpl",   OPTION_VAL_NO_GPL_TH },
+            { "no_dyn",   OPTION_VAL_NO_DYN_TH },
+            { "none",     OPTION_VAL_NONE_TH },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_TH,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_TH,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_TH,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_TH,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_TH,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_TH,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_TH },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_TH },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_TH },
+            { "15", OPTION_VAL_15_TH },
+            { "20", OPTION_VAL_20_TH },
+            { "25", OPTION_VAL_25_TH },
+            { "30", OPTION_VAL_30_TH },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_TH,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_TH,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_TH },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_TH },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_TH },
+            { "15", OPTION_VAL_15_TH },
+            { "20", OPTION_VAL_20_TH },
+            { "25", OPTION_VAL_25_TH },
+            { "30", OPTION_VAL_30_TH },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_TH,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_TH,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_TH,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_TH,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_TH },
+            { "stick", OPTION_VAL_STICK_TH },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_TH,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_TH,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_TH,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_TH,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_TH },
+            { "50",  OPTION_VAL_50_TH },
+            { "75",  OPTION_VAL_75_TH },
+            { "100", OPTION_VAL_100_TH },
+            { "150", OPTION_VAL_150_TH },
+            { "200", OPTION_VAL_200_TH },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -11211,12 +22953,16 @@ struct retro_core_options_v2 options_th = {
 
 /* RETRO_LANGUAGE_TR */
 
-#define CATEGORY_SYSTEM_LABEL_TR "Sistem"
+#define CATEGORY_SYSTEM_LABEL_TR NULL
 #define CATEGORY_SYSTEM_INFO_0_TR NULL
 #define CATEGORY_VIDEO_LABEL_TR NULL
 #define CATEGORY_VIDEO_INFO_0_TR NULL
 #define CATEGORY_AUDIO_LABEL_TR "Ses"
 #define CATEGORY_AUDIO_INFO_0_TR NULL
+#define CATEGORY_CONTROLS_LABEL_TR "Kontrolcüler"
+#define CATEGORY_CONTROLS_INFO_0_TR NULL
+#define CATEGORY_CHIHIRO_LABEL_TR NULL
+#define CATEGORY_CHIHIRO_INFO_0_TR NULL
 #define XEMU_MEMORY_LABEL_TR NULL
 #define XEMU_MEMORY_INFO_0_TR NULL
 #define OPTION_VAL_64_TR NULL
@@ -11228,15 +22974,23 @@ struct retro_core_options_v2 options_th = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_TR NULL
 #define XEMU_HARD_FPU_LABEL_TR NULL
 #define XEMU_HARD_FPU_INFO_0_TR NULL
+#define XEMU_CPU_BOOST_LABEL_TR NULL
+#define XEMU_CPU_BOOST_INFO_0_TR NULL
+#define XEMU_HDD_TRIM_LABEL_TR NULL
+#define XEMU_HDD_TRIM_INFO_0_TR NULL
 #define XEMU_RENDERER_LABEL_TR NULL
 #define XEMU_RENDERER_INFO_0_TR NULL
 #define OPTION_VAL_VULKAN_TR NULL
 #define OPTION_VAL_OPENGL_TR NULL
-#define XEMU_ASPECT_RATIO_LABEL_TR "En Boy Oranı"
-#define XEMU_ASPECT_RATIO_INFO_0_TR NULL
-#define OPTION_VAL_AUTO_TR "Otomatik"
+#define XEMU_VIDEO_ASPECT_LABEL_TR NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_TR NULL
+#define OPTION_VAL_DASHBOARD_TR NULL
 #define OPTION_VAL_4_3_TR NULL
 #define OPTION_VAL_16_9_TR NULL
+#define OPTION_VAL_LETTERBOX_TR NULL
+#define XEMU_ASPECT_RATIO_LABEL_TR "Çekirdek En Boy Oranı"
+#define XEMU_ASPECT_RATIO_INFO_0_TR NULL
+#define OPTION_VAL_AUTO_TR "Otomatik"
 #define XEMU_SURFACE_SCALE_LABEL_TR NULL
 #define XEMU_SURFACE_SCALE_INFO_0_TR NULL
 #define OPTION_VAL_1_TR NULL
@@ -11256,12 +23010,18 @@ struct retro_core_options_v2 options_th = {
 #define OPTION_VAL_SVIDEO_TR NULL
 #define OPTION_VAL_SCART_TR NULL
 #define OPTION_VAL_VGA_TR NULL
+#define XEMU_AUDIO_THREAD_LABEL_TR NULL
+#define XEMU_AUDIO_THREAD_INFO_0_TR NULL
 #define XEMU_USE_DSP_LABEL_TR NULL
 #define XEMU_USE_DSP_INFO_0_TR NULL
-#define XEMU_CACHE_SHADERS_LABEL_TR NULL
-#define XEMU_CACHE_SHADERS_INFO_0_TR NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_TR NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_TR NULL
+#define XEMU_DSP_JIT_LABEL_TR NULL
+#define XEMU_DSP_JIT_INFO_0_TR NULL
+#define XEMU_HRTF_LABEL_TR NULL
+#define XEMU_HRTF_INFO_0_TR NULL
+#define XEMU_VP_WORKERS_LABEL_TR NULL
+#define XEMU_VP_WORKERS_INFO_0_TR NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_TR NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_TR NULL
 #define XEMU_AUDIO_VOLUME_LABEL_TR NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_TR NULL
 #define OPTION_VAL_100_TR "%100"
@@ -11270,10 +23030,40 @@ struct retro_core_options_v2 options_th = {
 #define OPTION_VAL_40_TR "%40"
 #define OPTION_VAL_20_TR "%20"
 #define OPTION_VAL_0_TR NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_TR NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_TR NULL
-#define OPTION_VAL_LINEAR_TR "İkili Doğrusal"
-#define OPTION_VAL_NEAREST_TR "En Yakın İlişki"
+#define XEMU_VK_FAST_PATHS_LABEL_TR NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_TR NULL
+#define OPTION_VAL_ALL_TR "Tümü"
+#define OPTION_VAL_NO_GPL_TR NULL
+#define OPTION_VAL_NO_DYN_TR NULL
+#define OPTION_VAL_NONE_TR "Yok"
+#define XEMU_RUMBLE_P1_LABEL_TR NULL
+#define XEMU_RUMBLE_P1_INFO_0_TR NULL
+#define XEMU_RUMBLE_P2_LABEL_TR NULL
+#define XEMU_RUMBLE_P2_INFO_0_TR NULL
+#define XEMU_DEADZONE_P1_LABEL_TR NULL
+#define XEMU_DEADZONE_P1_INFO_0_TR NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_TR NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_TR NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_TR NULL
+#define OPTION_VAL_15_TR "%15"
+#define OPTION_VAL_25_TR NULL
+#define OPTION_VAL_30_TR "%30"
+#define XEMU_DEADZONE_P2_LABEL_TR NULL
+#define XEMU_DEADZONE_P2_INFO_0_TR NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_TR NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_TR NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_TR NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_TR NULL
+#define OPTION_VAL_MOUSE_TR "Fare"
+#define OPTION_VAL_STICK_TR NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_TR NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_TR NULL
+#define XEMU_CHIHIRO_FFB_LABEL_TR NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_TR NULL
+#define OPTION_VAL_50_TR "%50"
+#define OPTION_VAL_75_TR "%75"
+#define OPTION_VAL_150_TR "%150"
+#define OPTION_VAL_200_TR "%200"
 
 struct retro_core_option_v2_category option_cats_tr[] = {
     {
@@ -11291,13 +23081,19 @@ struct retro_core_option_v2_category option_cats_tr[] = {
         CATEGORY_AUDIO_LABEL_TR,
         CATEGORY_AUDIO_INFO_0_TR
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_TR,
+        CATEGORY_CONTROLS_INFO_0_TR
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_TR,
+        CATEGORY_CHIHIRO_INFO_0_TR
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_tr[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_TR,
@@ -11326,6 +23122,8 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_TR,
@@ -11338,7 +23136,7 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -11355,6 +23153,38 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_TR,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_TR,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_TR,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_TR,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_TR,
         NULL,
@@ -11367,6 +23197,25 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_TR,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_TR,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_TR },
+            { "4:3",       OPTION_VAL_4_3_TR },
+            { "16:9",      OPTION_VAL_16_9_TR },
+            { "letterbox", OPTION_VAL_LETTERBOX_TR },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -11422,6 +23271,25 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_TR,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_TR,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_TR,
@@ -11436,13 +23304,29 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_TR,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_TR,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_TR,
+        XEMU_DSP_JIT_INFO_0_TR,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_TR,
+        NULL,
+        XEMU_HRTF_INFO_0_TR,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -11451,10 +23335,27 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_TR,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_TR,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_TR,
+        XEMU_VP_WORKERS_INFO_0_TR,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_TR },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_TR,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_TR,
         NULL,
         "video",
         {
@@ -11482,19 +23383,169 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_TR,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_TR,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_TR,
+        XEMU_VK_FAST_PATHS_INFO_0_TR,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_TR },
-            { "nearest", OPTION_VAL_NEAREST_TR },
+            { "all",      OPTION_VAL_ALL_TR },
+            { "no_gpl",   OPTION_VAL_NO_GPL_TR },
+            { "no_dyn",   OPTION_VAL_NO_DYN_TR },
+            { "none",     OPTION_VAL_NONE_TR },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_TR,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_TR,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_TR,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_TR,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_TR,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_TR,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_TR },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_TR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_TR },
+            { "15", OPTION_VAL_15_TR },
+            { "20", OPTION_VAL_20_TR },
+            { "25", OPTION_VAL_25_TR },
+            { "30", OPTION_VAL_30_TR },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_TR,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_TR,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_TR },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_TR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_TR },
+            { "15", OPTION_VAL_15_TR },
+            { "20", OPTION_VAL_20_TR },
+            { "25", OPTION_VAL_25_TR },
+            { "30", OPTION_VAL_30_TR },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_TR,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_TR,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_TR,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_TR,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_TR },
+            { "stick", OPTION_VAL_STICK_TR },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_TR,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_TR,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_TR,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_TR,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_TR },
+            { "50",  OPTION_VAL_50_TR },
+            { "75",  OPTION_VAL_75_TR },
+            { "100", OPTION_VAL_100_TR },
+            { "150", OPTION_VAL_150_TR },
+            { "200", OPTION_VAL_200_TR },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -11511,6 +23562,10 @@ struct retro_core_options_v2 options_tr = {
 #define CATEGORY_VIDEO_INFO_0_TT NULL
 #define CATEGORY_AUDIO_LABEL_TT "Аудио"
 #define CATEGORY_AUDIO_INFO_0_TT NULL
+#define CATEGORY_CONTROLS_LABEL_TT NULL
+#define CATEGORY_CONTROLS_INFO_0_TT NULL
+#define CATEGORY_CHIHIRO_LABEL_TT NULL
+#define CATEGORY_CHIHIRO_INFO_0_TT NULL
 #define XEMU_MEMORY_LABEL_TT NULL
 #define XEMU_MEMORY_INFO_0_TT NULL
 #define OPTION_VAL_64_TT NULL
@@ -11522,15 +23577,23 @@ struct retro_core_options_v2 options_tr = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_TT NULL
 #define XEMU_HARD_FPU_LABEL_TT NULL
 #define XEMU_HARD_FPU_INFO_0_TT NULL
+#define XEMU_CPU_BOOST_LABEL_TT NULL
+#define XEMU_CPU_BOOST_INFO_0_TT NULL
+#define XEMU_HDD_TRIM_LABEL_TT NULL
+#define XEMU_HDD_TRIM_INFO_0_TT NULL
 #define XEMU_RENDERER_LABEL_TT NULL
 #define XEMU_RENDERER_INFO_0_TT NULL
 #define OPTION_VAL_VULKAN_TT NULL
 #define OPTION_VAL_OPENGL_TT NULL
+#define XEMU_VIDEO_ASPECT_LABEL_TT NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_TT NULL
+#define OPTION_VAL_DASHBOARD_TT NULL
+#define OPTION_VAL_4_3_TT NULL
+#define OPTION_VAL_16_9_TT NULL
+#define OPTION_VAL_LETTERBOX_TT NULL
 #define XEMU_ASPECT_RATIO_LABEL_TT NULL
 #define XEMU_ASPECT_RATIO_INFO_0_TT NULL
 #define OPTION_VAL_AUTO_TT NULL
-#define OPTION_VAL_4_3_TT NULL
-#define OPTION_VAL_16_9_TT NULL
 #define XEMU_SURFACE_SCALE_LABEL_TT NULL
 #define XEMU_SURFACE_SCALE_INFO_0_TT NULL
 #define OPTION_VAL_1_TT NULL
@@ -11550,12 +23613,18 @@ struct retro_core_options_v2 options_tr = {
 #define OPTION_VAL_SVIDEO_TT NULL
 #define OPTION_VAL_SCART_TT NULL
 #define OPTION_VAL_VGA_TT NULL
+#define XEMU_AUDIO_THREAD_LABEL_TT NULL
+#define XEMU_AUDIO_THREAD_INFO_0_TT NULL
 #define XEMU_USE_DSP_LABEL_TT NULL
 #define XEMU_USE_DSP_INFO_0_TT NULL
-#define XEMU_CACHE_SHADERS_LABEL_TT NULL
-#define XEMU_CACHE_SHADERS_INFO_0_TT NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_TT NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_TT NULL
+#define XEMU_DSP_JIT_LABEL_TT NULL
+#define XEMU_DSP_JIT_INFO_0_TT NULL
+#define XEMU_HRTF_LABEL_TT NULL
+#define XEMU_HRTF_INFO_0_TT NULL
+#define XEMU_VP_WORKERS_LABEL_TT NULL
+#define XEMU_VP_WORKERS_INFO_0_TT NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_TT NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_TT NULL
 #define XEMU_AUDIO_VOLUME_LABEL_TT NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_TT NULL
 #define OPTION_VAL_100_TT NULL
@@ -11564,10 +23633,40 @@ struct retro_core_options_v2 options_tr = {
 #define OPTION_VAL_40_TT NULL
 #define OPTION_VAL_20_TT NULL
 #define OPTION_VAL_0_TT NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_TT NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_TT NULL
-#define OPTION_VAL_LINEAR_TT NULL
-#define OPTION_VAL_NEAREST_TT NULL
+#define XEMU_VK_FAST_PATHS_LABEL_TT NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_TT NULL
+#define OPTION_VAL_ALL_TT "Барлык"
+#define OPTION_VAL_NO_GPL_TT NULL
+#define OPTION_VAL_NO_DYN_TT NULL
+#define OPTION_VAL_NONE_TT NULL
+#define XEMU_RUMBLE_P1_LABEL_TT NULL
+#define XEMU_RUMBLE_P1_INFO_0_TT NULL
+#define XEMU_RUMBLE_P2_LABEL_TT NULL
+#define XEMU_RUMBLE_P2_INFO_0_TT NULL
+#define XEMU_DEADZONE_P1_LABEL_TT NULL
+#define XEMU_DEADZONE_P1_INFO_0_TT NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_TT NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_TT NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_TT NULL
+#define OPTION_VAL_15_TT NULL
+#define OPTION_VAL_25_TT NULL
+#define OPTION_VAL_30_TT NULL
+#define XEMU_DEADZONE_P2_LABEL_TT NULL
+#define XEMU_DEADZONE_P2_INFO_0_TT NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_TT NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_TT NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_TT NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_TT NULL
+#define OPTION_VAL_MOUSE_TT NULL
+#define OPTION_VAL_STICK_TT NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_TT NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_TT NULL
+#define XEMU_CHIHIRO_FFB_LABEL_TT NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_TT NULL
+#define OPTION_VAL_50_TT NULL
+#define OPTION_VAL_75_TT NULL
+#define OPTION_VAL_150_TT NULL
+#define OPTION_VAL_200_TT NULL
 
 struct retro_core_option_v2_category option_cats_tt[] = {
     {
@@ -11585,13 +23684,19 @@ struct retro_core_option_v2_category option_cats_tt[] = {
         CATEGORY_AUDIO_LABEL_TT,
         CATEGORY_AUDIO_INFO_0_TT
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_TT,
+        CATEGORY_CONTROLS_INFO_0_TT
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_TT,
+        CATEGORY_CHIHIRO_INFO_0_TT
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_tt[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_TT,
@@ -11620,6 +23725,8 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_TT,
@@ -11632,7 +23739,7 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -11649,6 +23756,38 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_TT,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_TT,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_TT,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_TT,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_TT,
         NULL,
@@ -11661,6 +23800,25 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_TT,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_TT,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_TT },
+            { "4:3",       OPTION_VAL_4_3_TT },
+            { "16:9",      OPTION_VAL_16_9_TT },
+            { "letterbox", OPTION_VAL_LETTERBOX_TT },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -11716,6 +23874,25 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_TT,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_TT,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_TT,
@@ -11730,13 +23907,29 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_TT,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_TT,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_TT,
+        XEMU_DSP_JIT_INFO_0_TT,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_TT,
+        NULL,
+        XEMU_HRTF_INFO_0_TT,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -11745,10 +23938,27 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_TT,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_TT,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_TT,
+        XEMU_VP_WORKERS_INFO_0_TT,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_TT },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_TT,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_TT,
         NULL,
         "video",
         {
@@ -11776,19 +23986,169 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_TT,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_TT,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_TT,
+        XEMU_VK_FAST_PATHS_INFO_0_TT,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_TT },
-            { "nearest", OPTION_VAL_NEAREST_TT },
+            { "all",      OPTION_VAL_ALL_TT },
+            { "no_gpl",   OPTION_VAL_NO_GPL_TT },
+            { "no_dyn",   OPTION_VAL_NO_DYN_TT },
+            { "none",     OPTION_VAL_NONE_TT },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_TT,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_TT,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_TT,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_TT,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_TT,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_TT,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_TT },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_TT },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_TT },
+            { "15", OPTION_VAL_15_TT },
+            { "20", OPTION_VAL_20_TT },
+            { "25", OPTION_VAL_25_TT },
+            { "30", OPTION_VAL_30_TT },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_TT,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_TT,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_TT },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_TT },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_TT },
+            { "15", OPTION_VAL_15_TT },
+            { "20", OPTION_VAL_20_TT },
+            { "25", OPTION_VAL_25_TT },
+            { "30", OPTION_VAL_30_TT },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_TT,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_TT,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_TT,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_TT,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_TT },
+            { "stick", OPTION_VAL_STICK_TT },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_TT,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_TT,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_TT,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_TT,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_TT },
+            { "50",  OPTION_VAL_50_TT },
+            { "75",  OPTION_VAL_75_TT },
+            { "100", OPTION_VAL_100_TT },
+            { "150", OPTION_VAL_150_TT },
+            { "200", OPTION_VAL_200_TT },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -11799,12 +24159,16 @@ struct retro_core_options_v2 options_tt = {
 
 /* RETRO_LANGUAGE_UK */
 
-#define CATEGORY_SYSTEM_LABEL_UK "Система"
+#define CATEGORY_SYSTEM_LABEL_UK NULL
 #define CATEGORY_SYSTEM_INFO_0_UK NULL
 #define CATEGORY_VIDEO_LABEL_UK "Відео"
 #define CATEGORY_VIDEO_INFO_0_UK NULL
 #define CATEGORY_AUDIO_LABEL_UK "Звук"
 #define CATEGORY_AUDIO_INFO_0_UK NULL
+#define CATEGORY_CONTROLS_LABEL_UK "Управління"
+#define CATEGORY_CONTROLS_INFO_0_UK NULL
+#define CATEGORY_CHIHIRO_LABEL_UK NULL
+#define CATEGORY_CHIHIRO_INFO_0_UK NULL
 #define XEMU_MEMORY_LABEL_UK NULL
 #define XEMU_MEMORY_INFO_0_UK NULL
 #define OPTION_VAL_64_UK "64 МБ"
@@ -11816,15 +24180,23 @@ struct retro_core_options_v2 options_tt = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_UK NULL
 #define XEMU_HARD_FPU_LABEL_UK NULL
 #define XEMU_HARD_FPU_INFO_0_UK NULL
+#define XEMU_CPU_BOOST_LABEL_UK NULL
+#define XEMU_CPU_BOOST_INFO_0_UK NULL
+#define XEMU_HDD_TRIM_LABEL_UK NULL
+#define XEMU_HDD_TRIM_INFO_0_UK NULL
 #define XEMU_RENDERER_LABEL_UK NULL
 #define XEMU_RENDERER_INFO_0_UK NULL
 #define OPTION_VAL_VULKAN_UK NULL
 #define OPTION_VAL_OPENGL_UK NULL
-#define XEMU_ASPECT_RATIO_LABEL_UK "Співвідношення сторін"
-#define XEMU_ASPECT_RATIO_INFO_0_UK NULL
-#define OPTION_VAL_AUTO_UK "Автоматично"
+#define XEMU_VIDEO_ASPECT_LABEL_UK NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_UK NULL
+#define OPTION_VAL_DASHBOARD_UK NULL
 #define OPTION_VAL_4_3_UK NULL
 #define OPTION_VAL_16_9_UK NULL
+#define OPTION_VAL_LETTERBOX_UK NULL
+#define XEMU_ASPECT_RATIO_LABEL_UK "Співвідношення сторін ядра"
+#define XEMU_ASPECT_RATIO_INFO_0_UK NULL
+#define OPTION_VAL_AUTO_UK "Автоматично"
 #define XEMU_SURFACE_SCALE_LABEL_UK NULL
 #define XEMU_SURFACE_SCALE_INFO_0_UK NULL
 #define OPTION_VAL_1_UK NULL
@@ -11844,12 +24216,18 @@ struct retro_core_options_v2 options_tt = {
 #define OPTION_VAL_SVIDEO_UK NULL
 #define OPTION_VAL_SCART_UK NULL
 #define OPTION_VAL_VGA_UK NULL
+#define XEMU_AUDIO_THREAD_LABEL_UK NULL
+#define XEMU_AUDIO_THREAD_INFO_0_UK NULL
 #define XEMU_USE_DSP_LABEL_UK NULL
 #define XEMU_USE_DSP_INFO_0_UK NULL
-#define XEMU_CACHE_SHADERS_LABEL_UK NULL
-#define XEMU_CACHE_SHADERS_INFO_0_UK NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_UK NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_UK NULL
+#define XEMU_DSP_JIT_LABEL_UK NULL
+#define XEMU_DSP_JIT_INFO_0_UK NULL
+#define XEMU_HRTF_LABEL_UK NULL
+#define XEMU_HRTF_INFO_0_UK NULL
+#define XEMU_VP_WORKERS_LABEL_UK NULL
+#define XEMU_VP_WORKERS_INFO_0_UK NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_UK NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_UK NULL
 #define XEMU_AUDIO_VOLUME_LABEL_UK NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_UK NULL
 #define OPTION_VAL_100_UK NULL
@@ -11858,10 +24236,40 @@ struct retro_core_options_v2 options_tt = {
 #define OPTION_VAL_40_UK NULL
 #define OPTION_VAL_20_UK NULL
 #define OPTION_VAL_0_UK NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_UK NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_UK NULL
-#define OPTION_VAL_LINEAR_UK "Білінійна"
-#define OPTION_VAL_NEAREST_UK "Найближчий сусід"
+#define XEMU_VK_FAST_PATHS_LABEL_UK NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_UK NULL
+#define OPTION_VAL_ALL_UK "Усі"
+#define OPTION_VAL_NO_GPL_UK NULL
+#define OPTION_VAL_NO_DYN_UK NULL
+#define OPTION_VAL_NONE_UK "Немає"
+#define XEMU_RUMBLE_P1_LABEL_UK NULL
+#define XEMU_RUMBLE_P1_INFO_0_UK NULL
+#define XEMU_RUMBLE_P2_LABEL_UK NULL
+#define XEMU_RUMBLE_P2_INFO_0_UK NULL
+#define XEMU_DEADZONE_P1_LABEL_UK NULL
+#define XEMU_DEADZONE_P1_INFO_0_UK NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_UK NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_UK NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_UK NULL
+#define OPTION_VAL_15_UK NULL
+#define OPTION_VAL_25_UK NULL
+#define OPTION_VAL_30_UK NULL
+#define XEMU_DEADZONE_P2_LABEL_UK NULL
+#define XEMU_DEADZONE_P2_INFO_0_UK NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_UK NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_UK NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_UK NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_UK NULL
+#define OPTION_VAL_MOUSE_UK "Миша"
+#define OPTION_VAL_STICK_UK NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_UK NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_UK NULL
+#define XEMU_CHIHIRO_FFB_LABEL_UK NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_UK NULL
+#define OPTION_VAL_50_UK NULL
+#define OPTION_VAL_75_UK NULL
+#define OPTION_VAL_150_UK NULL
+#define OPTION_VAL_200_UK NULL
 
 struct retro_core_option_v2_category option_cats_uk[] = {
     {
@@ -11879,13 +24287,19 @@ struct retro_core_option_v2_category option_cats_uk[] = {
         CATEGORY_AUDIO_LABEL_UK,
         CATEGORY_AUDIO_INFO_0_UK
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_UK,
+        CATEGORY_CONTROLS_INFO_0_UK
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_UK,
+        CATEGORY_CHIHIRO_INFO_0_UK
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_uk[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_UK,
@@ -11914,6 +24328,8 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_UK,
@@ -11926,7 +24342,7 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -11943,6 +24359,38 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_UK,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_UK,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_UK,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_UK,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_UK,
         NULL,
@@ -11955,6 +24403,25 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_UK,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_UK,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_UK },
+            { "4:3",       OPTION_VAL_4_3_UK },
+            { "16:9",      OPTION_VAL_16_9_UK },
+            { "letterbox", OPTION_VAL_LETTERBOX_UK },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -12010,6 +24477,25 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_UK,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_UK,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_UK,
@@ -12024,13 +24510,29 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_UK,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_UK,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_UK,
+        XEMU_DSP_JIT_INFO_0_UK,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_UK,
+        NULL,
+        XEMU_HRTF_INFO_0_UK,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -12039,10 +24541,27 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_UK,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_UK,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_UK,
+        XEMU_VP_WORKERS_INFO_0_UK,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_UK },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_UK,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_UK,
         NULL,
         "video",
         {
@@ -12070,19 +24589,169 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_UK,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_UK,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_UK,
+        XEMU_VK_FAST_PATHS_INFO_0_UK,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_UK },
-            { "nearest", OPTION_VAL_NEAREST_UK },
+            { "all",      OPTION_VAL_ALL_UK },
+            { "no_gpl",   OPTION_VAL_NO_GPL_UK },
+            { "no_dyn",   OPTION_VAL_NO_DYN_UK },
+            { "none",     OPTION_VAL_NONE_UK },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_UK,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_UK,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_UK,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_UK,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_UK,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_UK,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_UK },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_UK },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_UK },
+            { "15", OPTION_VAL_15_UK },
+            { "20", OPTION_VAL_20_UK },
+            { "25", OPTION_VAL_25_UK },
+            { "30", OPTION_VAL_30_UK },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_UK,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_UK,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_UK },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_UK },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_UK },
+            { "15", OPTION_VAL_15_UK },
+            { "20", OPTION_VAL_20_UK },
+            { "25", OPTION_VAL_25_UK },
+            { "30", OPTION_VAL_30_UK },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_UK,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_UK,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_UK,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_UK,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_UK },
+            { "stick", OPTION_VAL_STICK_UK },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_UK,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_UK,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_UK,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_UK,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_UK },
+            { "50",  OPTION_VAL_50_UK },
+            { "75",  OPTION_VAL_75_UK },
+            { "100", OPTION_VAL_100_UK },
+            { "150", OPTION_VAL_150_UK },
+            { "200", OPTION_VAL_200_UK },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -12093,12 +24762,16 @@ struct retro_core_options_v2 options_uk = {
 
 /* RETRO_LANGUAGE_VAL */
 
-#define CATEGORY_SYSTEM_LABEL_VAL "Sistema"
+#define CATEGORY_SYSTEM_LABEL_VAL NULL
 #define CATEGORY_SYSTEM_INFO_0_VAL NULL
 #define CATEGORY_VIDEO_LABEL_VAL "Vídeo"
 #define CATEGORY_VIDEO_INFO_0_VAL NULL
 #define CATEGORY_AUDIO_LABEL_VAL "Àudio"
 #define CATEGORY_AUDIO_INFO_0_VAL NULL
+#define CATEGORY_CONTROLS_LABEL_VAL NULL
+#define CATEGORY_CONTROLS_INFO_0_VAL NULL
+#define CATEGORY_CHIHIRO_LABEL_VAL NULL
+#define CATEGORY_CHIHIRO_INFO_0_VAL NULL
 #define XEMU_MEMORY_LABEL_VAL NULL
 #define XEMU_MEMORY_INFO_0_VAL NULL
 #define OPTION_VAL_64_VAL NULL
@@ -12110,15 +24783,23 @@ struct retro_core_options_v2 options_uk = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_VAL NULL
 #define XEMU_HARD_FPU_LABEL_VAL NULL
 #define XEMU_HARD_FPU_INFO_0_VAL NULL
+#define XEMU_CPU_BOOST_LABEL_VAL NULL
+#define XEMU_CPU_BOOST_INFO_0_VAL NULL
+#define XEMU_HDD_TRIM_LABEL_VAL NULL
+#define XEMU_HDD_TRIM_INFO_0_VAL NULL
 #define XEMU_RENDERER_LABEL_VAL NULL
 #define XEMU_RENDERER_INFO_0_VAL NULL
 #define OPTION_VAL_VULKAN_VAL NULL
 #define OPTION_VAL_OPENGL_VAL NULL
-#define XEMU_ASPECT_RATIO_LABEL_VAL "Relació d'aspecte"
-#define XEMU_ASPECT_RATIO_INFO_0_VAL NULL
-#define OPTION_VAL_AUTO_VAL "Selecció automàtica"
+#define XEMU_VIDEO_ASPECT_LABEL_VAL NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_VAL NULL
+#define OPTION_VAL_DASHBOARD_VAL NULL
 #define OPTION_VAL_4_3_VAL NULL
 #define OPTION_VAL_16_9_VAL NULL
+#define OPTION_VAL_LETTERBOX_VAL NULL
+#define XEMU_ASPECT_RATIO_LABEL_VAL NULL
+#define XEMU_ASPECT_RATIO_INFO_0_VAL NULL
+#define OPTION_VAL_AUTO_VAL "Selecció automàtica"
 #define XEMU_SURFACE_SCALE_LABEL_VAL NULL
 #define XEMU_SURFACE_SCALE_INFO_0_VAL NULL
 #define OPTION_VAL_1_VAL NULL
@@ -12138,12 +24819,18 @@ struct retro_core_options_v2 options_uk = {
 #define OPTION_VAL_SVIDEO_VAL NULL
 #define OPTION_VAL_SCART_VAL NULL
 #define OPTION_VAL_VGA_VAL NULL
+#define XEMU_AUDIO_THREAD_LABEL_VAL NULL
+#define XEMU_AUDIO_THREAD_INFO_0_VAL NULL
 #define XEMU_USE_DSP_LABEL_VAL NULL
 #define XEMU_USE_DSP_INFO_0_VAL NULL
-#define XEMU_CACHE_SHADERS_LABEL_VAL NULL
-#define XEMU_CACHE_SHADERS_INFO_0_VAL NULL
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_VAL NULL
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_VAL NULL
+#define XEMU_DSP_JIT_LABEL_VAL NULL
+#define XEMU_DSP_JIT_INFO_0_VAL NULL
+#define XEMU_HRTF_LABEL_VAL NULL
+#define XEMU_HRTF_INFO_0_VAL NULL
+#define XEMU_VP_WORKERS_LABEL_VAL NULL
+#define XEMU_VP_WORKERS_INFO_0_VAL NULL
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_VAL NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_VAL NULL
 #define XEMU_AUDIO_VOLUME_LABEL_VAL NULL
 #define XEMU_AUDIO_VOLUME_INFO_0_VAL NULL
 #define OPTION_VAL_100_VAL NULL
@@ -12152,10 +24839,40 @@ struct retro_core_options_v2 options_uk = {
 #define OPTION_VAL_40_VAL NULL
 #define OPTION_VAL_20_VAL NULL
 #define OPTION_VAL_0_VAL NULL
-#define XEMU_DISPLAY_FILTERING_LABEL_VAL NULL
-#define XEMU_DISPLAY_FILTERING_INFO_0_VAL NULL
-#define OPTION_VAL_LINEAR_VAL "Bilineal"
-#define OPTION_VAL_NEAREST_VAL "Veí més proper"
+#define XEMU_VK_FAST_PATHS_LABEL_VAL NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_VAL NULL
+#define OPTION_VAL_ALL_VAL NULL
+#define OPTION_VAL_NO_GPL_VAL NULL
+#define OPTION_VAL_NO_DYN_VAL NULL
+#define OPTION_VAL_NONE_VAL "Cap"
+#define XEMU_RUMBLE_P1_LABEL_VAL NULL
+#define XEMU_RUMBLE_P1_INFO_0_VAL NULL
+#define XEMU_RUMBLE_P2_LABEL_VAL NULL
+#define XEMU_RUMBLE_P2_INFO_0_VAL NULL
+#define XEMU_DEADZONE_P1_LABEL_VAL NULL
+#define XEMU_DEADZONE_P1_INFO_0_VAL NULL
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_VAL NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_VAL NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_VAL NULL
+#define OPTION_VAL_15_VAL NULL
+#define OPTION_VAL_25_VAL NULL
+#define OPTION_VAL_30_VAL NULL
+#define XEMU_DEADZONE_P2_LABEL_VAL NULL
+#define XEMU_DEADZONE_P2_INFO_0_VAL NULL
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_VAL NULL
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_VAL NULL
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_VAL NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_VAL NULL
+#define OPTION_VAL_MOUSE_VAL NULL
+#define OPTION_VAL_STICK_VAL NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_VAL NULL
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_VAL NULL
+#define XEMU_CHIHIRO_FFB_LABEL_VAL NULL
+#define XEMU_CHIHIRO_FFB_INFO_0_VAL NULL
+#define OPTION_VAL_50_VAL NULL
+#define OPTION_VAL_75_VAL NULL
+#define OPTION_VAL_150_VAL NULL
+#define OPTION_VAL_200_VAL NULL
 
 struct retro_core_option_v2_category option_cats_val[] = {
     {
@@ -12173,13 +24890,19 @@ struct retro_core_option_v2_category option_cats_val[] = {
         CATEGORY_AUDIO_LABEL_VAL,
         CATEGORY_AUDIO_INFO_0_VAL
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_VAL,
+        CATEGORY_CONTROLS_INFO_0_VAL
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_VAL,
+        CATEGORY_CHIHIRO_INFO_0_VAL
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_val[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_VAL,
@@ -12208,6 +24931,8 @@ struct retro_core_option_v2_definition option_defs_val[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_VAL,
@@ -12220,7 +24945,7 @@ struct retro_core_option_v2_definition option_defs_val[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -12237,6 +24962,38 @@ struct retro_core_option_v2_definition option_defs_val[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_VAL,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_VAL,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_VAL,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_VAL,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_VAL,
         NULL,
@@ -12249,6 +25006,25 @@ struct retro_core_option_v2_definition option_defs_val[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_VAL,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_VAL,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_VAL },
+            { "4:3",       OPTION_VAL_4_3_VAL },
+            { "16:9",      OPTION_VAL_16_9_VAL },
+            { "letterbox", OPTION_VAL_LETTERBOX_VAL },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -12304,6 +25080,25 @@ struct retro_core_option_v2_definition option_defs_val[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_VAL,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_VAL,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_VAL,
@@ -12318,13 +25113,29 @@ struct retro_core_option_v2_definition option_defs_val[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_VAL,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_VAL,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_VAL,
+        XEMU_DSP_JIT_INFO_0_VAL,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_VAL,
+        NULL,
+        XEMU_HRTF_INFO_0_VAL,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -12333,10 +25144,27 @@ struct retro_core_option_v2_definition option_defs_val[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_VAL,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_VAL,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_VAL,
+        XEMU_VP_WORKERS_INFO_0_VAL,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_VAL },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_VAL,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_VAL,
         NULL,
         "video",
         {
@@ -12364,19 +25192,169 @@ struct retro_core_option_v2_definition option_defs_val[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_VAL,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_VAL,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_VAL,
+        XEMU_VK_FAST_PATHS_INFO_0_VAL,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_VAL },
-            { "nearest", OPTION_VAL_NEAREST_VAL },
+            { "all",      OPTION_VAL_ALL_VAL },
+            { "no_gpl",   OPTION_VAL_NO_GPL_VAL },
+            { "no_dyn",   OPTION_VAL_NO_DYN_VAL },
+            { "none",     OPTION_VAL_NONE_VAL },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_VAL,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_VAL,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_VAL,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_VAL,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_VAL,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_VAL,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_VAL },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_VAL },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_VAL },
+            { "15", OPTION_VAL_15_VAL },
+            { "20", OPTION_VAL_20_VAL },
+            { "25", OPTION_VAL_25_VAL },
+            { "30", OPTION_VAL_30_VAL },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_VAL,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_VAL,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_VAL },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_VAL },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_VAL },
+            { "15", OPTION_VAL_15_VAL },
+            { "20", OPTION_VAL_20_VAL },
+            { "25", OPTION_VAL_25_VAL },
+            { "30", OPTION_VAL_30_VAL },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_VAL,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_VAL,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_VAL,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_VAL,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_VAL },
+            { "stick", OPTION_VAL_STICK_VAL },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_VAL,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_VAL,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_VAL,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_VAL,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_VAL },
+            { "50",  OPTION_VAL_50_VAL },
+            { "75",  OPTION_VAL_75_VAL },
+            { "100", OPTION_VAL_100_VAL },
+            { "150", OPTION_VAL_150_VAL },
+            { "200", OPTION_VAL_200_VAL },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };
@@ -12387,12 +25365,16 @@ struct retro_core_options_v2 options_val = {
 
 /* RETRO_LANGUAGE_VN */
 
-#define CATEGORY_SYSTEM_LABEL_VN "Hệ thống"
-#define CATEGORY_SYSTEM_INFO_0_VN "Cấu hình các thiết lập cấp hệ thống như đường dẫn BIOS, bộ nhớ và tùy chọn khởi động."
+#define CATEGORY_SYSTEM_LABEL_VN "Hệ thống (khởi động lại)"
+#define CATEGORY_SYSTEM_INFO_0_VN "Bản thân máy chơi game: bộ nhớ, mạng, quá trình khởi động và bộ xử lý. Các thiết lập này được áp dụng khi nội dung bắt đầu chạy (dọn ổ cứng khi đóng sẽ được thực hiện lúc nội dung đóng)."
 #define CATEGORY_VIDEO_LABEL_VN NULL
-#define CATEGORY_VIDEO_INFO_0_VN "Cấu hình các thiết lập kết xuất hình ảnh."
+#define CATEGORY_VIDEO_INFO_0_VN "Cấu hình các thiết lập Dựng hình hình ảnh."
 #define CATEGORY_AUDIO_LABEL_VN "Âm thanh"
 #define CATEGORY_AUDIO_INFO_0_VN "Cấu hình các thiết lập mô phỏng âm thanh."
+#define CATEGORY_CONTROLS_LABEL_VN "Điều khiển"
+#define CATEGORY_CONTROLS_INFO_0_VN "Độ rung và vùng chết của cần analog, áp dụng riêng cho từng người chơi."
+#define CATEGORY_CHIHIRO_LABEL_VN NULL
+#define CATEGORY_CHIHIRO_INFO_0_VN "Các trò chơi thùng máy Sega Chihiro: chơi miễn phí, ngắm bắn trong các trò chơi bắn súng và phản hồi lực trong các trò chơi đua xe."
 #define XEMU_MEMORY_LABEL_VN "Bộ nhớ hệ thống (MB)"
 #define XEMU_MEMORY_INFO_0_VN "Dung lượng bộ nhớ RAM của hệ thống. 64 MB là tiêu chuẩn; 128 MB được sử dụng trên các bộ máy dành cho gỡ lỗi."
 #define OPTION_VAL_64_VN NULL
@@ -12404,17 +25386,25 @@ struct retro_core_options_v2 options_val = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_VN "Bỏ qua hoạt ảnh khởi động của Xbox."
 #define XEMU_HARD_FPU_LABEL_VN "Mô phỏng bộ xử lý dấu phẩy động bằng phần cứng"
 #define XEMU_HARD_FPU_INFO_0_VN "Sử dụng bộ xử lý dấu phẩy động của máy chủ để mô phỏng x87. Tốc độ nhanh hơn nhưng có thể có một số sai lệch nhỏ."
+#define XEMU_CPU_BOOST_LABEL_VN "Tăng tốc bộ xử lý"
+#define XEMU_CPU_BOOST_INFO_0_VN "Các phương thức xử lý nhanh hơn cho bộ xử lý của máy được mô phỏng và bộ xử lý âm thanh: sử dụng trực tiếp tập lệnh SSE và bộ nhớ đệm lệnh nhảy lớn hơn. Tắt nếu trò chơi hoạt động bất thường."
+#define XEMU_HDD_TRIM_LABEL_VN "Dọn ổ cứng khi đóng"
+#define XEMU_HDD_TRIM_INFO_0_VN "Khi trò chơi đóng, xóa các phân vùng bộ nhớ đệm X, Y và Z trên ổ cứng (trò chơi sẽ định dạng lại chúng khi cần) và ghi lại ảnh ổ đĩa để loại bỏ phần dung lượng không sử dụng, giúp giảm kích thước tệp. Tạm thời cần dung lượng trống tương đương với lượng dữ liệu trong ảnh ổ đĩa. Không thực hiện nếu ảnh ổ đĩa đang chứa trạng thái lưu. Thao tác được thực hiện khi trò chơi đóng, không phải khi khởi chạy lần tiếp theo."
 #define XEMU_RENDERER_LABEL_VN "Giao diện lập trình đồ họa (cần khởi động lại)"
-#define XEMU_RENDERER_INFO_0_VN "Bộ kết xuất được dùng để vẽ hình ảnh từ bộ xử lý đồ họa mô phỏng. Vulkan là lựa chọn mặc định; OpenGL là phương án thay thế cho các trình điều khiển gặp lỗi với Vulkan. Thiết lập có hiệu lực sau khi khởi động lại RetroArch. Trên Android luôn sử dụng Vulkan, trên macOS luôn sử dụng OpenGL."
+#define XEMU_RENDERER_INFO_0_VN "Bộ Dựng hình được dùng để vẽ hình ảnh từ bộ xử lý đồ họa mô phỏng. Vulkan là lựa chọn mặc định; OpenGL là phương án thay thế cho các trình điều khiển gặp lỗi với Vulkan. Thiết lập có hiệu lực sau khi khởi động lại RetroArch. Trên Android luôn sử dụng Vulkan, trên macOS luôn sử dụng OpenGL."
 #define OPTION_VAL_VULKAN_VN NULL
 #define OPTION_VAL_OPENGL_VN NULL
-#define XEMU_ASPECT_RATIO_LABEL_VN "Tỷ lệ khung hình"
-#define XEMU_ASPECT_RATIO_INFO_0_VN "Tỷ lệ khung hình hiển thị của hình ảnh. Tự động sẽ làm theo trò chơi: 16:9 khi trò chơi chuyển máy chơi game sang chế độ màn hình rộng (phải bật Màn hình rộng trong phần cài đặt video của bảng điều khiển), nếu không thì dùng 4:3. Chọn 16:9 nếu trò chơi kết xuất hình ảnh màn hình rộng nhưng hình hiển thị bị ép hẹp."
-#define OPTION_VAL_AUTO_VN "Tự động"
+#define XEMU_VIDEO_ASPECT_LABEL_VN "Tỷ lệ khung hình của hệ máy (cần khởi động lại)"
+#define XEMU_VIDEO_ASPECT_INFO_0_VN "Tỷ lệ khung hình mà cài đặt video của máy chơi game cung cấp cho trò chơi, thay cho cài đặt của bảng điều khiển chính. Ở tỷ lệ 16:9, các trò chơi hỗ trợ màn hình rộng sẽ chạy ở chế độ màn hình rộng; ở tỷ lệ 4:3, chúng sẽ chạy ở tỷ lệ 4:3. Hãy đặt theo tỷ lệ màn hình của bạn. Chế độ viền đen giữ tỷ lệ 4:3 của bảng điều khiển chính và thêm viền đen cho các trò chơi màn hình rộng. Bảng điều khiển chính giữ nguyên cài đặt của bảng điều khiển chính."
+#define OPTION_VAL_DASHBOARD_VN "Bảng điều khiển chính"
 #define OPTION_VAL_4_3_VN NULL
 #define OPTION_VAL_16_9_VN NULL
-#define XEMU_SURFACE_SCALE_LABEL_VN "Tỷ lệ độ phân giải kết xuất nội bộ"
-#define XEMU_SURFACE_SCALE_INFO_0_VN "Điều chỉnh độ phân giải kết xuất nội bộ. Giá trị cao hơn cải thiện chất lượng hình ảnh nhưng làm giảm hiệu năng."
+#define OPTION_VAL_LETTERBOX_VN "Viền đen"
+#define XEMU_ASPECT_RATIO_LABEL_VN "Tỷ lệ khung hình của trình giả lập"
+#define XEMU_ASPECT_RATIO_INFO_0_VN "Tỷ lệ khung hình khi hình ảnh được hiển thị. Tốt nhất nên để ở chế độ Tự động, chế độ này sẽ làm theo trò chơi: 16:9 khi máy chơi game được đặt ở chế độ màn hình rộng (Tỷ lệ khung hình của hệ máy hoặc bảng điều khiển chính) và trò chơi xuất hình ảnh ở tỷ lệ 16:9; nếu không thì là 4:3, đồng thời luôn là 4:3 trên Chihiro. Tỷ lệ 16:9 kéo giãn trò chơi 4:3 thành màn hình rộng."
+#define OPTION_VAL_AUTO_VN "Tự động"
+#define XEMU_SURFACE_SCALE_LABEL_VN "Tỷ lệ độ phân giải nội bộ (cần khởi động lại)"
+#define XEMU_SURFACE_SCALE_INFO_0_VN "Điều chỉnh độ phân giải Dựng hình nội bộ. Giá trị cao hơn cải thiện chất lượng hình ảnh nhưng làm giảm hiệu năng."
 #define OPTION_VAL_1_VN NULL
 #define OPTION_VAL_2_VN NULL
 #define OPTION_VAL_3_VN NULL
@@ -12425,19 +25415,25 @@ struct retro_core_options_v2 options_val = {
 #define OPTION_VAL_8_VN NULL
 #define OPTION_VAL_9_VN NULL
 #define OPTION_VAL_10_VN NULL
-#define XEMU_AVPACK_LABEL_VN "Bộ kết nối âm thanh và hình ảnh"
+#define XEMU_AVPACK_LABEL_VN "Bộ kết nối âm thanh hình ảnh (khởi động lại)"
 #define XEMU_AVPACK_INFO_0_VN "Chọn loại bộ kết nối âm thanh và hình ảnh. Ảnh hưởng đến các chế độ video khả dụng."
 #define OPTION_VAL_HDTV_VN NULL
 #define OPTION_VAL_COMPOSITE_VN "Kết hợp"
 #define OPTION_VAL_SVIDEO_VN NULL
 #define OPTION_VAL_SCART_VN NULL
 #define OPTION_VAL_VGA_VN NULL
+#define XEMU_AUDIO_THREAD_LABEL_VN "Luồng âm thanh (Cần khởi động lại)"
+#define XEMU_AUDIO_THREAD_INFO_0_VN "Chuyển âm thanh sang luồng âm thanh của RetroArch ngay khi bộ xử lý âm thanh của máy chơi game trộn xong, giống như khi chạy độc lập, thay vì gửi lượng âm thanh tương ứng với một khung hình ở mỗi khung hình: âm thanh vẫn tiếp tục phát khi khung hình bị khựng, chẳng hạn như lúc biên dịch bộ đổ bóng."
 #define XEMU_USE_DSP_LABEL_VN "Mô phỏng bộ xử lý tín hiệu số của APU"
 #define XEMU_USE_DSP_INFO_0_VN "Bật mô phỏng bộ xử lý tín hiệu số để tăng độ chính xác của âm thanh. Có thể ảnh hưởng đến hiệu năng."
-#define XEMU_CACHE_SHADERS_LABEL_VN "Bộ nhớ đệm bộ đổ bóng"
-#define XEMU_CACHE_SHADERS_INFO_0_VN "Lưu bộ đổ bóng đã biên dịch của bộ xử lý đồ họa vào ổ đĩa. Giảm hiện tượng giật hình trong những lần chạy tiếp theo."
-#define XEMU_VK_REDUCED_BUFFERS_LABEL_VN "Giảm bộ đệm Vulkan (cần khởi động lại)"
-#define XEMU_VK_REDUCED_BUFFERS_INFO_0_VN "Bộ kết xuất hình ảnh Vulkan cấp phát sẵn các bộ đệm xử lý khi khởi động, bất kể trò chơi cần bao nhiêu. Khi bật, bộ đệm chứa dữ liệu đỉnh nội tuyến chỉ còn một phần mười kích thước của xemu, giúp giảm khoảng 1,2 GB bộ nhớ đồ họa và giảm lượng bộ nhớ hệ thống tương ứng. Khi tắt, hệ thống cấp phát bộ đệm theo đầy đủ kích thước của xemu trên các card đồ họa có từ 4 GB bộ nhớ trở lên; hãy thử tắt tùy chọn này nếu trò chơi chạy chậm hơn khi bật."
+#define XEMU_DSP_JIT_LABEL_VN "Biên dịch tức thời bộ xử lý tín hiệu số"
+#define XEMU_DSP_JIT_INFO_0_VN "Chạy các chương trình của bộ xử lý tín hiệu số trong mô phỏng bộ xử lý âm thanh dưới dạng mã đã biên dịch thay vì thông dịch, giúp tăng tốc, tương tự chức năng biên dịch tức thời bộ xử lý tín hiệu số của bản độc lập. Chỉ có tác dụng khi bật mô phỏng bộ xử lý âm thanh."
+#define XEMU_HRTF_LABEL_VN "Mô phỏng âm thanh theo đặc tính truyền âm của đầu người"
+#define XEMU_HRTF_INFO_0_VN "Định vị âm thanh ba chiều của trò chơi có hỗ trợ bằng cách sử dụng hàm truyền đạt liên quan đến đầu người, giống như trên máy chơi game gốc, dành cho tai nghe và loa âm thanh nổi."
+#define XEMU_VP_WORKERS_LABEL_VN "Số luồng xử lý giọng nói (khởi động lại)"
+#define XEMU_VP_WORKERS_INFO_0_VN "Số luồng dùng để xử lý và phối trộn các âm thanh giọng nói. Tự động sử dụng một luồng cho mỗi lõi bộ xử lý."
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_VN "Làm mượt lần chơi đầu tiên (cần khởi động lại)"
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_VN "Biên dịch các bộ đổ bóng mà trò chơi dự kiến sử dụng ngay trong quá trình khởi động, giúp tránh hiện tượng giật khựng trong những phút đầu khi chúng được biên dịch. Với OpenGL, các bộ đổ bóng đã biên dịch được lưu trong bộ nhớ đệm bộ đổ bóng, tính năng này luôn được bật."
 #define XEMU_AUDIO_VOLUME_LABEL_VN "Giới hạn âm lượng (%)"
 #define XEMU_AUDIO_VOLUME_INFO_0_VN "Giới hạn âm lượng đầu ra của Xbox độc lập với âm lượng tổng của RetroArch."
 #define OPTION_VAL_100_VN NULL
@@ -12446,10 +25442,40 @@ struct retro_core_options_v2 options_val = {
 #define OPTION_VAL_40_VN NULL
 #define OPTION_VAL_20_VN NULL
 #define OPTION_VAL_0_VN "Đã tắt tiếng"
-#define XEMU_DISPLAY_FILTERING_LABEL_VN "Bộ lọc hiển thị"
-#define XEMU_DISPLAY_FILTERING_INFO_0_VN "Chế độ lọc kết cấu cho hình ảnh đầu ra."
-#define OPTION_VAL_LINEAR_VN "Song tuyến tính"
-#define OPTION_VAL_NEAREST_VN "Điểm ảnh gần nhất"
+#define XEMU_VK_FAST_PATHS_LABEL_VN "Các phương thức tăng tốc Vulkan (cần khởi động lại)"
+#define XEMU_VK_FAST_PATHS_INFO_0_VN "Ảnh hưởng đến tốc độ biên dịch bộ đổ bóng trên Vulkan. \"Tất cả\" là lựa chọn nhanh nhất nhưng có thể khiến một số trò chơi bị lỗi."
+#define OPTION_VAL_ALL_VN "Tất cả"
+#define OPTION_VAL_NO_GPL_VN "Không dùng thư viện quy trình xử lý"
+#define OPTION_VAL_NO_DYN_VN "Không dùng trạng thái động"
+#define OPTION_VAL_NONE_VN "Không"
+#define XEMU_RUMBLE_P1_LABEL_VN "Độ rung (người chơi 1)"
+#define XEMU_RUMBLE_P1_INFO_0_VN "Tay cầm của người chơi 1 rung theo phản hồi từ các trò chơi Xbox và phản hồi lực trong một trò đua xe Chihiro. Tắt để vô hiệu hóa cả hai loại rung."
+#define XEMU_RUMBLE_P2_LABEL_VN "Độ rung (người chơi 2)"
+#define XEMU_RUMBLE_P2_INFO_0_VN "Tay cầm của người chơi 2 rung theo phản hồi từ các trò chơi Xbox và phản hồi lực trong một trò đua xe Chihiro. Tắt để vô hiệu hóa cả hai loại rung."
+#define XEMU_DEADZONE_P1_LABEL_VN "Vùng chết cần analog (người chơi 1)"
+#define XEMU_DEADZONE_P1_INFO_0_VN "Khoảng di chuyển mà các cần analog của người chơi 1 có thể dịch chuyển trước khi trò chơi nhận được tín hiệu, áp dụng cho cả hai cần trên Xbox và Chihiro; phần hành trình còn lại được tăng tỷ lệ để đạt mức tối đa."
+#define OPTION_VAL_0_XEMU_DEADZONE_P1_VN NULL
+#define OPTION_VAL_5_XEMU_DEADZONE_P1_VN NULL
+#define OPTION_VAL_10_XEMU_DEADZONE_P1_VN NULL
+#define OPTION_VAL_15_VN NULL
+#define OPTION_VAL_25_VN NULL
+#define OPTION_VAL_30_VN NULL
+#define XEMU_DEADZONE_P2_LABEL_VN "Vùng chết cần analog (người chơi 2)"
+#define XEMU_DEADZONE_P2_INFO_0_VN "Khoảng di chuyển mà các cần analog của người chơi 2 có thể dịch chuyển trước khi trò chơi nhận được tín hiệu, áp dụng cho cả hai cần trên Xbox và Chihiro; phần hành trình còn lại được tăng tỷ lệ để đạt mức tối đa."
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_VN "Chơi miễn phí (cần khởi động lại)"
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_VN "Khởi chạy các trò chơi Sega Chihiro ở chế độ chơi miễn phí, không cần xu. Khi tắt, nhấn nút Chọn để bỏ xu vào máy."
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_VN "Ngắm bắn bằng súng quang"
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_VN "Cách ngắm bắn trong House of the Dead III, Virtua Cop 3 và Ghost Squad. Chuột: dùng chuột (hoặc súng quang của RetroArch) để ngắm, nút trái để bắn, nút phải để dùng nút chức năng của súng (bơm đạn, đổi vũ khí), nút giữa để đạp bàn đạp hoặc điều chỉnh tốc độ bắn. Cần analog: dùng cần trái hoặc bàn phím điều hướng để ngắm, R2 để bắn, L2 để dùng nút chức năng của súng, L để đạp bàn đạp hoặc điều chỉnh tốc độ bắn, R để bắn ra ngoài màn hình."
+#define OPTION_VAL_MOUSE_VN "Chuột"
+#define OPTION_VAL_STICK_VN "Cần analog"
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_VN "Tâm ngắm"
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_VN "Hiển thị tâm ngắm của từng người chơi trên hình ảnh, người chơi 1 màu đỏ, người chơi 2 màu xanh dương."
+#define XEMU_CHIHIRO_FFB_LABEL_VN "Rung phản hồi lực"
+#define XEMU_CHIHIRO_FFB_INFO_0_VN "Truyền phản hồi lực của các trò chơi đua xe Chihiro (OutRun 2, Maximum Tune) thành rung trên tay cầm ở cổng 1, với cường độ này."
+#define OPTION_VAL_50_VN NULL
+#define OPTION_VAL_75_VN NULL
+#define OPTION_VAL_150_VN NULL
+#define OPTION_VAL_200_VN NULL
 
 struct retro_core_option_v2_category option_cats_vn[] = {
     {
@@ -12467,13 +25493,19 @@ struct retro_core_option_v2_category option_cats_vn[] = {
         CATEGORY_AUDIO_LABEL_VN,
         CATEGORY_AUDIO_INFO_0_VN
     },
+    {
+        "controls",
+        CATEGORY_CONTROLS_LABEL_VN,
+        CATEGORY_CONTROLS_INFO_0_VN
+    },
+    {
+        "chihiro",
+        CATEGORY_CHIHIRO_LABEL_VN,
+        CATEGORY_CHIHIRO_INFO_0_VN
+    },
     { NULL, NULL, NULL },
 };
 struct retro_core_option_v2_definition option_defs_vn[] = {
-    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
-     * as core options because they require text input which core options
-     * don't support (dropdown only). Paths are auto-detected from
-     * RetroArch's system directory instead. */
     {
         "xemu_memory",
         XEMU_MEMORY_LABEL_VN,
@@ -12502,6 +25534,8 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
         },
         "disabled"
     },
+    /* On by default, unlike standalone: it breaks nothing, and the animation
+     * only holds up the game (NNshi) */
     {
         "xemu_skip_boot_anim",
         XEMU_SKIP_BOOT_ANIM_LABEL_VN,
@@ -12514,7 +25548,7 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hard_fpu",
@@ -12531,6 +25565,38 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
         "enabled"
     },
     {
+        "xemu_cpu_boost",
+        XEMU_CPU_BOOST_LABEL_VN,
+        NULL,
+        XEMU_CPU_BOOST_INFO_0_VN,
+        NULL,
+        "system",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* NOTE: File path options (bootrom, bios, hdd, eeprom) are not exposed
+     * as core options because they require text input which core options
+     * don't support (dropdown only). Paths are auto-detected from
+     * RetroArch's system directory instead. */
+    {
+        "xemu_hdd_trim",
+        XEMU_HDD_TRIM_LABEL_VN,
+        NULL,
+        XEMU_HDD_TRIM_INFO_0_VN,
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_renderer",
         XEMU_RENDERER_LABEL_VN,
         NULL,
@@ -12543,6 +25609,25 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
             { NULL, NULL },
         },
         "vulkan"
+    },
+    /* 16:9 by default, unlike standalone's dashboard setting: the core is for
+     * computers, whose displays are 16:9 nearly always, and no one should
+     * have to go to the dashboard first (NNshi) */
+    {
+        "xemu_video_aspect",
+        XEMU_VIDEO_ASPECT_LABEL_VN,
+        NULL,
+        XEMU_VIDEO_ASPECT_INFO_0_VN,
+        NULL,
+        "video",
+        {
+            { "dashboard", OPTION_VAL_DASHBOARD_VN },
+            { "4:3",       OPTION_VAL_4_3_VN },
+            { "16:9",      OPTION_VAL_16_9_VN },
+            { "letterbox", OPTION_VAL_LETTERBOX_VN },
+            { NULL, NULL },
+        },
+        "16:9"
     },
     {
         "xemu_aspect_ratio",
@@ -12598,6 +25683,25 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
         },
         "hdtv"
     },
+    /* On by default: the sound keeps its pace while shaders compile, as
+     * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold
+     * shader cache); fast-forward and slow motion do not change the game's
+     * speed in the core either way, and on this thread they leave the sound
+     * clean rather than garbled */
+    {
+        "xemu_audio_thread",
+        XEMU_AUDIO_THREAD_LABEL_VN,
+        NULL,
+        XEMU_AUDIO_THREAD_INFO_0_VN,
+        NULL,
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_use_dsp",
         XEMU_USE_DSP_LABEL_VN,
@@ -12612,13 +25716,29 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
         },
         "disabled"
     },
+    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
+     * audio.hrtf, audio.vp.num_workers) */
     {
-        "xemu_cache_shaders",
-        XEMU_CACHE_SHADERS_LABEL_VN,
+        "xemu_dsp_jit",
+        XEMU_DSP_JIT_LABEL_VN,
         NULL,
-        XEMU_CACHE_SHADERS_INFO_0_VN,
+        XEMU_DSP_JIT_INFO_0_VN,
         NULL,
-        "video",
+        "audio",
+        {
+            { "disabled", "Disabled" },
+            { "enabled",  "Enabled" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hrtf",
+        XEMU_HRTF_LABEL_VN,
+        NULL,
+        XEMU_HRTF_INFO_0_VN,
+        NULL,
+        "audio",
         {
             { "enabled",  "Enabled" },
             { "disabled", "Disabled" },
@@ -12627,10 +25747,27 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
         "enabled"
     },
     {
-        "xemu_vk_reduced_buffers",
-        XEMU_VK_REDUCED_BUFFERS_LABEL_VN,
+        "xemu_vp_workers",
+        XEMU_VP_WORKERS_LABEL_VN,
         NULL,
-        XEMU_VK_REDUCED_BUFFERS_INFO_0_VN,
+        XEMU_VP_WORKERS_INFO_0_VN,
+        NULL,
+        "audio",
+        {
+            { "0", OPTION_VAL_AUTO_VN },
+            { "1", NULL },
+            { "2", NULL },
+            { "4", NULL },
+            { "8", NULL },
+            { NULL, NULL },
+        },
+        "0"
+    },
+    {
+        "xemu_smooth_first_play",
+        XEMU_SMOOTH_FIRST_PLAY_LABEL_VN,
+        NULL,
+        XEMU_SMOOTH_FIRST_PLAY_INFO_0_VN,
         NULL,
         "video",
         {
@@ -12658,19 +25795,169 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
         },
         "100"
     },
+    /* No Pipeline Libraries by default, unlike standalone, which uses all:
+     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
+     * dynamic states keep most of the speed; fewer still for a GPU that
+     * crashes on one of those (Akrido) */
     {
-        "xemu_display_filtering",
-        XEMU_DISPLAY_FILTERING_LABEL_VN,
+        "xemu_vk_fast_paths",
+        XEMU_VK_FAST_PATHS_LABEL_VN,
         NULL,
-        XEMU_DISPLAY_FILTERING_INFO_0_VN,
+        XEMU_VK_FAST_PATHS_INFO_0_VN,
         NULL,
         "video",
         {
-            { "linear",  OPTION_VAL_LINEAR_VN },
-            { "nearest", OPTION_VAL_NEAREST_VN },
+            { "all",      OPTION_VAL_ALL_VN },
+            { "no_gpl",   OPTION_VAL_NO_GPL_VN },
+            { "no_dyn",   OPTION_VAL_NO_DYN_VN },
+            { "none",     OPTION_VAL_NONE_VN },
             { NULL, NULL },
         },
-        "linear"
+        "no_gpl"
+    },
+    {
+        "xemu_rumble_p1",
+        XEMU_RUMBLE_P1_LABEL_VN,
+        NULL,
+        XEMU_RUMBLE_P1_INFO_0_VN,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_rumble_p2",
+        XEMU_RUMBLE_P2_LABEL_VN,
+        NULL,
+        XEMU_RUMBLE_P2_INFO_0_VN,
+        NULL,
+        "controls",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p1",
+        XEMU_DEADZONE_P1_LABEL_VN,
+        NULL,
+        XEMU_DEADZONE_P1_INFO_0_VN,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_VN },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_VN },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_VN },
+            { "15", OPTION_VAL_15_VN },
+            { "20", OPTION_VAL_20_VN },
+            { "25", OPTION_VAL_25_VN },
+            { "30", OPTION_VAL_30_VN },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
+     * at a drive board error when the wheel is not centred during its test
+     * (NNshi) */
+    {
+        "xemu_deadzone_p2",
+        XEMU_DEADZONE_P2_LABEL_VN,
+        NULL,
+        XEMU_DEADZONE_P2_INFO_0_VN,
+        NULL,
+        "controls",
+        {
+            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_VN },
+            { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_VN },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_VN },
+            { "15", OPTION_VAL_15_VN },
+            { "20", OPTION_VAL_20_VN },
+            { "25", OPTION_VAL_25_VN },
+            { "30", OPTION_VAL_30_VN },
+            { NULL, NULL },
+        },
+        "10"
+    },
+    /* The Chihiro's options last: their category goes last (RetroArch lists
+     * the categories in the order their first options come) */
+    /* On by default, unlike standalone: a cabinet at home has no coins to
+     * put in, and NNshi asked for it to start that way (Select still
+     * inserts a coin when it is off) */
+    {
+        "xemu_chihiro_freeplay",
+        XEMU_CHIHIRO_FREEPLAY_LABEL_VN,
+        NULL,
+        XEMU_CHIHIRO_FREEPLAY_INFO_0_VN,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* Analog Stick by default, unlike standalone, which aims with the mouse:
+     * RetroArch is played with pads (NNshi) */
+    {
+        "xemu_chihiro_gun_aim",
+        XEMU_CHIHIRO_GUN_AIM_LABEL_VN,
+        NULL,
+        XEMU_CHIHIRO_GUN_AIM_INFO_0_VN,
+        NULL,
+        "chihiro",
+        {
+            { "mouse", OPTION_VAL_MOUSE_VN },
+            { "stick", OPTION_VAL_STICK_VN },
+            { NULL, NULL },
+        },
+        "stick"
+    },
+    /* On by default: standalone shows the mouse cursor the light gun aims
+     * with; a real light gun has no use for it */
+    {
+        "xemu_chihiro_crosshair",
+        XEMU_CHIHIRO_CROSSHAIR_LABEL_VN,
+        NULL,
+        XEMU_CHIHIRO_CROSSHAIR_INFO_0_VN,
+        NULL,
+        "chihiro",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    /* 100% by default, unlike standalone, where it is off: the Xbox games
+     * rumble as they are anyway (NNshi) */
+    {
+        "xemu_chihiro_ffb",
+        XEMU_CHIHIRO_FFB_LABEL_VN,
+        NULL,
+        XEMU_CHIHIRO_FFB_INFO_0_VN,
+        NULL,
+        "chihiro",
+        {
+            { "disabled", "Disabled" },
+            { "25",  OPTION_VAL_25_VN },
+            { "50",  OPTION_VAL_50_VN },
+            { "75",  OPTION_VAL_75_VN },
+            { "100", OPTION_VAL_100_VN },
+            { "150", OPTION_VAL_150_VN },
+            { "200", OPTION_VAL_200_VN },
+            { NULL, NULL },
+        },
+        "100"
     },
     { NULL, NULL, NULL, NULL, NULL, NULL, { { NULL, NULL } }, NULL },
 };

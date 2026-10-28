@@ -30,6 +30,7 @@
 #include "qobject/qdict.h"
 #include <glib/gstdio.h>
 #include "ui/libretro-widescreen-titles.h"
+#include "ui/libretro-xdb-titles.h"
 #include "xemu-xbe.h"
 #include "qemu/bswap.h"
 #include "data/xbox_hdd.qcow2.h"
@@ -1909,82 +1910,72 @@ static bool write_bundled_hdd(const char *path)
     return true;
 }
 
-/* XBE patches (NNshi): IPS and Jay's Magic Patcher (.jmp) patches for a
- * game's default.xbe, found as RetroArch keeps soft patches, next to the
- * image with its name (Game.ips, Game.ips1 to Game.ips99, Game.jmp), and in
- * system/xemu/patches/<image name>/. The image stays as it is: the drive
- * gets a qcow2 overlay over it (system/xemu/patched_disc.qcow2) holding the
+/* Patch Manager (NNshi): IPS and Jay's Magic Patcher (.jmp) patches for a
+ * game's default.xbe in system/xemu/patches, named after the game as
+ * XboxGraphicalPatches names them ("Game (16-9 Widescreen Patch).ips"). The
+ * game's name in its XBE certificate, or any of its title ID's names in
+ * xemu-project/xdb (libretro-xdb-titles.h), picks the ones that are its;
+ * each gets an option in the Patch Manager category, off by default and
+ * taken when the game starts. The image stays as it is: the drive gets a
+ * qcow2 overlay over it (system/xemu/patched_disc.qcow2) holding the
  * patched clusters of default.xbe, the rest read from the image. A patch
- * that writes past the XBE's end is skipped, as the file cannot grow. A .jmp
+ * that writes past the XBE's end is skipped, as the file cannot grow, and
+ * one for another file ("Apply to intro_17.lvl") is not listed. A .jmp
  * applies every line in it: its groups that exclude each other (one
  * language or another) are deleted from the file to choose. */
 
 #define XISO_SECTOR 2048
 #define XBE_PATCH_CLUSTER 65536
+#define PATCH_OPTIONS_MAX 64
 
-static GPtrArray *xbe_patch_files(const char *image)
+typedef bool (*xiso_read_fn)(void *ctx, int64_t off, size_t len, void *buf);
+
+/* the patches of the content loaded, and the ones switched on */
+static GPtrArray *patch_files;
+static GPtrArray *patch_enabled;
+
+/* A name as the Patch Manager compares them: lower case letters and digits,
+ * "&" as "and", without "the", II to IV and "vs" spelled as xdb mostly has
+ * them (scripts/gen_xdb_titles.py does the same) */
+static char *patch_name_norm(const char *name)
 {
-    GPtrArray *files = g_ptr_array_new_with_free_func(g_free);
-    if (!image || !image[0] || strstr(image, "://")) {
-        return files;
-    }
-    g_autofree char *dir = g_path_get_dirname(image);
-    g_autofree char *base = g_path_get_basename(image);
-    char *dot = strrchr(base, '.');
-    if (dot) {
-        *dot = '\0';
-    }
-    char *p = g_strdup_printf("%s/%s.ips", dir, base);
-    if (g_file_test(p, G_FILE_TEST_IS_REGULAR)) {
-        g_ptr_array_add(files, p);
-    } else {
-        g_free(p);
-    }
-    for (int i = 1; i < 100; i++) {
-        p = g_strdup_printf("%s/%s.ips%d", dir, base, i);
-        if (!g_file_test(p, G_FILE_TEST_IS_REGULAR)) {
-            g_free(p);
-            break;
+    static const char *const words[][2] = {
+        {"ii", "2"}, {"iii", "3"}, {"iv", "4"}, {"vs", "versus"},
+    };
+    GString *out = g_string_new(NULL);
+    GString *w = g_string_new(NULL);
+    for (const char *p = name;; p++) {
+        if (*p == '&') {
+            g_string_append(out, "and");
         }
-        g_ptr_array_add(files, p);
-    }
-    p = g_strdup_printf("%s/%s.jmp", dir, base);
-    if (g_file_test(p, G_FILE_TEST_IS_REGULAR)) {
-        g_ptr_array_add(files, p);
-    } else {
-        g_free(p);
-    }
-    if (system_dir[0]) {
-        g_autofree char *pdir = g_strdup_printf("%s/xemu/patches/%s", system_dir, base);
-        GDir *d = g_dir_open(pdir, 0, NULL);
-        if (d) {
-            GPtrArray *names = g_ptr_array_new_with_free_func(g_free);
-            const char *n;
-            while ((n = g_dir_read_name(d))) {
-                if (g_str_has_suffix(n, ".ips") || g_str_has_suffix(n, ".IPS") ||
-                    g_str_has_suffix(n, ".jmp") || g_str_has_suffix(n, ".JMP")) {
-                    g_ptr_array_add(names, g_strdup(n));
+        if (*p && g_ascii_isalnum(*p)) {
+            g_string_append_c(w, g_ascii_tolower(*p));
+            continue;
+        }
+        if (w->len && strcmp(w->str, "the")) {
+            const char *s = w->str;
+            for (size_t i = 0; i < ARRAY_SIZE(words); i++) {
+                if (!strcmp(s, words[i][0])) {
+                    s = words[i][1];
                 }
             }
-            g_dir_close(d);
-            g_ptr_array_sort(names, (GCompareFunc)g_strcmp0);
-            /* g_ptr_array_sort hands pointers to the elements */
-            for (guint i = 0; i < names->len; i++) {
-                g_ptr_array_add(files, g_strdup_printf("%s/%s", pdir,
-                                                      (char *)names->pdata[i]));
-            }
-            g_ptr_array_unref(names);
+            g_string_append(out, s);
+        }
+        g_string_truncate(w, 0);
+        if (!*p) {
+            break;
         }
     }
-    return files;
+    g_string_free(w, true);
+    return g_string_free(out, false);
 }
 
 /* default.xbe in an XISO's root directory, whose entries form a binary
  * tree of 4-byte offsets: its sector and size */
-static bool xiso_find_xbe(BlockBackend *blk, uint32_t *sector, uint32_t *size)
+static bool xiso_find_xbe(xiso_read_fn rd, void *ctx, uint32_t *sector, uint32_t *size)
 {
     uint8_t hdr[28];
-    if (blk_pread(blk, 32 * XISO_SECTOR, sizeof(hdr), hdr, 0) < 0 ||
+    if (!rd(ctx, 32 * XISO_SECTOR, sizeof(hdr), hdr) ||
         memcmp(hdr, "MICROSOFT*XBOX*MEDIA", 20)) {
         return false;
     }
@@ -1993,7 +1984,7 @@ static bool xiso_find_xbe(BlockBackend *blk, uint32_t *sector, uint32_t *size)
         return false;
     }
     g_autofree uint8_t *dir = g_malloc(root_size);
-    if (blk_pread(blk, (int64_t)root * XISO_SECTOR, root_size, dir, 0) < 0) {
+    if (!rd(ctx, (int64_t)root * XISO_SECTOR, root_size, dir)) {
         return false;
     }
     uint32_t stack[256];
@@ -2024,6 +2015,223 @@ static bool xiso_find_xbe(BlockBackend *blk, uint32_t *sector, uint32_t *size)
         }
     }
     return false;
+}
+
+struct xiso_file {
+    FILE *f;
+    int64_t base;
+};
+
+static bool xiso_file_read(void *ctx, int64_t off, size_t len, void *buf)
+{
+    struct xiso_file *x = ctx;
+    return fseeko(x->f, (off_t)(x->base + off), SEEK_SET) == 0 &&
+           fread(buf, 1, len, x->f) == len;
+}
+
+static bool xiso_blk_read(void *ctx, int64_t off, size_t len, void *buf)
+{
+    return blk_pread(ctx, off, len, buf, 0) >= 0;
+}
+
+/* The title ID and name in the certificate of an XISO's default.xbe */
+static bool xiso_title(const char *image, uint32_t *title_id, char **title_name)
+{
+    static const int64_t offsets[] = { 0, 0x18300000, 0xFD90000, 0x2080000 };
+    FILE *f = fopen(image, "rb");
+    if (!f) {
+        return false;
+    }
+    bool ok = false;
+    for (size_t i = 0; i < ARRAY_SIZE(offsets) && !ok; i++) {
+        struct xiso_file x = { f, offsets[i] };
+        uint32_t sector, size;
+        uint8_t hdr[0x120], cert[0x58];
+        if (!xiso_find_xbe(xiso_file_read, &x, &sector, &size) ||
+            !xiso_file_read(&x, (int64_t)sector * XISO_SECTOR, sizeof(hdr), hdr) ||
+            memcmp(hdr, "XBEH", 4)) {
+            continue;
+        }
+        const uint32_t base = ldl_le_p(hdr + 0x104), cert_va = ldl_le_p(hdr + 0x118);
+        if (cert_va < base || cert_va - base + sizeof(cert) > size ||
+            !xiso_file_read(&x, (int64_t)sector * XISO_SECTOR + (cert_va - base),
+                            sizeof(cert), cert)) {
+            continue;
+        }
+        *title_id = ldl_le_p(cert + 8);
+        gunichar2 name[41] = { 0 };
+        for (int c = 0; c < 40; c++) {
+            name[c] = lduw_le_p(cert + 0xC + 2 * c);
+        }
+        *title_name = g_utf16_to_utf8(name, -1, NULL, NULL, NULL);
+        ok = *title_name != NULL;
+    }
+    fclose(f);
+    return ok;
+}
+
+/* The game a patch file is for: its name up to " (" or the extension */
+static char *patch_game(const char *file)
+{
+    char *g = g_strdup(file);
+    char *cut = strstr(g, " (");
+    if (!cut) {
+        cut = strrchr(g, '.');
+    }
+    if (cut) {
+        *cut = '\0';
+    }
+    return g;
+}
+
+static bool patch_is_for(const char *file, uint32_t title_id, const char *title_norm)
+{
+    g_autofree char *game = patch_game(file);
+    g_autofree char *norm = patch_name_norm(game);
+    if (!norm[0]) {
+        return false;
+    }
+    if (title_norm && !strcmp(norm, title_norm)) {
+        return true;
+    }
+    for (size_t i = 0; i < ARRAY_SIZE(libretro_xdb_titles); i++) {
+        if (libretro_xdb_titles[i].title_id == title_id &&
+            !strcmp(libretro_xdb_titles[i].name, norm)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/* g_ptr_array_sort hands pointers to the elements */
+static gint patch_name_cmp(gconstpointer a, gconstpointer b)
+{
+    return g_strcmp0(*(char *const *)a, *(char *const *)b);
+}
+
+static char *patch_option_key(const char *file)
+{
+    return g_strdup_printf("xemu_patch_%08x", g_str_hash(file));
+}
+
+/* The options as at start, with one per patch of this game in the Patch
+ * Manager category; RetroArch keeps each one's value by its key, made from
+ * the file's name */
+static void patch_options_register(void)
+{
+    static struct retro_core_option_v2_definition *defs;
+    static struct retro_core_option_v2_category *cats;
+    static struct retro_core_options_v2 opts;
+    static bool registered;
+    unsigned version = 0;
+
+    if (!environ_cb || !environ_cb(RETRO_ENVIRONMENT_GET_CORE_OPTIONS_VERSION, &version) ||
+        version < 2 || (!registered && !patch_files->len)) {
+        return;
+    }
+    size_t n_defs = 0, n_cats = 0;
+    while (option_defs_us[n_defs].key) {
+        n_defs++;
+    }
+    while (option_cats_us[n_cats].key) {
+        n_cats++;
+    }
+    if (defs) {
+        for (size_t i = n_defs; defs[i].key; i++) {
+            g_free((char *)defs[i].key);
+            g_free((char *)defs[i].desc);
+            g_free((char *)defs[i].info);
+        }
+    }
+    g_free(defs);
+    g_free(cats);
+    defs = g_new0(struct retro_core_option_v2_definition, n_defs + patch_files->len + 1);
+    memcpy(defs, option_defs_us, n_defs * sizeof(*defs));
+    for (guint i = 0; i < patch_files->len; i++) {
+        const char *file = patch_files->pdata[i];
+        struct retro_core_option_v2_definition *d = &defs[n_defs + i];
+        g_autofree char *game = patch_game(file);
+        const char *label = file + strlen(game);
+        d->key = patch_option_key(file);
+        /* "16-9 Widescreen Patch" out of "Game (16-9 Widescreen Patch).ips" */
+        if (!strncmp(label, " (", 2)) {
+            d->desc = g_strndup(label + 2, strcspn(label + 2, ")"));
+        } else {
+            d->desc = g_strdup(game);
+        }
+        d->info = g_strdup(file);
+        d->category_key = "patches";
+        d->values[0].value = "disabled";
+        d->values[0].label = "Disabled";
+        d->values[1].value = "enabled";
+        d->values[1].label = "Enabled";
+        d->default_value = "disabled";
+    }
+    cats = g_new0(struct retro_core_option_v2_category, n_cats + 2);
+    memcpy(cats, option_cats_us, n_cats * sizeof(*cats));
+    if (patch_files->len) {
+        cats[n_cats].key = "patches";
+        cats[n_cats].desc = "Patch Manager (Restart)";
+        cats[n_cats].info = "This game's patches in system/xemu/patches, applied to its default.xbe when it starts.";
+    }
+    opts.categories = cats;
+    opts.definitions = defs;
+
+    struct retro_core_options_v2_intl intl = { &opts, NULL };
+#ifndef HAVE_NO_LANGEXTRA
+    unsigned language = 0;
+    if (environ_cb(RETRO_ENVIRONMENT_GET_LANGUAGE, &language) &&
+        language < RETRO_LANGUAGE_LAST && language != RETRO_LANGUAGE_ENGLISH) {
+        intl.local = options_intl[language];
+    }
+#endif
+    environ_cb(RETRO_ENVIRONMENT_SET_CORE_OPTIONS_V2_INTL, &intl);
+    registered = patch_files->len > 0;
+}
+
+/* The content's patches and the ones switched on; at load, before the
+ * machine takes its disc */
+static void patch_manager_load(const char *image, bool chihiro)
+{
+    g_clear_pointer(&patch_files, g_ptr_array_unref);
+    g_clear_pointer(&patch_enabled, g_ptr_array_unref);
+    patch_files = g_ptr_array_new_with_free_func(g_free);
+    patch_enabled = g_ptr_array_new_with_free_func(g_free);
+
+    uint32_t title_id = 0;
+    g_autofree char *title_name = NULL;
+    g_autofree char *dir = system_dir[0] ? g_strdup_printf("%s/xemu/patches", system_dir) : NULL;
+    GDir *d = dir ? g_dir_open(dir, 0, NULL) : NULL;
+    if (d && !chihiro && image && image[0] && !strstr(image, "://") &&
+        xiso_title(image, &title_id, &title_name)) {
+        g_autofree char *title_norm = patch_name_norm(title_name);
+        LRLOG_INFO("[xemu] Patch Manager: %08X \"%s\"\n", title_id, title_name);
+        const char *n;
+        while ((n = g_dir_read_name(d))) {
+            g_autofree char *lower = g_ascii_strdown(n, -1);
+            if ((g_str_has_suffix(lower, ".ips") || g_str_has_suffix(lower, ".jmp")) &&
+                !strstr(lower, "apply to") && patch_is_for(n, title_id, title_norm)) {
+                g_ptr_array_add(patch_files, g_strdup(n));
+            }
+            if (patch_files->len >= PATCH_OPTIONS_MAX) {
+                break;
+            }
+        }
+        g_ptr_array_sort(patch_files, patch_name_cmp);
+    }
+    if (d) {
+        g_dir_close(d);
+    }
+    patch_options_register();
+    for (guint i = 0; i < patch_files->len; i++) {
+        const char *file = patch_files->pdata[i];
+        g_autofree char *key = patch_option_key(file);
+        struct retro_variable var = { key, NULL };
+        if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value &&
+            !strcmp(var.value, "enabled")) {
+            g_ptr_array_add(patch_enabled, g_strdup_printf("%s/%s", dir, file));
+        }
+    }
 }
 
 static int xbe_apply_ips(uint8_t *xbe, size_t size, const uint8_t *p, size_t n)
@@ -2105,10 +2313,10 @@ static int xbe_apply_jmp(uint8_t *xbe, size_t size, const char *text)
  * image. Under the BQL. */
 char *xemu_libretro_xbe_patched(const char *image, uint64_t offset)
 {
-    g_autoptr(GPtrArray) files = xbe_patch_files(image);
-    if (!files->len || !system_dir[0]) {
+    if (!patch_enabled || !patch_enabled->len || !system_dir[0]) {
         return NULL;
     }
+    GPtrArray *files = patch_enabled;
     Error *err = NULL;
     QDict *opts = qdict_new();
     qdict_put_str(opts, "driver", "raw");
@@ -2124,7 +2332,7 @@ char *xemu_libretro_xbe_patched(const char *image, uint64_t offset)
     char *overlay = NULL;
     uint8_t *buf = NULL;
     uint32_t sector, size;
-    if (!xiso_find_xbe(iso, &sector, &size) || !size) {
+    if (!xiso_find_xbe(xiso_blk_read, iso, &sector, &size) || !size) {
         LRLOG_ERROR("[xemu] XBE patches: no default.xbe found in %s\n", image);
         goto out;
     }
@@ -2197,8 +2405,8 @@ out:
 
 bool xemu_libretro_has_xbe_patches(const char *image)
 {
-    g_autoptr(GPtrArray) files = xbe_patch_files(image);
-    return files->len > 0;
+    (void)image;
+    return patch_enabled && patch_enabled->len > 0;
 }
 
 static bool hdd_has_snapshot(BlockDriverState *bs)
@@ -2667,6 +2875,9 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
 
     /* Read core options */
     update_variables();
+
+    /* Patch Manager: this game's patches, and its options */
+    patch_manager_load(content, chihiro);
 
     /* Audio > Audio Thread, for this load */
     audio_async = false;

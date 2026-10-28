@@ -38,6 +38,10 @@ For Sega Chihiro games, these files go under `system/xemu/Chihiro/` (MAME's name
 
 Xbox games as `.iso` or `.xiso` (xemu's XISO format, as made by extract-xiso). Sega Chihiro games as `.bin` netboot images, as made by [Chihiro-netboot](https://github.com/Tovarichtch/chihiro-netboot): an image that is not an Xbox disc boots a Chihiro. The machine is built once per RetroArch start: to play a Chihiro game after an Xbox one, or the other way round, restart RetroArch. Another Chihiro game loads into the same machine, unless it is larger than the media board memory the first one was given (Gundam needs 1024 MB, the others fit 512 MB): then restart RetroArch. Chihiro games start in free play (Sega Chihiro > Free Play); with it off, Select inserts a coin.
 
+## Patches
+
+IPS and Jay's Magic Patcher (`.jmp`) patches for a game's `default.xbe` (widescreen, 60 fps, 480p/720p and the like, for example [XboxGraphicalPatches](https://github.com/icup321/XboxGraphicalPatches) and [Xbox Magic Patches](https://github.com/JayYardley/Xbox-Magic-Patches-by-Jay)) are applied when the game starts, without touching the image. Put them next to the image with its name, as RetroArch keeps soft patches (`Game.ips`, `Game.ips1` to `Game.ips99` for more, `Game.jmp`), or in `system/xemu/patches/<image name>/`, where all `.ips` and `.jmp` files go in name order. A `.jmp` applies every line in it: delete the groups you do not want (such as one of two languages) from the file. The drive reads the patched XBE from `system/xemu/patched_disc.qcow2`, made anew at each start, and the rest from the image. A patch that would make the XBE larger is skipped. Not for Chihiro games or images opened through RetroArch's VFS (Android storage).
+
 ## Chihiro controls
 
 The cabinet's controls are on RetroArch's pads, by the game:

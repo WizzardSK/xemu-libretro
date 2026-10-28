@@ -212,6 +212,7 @@ static void hdd_trim(void);
 static char opt_eeprom_path[4096] = "";
 static char opt_dvd_path[4096] = "";
 static char system_dir[4096] = "";
+bool xemu_libretro_has_xbe_patches(const char *image);
 static int  opt_memory_mb = 64;
 static bool opt_skip_boot_anim = true;
 static bool opt_hard_fpu = true;
@@ -1726,6 +1727,17 @@ static void *emu_thread_func(void *opaque)
         libretro_input_create_xid_devices();
         apply_video_aspect();
         machine_built = true;
+        /* default.xbe patched: the drive gets the overlay before the
+         * dashboard reads the disc (the vCPUs need the BQL this holds) */
+        if (!xemu_chihiro_mode() && xemu_libretro_has_xbe_patches(opt_dvd_path)) {
+            extern void xemu_libretro_change_disc(const char *path, Error **errp);
+            Error *err = NULL;
+            xemu_libretro_change_disc(opt_dvd_path, &err);
+            if (err) {
+                LRLOG_ERROR("[xemu] Patched disc not loaded: %s\n", error_get_pretty(err));
+                error_free(err);
+            }
+        }
     } else {
         extern void xemu_libretro_change_disc(const char *path, Error **errp);
         extern void qemu_libretro_clear_shutdown_request(void);
@@ -1895,6 +1907,298 @@ static bool write_bundled_hdd(const char *path)
     LRLOG_INFO("[xemu] No HDD: wrote the bundled one (xemu-dashboard) to %s\n",
                path);
     return true;
+}
+
+/* XBE patches (NNshi): IPS and Jay's Magic Patcher (.jmp) patches for a
+ * game's default.xbe, found as RetroArch keeps soft patches, next to the
+ * image with its name (Game.ips, Game.ips1 to Game.ips99, Game.jmp), and in
+ * system/xemu/patches/<image name>/. The image stays as it is: the drive
+ * gets a qcow2 overlay over it (system/xemu/patched_disc.qcow2) holding the
+ * patched clusters of default.xbe, the rest read from the image. A patch
+ * that writes past the XBE's end is skipped, as the file cannot grow. A .jmp
+ * applies every line in it: its groups that exclude each other (one
+ * language or another) are deleted from the file to choose. */
+
+#define XISO_SECTOR 2048
+#define XBE_PATCH_CLUSTER 65536
+
+static GPtrArray *xbe_patch_files(const char *image)
+{
+    GPtrArray *files = g_ptr_array_new_with_free_func(g_free);
+    if (!image || !image[0] || strstr(image, "://")) {
+        return files;
+    }
+    g_autofree char *dir = g_path_get_dirname(image);
+    g_autofree char *base = g_path_get_basename(image);
+    char *dot = strrchr(base, '.');
+    if (dot) {
+        *dot = '\0';
+    }
+    char *p = g_strdup_printf("%s/%s.ips", dir, base);
+    if (g_file_test(p, G_FILE_TEST_IS_REGULAR)) {
+        g_ptr_array_add(files, p);
+    } else {
+        g_free(p);
+    }
+    for (int i = 1; i < 100; i++) {
+        p = g_strdup_printf("%s/%s.ips%d", dir, base, i);
+        if (!g_file_test(p, G_FILE_TEST_IS_REGULAR)) {
+            g_free(p);
+            break;
+        }
+        g_ptr_array_add(files, p);
+    }
+    p = g_strdup_printf("%s/%s.jmp", dir, base);
+    if (g_file_test(p, G_FILE_TEST_IS_REGULAR)) {
+        g_ptr_array_add(files, p);
+    } else {
+        g_free(p);
+    }
+    if (system_dir[0]) {
+        g_autofree char *pdir = g_strdup_printf("%s/xemu/patches/%s", system_dir, base);
+        GDir *d = g_dir_open(pdir, 0, NULL);
+        if (d) {
+            GPtrArray *names = g_ptr_array_new_with_free_func(g_free);
+            const char *n;
+            while ((n = g_dir_read_name(d))) {
+                if (g_str_has_suffix(n, ".ips") || g_str_has_suffix(n, ".IPS") ||
+                    g_str_has_suffix(n, ".jmp") || g_str_has_suffix(n, ".JMP")) {
+                    g_ptr_array_add(names, g_strdup(n));
+                }
+            }
+            g_dir_close(d);
+            g_ptr_array_sort(names, (GCompareFunc)g_strcmp0);
+            /* g_ptr_array_sort hands pointers to the elements */
+            for (guint i = 0; i < names->len; i++) {
+                g_ptr_array_add(files, g_strdup_printf("%s/%s", pdir,
+                                                      (char *)names->pdata[i]));
+            }
+            g_ptr_array_unref(names);
+        }
+    }
+    return files;
+}
+
+/* default.xbe in an XISO's root directory, whose entries form a binary
+ * tree of 4-byte offsets: its sector and size */
+static bool xiso_find_xbe(BlockBackend *blk, uint32_t *sector, uint32_t *size)
+{
+    uint8_t hdr[28];
+    if (blk_pread(blk, 32 * XISO_SECTOR, sizeof(hdr), hdr, 0) < 0 ||
+        memcmp(hdr, "MICROSOFT*XBOX*MEDIA", 20)) {
+        return false;
+    }
+    const uint32_t root = ldl_le_p(hdr + 20), root_size = ldl_le_p(hdr + 24);
+    if (!root_size || root_size > 16 * 1024 * 1024) {
+        return false;
+    }
+    g_autofree uint8_t *dir = g_malloc(root_size);
+    if (blk_pread(blk, (int64_t)root * XISO_SECTOR, root_size, dir, 0) < 0) {
+        return false;
+    }
+    uint32_t stack[256];
+    int depth = 0;
+    stack[depth++] = 0;
+    for (int visited = 0; depth > 0 && visited < 65536; visited++) {
+        const uint32_t off = stack[--depth];
+        if (off + 14 > root_size) {
+            continue;
+        }
+        const uint8_t *e = dir + off;
+        const uint16_t left = lduw_le_p(e), right = lduw_le_p(e + 2);
+        if (left == 0xFFFF && right == 0xFFFF) {
+            continue;
+        }
+        const uint8_t len = e[13];
+        if (off + 14 + len <= root_size && len == 11 &&
+            !g_ascii_strncasecmp((const char *)e + 14, "default.xbe", 11)) {
+            *sector = ldl_le_p(e + 4);
+            *size = ldl_le_p(e + 8);
+            return true;
+        }
+        if (left && depth < 256) {
+            stack[depth++] = (uint32_t)left * 4;
+        }
+        if (right && depth < 256) {
+            stack[depth++] = (uint32_t)right * 4;
+        }
+    }
+    return false;
+}
+
+static int xbe_apply_ips(uint8_t *xbe, size_t size, const uint8_t *p, size_t n)
+{
+    if (n < 8 || memcmp(p, "PATCH", 5)) {
+        return -1;
+    }
+    int records = 0;
+    for (size_t i = 5; i + 3 <= n;) {
+        const uint32_t off = (p[i] << 16) | (p[i + 1] << 8) | p[i + 2];
+        i += 3;
+        if (off == 0x454F46) { /* EOF */
+            return records;
+        }
+        if (i + 2 > n) {
+            return -1;
+        }
+        uint32_t len = (p[i] << 8) | p[i + 1];
+        i += 2;
+        if (len) {
+            if (i + len > n || off + len > size) {
+                return -1;
+            }
+            memcpy(xbe + off, p + i, len);
+            i += len;
+        } else {
+            if (i + 3 > n) {
+                return -1;
+            }
+            len = (p[i] << 8) | p[i + 1];
+            if (off + len > size) {
+                return -1;
+            }
+            memset(xbe + off, p[i + 2], len);
+            i += 3;
+        }
+        records++;
+    }
+    return -1;
+}
+
+static int xbe_apply_jmp(uint8_t *xbe, size_t size, const char *text)
+{
+    g_auto(GStrv) lines = g_strsplit_set(text, "\r\n", -1);
+    int records = 0;
+    for (char **l = lines; *l; l++) {
+        char *s = g_strstrip(*l);
+        if (g_ascii_strncasecmp(s, "0x", 2)) {
+            continue; /* comments, group names and key=value lines */
+        }
+        char *colon = strchr(s, ':');
+        if (!colon) {
+            return -1;
+        }
+        *colon = '\0';
+        char *end;
+        const guint64 off = g_ascii_strtoull(s + 2, &end, 16);
+        const char *hex = g_strstrip(colon + 1);
+        const size_t len = strlen(hex) / 2;
+        if (*end || !len || strlen(hex) % 2 || off + len > size) {
+            return -1;
+        }
+        for (size_t i = 0; i < len; i++) {
+            const int hi = g_ascii_xdigit_value(hex[2 * i]);
+            const int lo = g_ascii_xdigit_value(hex[2 * i + 1]);
+            if (hi < 0 || lo < 0) {
+                return -1;
+            }
+            xbe[off + i] = (uint8_t)(hi << 4 | lo);
+        }
+        records++;
+    }
+    return records;
+}
+
+/* The overlay with image's default.xbe patched, for the drive to open
+ * (system/vl.c, xemu_libretro_change_disc); its path, or NULL without
+ * patches or when none applied. offset is the game partition's in a Redump
+ * image. Under the BQL. */
+char *xemu_libretro_xbe_patched(const char *image, uint64_t offset)
+{
+    g_autoptr(GPtrArray) files = xbe_patch_files(image);
+    if (!files->len || !system_dir[0]) {
+        return NULL;
+    }
+    Error *err = NULL;
+    QDict *opts = qdict_new();
+    qdict_put_str(opts, "driver", "raw");
+    qdict_put_int(opts, "offset", (int64_t)offset);
+    qdict_put_str(opts, "file.driver", "file");
+    qdict_put_str(opts, "file.filename", image);
+    BlockBackend *iso = blk_new_open(NULL, NULL, opts, 0, &err);
+    if (!iso) {
+        LRLOG_ERROR("[xemu] XBE patches: cannot open %s: %s\n", image, error_get_pretty(err));
+        error_free(err);
+        return NULL;
+    }
+    char *overlay = NULL;
+    uint8_t *buf = NULL;
+    uint32_t sector, size;
+    if (!xiso_find_xbe(iso, &sector, &size) || !size) {
+        LRLOG_ERROR("[xemu] XBE patches: no default.xbe found in %s\n", image);
+        goto out;
+    }
+    const int64_t xbe_off = (int64_t)sector * XISO_SECTOR;
+    const int64_t start = xbe_off & ~(int64_t)(XBE_PATCH_CLUSTER - 1);
+    const int64_t total = blk_getlength(iso);
+    int64_t end = (xbe_off + size + XBE_PATCH_CLUSTER - 1) & ~(int64_t)(XBE_PATCH_CLUSTER - 1);
+    end = MIN(end, total);
+    buf = g_malloc(end - start);
+    if (blk_pread(iso, start, end - start, buf, 0) < 0) {
+        goto out;
+    }
+    uint8_t *xbe = buf + (xbe_off - start);
+    int applied = 0;
+    for (guint i = 0; i < files->len; i++) {
+        const char *f = files->pdata[i];
+        g_autofree char *data = NULL;
+        gsize n;
+        if (!g_file_get_contents(f, &data, &n, NULL)) {
+            continue;
+        }
+        /* each patch on a copy, so one that fails leaves no half of itself */
+        g_autofree uint8_t *copy = g_memdup2(xbe, size);
+        const bool jmp = g_str_has_suffix(f, ".jmp") || g_str_has_suffix(f, ".JMP");
+        const int r = jmp ? xbe_apply_jmp(copy, size, data)
+                          : xbe_apply_ips(copy, size, (const uint8_t *)data, n);
+        if (r < 0) {
+            LRLOG_ERROR("[xemu] XBE patch %s not applied: not a valid patch, or it "
+                        "writes past default.xbe's end\n", f);
+            continue;
+        }
+        memcpy(xbe, copy, size);
+        applied++;
+        LRLOG_INFO("[xemu] XBE patch %s applied (%d changes)\n", f, r);
+    }
+    if (!applied) {
+        goto out;
+    }
+
+    overlay = g_strdup_printf("%s/xemu/patched_disc.qcow2", system_dir);
+    g_remove(overlay);
+    bdrv_img_create(overlay, "qcow2", NULL, NULL, NULL, total, 0, true, &err);
+    if (err) {
+        LRLOG_ERROR("[xemu] XBE patches: cannot create %s: %s\n", overlay, error_get_pretty(err));
+        error_free(err);
+        g_clear_pointer(&overlay, g_free);
+        goto out;
+    }
+    QDict *oopts = qdict_new();
+    qdict_put_str(oopts, "driver", "qcow2");
+    BlockBackend *out_blk = blk_new_open(overlay, NULL, oopts, BDRV_O_RDWR, &err);
+    /* whole clusters with the image's own bytes around the XBE: a partial
+     * one would read as zeros where it was not written */
+    if (!out_blk || blk_pwrite(out_blk, start, end - start, buf, 0) < 0 ||
+        blk_flush(out_blk) < 0) {
+        LRLOG_ERROR("[xemu] XBE patches: cannot write %s\n", overlay);
+        if (err) {
+            error_free(err);
+        }
+        g_clear_pointer(&overlay, g_free);
+    }
+    if (out_blk) {
+        blk_unref(out_blk);
+    }
+out:
+    g_free(buf);
+    blk_unref(iso);
+    return overlay;
+}
+
+bool xemu_libretro_has_xbe_patches(const char *image)
+{
+    g_autoptr(GPtrArray) files = xbe_patch_files(image);
+    return files->len > 0;
 }
 
 static bool hdd_has_snapshot(BlockDriverState *bs)

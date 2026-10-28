@@ -4,7 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
-- Audio Thread's tooltip warns that RetroArch up to 1.22.2 keeps its audio thread spinning behind the menu for a core that uses it, which slows the menu (from 240 to 30 fps for Akrido), and to turn it off there; RetroArch's nightly builds are fixed. It stays on by default for the steady sound while shaders compile (NNshi).
+- Audio Thread's tooltip: with RetroArch's Menu Frame Rate on Display Rate, its default since October, RetroArch slows the paused menu for a core that uses the audio callback (from 240 to 30 fps for Akrido); Content Rate does not (NNshi found it). Audio Thread stays on by default, for the steady sound while shaders compile.
 - Internal Resolution Scale is Internal Resolution Scale (Restart), taken when the content starts: raised while running above the scale it started with, it made RetroArch rebuild its video context and the core crashed (NNshi).
 - New category Controls, after Audio: Rumble (Player 1) and (Player 2), on by default, turn off everything that rumbles that player's pad, the Xbox games' and a Chihiro racing game's force feedback; Analog Dead Zone (Player 1) and (Player 2), 0 to 30%, 10% by default, for both sticks, Xbox and Chihiro alike, with the rest of the travel scaled up to full (OutRun 2 stopped at a drive board error when the stick moved during its test) (NNshi).
 - New option Audio > Audio Thread (Restart), on by default: the sound goes to RetroArch's audio thread as the APU mixes it, as standalone plays it, so it keeps going while frames stall, as while shaders compile (NNshi).

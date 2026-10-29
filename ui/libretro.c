@@ -1922,8 +1922,8 @@ static bool write_bundled_hdd(const char *path)
  * patched clusters of default.xbe, the rest read from the image. A patch
  * that writes past the XBE's end is skipped, as the file cannot grow, and
  * one for another file ("Apply to intro_17.lvl") is not listed. A .jmp
- * applies every line in it: its groups that exclude each other (one
- * language or another) are deleted from the file to choose. */
+ * applies every line in it (xbe_apply_jmp): its groups that exclude each
+ * other (one language or another) are deleted from the file to choose. */
 
 #define XISO_SECTOR 2048
 #define XBE_PATCH_CLUSTER 65536
@@ -2038,6 +2038,8 @@ static bool xiso_blk_read(void *ctx, int64_t off, size_t len, void *buf)
 /* The title ID, name and regions (XBE_REGION_*) in the certificate of an
  * XISO's default.xbe */
 #define XBE_REGION_NORTH_AMERICA 0x1
+#define XBE_REGION_JAPAN 0x2
+#define XBE_REGION_REST_OF_WORLD 0x4
 static bool xiso_title(const char *image, uint32_t *title_id, char **title_name,
                        uint32_t *regions)
 {
@@ -2076,10 +2078,20 @@ static bool xiso_title(const char *image, uint32_t *title_id, char **title_name,
 }
 
 /* The game a patch file is for: its name up to " (" or the extension */
+/* The game's name in a patch's file name: before " (" as XboxGraphicalPatches
+ * names them, before " {" or " [" as Jay's Magic Patches do ("Dynasty
+ * Warriors 3 {Widescreen} (All Regions) [Esppiral].JMP") */
 static char *patch_game(const char *file)
 {
     char *g = g_strdup(file);
-    char *cut = strstr(g, " (");
+    char *cut = NULL;
+    static const char *const marks[] = { " (", " {", " [" };
+    for (size_t i = 0; i < ARRAY_SIZE(marks); i++) {
+        char *m = strstr(g, marks[i]);
+        if (m && (!cut || m < cut)) {
+            cut = m;
+        }
+    }
     if (!cut) {
         cut = strrchr(g, '.');
     }
@@ -2158,8 +2170,19 @@ static void patch_options_register(void)
         g_autofree char *game = patch_game(file);
         const char *label = file + strlen(game);
         d->key = patch_option_key(file);
-        /* "16-9 Widescreen Patch" out of "Game (16-9 Widescreen Patch).ips" */
-        if (!strncmp(label, " (", 2)) {
+        /* "16-9 Widescreen Patch" out of "Game (16-9 Widescreen Patch).ips",
+         * "Widescreen (All Regions) [Esppiral]" out of "Game {Widescreen}
+         * (All Regions) [Esppiral].JMP" */
+        if (!strncmp(label, " {", 2)) {
+            const char *ext = strrchr(label, '.');
+            GString *desc = g_string_new(NULL);
+            for (const char *c = label + 2; c < (ext ? ext : label + strlen(label)); c++) {
+                if (*c != '{' && *c != '}') {
+                    g_string_append_c(desc, *c);
+                }
+            }
+            d->desc = g_string_free(desc, false);
+        } else if (!strncmp(label, " (", 2)) {
             d->desc = g_strndup(label + 2, strcspn(label + 2, ")"));
         } else {
             d->desc = g_strdup(game);
@@ -2194,6 +2217,46 @@ static void patch_options_register(void)
     registered = patch_files->len > 0;
 }
 
+/* Whether a .jmp is listed for a release of these regions (XBE_REGION_*): one
+ * that only finds and replaces bytes checks the XBE itself, as each pattern
+ * has to be in it; one that writes at offsets is for the regions its
+ * "region=" line names ("All Regions", "GLOBAL", "NTSC+PAL", "JPN"...), any
+ * when it names none it knows */
+static bool jmp_listed(const char *path, uint32_t regions)
+{
+    g_autofree char *text = NULL;
+    if (!g_file_get_contents(path, &text, NULL, NULL)) {
+        return false;
+    }
+    g_auto(GStrv) lines = g_strsplit_set(text, "\r\n", -1);
+    g_autofree char *region = NULL;
+    bool offsets = false;
+    for (char **l = lines; *l; l++) {
+        char *s = g_strstrip(*l);
+        if (!g_ascii_strncasecmp(s, "region=", 7)) {
+            g_free(region);
+            region = g_ascii_strdown(s + 7, -1);
+        } else if (s[0] != '#' && strchr(s, ':')) {
+            offsets = true;
+        }
+    }
+    if (!offsets || !region || strstr(region, "all") || strstr(region, "global") ||
+        strstr(region, "multi")) {
+        return true;
+    }
+    uint32_t named = 0;
+    if (strstr(region, "ntsc") || strstr(region, "usa")) {
+        named |= XBE_REGION_NORTH_AMERICA;
+    }
+    if (strstr(region, "pal") || strstr(region, "eur")) {
+        named |= XBE_REGION_REST_OF_WORLD;
+    }
+    if (strstr(region, "jp") || strstr(region, "japan") || strstr(region, "ntsc-j")) {
+        named |= XBE_REGION_JAPAN;
+    }
+    return !named || (named & regions);
+}
+
 /* The content's patches and the ones switched on; at load, before the
  * machine takes its disc */
 static void patch_manager_load(const char *image, bool chihiro)
@@ -2213,13 +2276,16 @@ static void patch_manager_load(const char *image, bool chihiro)
         /* XboxGraphicalPatches' IPS patches are for the North American
          * releases: on a PAL or Japanese one, which can have the same title
          * ID, they kept games from booting or did nothing (NNshi). A BPS
-         * patch carries the CRC of the XBE it is for and checks it itself. */
+         * patch carries the CRC of the XBE it is for and checks it itself;
+         * a .jmp says its region (jmp_listed). */
         const bool north_america = regions & XBE_REGION_NORTH_AMERICA;
         LRLOG_INFO("[xemu] Patch Manager: %08X \"%s\", regions %X\n", title_id, title_name, regions);
         const char *n;
         while ((n = g_dir_read_name(d))) {
             g_autofree char *lower = g_ascii_strdown(n, -1);
-            if ((((g_str_has_suffix(lower, ".ips") || g_str_has_suffix(lower, ".jmp")) && north_america) ||
+            g_autofree char *path = g_strdup_printf("%s/%s", dir, n);
+            if (((g_str_has_suffix(lower, ".ips") && north_america) ||
+                 (g_str_has_suffix(lower, ".jmp") && jmp_listed(path, regions)) ||
                  g_str_has_suffix(lower, ".bps")) &&
                 !strstr(lower, "apply to") && patch_is_for(n, title_id, title_norm)) {
                 g_ptr_array_add(patch_files, g_strdup(n));
@@ -2370,38 +2436,83 @@ static int xbe_apply_bps(uint8_t *xbe, size_t size, const uint8_t *p, size_t n)
     return actions;
 }
 
-static int xbe_apply_jmp(uint8_t *xbe, size_t size, const char *text)
+static bool jmp_hex(const char *hex, GByteArray *out)
+{
+    const size_t n = strlen(hex);
+    if (!n || n % 2) {
+        return false;
+    }
+    for (size_t i = 0; i < n; i += 2) {
+        const int hi = g_ascii_xdigit_value(hex[i]);
+        const int lo = g_ascii_xdigit_value(hex[i + 1]);
+        if (hi < 0 || lo < 0) {
+            return false;
+        }
+        const guint8 byte = (guint8)(hi << 4 | lo);
+        g_byte_array_append(out, &byte, 1);
+    }
+    return true;
+}
+
+/* A Jay's Magic Patcher patch: lines "0xOFFSET:BYTES" write the bytes at
+ * that offset of the XBE; the other lines go in pairs, bytes to find and the
+ * bytes of the same length to put in their place, at the first place they
+ * are found (a patch that changes two places of the same bytes has the pair
+ * twice). -2 when bytes to find are not in the XBE: the patch is for
+ * another release's. */
+static int xbe_apply_jmp(uint8_t *xbe, size_t size, const char *text, const char *name)
 {
     g_auto(GStrv) lines = g_strsplit_set(text, "\r\n", -1);
+    g_autoptr(GByteArray) find = NULL;
     int records = 0;
     for (char **l = lines; *l; l++) {
         char *s = g_strstrip(*l);
-        if (g_ascii_strncasecmp(s, "0x", 2)) {
-            continue; /* comments, group names and key=value lines */
+        if (!s[0] || s[0] == '#' || strchr(s, '=')) {
+            continue; /* comments and key=value lines */
         }
+        g_autoptr(GByteArray) bytes = g_byte_array_new();
         char *colon = strchr(s, ':');
-        if (!colon) {
-            return -1;
-        }
-        *colon = '\0';
-        char *end;
-        const guint64 off = g_ascii_strtoull(s + 2, &end, 16);
-        const char *hex = g_strstrip(colon + 1);
-        const size_t len = strlen(hex) / 2;
-        if (*end || !len || strlen(hex) % 2 || off + len > size) {
-            return -1;
-        }
-        for (size_t i = 0; i < len; i++) {
-            const int hi = g_ascii_xdigit_value(hex[2 * i]);
-            const int lo = g_ascii_xdigit_value(hex[2 * i + 1]);
-            if (hi < 0 || lo < 0) {
+        if (colon) {
+            *colon = '\0';
+            char *end;
+            const char *off_text = g_ascii_strncasecmp(s, "0x", 2) ? s : s + 2;
+            const guint64 off = g_ascii_strtoull(off_text, &end, 16);
+            if (*end || end == off_text || !jmp_hex(g_strstrip(colon + 1), bytes) ||
+                off + bytes->len > size) {
                 return -1;
             }
-            xbe[off + i] = (uint8_t)(hi << 4 | lo);
+            memcpy(xbe + off, bytes->data, bytes->len);
+            records++;
+            continue;
         }
-        records++;
+        if (!jmp_hex(s, bytes)) {
+            return -1;
+        }
+        if (!find) {
+            find = g_steal_pointer(&bytes);
+            continue;
+        }
+        if (bytes->len != find->len) {
+            return -1;
+        }
+        if (memcmp(find->data, bytes->data, find->len)) {
+            const uint8_t *at = NULL;
+            for (size_t i = 0; !at && i + find->len <= size; i++) {
+                if (xbe[i] == find->data[0] && !memcmp(xbe + i, find->data, find->len)) {
+                    at = xbe + i; /* memmem, which MinGW lacks */
+                }
+            }
+            if (!at) {
+                LRLOG_ERROR("[xemu] XBE patch %s: bytes to find on line %u are not in "
+                            "this default.xbe\n", name, (unsigned)(l - lines));
+                return -2;
+            }
+            memcpy((uint8_t *)at, bytes->data, bytes->len);
+            records++;
+        }
+        g_clear_pointer(&find, g_byte_array_unref);
     }
-    return records;
+    return find ? -1 : records;
 }
 
 /* The overlay with image's default.xbe patched, for the drive to open
@@ -2454,12 +2565,12 @@ char *xemu_libretro_xbe_patched(const char *image, uint64_t offset)
         /* each patch on a copy, so one that fails leaves no half of itself */
         g_autofree uint8_t *copy = g_memdup2(xbe, size);
         g_autofree char *lower = g_ascii_strdown(f, -1);
-        const int r = g_str_has_suffix(lower, ".jmp") ? xbe_apply_jmp(copy, size, data)
+        const int r = g_str_has_suffix(lower, ".jmp") ? xbe_apply_jmp(copy, size, data, f)
                     : g_str_has_suffix(lower, ".bps") ? xbe_apply_bps(copy, size, (const uint8_t *)data, n)
                     : xbe_apply_ips(copy, size, (const uint8_t *)data, n);
         if (r == -2) {
             LRLOG_ERROR("[xemu] XBE patch %s not applied: it is for another release's "
-                        "default.xbe (CRC)\n", f);
+                        "default.xbe (%s)\n", f, g_str_has_suffix(lower, ".jmp") ? "bytes not found" : "CRC");
             continue;
         }
         if (r < 0) {

@@ -2721,7 +2721,31 @@ void xemu_libretro_change_disc(const char *path, Error **errp)
     }
 
     const uint64_t offset = xbox_game_partition_offset(path);
-    if (offset) {
+    /* default.xbe patched: a qcow2 overlay over the image (ui/libretro.c) */
+    extern char *xemu_libretro_xbe_patched(const char *image, uint64_t offset);
+    g_autofree char *overlay = xemu_libretro_xbe_patched(path, offset);
+    if (overlay) {
+        QDict *options = qdict_new();
+        qdict_put_str(options, "driver", "qcow2");
+        qdict_put_str(options, "file.driver", "file");
+        qdict_put_str(options, "file.filename", overlay);
+        qdict_put_str(options, "backing.driver", "raw");
+        qdict_put_int(options, "backing.offset", (int64_t)offset);
+        qdict_put_str(options, "backing.file.driver", "file");
+        qdict_put_str(options, "backing.file.filename", path);
+        QObject *crumpled = qdict_crumple(options, &err);
+        qobject_unref(options);
+        if (crumpled) {
+            GString *json = qobject_to_json(crumpled);
+            char *filename = g_strdup_printf("json:%s", json->str);
+            fprintf(stderr, "xemu: DVD: default.xbe patched, through %s\n", overlay);
+            qmp_blockdev_change_medium("ide0-cd1", NULL, filename, NULL, true,
+                                       true, false, 0, &err);
+            g_free(filename);
+            g_string_free(json, true);
+            qobject_unref(crumpled);
+        }
+    } else if (offset) {
         QDict *options = qdict_new();
         qdict_put_str(options, "driver", "raw");
         qdict_put_int(options, "offset", (int64_t)offset);

@@ -44,7 +44,7 @@ IPS, BPS and Jay's Magic Patcher (`.jmp`) patches for a game's `default.xbe` (wi
 
 ## Chihiro controls
 
-The cabinet's controls are on RetroArch's pads, by the game:
+The cabinet's controls are on RetroArch's pads, by the game. RetroArch's controls list (Quick Menu > Controls) names them by what they do in the game that runs (Gas, Brake, Trigger, Board Front...), so its remapping can rebind them:
 
 | | |
 |---|---|

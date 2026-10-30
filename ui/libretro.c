@@ -2801,6 +2801,15 @@ out:
 /* Libretro API implementation                                               */
 /* ========================================================================= */
 
+/* For the Chihiro controls list (libretro-chihiro.c), which knows its game
+ * only once the media board has started it */
+void libretro_set_input_descriptors(const struct retro_input_descriptor *desc)
+{
+    if (environ_cb) {
+        environ_cb(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS, (void *)desc);
+    }
+}
+
 RETRO_API void retro_set_environment(retro_environment_t cb)
 {
     environ_cb = cb;

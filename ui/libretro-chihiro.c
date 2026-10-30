@@ -324,6 +324,140 @@ static void ffb_rumble(void)
     libretro_input_set_rumble(0, r, r);
 }
 
+/* RetroArch's controls list for the Chihiro game that runs: each button by
+ * what it does in that game's cabinet, as libretro_chihiro_update_input()
+ * below binds it, in place of the Xbox pad's names (NNshi). Names only:
+ * nothing is bound differently, and RetroArch's remapping rebinds them. Sent
+ * again when the game or Light Gun Aim changes. */
+#define CHIHIRO_DESC_MAX 64
+static struct retro_input_descriptor chihiro_descs[CHIHIRO_DESC_MAX];
+static unsigned chihiro_desc_count;
+
+static void chihiro_desc(unsigned port, unsigned device, unsigned index,
+                         unsigned id, const char *name)
+{
+    if (chihiro_desc_count < CHIHIRO_DESC_MAX - 1) {
+        chihiro_descs[chihiro_desc_count++] =
+            (struct retro_input_descriptor){ port, device, index, id, name };
+    }
+}
+
+static void chihiro_joy(unsigned port, unsigned id, const char *name)
+{
+    chihiro_desc(port, RETRO_DEVICE_JOYPAD, 0, id, name);
+}
+
+static void chihiro_axis(unsigned port, unsigned index, unsigned id,
+                         const char *name)
+{
+    chihiro_desc(port, RETRO_DEVICE_ANALOG, index, id, name);
+}
+
+static void chihiro_publish_descriptors(int profile)
+{
+    extern void libretro_set_input_descriptors(const struct retro_input_descriptor *desc);
+    static int last_profile = -2;
+    static bool last_stick;
+    const bool stick = libretro_chihiro_aim_stick;
+
+    if (profile == last_profile && stick == last_stick) {
+        return;
+    }
+    last_profile = profile;
+    last_stick = stick;
+    chihiro_desc_count = 0;
+
+    switch (profile) {
+    case CONFIG_CHIHIRO_JVS_PROFILE_HOTD3:
+    case CONFIG_CHIHIRO_JVS_PROFILE_VC3:
+    case CONFIG_CHIHIRO_JVS_PROFILE_GS:
+        for (unsigned p = 0; p < 2; p++) {
+            if (stick) {
+                chihiro_axis(p, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_X, "Aim Left/Right");
+                chihiro_axis(p, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_Y, "Aim Up/Down");
+                chihiro_joy(p, RETRO_DEVICE_ID_JOYPAD_UP, "Aim Up");
+                chihiro_joy(p, RETRO_DEVICE_ID_JOYPAD_DOWN, "Aim Down");
+                chihiro_joy(p, RETRO_DEVICE_ID_JOYPAD_LEFT, "Aim Left");
+                chihiro_joy(p, RETRO_DEVICE_ID_JOYPAD_RIGHT, "Aim Right");
+                chihiro_joy(p, RETRO_DEVICE_ID_JOYPAD_R2, "Trigger");
+                chihiro_joy(p, RETRO_DEVICE_ID_JOYPAD_R, "Reload");
+                chihiro_joy(p, RETRO_DEVICE_ID_JOYPAD_L2,
+                            profile == CONFIG_CHIHIRO_JVS_PROFILE_HOTD3 ? "Pump Reload" :
+                            profile == CONFIG_CHIHIRO_JVS_PROFILE_VC3 ? "Change Weapon" : "Action");
+                if (profile == CONFIG_CHIHIRO_JVS_PROFILE_VC3) {
+                    chihiro_joy(p, RETRO_DEVICE_ID_JOYPAD_L, "Pedal");
+                } else if (profile == CONFIG_CHIHIRO_JVS_PROFILE_GS) {
+                    chihiro_joy(p, RETRO_DEVICE_ID_JOYPAD_L, "Fire Rate");
+                }
+            }
+            if (profile == CONFIG_CHIHIRO_JVS_PROFILE_GS) {
+                chihiro_joy(p, RETRO_DEVICE_ID_JOYPAD_X, "Insert Card");
+            }
+        }
+        break;
+    case CONFIG_CHIHIRO_JVS_PROFILE_CTX:
+    case CONFIG_CHIHIRO_JVS_PROFILE_OR2:
+    case CONFIG_CHIHIRO_JVS_PROFILE_WMMT2:
+        chihiro_axis(0, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_X, "Steering");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_LEFT, "Steer Left");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_RIGHT, "Steer Right");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_R2, "Gas");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_L2, "Brake");
+        if (profile == CONFIG_CHIHIRO_JVS_PROFILE_CTX) {
+            chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_R, "Drive");
+            chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_L, "Reverse");
+            chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_B, "Jump");
+        } else if (profile == CONFIG_CHIHIRO_JVS_PROFILE_WMMT2) {
+            chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_R, "Shift Up");
+            chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_L, "Shift Down");
+            chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_Y, "View Change");
+            chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_A, "Intrude Change");
+            chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_X, "Insert Card");
+        } else {
+            chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_Y, "View Change");
+            chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_R, "Gear Up");
+            chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_L, "Gear Down");
+        }
+        break;
+    case CONFIG_CHIHIRO_JVS_PROFILE_OK:
+        chihiro_axis(0, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_X, "Board Left/Right");
+        chihiro_axis(0, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_Y, "Board Front/Rear");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_LEFT, "Board Left");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_RIGHT, "Board Right");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_UP, "Board Front");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_DOWN, "Board Rear");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_L, "Left Grab");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_R, "Right Grab");
+        break;
+    case CONFIG_CHIHIRO_JVS_PROFILE_GUNDAM:
+        chihiro_axis(0, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_X, "Left Stick Left/Right");
+        chihiro_axis(0, RETRO_DEVICE_INDEX_ANALOG_LEFT, RETRO_DEVICE_ID_ANALOG_Y, "Left Stick Up/Down");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_UP, "Left Stick Up");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_DOWN, "Left Stick Down");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_LEFT, "Left Stick Left");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_RIGHT, "Left Stick Right");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_L2, "Left Trigger");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_L, "Left Button");
+        chihiro_axis(0, RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_X, "Right Stick Left/Right");
+        chihiro_axis(0, RETRO_DEVICE_INDEX_ANALOG_RIGHT, RETRO_DEVICE_ID_ANALOG_Y, "Right Stick Up/Down");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_R2, "Right Trigger");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_R, "Right Button");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_B, "Pedal");
+        chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_X, "Insert Card");
+        break;
+    default:
+        break;
+    }
+    chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_START, "Start");
+    chihiro_joy(1, RETRO_DEVICE_ID_JOYPAD_START, "Start");
+    chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_SELECT, "Coin");
+    chihiro_joy(1, RETRO_DEVICE_ID_JOYPAD_SELECT, "Coin");
+    chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_L3, "Service");
+    chihiro_joy(0, RETRO_DEVICE_ID_JOYPAD_R3, "Test");
+    chihiro_descs[chihiro_desc_count] = (struct retro_input_descriptor){ 0 };
+    libretro_set_input_descriptors(chihiro_descs);
+}
+
 void libretro_chihiro_update_input(void)
 {
     ChihiroJVSState *jvs = chihiro_jvs_global;
@@ -344,6 +478,7 @@ void libretro_chihiro_update_input(void)
     if (profile < 0) {
         profile = g_config.chihiro.jvs.profile;
     }
+    chihiro_publish_descriptors(profile);
     bool card_in[2] = {
         pressed(pad(0, RETRO_DEVICE_ID_JOYPAD_X), &card_before[0]),
         pressed(pad(1, RETRO_DEVICE_ID_JOYPAD_X), &card_before[1]),

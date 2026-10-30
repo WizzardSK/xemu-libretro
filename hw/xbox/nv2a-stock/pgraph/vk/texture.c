@@ -27,6 +27,7 @@
 #include "hw/xbox/nv2a-stock/stock-names.h"
 #include "qemu/osdep.h"
 #include "hw/xbox/nv2a-stock/pgraph/s3tc.h"
+#include "hw/xbox/xemu-anisotropy.h"
 #include "hw/xbox/nv2a-stock/pgraph/swizzle.h"
 #include "qemu/fast-hash.h"
 #include "qemu/lru.h"
@@ -1098,9 +1099,10 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
         pgraph_reg_r(pg, NV_PGRAPH_BORDERCOLOR0 + texture_idx * 4);
     bool is_indexed = (state.color_format ==
             NV097_SET_TEXTURE_FORMAT_COLOR_SZ_I8_A8R8G8B8);
-    uint32_t max_anisotropy =
+    uint32_t max_anisotropy = xemu_texture_anisotropy(
+        pgraph_reg_r(pg, NV_PGRAPH_TEXFILTER0 + texture_idx*4),
         1 << (GET_MASK(pgraph_reg_r(pg, NV_PGRAPH_TEXCTL0_0 + texture_idx*4),
-                       NV_PGRAPH_TEXCTL0_0_MAX_ANISOTROPY));
+                       NV_PGRAPH_TEXCTL0_0_MAX_ANISOTROPY)));
 
     TextureKey key;
     memset(&key, 0, sizeof(key));

@@ -19,6 +19,7 @@
 #include "migration/snapshot.h"
 #include "ui/console.h"
 #include "hw/xbox/nv2a/nv2a.h"
+#include "hw/xbox/xemu-anisotropy.h"
 #include "hw/xbox/chihiro/chihiro.h"
 #include "libretro-crosshair.h"
 #include "ui/xemu-widescreen.h"
@@ -1455,6 +1456,14 @@ static void update_variables(void)
         else if (!strcmp(var.value, "svideo"))    opt_avpack = CONFIG_SYS_AVPACK_SVIDEO;
         else if (!strcmp(var.value, "scart"))     opt_avpack = CONFIG_SYS_AVPACK_SCART;
         else if (!strcmp(var.value, "vga"))       opt_avpack = CONFIG_SYS_AVPACK_VGA;
+    }
+
+    /* Anisotropic Filtering: read as textures are bound, so on the fly */
+    var.key = "xemu_anisotropic_filtering";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        const int aniso = atoi(var.value);
+        qatomic_set(&xemu_min_anisotropy, aniso == 2 || aniso == 4 || aniso == 8 || aniso == 16 ? aniso : 1);
     }
 
     var.key = "xemu_cpu_boost";

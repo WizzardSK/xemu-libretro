@@ -24,6 +24,7 @@
 #include "hw/xbox/nv2a/nv2a_int.h"
 #include "hw/xbox/nv2a/pgraph/swizzle.h"
 #include "hw/xbox/nv2a/pgraph/s3tc.h"
+#include "hw/xbox/xemu-anisotropy.h"
 #include "hw/xbox/nv2a/pgraph/texture.h"
 #include "debug.h"
 #include "renderer.h"
@@ -262,9 +263,10 @@ void pgraph_gl_bind_textures(NV2AState *d)
         uint32_t filter = pgraph_reg_r(pg, NV_PGRAPH_TEXFILTER0 + i*4);
         uint32_t address = pgraph_reg_r(pg, NV_PGRAPH_TEXADDRESS0 + i*4);
         uint32_t border_color = pgraph_reg_r(pg, NV_PGRAPH_BORDERCOLOR0 + i*4);
-        uint32_t max_anisotropy =
+        uint32_t max_anisotropy = xemu_texture_anisotropy(
+            pgraph_reg_r(pg, NV_PGRAPH_TEXFILTER0 + i*4),
             1 << (GET_MASK(pgraph_reg_r(pg, NV_PGRAPH_TEXCTL0_0 + i*4),
-                           NV_PGRAPH_TEXCTL0_0_MAX_ANISOTROPY));
+                           NV_PGRAPH_TEXCTL0_0_MAX_ANISOTROPY)));
 
         /* Check for unsupported features */
         if (filter & NV_PGRAPH_TEXFILTER0_ASIGNED) NV2A_UNIMPLEMENTED("NV_PGRAPH_TEXFILTER0_ASIGNED");

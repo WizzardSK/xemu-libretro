@@ -255,6 +255,24 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "1"
     },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        "Anisotropic Filtering",
+        NULL,
+        "The least anisotropic filtering the game's smoothly filtered textures get, which keeps textures at a slant sharp. Native leaves the game's own, which for most Xbox games is none.",
+        NULL,
+        "video",
+        {
+            { "1",  "Native" },
+            { "2",  "2x" },
+            { "4",  "4x" },
+            { "8",  "8x" },
+            { "16", "16x" },
+            { NULL, NULL },
+        },
+        "1"
+    },
     {
         "xemu_avpack",
         "AV Pack (Restart)",

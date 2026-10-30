@@ -1899,8 +1899,9 @@ static void *emu_thread_func(void *opaque)
 }
 
 /* Trim HDD on Close (experimental, NNshi, Akrido): when the content closes,
- * the cache partitions X, Y and Z are emptied - games format them again
- * when they need them - and the image is written anew without the clusters
+ * the cache partitions X, Y and Z are emptied along with the cache table
+ * that assigns them to titles - games then format them again when they need
+ * them, as on a new disk - and the image is written anew without the clusters
  * nothing uses, so the file shrinks. Skipped while the image holds a
  * savestate (a snapshot keeps its clusters, and copying the disk alone
  * would drop it). The copy needs as much free space as the data for a
@@ -1908,6 +1909,11 @@ static void *emu_thread_func(void *opaque)
 
 #define HDD_CACHE_START 0x00080000LL           /* X, then Y and Z */
 #define HDD_CACHE_LEN   (3 * 0x2EE00000LL)     /* 750 MB each */
+/* Sector 4, the table of which title has which cache partition: kept, it
+ * sent a game back to its partition as formatted, and the game, finding it
+ * empty, stopped on the dirty disc screen (Akrido, RalliSport Challenge 2) */
+#define HDD_CACHE_TABLE     0x800LL
+#define HDD_CACHE_TABLE_LEN 0x800LL
 #define HDD_COPY_CHUNK  (1024 * 1024)
 
 /* xemu-dashboard's pre-formatted HDD, which the core carries
@@ -2728,7 +2734,8 @@ static void hdd_trim(void)
     struct stat before;
     const bool had_size = stat(path, &before) == 0;
 
-    if (blk_pwrite_zeroes(blk, HDD_CACHE_START, HDD_CACHE_LEN, BDRV_REQ_MAY_UNMAP) < 0 ||
+    if (blk_pwrite_zeroes(blk, HDD_CACHE_TABLE, HDD_CACHE_TABLE_LEN, 0) < 0 ||
+        blk_pwrite_zeroes(blk, HDD_CACHE_START, HDD_CACHE_LEN, BDRV_REQ_MAY_UNMAP) < 0 ||
         blk_flush(blk) < 0) {
         LRLOG_ERROR("[xemu] Trim HDD: emptying X, Y and Z failed, the image stays as it was\n");
         return;

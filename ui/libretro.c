@@ -229,6 +229,8 @@ static bool opt_chihiro_freeplay = true;
 static bool opt_vk_gpl = false, opt_vk_dynamic = true;
 static int opt_chihiro_ffb = 100; /* percent, 0 = off */
 extern bool libretro_chihiro_aim_stick;   /* libretro-chihiro.c */
+extern float libretro_chihiro_aim_speed;
+extern float libretro_chihiro_aim_across;
 extern bool libretro_chihiro_crosshair;
 static bool opt_use_dsp = false;
 static int  opt_surface_scale = 1;
@@ -1332,6 +1334,7 @@ static void update_aspect(void)
 {
     static int last = -1;
     const int widescreen = wants_widescreen() ? 1 : 0;
+    libretro_chihiro_aim_across = widescreen ? 9.0f / 16.0f : 3.0f / 4.0f;
 
     /* What Auto goes by, whenever the title or the settings change */
     static uint32_t last_title = UINT32_MAX, last_flags = UINT32_MAX;
@@ -1489,6 +1492,13 @@ static void update_variables(void)
     var.value = NULL;
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
         libretro_chihiro_aim_stick = !strcmp(var.value, "stick");
+    }
+
+    var.key = "xemu_chihiro_stick_sensitivity";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        const int percent = atoi(var.value);
+        libretro_chihiro_aim_speed = percent >= 50 && percent <= 200 ? percent / 100.0f : 1.0f;
     }
 
     var.key = "xemu_chihiro_crosshair";

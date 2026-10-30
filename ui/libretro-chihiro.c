@@ -66,6 +66,11 @@ static float trigger(unsigned port, unsigned id)
  * standalone (NNshi); and Sega Chihiro > Crosshair (ui/libretro.c sets
  * them) */
 bool libretro_chihiro_aim_stick = true;
+/* Chihiro > Stick Aim Sensitivity, and the picture's height over its width
+ * (libretro.c, update_aspect), so the stick moves as fast across as up and
+ * down (NNshi) */
+float libretro_chihiro_aim_speed = 1.0f;
+float libretro_chihiro_aim_across = 0.75f;
 bool libretro_chihiro_crosshair = true;
 
 XemuLibretroCrosshair xemu_libretro_crosshairs[2];
@@ -138,8 +143,9 @@ static float stick_aim_pos[2][2] = { { 0.5f, 0.5f }, { 0.5f, 0.5f } };
 static bool aim_used[2];
 
 /* The left stick moves the aim, past a small dead zone, as fast as it is
- * pushed - squared, for fine aim near the centre - and across the whole
- * picture in about a second at full tilt; the D-pad at half that speed */
+ * pushed - squared, for fine aim near the centre - up and down the picture
+ * in about a second at full tilt times Stick Aim Sensitivity, and across as
+ * fast, less of its width (NNshi); the D-pad at half that speed */
 static bool stick_aim(unsigned port)
 {
     static const unsigned dpad[2][2] = {
@@ -164,7 +170,9 @@ static bool stick_aim(unsigned port)
         }
         if (step != 0.0f) {
             float *p = &stick_aim_pos[port][axis];
-            *p = MIN(MAX(*p + step / 60.0f, 0.0f), 1.0f);
+            const float scale = libretro_chihiro_aim_speed *
+                                (axis ? 1.0f : libretro_chihiro_aim_across);
+            *p = MIN(MAX(*p + step * scale / 60.0f, 0.0f), 1.0f);
             moved = true;
         }
     }

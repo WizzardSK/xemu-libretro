@@ -529,6 +529,36 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        "Stick Aim Sensitivity",
+        NULL,
+        "How fast the stick moves the aim with Light Gun Aim on Analog Stick, as fast across as up and down; at 100% a full tilt crosses the picture's height in about a second. The mouse aims where it points.",
+        NULL,
+        "chihiro",
+        {
+            { "50", "50%" },
+            { "60", "60%" },
+            { "70", "70%" },
+            { "80", "80%" },
+            { "90", "90%" },
+            { "100", "100%" },
+            { "110", "110%" },
+            { "120", "120%" },
+            { "130", "130%" },
+            { "140", "140%" },
+            { "150", "150%" },
+            { "160", "160%" },
+            { "170", "170%" },
+            { "180", "180%" },
+            { "190", "190%" },
+            { "200", "200%" },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {

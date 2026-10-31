@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- Patch Manager: a patched game started again in the same RetroArch session gets its patches; every second start ran unpatched, as on Windows the first start's patched disc was still open in the drive and could not be made again (NNshi).
 - APU DSP Emulation and DSP JIT are on by default: without the DSP the games' effects, reverb and much of their music are missing, and it costs no speed, as xemu's CPU thread is what limits it. Both are now (Restart), taken when the content starts: switched while a game ran, they garbled its sound (NNshi).
 - xemu's pull request 3105 (MCPX improvements, raddad772), not merged upstream yet: the APU's voice processor matched to hardware tests - HRTF taps and ear routing, ParaEQ and I3DL2 filters, an 8-point resampler with the hardware's weights, envelope and volume curves, LFOs, and a voice-table overwrite and asserts on idle voices and other mix bins fixed (NNshi).
 - Chihiro gun games on Mouse: the right button no longer also aims off the screen, through RetroArch's light gun Reload, which it binds to that button by default; Ghost Squad's action frees hostages again. Off the screen is aiming off the picture, or Reload bound to another button (gig71, issue 1).

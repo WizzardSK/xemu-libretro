@@ -2720,6 +2720,14 @@ void xemu_libretro_change_disc(const char *path, Error **errp)
         return;
     }
 
+    /* The disc in the drive out first: the content before may have left its
+     * patched overlay open there, and on Windows an open file can be neither
+     * deleted nor created again, so the next patched start failed to make
+     * its overlay ("Permission denied") and ran unpatched (NNshi) */
+    qmp_eject("ide0-cd1", NULL, true, true, &err);
+    error_free(err);
+    err = NULL;
+
     const uint64_t offset = xbox_game_partition_offset(path);
     /* default.xbe patched: a qcow2 overlay over the image (ui/libretro.c) */
     extern char *xemu_libretro_xbe_patched(const char *image, uint64_t offset);

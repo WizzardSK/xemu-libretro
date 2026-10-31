@@ -311,9 +311,9 @@ struct retro_core_option_v2_definition option_defs_us[] = {
     },
     {
         "xemu_use_dsp",
-        "APU DSP Emulation",
+        "APU DSP Emulation (Restart)",
         NULL,
-        "Enable DSP emulation for improved audio accuracy. May impact performance.",
+        "Emulates the APU's DSP, which plays the games' effects, reverb and much of their music: without it the sound is flat. Taken when the content starts; switching it while a game runs garbled the sound.",
         NULL,
         "audio",
         {
@@ -321,15 +321,18 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
-        "DSP JIT",
+        "DSP JIT (Restart)",
         NULL,
-        "Runs APU DSP Emulation's programs as compiled code instead of interpreting them: faster, as standalone's DSP JIT. Only does something with APU DSP Emulation on.",
+        "Runs APU DSP Emulation's programs as compiled code instead of interpreting them: faster, as standalone's DSP JIT. Only does something with APU DSP Emulation on. Taken when the content starts.",
         NULL,
         "audio",
         {
@@ -337,7 +340,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",

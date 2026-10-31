@@ -232,16 +232,17 @@ extern bool libretro_chihiro_aim_stick;   /* libretro-chihiro.c */
 extern float libretro_chihiro_aim_speed;
 extern float libretro_chihiro_aim_across;
 extern bool libretro_chihiro_crosshair;
-static bool opt_use_dsp = false;
+static bool opt_use_dsp = true;
 static int  opt_surface_scale = 1;
 static int  opt_avpack = CONFIG_SYS_AVPACK_HDTV;
 /* OpenGL's shader cache, always on, as Vulkan's is (NNshi): turning it off
  * only made the next start compile everything again */
 static const bool opt_cache_shaders = true;
-/* audio.use_dsp_jit, audio.hrtf and audio.vp.num_workers, as standalone's
- * defaults; the JIT and HRTF are read as the audio runs, the threads when the
- * voice processor starts */
-static bool opt_dsp_jit = false;
+/* audio.use_dsp_jit on, unlike standalone, as audio.use_dsp (NNshi);
+ * audio.hrtf and audio.vp.num_workers as standalone's defaults. The DSP and
+ * its JIT are taken when the content starts, HRTF as the audio runs, the
+ * threads when the voice processor starts */
+static bool opt_dsp_jit = true;
 static bool opt_hrtf = true;
 static int  opt_vp_workers = 0;
 static int  opt_audio_volume = 100;
@@ -1445,9 +1446,11 @@ static void update_variables(void)
         if (opt_surface_scale > 10) opt_surface_scale = 10;
     }
 
+    /* APU DSP Emulation and DSP JIT (Restart): taken when the content starts
+     * only. Switched while a game ran, they garbled its sound (NNshi). */
     var.key = "xemu_use_dsp";
     var.value = NULL;
-    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+    if (!emu_initialized && environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
         opt_use_dsp = !strcmp(var.value, "enabled");
     }
 
@@ -1524,7 +1527,7 @@ static void update_variables(void)
 
     var.key = "xemu_dsp_jit";
     var.value = NULL;
-    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+    if (!emu_initialized && environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
         opt_dsp_jit = !strcmp(var.value, "enabled");
     }
 
@@ -1584,8 +1587,6 @@ static void update_variables(void)
     /* Apply runtime-safe options */
     if (emu_initialized) {
         g_config.audio.volume_limit = opt_audio_volume / 100.0f;
-        g_config.audio.use_dsp = opt_use_dsp;
-        g_config.audio.use_dsp_jit = opt_dsp_jit;
         g_config.audio.hrtf = opt_hrtf;
     }
 }

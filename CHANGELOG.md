@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- Chihiro gun games on Mouse: the right button no longer also aims off the screen, through RetroArch's light gun Reload, which it binds to that button by default; Ghost Squad's action frees hostages again. Off the screen is aiming off the picture, or Reload bound to another button (gig71, issue 1).
 - Chihiro games: RetroArch's controls list names the buttons by what they do in the game that runs, by its cabinet: the guns' Trigger, Reload, Pump Reload, Change Weapon, Action, Pedal, Fire Rate (with Light Gun Aim on Analog Stick); the racers' Steering, Gas, Brake, Gear or Shift Up and Down, View Change, Drive, Reverse, Jump; Ollie King's board and grabs; Gundam's two sticks and pedal; Start, Coin, Service, Test, Insert Card. Nothing is bound differently (NNshi).
 - Trim HDD on Close empties the table of which game has which cache partition (sector 4) along with X, Y and Z: kept, it sent a game back to its partition as formatted, and the game, finding it empty, stopped on the dirty disc screen, in standalone too with that image (Akrido, RalliSport Challenge 2). An image a trim already left that way needs this table cleared or a fresh HDD.
 - Chihiro gun games on Analog Stick: the stick moves the aim as fast across as up and down, at the speed it had up and down; across it crossed the whole width in the same time. New option Sega Chihiro > Stick Aim Sensitivity, after Light Gun Aim: 50 to 200% in steps of 10%, 100% by default (NNshi).

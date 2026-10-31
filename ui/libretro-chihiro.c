@@ -182,9 +182,15 @@ static bool stick_aim(unsigned port)
 static uint8_t gun_aim(ChihiroJVSState *jvs, unsigned port)
 {
     /* off the screen: a light gun pointed away, its reload button, or with
-     * the stick R (the games' optional manual reload) */
+     * the stick R (the games' optional manual reload). Not the reload while
+     * the mouse's right button is held: RetroArch binds its light gun's
+     * reload to that button by default, and the right button is the gun's
+     * button, so Ghost Squad's action went off the screen too and could not
+     * free a hostage (gig71, issue 1); the mouse reloads by aiming off the
+     * picture. */
     bool off = gun(port, RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN) ||
-               gun(port, RETRO_DEVICE_ID_LIGHTGUN_RELOAD) ||
+               (gun(port, RETRO_DEVICE_ID_LIGHTGUN_RELOAD) &&
+                !mouse(port, RETRO_DEVICE_ID_MOUSE_RIGHT)) ||
                (libretro_chihiro_aim_stick && pad(port, RETRO_DEVICE_ID_JOYPAD_R));
     float x, y;
 

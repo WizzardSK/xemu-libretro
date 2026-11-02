@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- Vulkan: new option Video > Vulkan Queue (Restart), Own by default as before, or Shared with RetroArch: the renderer submitting to RetroArch's queue instead of a second queue of the family, to try where Vulkan loses the device at start (XieTieqiang, RX 9070 GRE, issue 2).
 - Core info: no longer marked experimental, and the hard disk image is listed as optional, as the core creates one when there is none (NNshi).
 - Patch Manager: a patched game started again in the same RetroArch session gets its patches; every second start ran unpatched, as on Windows the first start's patched disc was still open in the drive and could not be made again (NNshi).
 - APU DSP Emulation and DSP JIT are on by default: without the DSP the games' effects, reverb and much of their music are missing, and it costs no speed, as xemu's CPU thread is what limits it. Both are now (Restart), taken when the content starts: switched while a game ran, they garbled its sound (NNshi).

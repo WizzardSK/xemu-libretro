@@ -227,6 +227,10 @@ static bool opt_chihiro_freeplay = true;
 /* Video > Vulkan Fast Paths: which of the renderer's fast-path features the
  * shared device may get (xemu_vk_create_device) */
 static bool opt_vk_gpl = false, opt_vk_dynamic = true;
+/* Video > Vulkan Queue: the renderer on a queue of its own where the family
+ * has a second one, or on the frontend's (XieTieqiang, issue 2: the device
+ * lost on an RX 9070 GRE) */
+static bool opt_vk_own_queue = true;
 static int opt_chihiro_ffb = 100; /* percent, 0 = off */
 extern bool libretro_chihiro_aim_stick;   /* libretro-chihiro.c */
 extern float libretro_chihiro_aim_speed;
@@ -856,8 +860,8 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
 
     /* A queue of its own for the renderer where the family has a second
      * one: it submits many times a frame, and the frontend holds its queue's
-     * lock while it presents */
-    const bool own_queue = family_queues >= 2;
+     * lock while it presents; the frontend's with Vulkan Queue at Shared */
+    const bool own_queue = opt_vk_own_queue && family_queues >= 2;
     const float priorities[2] = { 1.0f, 1.0f };
     VkDeviceQueueCreateInfo queue_ci = {
         .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
@@ -1489,6 +1493,12 @@ static void update_variables(void)
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
         opt_vk_gpl = !strcmp(var.value, "all") || !strcmp(var.value, "no_dyn");
         opt_vk_dynamic = !strcmp(var.value, "all") || !strcmp(var.value, "no_gpl");
+    }
+
+    var.key = "xemu_vk_queue";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        opt_vk_own_queue = strcmp(var.value, "shared") != 0;
     }
 
     var.key = "xemu_chihiro_gun_aim";

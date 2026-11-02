@@ -426,6 +426,20 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "no_gpl"
     },
     {
+        "xemu_vk_queue",
+        "Vulkan Queue (Restart)",
+        NULL,
+        "Which queue the renderer submits to on Vulkan: a queue of its own (default) or RetroArch's. Shared is slower, but worth trying where Vulkan crashes at start.",
+        NULL,
+        "video",
+        {
+            { "own",    "Own" },
+            { "shared", "Shared with RetroArch" },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    {
         "xemu_rumble_p1",
         "Rumble (Player 1)",
         NULL,

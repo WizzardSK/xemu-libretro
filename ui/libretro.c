@@ -2171,7 +2171,8 @@ static gint patch_name_cmp(gconstpointer a, gconstpointer b)
 
 static char *patch_option_key(const char *file)
 {
-    return g_strdup_printf("xemu_patch_%08x", g_str_hash(file));
+    /* "zpatch": after the core's own options in RetroArch's .opt (NNshi) */
+    return g_strdup_printf("xemu_zpatch_%08x", g_str_hash(file));
 }
 
 /* The options as at start, with one per patch of this game in the Patch

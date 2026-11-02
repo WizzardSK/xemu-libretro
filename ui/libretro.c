@@ -1957,9 +1957,26 @@ static bool write_bundled_hdd(const char *path)
 
 typedef bool (*xiso_read_fn)(void *ctx, int64_t off, size_t len, void *buf);
 
-/* the patches of the content loaded, and the ones switched on */
+#include "libretro-bundled-patches.h"
+
+/* the patches of the content loaded, and the ones switched on: a file in
+ * system/xemu/patches by its path, a bundled one as "bundled:<name>" */
 static GPtrArray *patch_files;
 static GPtrArray *patch_enabled;
+/* the names in patch_files that are bundled ones (no file of that name in
+ * system/xemu/patches, which comes first) */
+static GHashTable *patch_bundled;
+
+/* A bundled patch by its name */
+static const LibretroBundledPatch *bundled_patch(const char *name)
+{
+    for (size_t i = 0; i < ARRAY_SIZE(libretro_bundled_patches); i++) {
+        if (!strcmp(libretro_bundled_patches[i].name, name)) {
+            return &libretro_bundled_patches[i];
+        }
+    }
+    return NULL;
+}
 
 /* A name as the Patch Manager compares them: lower case letters and digits,
  * "&" as "and", without "the", II to IV and "vs" spelled as xdb mostly has
@@ -2226,7 +2243,7 @@ static void patch_options_register(void)
     if (patch_files->len) {
         cats[n_cats].key = "patches";
         cats[n_cats].desc = "Patch Manager (Restart)";
-        cats[n_cats].info = "This game's patches in system/xemu/patches, applied to its default.xbe when it starts.";
+        cats[n_cats].info = "This game's patches, applied to its default.xbe when it starts: the 16:9, 60 FPS and miscellaneous ones of XboxGraphicalPatches bundled with the core, and those in system/xemu/patches.";
     }
     opts.categories = cats;
     opts.definitions = defs;
@@ -2289,14 +2306,16 @@ static void patch_manager_load(const char *image, bool chihiro)
 {
     g_clear_pointer(&patch_files, g_ptr_array_unref);
     g_clear_pointer(&patch_enabled, g_ptr_array_unref);
+    g_clear_pointer(&patch_bundled, g_hash_table_unref);
     patch_files = g_ptr_array_new_with_free_func(g_free);
     patch_enabled = g_ptr_array_new_with_free_func(g_free);
+    patch_bundled = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
 
     uint32_t title_id = 0, regions = 0;
     g_autofree char *title_name = NULL;
     g_autofree char *dir = system_dir[0] ? g_strdup_printf("%s/xemu/patches", system_dir) : NULL;
     GDir *d = dir ? g_dir_open(dir, 0, NULL) : NULL;
-    if (d && !chihiro && image && image[0] && !strstr(image, "://") &&
+    if (!chihiro && image && image[0] && !strstr(image, "://") &&
         xiso_title(image, &title_id, &title_name, &regions)) {
         g_autofree char *title_norm = patch_name_norm(title_name);
         /* XboxGraphicalPatches' IPS patches are for the North American
@@ -2307,7 +2326,7 @@ static void patch_manager_load(const char *image, bool chihiro)
         const bool north_america = regions & XBE_REGION_NORTH_AMERICA;
         LRLOG_INFO("[xemu] Patch Manager: %08X \"%s\", regions %X\n", title_id, title_name, regions);
         const char *n;
-        while ((n = g_dir_read_name(d))) {
+        while (d && (n = g_dir_read_name(d))) {
             g_autofree char *lower = g_ascii_strdown(n, -1);
             g_autofree char *path = g_strdup_printf("%s/%s", dir, n);
             if (((g_str_has_suffix(lower, ".ips") && north_america) ||
@@ -2318,6 +2337,24 @@ static void patch_manager_load(const char *image, bool chihiro)
             }
             if (patch_files->len >= PATCH_OPTIONS_MAX) {
                 break;
+            }
+        }
+        /* the bundled ones (XboxGraphicalPatches' 16-9 Widescreen, 60 FPS
+         * and Miscellaneous, NNshi), but for a file of the same name in
+         * system/xemu/patches, which takes its place */
+        for (size_t i = 0; i < ARRAY_SIZE(libretro_bundled_patches) &&
+                           patch_files->len < PATCH_OPTIONS_MAX; i++) {
+            const char *bn = libretro_bundled_patches[i].name;
+            g_autofree char *lower = g_ascii_strdown(bn, -1);
+            bool have = false;
+            for (guint j = 0; j < patch_files->len && !have; j++) {
+                have = !g_ascii_strcasecmp(patch_files->pdata[j], bn);
+            }
+            if (!have && ((g_str_has_suffix(lower, ".ips") && north_america) ||
+                          g_str_has_suffix(lower, ".bps")) &&
+                !strstr(lower, "apply to") && patch_is_for(bn, title_id, title_norm)) {
+                g_ptr_array_add(patch_files, g_strdup(bn));
+                g_hash_table_add(patch_bundled, g_strdup(bn));
             }
         }
         g_ptr_array_sort(patch_files, patch_name_cmp);
@@ -2332,7 +2369,9 @@ static void patch_manager_load(const char *image, bool chihiro)
         struct retro_variable var = { key, NULL };
         if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value &&
             !strcmp(var.value, "enabled")) {
-            g_ptr_array_add(patch_enabled, g_strdup_printf("%s/%s", dir, file));
+            g_ptr_array_add(patch_enabled, g_hash_table_contains(patch_bundled, file)
+                                               ? g_strdup_printf("bundled:%s", file)
+                                               : g_strdup_printf("%s/%s", dir, file));
         }
     }
 }
@@ -2585,7 +2624,14 @@ char *xemu_libretro_xbe_patched(const char *image, uint64_t offset)
         const char *f = files->pdata[i];
         g_autofree char *data = NULL;
         gsize n;
-        if (!g_file_get_contents(f, &data, &n, NULL)) {
+        if (g_str_has_prefix(f, "bundled:")) {
+            const LibretroBundledPatch *b = bundled_patch(f + strlen("bundled:"));
+            if (!b) {
+                continue;
+            }
+            data = g_memdup2(b->data, b->size);
+            n = b->size;
+        } else if (!g_file_get_contents(f, &data, &n, NULL)) {
             continue;
         }
         /* each patch on a copy, so one that fails leaves no half of itself */

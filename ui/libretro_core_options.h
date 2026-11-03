@@ -299,7 +299,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_audio_thread",
         "Audio Thread (Restart)",
         NULL,
-        "Hands the sound to RetroArch's audio thread as the APU mixes it, as standalone plays it, instead of a frame's worth each frame: the sound keeps going while frames stall, as while shaders compile. With RetroArch's Menu Frame Rate (Frame Throttle) on Display Rate, the menu slows down with it; set Menu Frame Rate to Content Rate.",
+        "Hands the sound to RetroArch's audio thread as the APU mixes it, as standalone plays it, instead of a frame's worth each frame: the sound keeps going while frames stall, as while shaders compile. RetroArch builds from before November 2026 slow their menu down with it when Menu Frame Rate (Frame Throttle) is Display Rate; there, set it to Content Rate.",
         NULL,
         "audio",
         {

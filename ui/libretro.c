@@ -1887,6 +1887,13 @@ static void *emu_thread_func(void *opaque)
      * Panzer Dragoon Orta stuck loading, in standalone too with that image) */
     vm_shutdown();
 
+    /* Read again now: switched in the menu and the content closed from there,
+     * no retro_run came between to see the change (Akrido) */
+    {
+        struct retro_variable var = { "xemu_hdd_trim", NULL };
+        if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+            opt_hdd_trim = !strcmp(var.value, "enabled");
+    }
     if (opt_hdd_trim && !xemu_chihiro_mode()) {
         hdd_trim();
     }

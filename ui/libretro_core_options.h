@@ -99,7 +99,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_memory",
         "System Memory (MB)",
         NULL,
-        "Amount of system RAM. 64 MB is standard; 128 MB is used by debug kits.",
+        "Amount of the Xbox's system RAM. 64 MB is standard; 128 MB is used by debug kits. A Sega Chihiro always has 128 MB, whatever this says.",
         NULL,
         "system",
         {

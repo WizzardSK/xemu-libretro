@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- System Memory's tooltip says it is the Xbox's: a Sega Chihiro always has its 128 MB (Akrido).
 - Audio Thread's tooltip: the slow menu with Menu Frame Rate on Display Rate is only in RetroArch builds from before November 2026, which RetroArch fixed (Akrido).
 - Trim HDD on Close: switched on in the menu and the content closed straight from the menu, it trims again without a restart; the core saw the change only at the next frame, which never came (Akrido).
 - Patch Manager: XboxGraphicalPatches' 16:9 widescreen, 60 FPS and miscellaneous patches (140) are built into the core, with icup321's permission (XboxGraphicalPatches issue #16), and listed for their games next to the patches in system/xemu/patches, which still load and take a bundled patch's place when one has the same name (NNshi). `scripts/gen_bundled_patches.py` makes `ui/libretro-bundled-patches.h` from a checkout of that repository. The patches' options are now `xemu_zpatch_<hash>` (they were `xemu_patch_<hash>`), so that they come after the core's own options in RetroArch's .opt file: patches switched on before have to be switched on again.

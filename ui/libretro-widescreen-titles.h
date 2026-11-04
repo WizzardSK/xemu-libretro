@@ -3,7 +3,8 @@
  * settings, by the Title ID in their certificate (one per release: the
  * regions have IDs of their own). The games are consolemods.org's list of
  * Xbox games with alternate display modes (16:9 column), their IDs taken
- * from MobCat's Xbox title ID database and the xemu cheat database by name.
+ * from MobCat's Xbox title ID database and the xemu cheat database by name,
+ * and games testers found to have it (Burnout Revenge, NNshi).
  * Sorted, for bsearch.
  */
 
@@ -67,8 +68,10 @@ static const uint32_t libretro_widescreen_titles[] = {
     0x4541006F, /* Need for Speed: Underground 2 */
     0x45410071, /* Need for Speed: Underground 2 */
     0x45410072, /* FIFA Street */
+    0x45410076, /* Burnout Revenge */
     0x45410078, /* FIFA 2006 */
     0x4541007A, /* NBA Live 2006 */
+    0x45410081, /* Burnout Revenge */
     0x45410082, /* SSX on Tour */
     0x45410083, /* Black */
     0x45410085, /* FIFA Street 2 */

@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- Burnout Revenge (both releases) is on the list of games that render 16:9, so System Aspect Ratio's Auto gives it 16:9 with Widescreen on (NNshi).
 - New option System > System Language (Auto, Dashboard, English, Japanese, German, French, Spanish, Italian, Korean, Chinese, Portuguese; Auto by default, NNshi): the language the console's settings give games, set in the EEPROM at each start as System Aspect Ratio is. Dashboard keeps the EEPROM's; Auto is RetroArch's language where the Xbox has it, English otherwise. An EEPROM made in another language no longer needs the dashboard to change it (Good Dragon).
 - System Memory's tooltip says it is the Xbox's: a Sega Chihiro always has its 128 MB (Akrido).
 - Audio Thread's tooltip: the slow menu with Menu Frame Rate on Display Rate is only in RetroArch builds from before November 2026, which RetroArch fixed (Akrido).

@@ -171,6 +171,32 @@ struct retro_core_option_v2_definition option_defs_us[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        "System Language",
+        NULL,
+        "The language the console's settings give games, in place of the dashboard's setting. Dashboard keeps the language the EEPROM has. Auto is RetroArch's language when the Xbox has it, English otherwise.",
+        NULL,
+        "system",
+        {
+            { "auto",       "Auto" },
+            { "dashboard",  "Dashboard" },
+            { "english",    "English" },
+            { "japanese",   "Japanese" },
+            { "german",     "German" },
+            { "french",     "French" },
+            { "spanish",    "Spanish" },
+            { "italian",    "Italian" },
+            { "korean",     "Korean" },
+            { "chinese",    "Chinese" },
+            { "portuguese", "Portuguese" },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         "Trim HDD on Close",

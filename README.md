@@ -23,7 +23,7 @@ Put these files into RetroArch's system directory, under `system/xemu/`:
 | `Complex_4627v1.03.bin` | the flash BIOS, a 1 MB or 256 KB image |
 | `xbox_hdd.qcow2` | optional: the hard disk. Without one the core writes the ready-made image it carries, [xemu-dashboard](https://github.com/xemu-project/xemu-dashboard)'s (MIT, an unsigned dashboard and no Microsoft software), the same one xemu offers |
 
-The boot ROM and the BIOS are Microsoft's and have to be dumped from your own console; see xemu's [required files](https://xemu.app/docs/required-files/). Other names and locations can be set in the core options. The EEPROM (`xbox_eeprom.bin`) is created in the same folder when it is missing.
+The boot ROM and the BIOS are Microsoft's and have to be dumped from your own console; see xemu's [required files](https://xemu.app/docs/required-files/). Other names and locations can be set in the core options. The EEPROM (`xbox_eeprom.bin`) is created in the same folder when it is missing. The language and the display shape it gives games come from the core options System Language (RetroArch's by default, or the EEPROM's own) and System Aspect Ratio, set at each start; the file keeps what the dashboard set.
 
 For Sega Chihiro games, these files go under `system/xemu/Chihiro/` (MAME's names; the boot ROM above is needed too, and the hard disk is written as for an Xbox):
 

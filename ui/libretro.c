@@ -1246,6 +1246,17 @@ static uint32_t guest_video_flags;
  * (NNshi). In memory only: the EEPROM file keeps the dashboard's. */
 static int opt_video_aspect = 2;
 
+/* System Language: the language the console's settings give games, set in
+ * the emulated EEPROM at each start like the aspect ratio above, so that an
+ * EEPROM made elsewhere (in French, say) no longer needs the dashboard to
+ * change it (Good Dragon). 0 the EEPROM's own, as standalone has it; -1
+ * (the default, NNshi) RetroArch's language where the Xbox has it, else English;
+ * else the Xbox's language number (1 English, 2 Japanese, 3 German,
+ * 4 French, 5 Spanish, 6 Italian, 7 Korean, 8 Chinese, 9 Portuguese).
+ * In memory only, as above. */
+#define EEPROM_LANGUAGE 0x90
+static int opt_language = -1;
+
 extern bool smbus_storage_peek(uint32_t offset, void *buf, uint32_t len);
 extern bool smbus_storage_poke(uint32_t offset, const void *buf, uint32_t len);
 
@@ -1262,9 +1273,32 @@ static uint32_t eeprom_checksum(const uint8_t *data, size_t len)
     return ~(high + low);
 }
 
-static void apply_video_aspect(void)
+/* The Xbox's language for RetroArch's, English where it has none */
+static uint32_t xbox_language_of_frontend(void)
 {
-    if (opt_video_aspect == 0) {
+    unsigned language = RETRO_LANGUAGE_ENGLISH;
+    if (!environ_cb || !environ_cb(RETRO_ENVIRONMENT_GET_LANGUAGE, &language)) {
+        return 1;
+    }
+    switch (language) {
+    case RETRO_LANGUAGE_JAPANESE: return 2;
+    case RETRO_LANGUAGE_GERMAN: return 3;
+    case RETRO_LANGUAGE_FRENCH: return 4;
+    case RETRO_LANGUAGE_SPANISH: return 5;
+    case RETRO_LANGUAGE_ITALIAN: return 6;
+    case RETRO_LANGUAGE_KOREAN: return 7;
+    case RETRO_LANGUAGE_CHINESE_TRADITIONAL:
+    case RETRO_LANGUAGE_CHINESE_SIMPLIFIED: return 8;
+    case RETRO_LANGUAGE_PORTUGUESE_BRAZIL:
+    case RETRO_LANGUAGE_PORTUGUESE_PORTUGAL: return 9;
+    default: return 1;
+    }
+}
+
+/* System Aspect Ratio and System Language into the EEPROM's user section */
+static void apply_eeprom_settings(void)
+{
+    if (opt_video_aspect == 0 && opt_language == 0) {
         return;
     }
     uint8_t user[EEPROM_USER_SECTION_LEN];
@@ -1272,17 +1306,25 @@ static void apply_video_aspect(void)
         return;
     }
     uint32_t *flags = (uint32_t *)(user + EEPROM_VIDEO_FLAGS - EEPROM_USER_SECTION);
-    uint32_t value = le32_to_cpu(*flags) & ~(EEPROM_VIDEO_WIDESCREEN | EEPROM_VIDEO_LETTERBOX);
-    if (opt_video_aspect == 2) {
-        value |= EEPROM_VIDEO_WIDESCREEN;
-    } else if (opt_video_aspect == 3) {
-        value |= EEPROM_VIDEO_LETTERBOX;
+    uint32_t value = le32_to_cpu(*flags);
+    if (opt_video_aspect != 0) {
+        value &= ~(EEPROM_VIDEO_WIDESCREEN | EEPROM_VIDEO_LETTERBOX);
+        if (opt_video_aspect == 2) {
+            value |= EEPROM_VIDEO_WIDESCREEN;
+        } else if (opt_video_aspect == 3) {
+            value |= EEPROM_VIDEO_LETTERBOX;
+        }
+        *flags = cpu_to_le32(value);
     }
-    *flags = cpu_to_le32(value);
+    uint32_t *lang = (uint32_t *)(user + EEPROM_LANGUAGE - EEPROM_USER_SECTION);
+    if (opt_language != 0) {
+        *lang = cpu_to_le32(opt_language < 0 ? xbox_language_of_frontend() : (uint32_t)opt_language);
+    }
     uint32_t sum = cpu_to_le32(eeprom_checksum(user, sizeof(user)));
     smbus_storage_poke(EEPROM_USER_SECTION, user, sizeof(user));
     smbus_storage_poke(EEPROM_USER_CHECKSUM, &sum, sizeof(sum));
-    LRLOG_INFO("[xemu] System Aspect Ratio: the EEPROM's video settings set to %08X\n", value);
+    LRLOG_INFO("[xemu] EEPROM settings for games: video %08X, language %u\n",
+               le32_to_cpu(*flags), le32_to_cpu(*lang));
 }
 
 static void poll_guest_title(void)
@@ -1407,6 +1449,19 @@ static void update_variables(void)
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
         opt_video_aspect = !strcmp(var.value, "4:3") ? 1 : !strcmp(var.value, "16:9") ? 2 :
                            !strcmp(var.value, "letterbox") ? 3 : 0;
+    }
+
+    var.key = "xemu_language";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        static const char *const languages[] = { "dashboard", "english", "japanese", "german", "french",
+                                                 "spanish", "italian", "korean", "chinese", "portuguese" };
+        opt_language = -1; /* auto, or a value the core does not know */
+        for (int i = 0; i < (int)(sizeof(languages) / sizeof(languages[0])); i++) {
+            if (!strcmp(var.value, languages[i])) {
+                opt_language = i;
+            }
+        }
     }
 
     var.key = "xemu_memory";
@@ -1747,7 +1802,7 @@ static void *emu_thread_func(void *opaque)
         /* Create XID USB gamepad devices for all 4 ports (BQL is held) */
         extern void libretro_input_create_xid_devices(void);
         libretro_input_create_xid_devices();
-        apply_video_aspect();
+        apply_eeprom_settings();
         machine_built = true;
         /* default.xbe patched: the drive gets the overlay before the
          * dashboard reads the disc (the vCPUs need the BQL this holds) */
@@ -1792,7 +1847,7 @@ static void *emu_thread_func(void *opaque)
             }
         }
         qemu_libretro_clear_shutdown_request();
-        apply_video_aspect();
+        apply_eeprom_settings();
         qemu_system_reset(SHUTDOWN_CAUSE_HOST_QMP_SYSTEM_RESET);
         if (!runstate_check(RUN_STATE_PRELAUNCH)) {
             runstate_set(RUN_STATE_PRELAUNCH);

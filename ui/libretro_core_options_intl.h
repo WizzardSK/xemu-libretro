@@ -62,6 +62,19 @@ extern "C" {
 #define XEMU_HARD_FPU_INFO_0_AR NULL
 #define XEMU_CPU_BOOST_LABEL_AR NULL
 #define XEMU_CPU_BOOST_INFO_0_AR NULL
+#define XEMU_LANGUAGE_LABEL_AR NULL
+#define XEMU_LANGUAGE_INFO_0_AR NULL
+#define OPTION_VAL_AUTO_AR "تلقائي"
+#define OPTION_VAL_DASHBOARD_AR NULL
+#define OPTION_VAL_ENGLISH_AR NULL
+#define OPTION_VAL_JAPANESE_AR "Japanese - 日本語"
+#define OPTION_VAL_GERMAN_AR "German - Deutsch"
+#define OPTION_VAL_FRENCH_AR "French - Français"
+#define OPTION_VAL_SPANISH_AR "Spanish - Español"
+#define OPTION_VAL_ITALIAN_AR "Italian - Italiano"
+#define OPTION_VAL_KOREAN_AR NULL
+#define OPTION_VAL_CHINESE_AR NULL
+#define OPTION_VAL_PORTUGUESE_AR NULL
 #define XEMU_HDD_TRIM_LABEL_AR NULL
 #define XEMU_HDD_TRIM_INFO_0_AR NULL
 #define XEMU_RENDERER_LABEL_AR NULL
@@ -70,13 +83,13 @@ extern "C" {
 #define OPTION_VAL_OPENGL_AR NULL
 #define XEMU_VIDEO_ASPECT_LABEL_AR NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_AR NULL
-#define OPTION_VAL_DASHBOARD_AR NULL
 #define OPTION_VAL_4_3_AR NULL
 #define OPTION_VAL_16_9_AR NULL
 #define OPTION_VAL_LETTERBOX_AR NULL
 #define XEMU_ASPECT_RATIO_LABEL_AR NULL
 #define XEMU_ASPECT_RATIO_INFO_0_AR NULL
-#define OPTION_VAL_AUTO_AR "تلقائي"
+#define XEMU_OVERSCAN_CROP_LABEL_AR NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_AR NULL
 #define XEMU_SURFACE_SCALE_LABEL_AR NULL
 #define XEMU_SURFACE_SCALE_INFO_0_AR NULL
 #define OPTION_VAL_1_AR NULL
@@ -89,6 +102,13 @@ extern "C" {
 #define OPTION_VAL_8_AR NULL
 #define OPTION_VAL_9_AR NULL
 #define OPTION_VAL_10_AR NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_AR NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_AR NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_AR "الأصل"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_AR NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_AR NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_AR NULL
+#define OPTION_VAL_16_AR NULL
 #define XEMU_AVPACK_LABEL_AR NULL
 #define XEMU_AVPACK_INFO_0_AR NULL
 #define OPTION_VAL_HDTV_AR NULL
@@ -142,14 +162,26 @@ extern "C" {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_AR NULL
 #define OPTION_VAL_MOUSE_AR NULL
 #define OPTION_VAL_STICK_AR NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_AR NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_AR NULL
+#define OPTION_VAL_50_AR NULL
+#define OPTION_VAL_70_AR NULL
+#define OPTION_VAL_90_AR NULL
+#define OPTION_VAL_110_AR NULL
+#define OPTION_VAL_120_AR NULL
+#define OPTION_VAL_130_AR NULL
+#define OPTION_VAL_140_AR NULL
+#define OPTION_VAL_150_AR NULL
+#define OPTION_VAL_160_AR NULL
+#define OPTION_VAL_170_AR NULL
+#define OPTION_VAL_180_AR NULL
+#define OPTION_VAL_190_AR NULL
+#define OPTION_VAL_200_AR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_AR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_AR NULL
 #define XEMU_CHIHIRO_FFB_LABEL_AR NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_AR NULL
-#define OPTION_VAL_50_AR NULL
 #define OPTION_VAL_75_AR NULL
-#define OPTION_VAL_150_AR NULL
-#define OPTION_VAL_200_AR NULL
 
 struct retro_core_option_v2_category option_cats_ar[] = {
     {
@@ -256,6 +288,32 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_AR,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_AR,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_AR },
+            { "dashboard",  OPTION_VAL_DASHBOARD_AR },
+            { "english",    OPTION_VAL_ENGLISH_AR },
+            { "japanese",   OPTION_VAL_JAPANESE_AR },
+            { "german",     OPTION_VAL_GERMAN_AR },
+            { "french",     OPTION_VAL_FRENCH_AR },
+            { "spanish",    OPTION_VAL_SPANISH_AR },
+            { "italian",    OPTION_VAL_ITALIAN_AR },
+            { "korean",     OPTION_VAL_KOREAN_AR },
+            { "chinese",    OPTION_VAL_CHINESE_AR },
+            { "portuguese", OPTION_VAL_PORTUGUESE_AR },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_AR,
@@ -318,6 +376,22 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_AR,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_AR,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_AR },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_AR,
@@ -336,6 +410,24 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
             { "8", OPTION_VAL_8_AR },
             { "9", OPTION_VAL_9_AR },
             { "10", OPTION_VAL_10_AR },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_AR,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_AR,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_AR },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_AR },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_AR },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_AR },
+            { "16", OPTION_VAL_16_AR },
             { NULL, NULL },
         },
         "1"
@@ -388,10 +480,13 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_AR,
@@ -404,7 +499,7 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -596,6 +691,36 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_AR,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_AR,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_AR },
+            { "60", OPTION_VAL_60_AR },
+            { "70", OPTION_VAL_70_AR },
+            { "80", OPTION_VAL_80_AR },
+            { "90", OPTION_VAL_90_AR },
+            { "100", OPTION_VAL_100_AR },
+            { "110", OPTION_VAL_110_AR },
+            { "120", OPTION_VAL_120_AR },
+            { "130", OPTION_VAL_130_AR },
+            { "140", OPTION_VAL_140_AR },
+            { "150", OPTION_VAL_150_AR },
+            { "160", OPTION_VAL_160_AR },
+            { "170", OPTION_VAL_170_AR },
+            { "180", OPTION_VAL_180_AR },
+            { "190", OPTION_VAL_190_AR },
+            { "200", OPTION_VAL_200_AR },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -665,6 +790,19 @@ struct retro_core_options_v2 options_ar = {
 #define XEMU_HARD_FPU_INFO_0_AST NULL
 #define XEMU_CPU_BOOST_LABEL_AST NULL
 #define XEMU_CPU_BOOST_INFO_0_AST NULL
+#define XEMU_LANGUAGE_LABEL_AST NULL
+#define XEMU_LANGUAGE_INFO_0_AST NULL
+#define OPTION_VAL_AUTO_AST NULL
+#define OPTION_VAL_DASHBOARD_AST NULL
+#define OPTION_VAL_ENGLISH_AST "Inglés"
+#define OPTION_VAL_JAPANESE_AST "Xaponés"
+#define OPTION_VAL_GERMAN_AST "Alemán"
+#define OPTION_VAL_FRENCH_AST "Francés"
+#define OPTION_VAL_SPANISH_AST "Castellán"
+#define OPTION_VAL_ITALIAN_AST "Italianu"
+#define OPTION_VAL_KOREAN_AST NULL
+#define OPTION_VAL_CHINESE_AST NULL
+#define OPTION_VAL_PORTUGUESE_AST NULL
 #define XEMU_HDD_TRIM_LABEL_AST NULL
 #define XEMU_HDD_TRIM_INFO_0_AST NULL
 #define XEMU_RENDERER_LABEL_AST NULL
@@ -673,13 +811,13 @@ struct retro_core_options_v2 options_ar = {
 #define OPTION_VAL_OPENGL_AST NULL
 #define XEMU_VIDEO_ASPECT_LABEL_AST NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_AST NULL
-#define OPTION_VAL_DASHBOARD_AST NULL
 #define OPTION_VAL_4_3_AST NULL
 #define OPTION_VAL_16_9_AST NULL
 #define OPTION_VAL_LETTERBOX_AST NULL
 #define XEMU_ASPECT_RATIO_LABEL_AST "Proporción d'aspeutu del nucleu"
 #define XEMU_ASPECT_RATIO_INFO_0_AST NULL
-#define OPTION_VAL_AUTO_AST NULL
+#define XEMU_OVERSCAN_CROP_LABEL_AST NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_AST NULL
 #define XEMU_SURFACE_SCALE_LABEL_AST NULL
 #define XEMU_SURFACE_SCALE_INFO_0_AST NULL
 #define OPTION_VAL_1_AST NULL
@@ -692,6 +830,13 @@ struct retro_core_options_v2 options_ar = {
 #define OPTION_VAL_8_AST NULL
 #define OPTION_VAL_9_AST NULL
 #define OPTION_VAL_10_AST NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_AST "Filtru anisotrópicu"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_AST NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_AST NULL
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_AST "x2"
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_AST "x4"
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_AST "x8"
+#define OPTION_VAL_16_AST "x16"
 #define XEMU_AVPACK_LABEL_AST NULL
 #define XEMU_AVPACK_INFO_0_AST NULL
 #define OPTION_VAL_HDTV_AST NULL
@@ -745,14 +890,26 @@ struct retro_core_options_v2 options_ar = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_AST NULL
 #define OPTION_VAL_MOUSE_AST "Mur"
 #define OPTION_VAL_STICK_AST NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_AST NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_AST NULL
+#define OPTION_VAL_50_AST NULL
+#define OPTION_VAL_70_AST NULL
+#define OPTION_VAL_90_AST NULL
+#define OPTION_VAL_110_AST NULL
+#define OPTION_VAL_120_AST NULL
+#define OPTION_VAL_130_AST NULL
+#define OPTION_VAL_140_AST NULL
+#define OPTION_VAL_150_AST NULL
+#define OPTION_VAL_160_AST NULL
+#define OPTION_VAL_170_AST NULL
+#define OPTION_VAL_180_AST NULL
+#define OPTION_VAL_190_AST NULL
+#define OPTION_VAL_200_AST NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_AST NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_AST NULL
 #define XEMU_CHIHIRO_FFB_LABEL_AST NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_AST NULL
-#define OPTION_VAL_50_AST NULL
 #define OPTION_VAL_75_AST NULL
-#define OPTION_VAL_150_AST NULL
-#define OPTION_VAL_200_AST NULL
 
 struct retro_core_option_v2_category option_cats_ast[] = {
     {
@@ -859,6 +1016,32 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_AST,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_AST,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_AST },
+            { "dashboard",  OPTION_VAL_DASHBOARD_AST },
+            { "english",    OPTION_VAL_ENGLISH_AST },
+            { "japanese",   OPTION_VAL_JAPANESE_AST },
+            { "german",     OPTION_VAL_GERMAN_AST },
+            { "french",     OPTION_VAL_FRENCH_AST },
+            { "spanish",    OPTION_VAL_SPANISH_AST },
+            { "italian",    OPTION_VAL_ITALIAN_AST },
+            { "korean",     OPTION_VAL_KOREAN_AST },
+            { "chinese",    OPTION_VAL_CHINESE_AST },
+            { "portuguese", OPTION_VAL_PORTUGUESE_AST },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_AST,
@@ -921,6 +1104,22 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_AST,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_AST,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_AST },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_AST,
@@ -939,6 +1138,24 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
             { "8", OPTION_VAL_8_AST },
             { "9", OPTION_VAL_9_AST },
             { "10", OPTION_VAL_10_AST },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_AST,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_AST,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_AST },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_AST },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_AST },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_AST },
+            { "16", OPTION_VAL_16_AST },
             { NULL, NULL },
         },
         "1"
@@ -991,10 +1208,13 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_AST,
@@ -1007,7 +1227,7 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -1199,6 +1419,36 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_AST,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_AST,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_AST },
+            { "60", OPTION_VAL_60_AST },
+            { "70", OPTION_VAL_70_AST },
+            { "80", OPTION_VAL_80_AST },
+            { "90", OPTION_VAL_90_AST },
+            { "100", OPTION_VAL_100_AST },
+            { "110", OPTION_VAL_110_AST },
+            { "120", OPTION_VAL_120_AST },
+            { "130", OPTION_VAL_130_AST },
+            { "140", OPTION_VAL_140_AST },
+            { "150", OPTION_VAL_150_AST },
+            { "160", OPTION_VAL_160_AST },
+            { "170", OPTION_VAL_170_AST },
+            { "180", OPTION_VAL_180_AST },
+            { "190", OPTION_VAL_190_AST },
+            { "200", OPTION_VAL_200_AST },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -1268,6 +1518,19 @@ struct retro_core_options_v2 options_ast = {
 #define XEMU_HARD_FPU_INFO_0_BE NULL
 #define XEMU_CPU_BOOST_LABEL_BE NULL
 #define XEMU_CPU_BOOST_INFO_0_BE NULL
+#define XEMU_LANGUAGE_LABEL_BE NULL
+#define XEMU_LANGUAGE_INFO_0_BE NULL
+#define OPTION_VAL_AUTO_BE "Аўта"
+#define OPTION_VAL_DASHBOARD_BE NULL
+#define OPTION_VAL_ENGLISH_BE "Англійская"
+#define OPTION_VAL_JAPANESE_BE "Японскі"
+#define OPTION_VAL_GERMAN_BE "Нямецкая"
+#define OPTION_VAL_FRENCH_BE "Французская"
+#define OPTION_VAL_SPANISH_BE "Іспанская"
+#define OPTION_VAL_ITALIAN_BE "Італьянская"
+#define OPTION_VAL_KOREAN_BE NULL
+#define OPTION_VAL_CHINESE_BE NULL
+#define OPTION_VAL_PORTUGUESE_BE NULL
 #define XEMU_HDD_TRIM_LABEL_BE NULL
 #define XEMU_HDD_TRIM_INFO_0_BE NULL
 #define XEMU_RENDERER_LABEL_BE NULL
@@ -1276,13 +1539,13 @@ struct retro_core_options_v2 options_ast = {
 #define OPTION_VAL_OPENGL_BE NULL
 #define XEMU_VIDEO_ASPECT_LABEL_BE NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_BE NULL
-#define OPTION_VAL_DASHBOARD_BE NULL
 #define OPTION_VAL_4_3_BE NULL
 #define OPTION_VAL_16_9_BE NULL
 #define OPTION_VAL_LETTERBOX_BE NULL
 #define XEMU_ASPECT_RATIO_LABEL_BE "Суадносіны бакоў ядра"
 #define XEMU_ASPECT_RATIO_INFO_0_BE NULL
-#define OPTION_VAL_AUTO_BE "Аўта"
+#define XEMU_OVERSCAN_CROP_LABEL_BE "Кадраванне па вертыкалі"
+#define XEMU_OVERSCAN_CROP_INFO_0_BE NULL
 #define XEMU_SURFACE_SCALE_LABEL_BE NULL
 #define XEMU_SURFACE_SCALE_INFO_0_BE NULL
 #define OPTION_VAL_1_BE NULL
@@ -1295,6 +1558,13 @@ struct retro_core_options_v2 options_ast = {
 #define OPTION_VAL_8_BE NULL
 #define OPTION_VAL_9_BE NULL
 #define OPTION_VAL_10_BE NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_BE "Анізатропнае фільтраванне"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_BE NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_BE "Родная"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_BE NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_BE NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_BE NULL
+#define OPTION_VAL_16_BE NULL
 #define XEMU_AVPACK_LABEL_BE NULL
 #define XEMU_AVPACK_INFO_0_BE NULL
 #define OPTION_VAL_HDTV_BE NULL
@@ -1348,14 +1618,26 @@ struct retro_core_options_v2 options_ast = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_BE NULL
 #define OPTION_VAL_MOUSE_BE "Мыш"
 #define OPTION_VAL_STICK_BE NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_BE NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_BE NULL
+#define OPTION_VAL_50_BE "50 %"
+#define OPTION_VAL_70_BE "70 %"
+#define OPTION_VAL_90_BE "90 %"
+#define OPTION_VAL_110_BE "110 %"
+#define OPTION_VAL_120_BE "120 %"
+#define OPTION_VAL_130_BE "130 %"
+#define OPTION_VAL_140_BE "140 %"
+#define OPTION_VAL_150_BE "150 %"
+#define OPTION_VAL_160_BE "160 %"
+#define OPTION_VAL_170_BE "170 %"
+#define OPTION_VAL_180_BE "180 %"
+#define OPTION_VAL_190_BE "190 %"
+#define OPTION_VAL_200_BE "200 %"
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_BE NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_BE NULL
 #define XEMU_CHIHIRO_FFB_LABEL_BE NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_BE NULL
-#define OPTION_VAL_50_BE "50 %"
 #define OPTION_VAL_75_BE "75 %"
-#define OPTION_VAL_150_BE "150 %"
-#define OPTION_VAL_200_BE "200 %"
 
 struct retro_core_option_v2_category option_cats_be[] = {
     {
@@ -1462,6 +1744,32 @@ struct retro_core_option_v2_definition option_defs_be[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_BE,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_BE,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_BE },
+            { "dashboard",  OPTION_VAL_DASHBOARD_BE },
+            { "english",    OPTION_VAL_ENGLISH_BE },
+            { "japanese",   OPTION_VAL_JAPANESE_BE },
+            { "german",     OPTION_VAL_GERMAN_BE },
+            { "french",     OPTION_VAL_FRENCH_BE },
+            { "spanish",    OPTION_VAL_SPANISH_BE },
+            { "italian",    OPTION_VAL_ITALIAN_BE },
+            { "korean",     OPTION_VAL_KOREAN_BE },
+            { "chinese",    OPTION_VAL_CHINESE_BE },
+            { "portuguese", OPTION_VAL_PORTUGUESE_BE },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_BE,
@@ -1524,6 +1832,22 @@ struct retro_core_option_v2_definition option_defs_be[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_BE,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_BE,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_BE },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_BE,
@@ -1542,6 +1866,24 @@ struct retro_core_option_v2_definition option_defs_be[] = {
             { "8", OPTION_VAL_8_BE },
             { "9", OPTION_VAL_9_BE },
             { "10", OPTION_VAL_10_BE },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_BE,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_BE,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_BE },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_BE },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_BE },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_BE },
+            { "16", OPTION_VAL_16_BE },
             { NULL, NULL },
         },
         "1"
@@ -1594,10 +1936,13 @@ struct retro_core_option_v2_definition option_defs_be[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_BE,
@@ -1610,7 +1955,7 @@ struct retro_core_option_v2_definition option_defs_be[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -1802,6 +2147,36 @@ struct retro_core_option_v2_definition option_defs_be[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_BE,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_BE,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_BE },
+            { "60", OPTION_VAL_60_BE },
+            { "70", OPTION_VAL_70_BE },
+            { "80", OPTION_VAL_80_BE },
+            { "90", OPTION_VAL_90_BE },
+            { "100", OPTION_VAL_100_BE },
+            { "110", OPTION_VAL_110_BE },
+            { "120", OPTION_VAL_120_BE },
+            { "130", OPTION_VAL_130_BE },
+            { "140", OPTION_VAL_140_BE },
+            { "150", OPTION_VAL_150_BE },
+            { "160", OPTION_VAL_160_BE },
+            { "170", OPTION_VAL_170_BE },
+            { "180", OPTION_VAL_180_BE },
+            { "190", OPTION_VAL_190_BE },
+            { "200", OPTION_VAL_200_BE },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -1871,6 +2246,19 @@ struct retro_core_options_v2 options_be = {
 #define XEMU_HARD_FPU_INFO_0_BG NULL
 #define XEMU_CPU_BOOST_LABEL_BG NULL
 #define XEMU_CPU_BOOST_INFO_0_BG NULL
+#define XEMU_LANGUAGE_LABEL_BG NULL
+#define XEMU_LANGUAGE_INFO_0_BG NULL
+#define OPTION_VAL_AUTO_BG NULL
+#define OPTION_VAL_DASHBOARD_BG NULL
+#define OPTION_VAL_ENGLISH_BG NULL
+#define OPTION_VAL_JAPANESE_BG NULL
+#define OPTION_VAL_GERMAN_BG NULL
+#define OPTION_VAL_FRENCH_BG NULL
+#define OPTION_VAL_SPANISH_BG NULL
+#define OPTION_VAL_ITALIAN_BG NULL
+#define OPTION_VAL_KOREAN_BG NULL
+#define OPTION_VAL_CHINESE_BG NULL
+#define OPTION_VAL_PORTUGUESE_BG NULL
 #define XEMU_HDD_TRIM_LABEL_BG NULL
 #define XEMU_HDD_TRIM_INFO_0_BG NULL
 #define XEMU_RENDERER_LABEL_BG NULL
@@ -1879,13 +2267,13 @@ struct retro_core_options_v2 options_be = {
 #define OPTION_VAL_OPENGL_BG NULL
 #define XEMU_VIDEO_ASPECT_LABEL_BG NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_BG NULL
-#define OPTION_VAL_DASHBOARD_BG NULL
 #define OPTION_VAL_4_3_BG NULL
 #define OPTION_VAL_16_9_BG NULL
 #define OPTION_VAL_LETTERBOX_BG NULL
 #define XEMU_ASPECT_RATIO_LABEL_BG NULL
 #define XEMU_ASPECT_RATIO_INFO_0_BG NULL
-#define OPTION_VAL_AUTO_BG NULL
+#define XEMU_OVERSCAN_CROP_LABEL_BG NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_BG NULL
 #define XEMU_SURFACE_SCALE_LABEL_BG NULL
 #define XEMU_SURFACE_SCALE_INFO_0_BG NULL
 #define OPTION_VAL_1_BG NULL
@@ -1898,6 +2286,13 @@ struct retro_core_options_v2 options_be = {
 #define OPTION_VAL_8_BG NULL
 #define OPTION_VAL_9_BG NULL
 #define OPTION_VAL_10_BG NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_BG NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_BG NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_BG NULL
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_BG NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_BG NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_BG NULL
+#define OPTION_VAL_16_BG NULL
 #define XEMU_AVPACK_LABEL_BG NULL
 #define XEMU_AVPACK_INFO_0_BG NULL
 #define OPTION_VAL_HDTV_BG NULL
@@ -1951,14 +2346,26 @@ struct retro_core_options_v2 options_be = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_BG NULL
 #define OPTION_VAL_MOUSE_BG NULL
 #define OPTION_VAL_STICK_BG NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_BG NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_BG NULL
+#define OPTION_VAL_50_BG NULL
+#define OPTION_VAL_70_BG NULL
+#define OPTION_VAL_90_BG NULL
+#define OPTION_VAL_110_BG NULL
+#define OPTION_VAL_120_BG NULL
+#define OPTION_VAL_130_BG NULL
+#define OPTION_VAL_140_BG NULL
+#define OPTION_VAL_150_BG NULL
+#define OPTION_VAL_160_BG NULL
+#define OPTION_VAL_170_BG NULL
+#define OPTION_VAL_180_BG NULL
+#define OPTION_VAL_190_BG NULL
+#define OPTION_VAL_200_BG NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_BG NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_BG NULL
 #define XEMU_CHIHIRO_FFB_LABEL_BG NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_BG NULL
-#define OPTION_VAL_50_BG NULL
 #define OPTION_VAL_75_BG NULL
-#define OPTION_VAL_150_BG NULL
-#define OPTION_VAL_200_BG NULL
 
 struct retro_core_option_v2_category option_cats_bg[] = {
     {
@@ -2065,6 +2472,32 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_BG,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_BG,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_BG },
+            { "dashboard",  OPTION_VAL_DASHBOARD_BG },
+            { "english",    OPTION_VAL_ENGLISH_BG },
+            { "japanese",   OPTION_VAL_JAPANESE_BG },
+            { "german",     OPTION_VAL_GERMAN_BG },
+            { "french",     OPTION_VAL_FRENCH_BG },
+            { "spanish",    OPTION_VAL_SPANISH_BG },
+            { "italian",    OPTION_VAL_ITALIAN_BG },
+            { "korean",     OPTION_VAL_KOREAN_BG },
+            { "chinese",    OPTION_VAL_CHINESE_BG },
+            { "portuguese", OPTION_VAL_PORTUGUESE_BG },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_BG,
@@ -2127,6 +2560,22 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_BG,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_BG,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_BG },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_BG,
@@ -2145,6 +2594,24 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
             { "8", OPTION_VAL_8_BG },
             { "9", OPTION_VAL_9_BG },
             { "10", OPTION_VAL_10_BG },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_BG,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_BG,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_BG },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_BG },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_BG },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_BG },
+            { "16", OPTION_VAL_16_BG },
             { NULL, NULL },
         },
         "1"
@@ -2197,10 +2664,13 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_BG,
@@ -2213,7 +2683,7 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -2405,6 +2875,36 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_BG,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_BG,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_BG },
+            { "60", OPTION_VAL_60_BG },
+            { "70", OPTION_VAL_70_BG },
+            { "80", OPTION_VAL_80_BG },
+            { "90", OPTION_VAL_90_BG },
+            { "100", OPTION_VAL_100_BG },
+            { "110", OPTION_VAL_110_BG },
+            { "120", OPTION_VAL_120_BG },
+            { "130", OPTION_VAL_130_BG },
+            { "140", OPTION_VAL_140_BG },
+            { "150", OPTION_VAL_150_BG },
+            { "160", OPTION_VAL_160_BG },
+            { "170", OPTION_VAL_170_BG },
+            { "180", OPTION_VAL_180_BG },
+            { "190", OPTION_VAL_190_BG },
+            { "200", OPTION_VAL_200_BG },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -2451,18 +2951,18 @@ struct retro_core_options_v2 options_bg = {
 
 /* RETRO_LANGUAGE_CA */
 
-#define CATEGORY_SYSTEM_LABEL_CA NULL
-#define CATEGORY_SYSTEM_INFO_0_CA NULL
+#define CATEGORY_SYSTEM_LABEL_CA "Sistema (Cal reiniciar)"
+#define CATEGORY_SYSTEM_INFO_0_CA "La màquina en si: memòria, xarxa, arrencada i CPU. Capturat en iniciar-se el contingut (executa «Trim» al disc dur en tancar-se)."
 #define CATEGORY_VIDEO_LABEL_CA "Vídeo"
 #define CATEGORY_VIDEO_INFO_0_CA "Configura el renderitzat de vídeo."
 #define CATEGORY_AUDIO_LABEL_CA "Àudio"
 #define CATEGORY_AUDIO_INFO_0_CA "Configura l'emulació de vídeo."
 #define CATEGORY_CONTROLS_LABEL_CA NULL
-#define CATEGORY_CONTROLS_INFO_0_CA NULL
+#define CATEGORY_CONTROLS_INFO_0_CA "Vibració i zones mortes de les palanques, per jugador."
 #define CATEGORY_CHIHIRO_LABEL_CA NULL
-#define CATEGORY_CHIHIRO_INFO_0_CA NULL
+#define CATEGORY_CHIHIRO_INFO_0_CA "Els jocs d'arcade per a Sega Chihiro: joc lliure, la punteria en els jocs de trets i la retroalimentació de força en els jocs de curses."
 #define XEMU_MEMORY_LABEL_CA "Memòria del sistema (MB)"
-#define XEMU_MEMORY_INFO_0_CA "Quantitat de memòria RAM. L'estàndard és 64 MB; es fan servir 128 MB en cas de fer depuració."
+#define XEMU_MEMORY_INFO_0_CA NULL
 #define OPTION_VAL_64_CA NULL
 #define OPTION_VAL_128_CA NULL
 #define XEMU_NETWORK_BACKEND_LABEL_CA "Backend de xarxa"
@@ -2473,23 +2973,36 @@ struct retro_core_options_v2 options_bg = {
 #define XEMU_HARD_FPU_LABEL_CA "Emulació del maquinari FPU"
 #define XEMU_HARD_FPU_INFO_0_CA "Fes servir l'amfitrió FPU per l'emulació de x87. És més ràpid però pot provocar alguna imprecisió."
 #define XEMU_CPU_BOOST_LABEL_CA NULL
-#define XEMU_CPU_BOOST_INFO_0_CA NULL
-#define XEMU_HDD_TRIM_LABEL_CA NULL
-#define XEMU_HDD_TRIM_INFO_0_CA NULL
+#define XEMU_CPU_BOOST_INFO_0_CA "Camins més ràpids per a la CPU convidada i el processador d'àudio: SSE natiu i una memòria cau de salts més àmplia. Desactiveu-ho si un joc presenta problemes."
+#define XEMU_LANGUAGE_LABEL_CA "Idioma del sistema"
+#define XEMU_LANGUAGE_INFO_0_CA NULL
+#define OPTION_VAL_AUTO_CA "Automàtic"
+#define OPTION_VAL_DASHBOARD_CA "Panell de control"
+#define OPTION_VAL_ENGLISH_CA "Anglès"
+#define OPTION_VAL_JAPANESE_CA "Japonès"
+#define OPTION_VAL_GERMAN_CA "Alemany"
+#define OPTION_VAL_FRENCH_CA "Francès"
+#define OPTION_VAL_SPANISH_CA "Espanyol"
+#define OPTION_VAL_ITALIAN_CA "Italià"
+#define OPTION_VAL_KOREAN_CA "Coreà"
+#define OPTION_VAL_CHINESE_CA "Xinès"
+#define OPTION_VAL_PORTUGUESE_CA "Portuguès"
+#define XEMU_HDD_TRIM_LABEL_CA "Executar TRIM al disc dur en tancar"
+#define XEMU_HDD_TRIM_INFO_0_CA "En tancar el joc, es buiden les particions de memòria cau X, Y i Z del disc dur (els jocs les tornen a formatar quan les necessiten) i es reescriu la imatge eliminant l'espai no utilitzat, de manera que el fitxer es redueix. Durant el procés, es requereix una quantitat d'espai lliure equivalent a la mida de les dades de la imatge. Aquesta operació s'omet si la imatge conté un estat desat (*savestate*). Es duu a terme en tancar el joc, no pas en iniciar-lo la vegada següent."
 #define XEMU_RENDERER_LABEL_CA "API de gràfics (Cal reiniciar)"
 #define XEMU_RENDERER_INFO_0_CA "El motor de renderització utilitzat per dibuixar la GPU emulada. Vulkan és l'opció predeterminada; OpenGL és l'alternativa per als controladors en què Vulkan no funciona correctament. Els canvis s'apliquen després de reiniciar RetroArch. Android utilitza sempre Vulkan, mentre que macOS utilitza sempre OpenGL."
 #define OPTION_VAL_VULKAN_CA NULL
 #define OPTION_VAL_OPENGL_CA NULL
-#define XEMU_VIDEO_ASPECT_LABEL_CA NULL
-#define XEMU_VIDEO_ASPECT_INFO_0_CA NULL
-#define OPTION_VAL_DASHBOARD_CA NULL
+#define XEMU_VIDEO_ASPECT_LABEL_CA "Relació d'aspecte del sistema (Cal reiniciar)"
+#define XEMU_VIDEO_ASPECT_INFO_0_CA "La configuració de la forma de la pantalla determina què comuniquen els paràmetres de vídeo de la consola als jocs, en lloc d'utilitzar la configuració del tauler. En format 16:9, els jocs compatibles amb pantalla panoràmica s'executen en format panoràmic; en 4:3, s'executen en 4:3. Tria l'opció que correspongui a la forma de la teva pantalla. L'opció «Letterbox» aplica el format 4:3 del tauler, però mostra els jocs panoràmics amb bandes negres a la part superior i inferior. L'opció «Tauler» manté la configuració pròpia del tauler."
 #define OPTION_VAL_4_3_CA NULL
 #define OPTION_VAL_16_9_CA NULL
-#define OPTION_VAL_LETTERBOX_CA NULL
+#define OPTION_VAL_LETTERBOX_CA "Format bústia"
 #define XEMU_ASPECT_RATIO_LABEL_CA "Relació d'aspecte del nucli"
-#define XEMU_ASPECT_RATIO_INFO_0_CA NULL
-#define OPTION_VAL_AUTO_CA "Automàtic"
-#define XEMU_SURFACE_SCALE_LABEL_CA NULL
+#define XEMU_ASPECT_RATIO_INFO_0_CA "La forma en què es mostra la imatge. El millor és deixar-ho en «Auto», ja que s'adapta al joc: 16:9 quan la consola està configurada en pantalla panoràmica (a la configuració del sistema o al menú principal) i el joc es renderitza en 16:9; en cas contrari —o si es tracta d'una placa Chihiro—, es mostra en 4:3. L'opció 16:9 estira un joc en format 4:3 per adaptar-lo a la pantalla panoràmica."
+#define XEMU_OVERSCAN_CROP_LABEL_CA "Retallar sobreescombrat vertical"
+#define XEMU_OVERSCAN_CROP_INFO_0_CA NULL
+#define XEMU_SURFACE_SCALE_LABEL_CA "Escala de resolució interna (Cal reiniciar)"
 #define XEMU_SURFACE_SCALE_INFO_0_CA "Escala la resolució interna de renderització. Valors alts poden millorar la qualitat per reduir el rendiment."
 #define OPTION_VAL_1_CA NULL
 #define OPTION_VAL_2_CA NULL
@@ -2501,7 +3014,14 @@ struct retro_core_options_v2 options_bg = {
 #define OPTION_VAL_8_CA NULL
 #define OPTION_VAL_9_CA NULL
 #define OPTION_VAL_10_CA NULL
-#define XEMU_AVPACK_LABEL_CA NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_CA "Filtre anisotròpic"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_CA "El filtratge menys anisotròpic que obtenen les textures filtrades suaument del joc, cosa que manté les textures amb una inclinació nítida. El natiu deixa les textures pròpies del joc, que per a la majoria de jocs de Xbox no n'hi ha."
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CA "Nativa"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_CA NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_CA NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_CA NULL
+#define OPTION_VAL_16_CA NULL
+#define XEMU_AVPACK_LABEL_CA "Pack AV (Cal reiniciar)"
 #define XEMU_AVPACK_INFO_0_CA "Selecciona el tipus de paquet AV. Afecta als modes de vídeo disponibles."
 #define OPTION_VAL_HDTV_CA NULL
 #define OPTION_VAL_COMPOSITE_CA "Composició"
@@ -2510,16 +3030,16 @@ struct retro_core_options_v2 options_bg = {
 #define OPTION_VAL_VGA_CA NULL
 #define XEMU_AUDIO_THREAD_LABEL_CA "Fil d'àudio (Cal reiniciar)"
 #define XEMU_AUDIO_THREAD_INFO_0_CA NULL
-#define XEMU_USE_DSP_LABEL_CA "Emulació de APU DSP"
-#define XEMU_USE_DSP_INFO_0_CA "Activa l'emulació DSP per millorar la precisió de l'àudio. Pot tenir un impacte en el rendiment."
-#define XEMU_DSP_JIT_LABEL_CA NULL
-#define XEMU_DSP_JIT_INFO_0_CA NULL
+#define XEMU_USE_DSP_LABEL_CA "Emulació APU DSP (cal reiniciar)"
+#define XEMU_USE_DSP_INFO_0_CA "Emula el DSP de l'APU, que reprodueix els efectes dels jocs, la reverberació i gran part de la música: sense ell, el so resulta pla. S'ha d'activar abans que comenci el contingut; canviar-ne l'estat mentre un joc està en marxa provoca distorsions en el so."
+#define XEMU_DSP_JIT_LABEL_CA "DSP JIT (Cal reiniciar)"
+#define XEMU_DSP_JIT_INFO_0_CA "Executa els programes de l'emulació del DSP de l'APU com a codi compilat en lloc d'interpretar-los; és més ràpid, com el JIT del DSP en la versió autònoma. Només té efecte si l'emulació del DSP de l'APU està activada. S'aplica en iniciar el contingut."
 #define XEMU_HRTF_LABEL_CA NULL
-#define XEMU_HRTF_INFO_0_CA NULL
-#define XEMU_VP_WORKERS_LABEL_CA NULL
-#define XEMU_VP_WORKERS_INFO_0_CA NULL
-#define XEMU_SMOOTH_FIRST_PLAY_LABEL_CA NULL
-#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_CA NULL
+#define XEMU_HRTF_INFO_0_CA "Situa les veus 3D dels jocs que les utilitzen mitjançant funcions de transferència relacionades amb el cap —tal com es fa a la consola—, tant per a auriculars com per a altaveus estèreo."
+#define XEMU_VP_WORKERS_LABEL_CA "Fils del processador de veu (Cal reiniciar)"
+#define XEMU_VP_WORKERS_INFO_0_CA "Fils en què el processador de veu d'àudio mescla les veus. L'opció «Auto» n'utilitza un per cada nucli de la CPU."
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_CA "Primera partida fluida (Cal reiniciar)"
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_CA "Compila els shaders que se sap que utilitza un joc durant l'inici, de manera que els primers minuts no presentin salts ni interrupcions mentre es duen a terme aquestes compilacions. En el cas d'OpenGL, els elements compilats es desen a la memòria cau de shaders, que està sempre activa."
 #define XEMU_AUDIO_VOLUME_LABEL_CA "Llindar del volum d'àudio (%)"
 #define XEMU_AUDIO_VOLUME_INFO_0_CA "Limita el volum de la sortida d'àudio de Xbox independentment del volum principal de RetroArch."
 #define OPTION_VAL_100_CA NULL
@@ -2528,40 +3048,52 @@ struct retro_core_options_v2 options_bg = {
 #define OPTION_VAL_40_CA NULL
 #define OPTION_VAL_20_CA NULL
 #define OPTION_VAL_0_CA "Silenciat"
-#define XEMU_VK_FAST_PATHS_LABEL_CA NULL
-#define XEMU_VK_FAST_PATHS_INFO_0_CA NULL
+#define XEMU_VK_FAST_PATHS_LABEL_CA "Rutes ràpides de Vulkan (Cal reiniciar)"
+#define XEMU_VK_FAST_PATHS_INFO_0_CA "Afecta la velocitat de compilació dels shaders a Vulkan. «Tots» és l'opció més ràpida, però pot fer que alguns jocs es bloquegin."
 #define OPTION_VAL_ALL_CA "Tots"
-#define OPTION_VAL_NO_GPL_CA NULL
-#define OPTION_VAL_NO_DYN_CA NULL
+#define OPTION_VAL_NO_GPL_CA "No hi ha llibreries de pipeline"
+#define OPTION_VAL_NO_DYN_CA "Sense estats dinàmics"
 #define OPTION_VAL_NONE_CA "Cap"
-#define XEMU_RUMBLE_P1_LABEL_CA NULL
-#define XEMU_RUMBLE_P1_INFO_0_CA NULL
-#define XEMU_RUMBLE_P2_LABEL_CA NULL
-#define XEMU_RUMBLE_P2_INFO_0_CA NULL
-#define XEMU_DEADZONE_P1_LABEL_CA NULL
-#define XEMU_DEADZONE_P1_INFO_0_CA NULL
+#define XEMU_RUMBLE_P1_LABEL_CA "Vibració (Jugador 1)"
+#define XEMU_RUMBLE_P1_INFO_0_CA "El comandament del jugador 1 vibra, tant amb els jocs d'Xbox com gràcies a la retroalimentació de força d'un joc de curses per a Chihiro. Si està apagat, no vibra en cap dels dos casos."
+#define XEMU_RUMBLE_P2_LABEL_CA "Vibració (Jugador 2)"
+#define XEMU_RUMBLE_P2_INFO_0_CA "El comandament del jugador 2 vibra, tant a causa dels jocs d'Xbox com de la retroalimentació de força d'un joc de curses per a Chihiro. Si està apagat, no hi ha cap de les dues coses."
+#define XEMU_DEADZONE_P1_LABEL_CA "Zona morta analògica (Jugador 1)"
+#define XEMU_DEADZONE_P1_INFO_0_CA "Fins a quin punt es poden moure les palanques del jugador 1 abans que el joc ho detecti —tant en el cas de les dues palanques com en les plataformes Xbox i Chihiro—; la resta del recorregut s'escala fins a completar-ne el rang total."
 #define OPTION_VAL_0_XEMU_DEADZONE_P1_CA NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_CA NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_CA NULL
 #define OPTION_VAL_15_CA NULL
 #define OPTION_VAL_25_CA NULL
 #define OPTION_VAL_30_CA NULL
-#define XEMU_DEADZONE_P2_LABEL_CA NULL
-#define XEMU_DEADZONE_P2_INFO_0_CA NULL
-#define XEMU_CHIHIRO_FREEPLAY_LABEL_CA NULL
-#define XEMU_CHIHIRO_FREEPLAY_INFO_0_CA NULL
-#define XEMU_CHIHIRO_GUN_AIM_LABEL_CA NULL
-#define XEMU_CHIHIRO_GUN_AIM_INFO_0_CA NULL
+#define XEMU_DEADZONE_P2_LABEL_CA "Zona morta analògica (Jugador 2)"
+#define XEMU_DEADZONE_P2_INFO_0_CA "Fins a quin punt es poden moure les palanques del jugador 2 abans que el joc ho detecti —tant en el cas de les dues palanques, a la Xbox com a la Chihiro—; la resta del recorregut s'escala fins a completar-lo."
+#define XEMU_CHIHIRO_FREEPLAY_LABEL_CA "Joc gratuit (Cal reiniciar)"
+#define XEMU_CHIHIRO_FREEPLAY_INFO_0_CA "Inicia els jocs de Sega Chihiro en mode de joc lliure, sense monedes. Quan està desactivat, el botó «Select» insereix una moneda."
+#define XEMU_CHIHIRO_GUN_AIM_LABEL_CA "Apuntat amb pistola òptica"
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_CA "Com apuntar a House of the Dead III, Virtua Cop 3 i Ghost Squad. Ratolí: el ratolí (o la pistola òptica de RetroArch) serveix per apuntar; el botó esquerre dispara, el botó dret fa la funció del botó de l'arma (recàrrega, canvi d'arma) i el botó central correspon al pedal o a la cadència de tir. Palanca analògica: la palanca esquerra o la creueta (D-pad) serveixen per apuntar; R2 dispara, L2 fa la funció del botó de l'arma, L correspon al pedal o a la cadència de tir, i R serveix per disparar fora de la pantalla."
 #define OPTION_VAL_MOUSE_CA "Ratolí"
-#define OPTION_VAL_STICK_CA NULL
-#define XEMU_CHIHIRO_CROSSHAIR_LABEL_CA NULL
-#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CA NULL
-#define XEMU_CHIHIRO_FFB_LABEL_CA NULL
-#define XEMU_CHIHIRO_FFB_INFO_0_CA NULL
+#define OPTION_VAL_STICK_CA "Palanca analògica"
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_CA "Sensibilitat de la palanca per apuntar"
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_CA "La velocitat a la qual la palanca desplaça el punt de mira (amb l'opció «Light Gun Aim on Analog Stick») és la mateixa tant en horitzontal com en vertical; al 100 %, si es mou la palanca fins al límit, el punt de mira recorre l'alçada de la imatge en aproximadament un segon. El ratolí apunta allà on s'assenyala."
 #define OPTION_VAL_50_CA NULL
-#define OPTION_VAL_75_CA NULL
+#define OPTION_VAL_70_CA NULL
+#define OPTION_VAL_90_CA NULL
+#define OPTION_VAL_110_CA NULL
+#define OPTION_VAL_120_CA NULL
+#define OPTION_VAL_130_CA NULL
+#define OPTION_VAL_140_CA NULL
 #define OPTION_VAL_150_CA NULL
+#define OPTION_VAL_160_CA NULL
+#define OPTION_VAL_170_CA NULL
+#define OPTION_VAL_180_CA NULL
+#define OPTION_VAL_190_CA NULL
 #define OPTION_VAL_200_CA NULL
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_CA "Punt de mira"
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CA "Dibuixa la mira de cada jugador sobre la imatge: vermella per al jugador 1 i blava per al jugador 2."
+#define XEMU_CHIHIRO_FFB_LABEL_CA "Vibració amb retroalimentació de força"
+#define XEMU_CHIHIRO_FFB_INFO_0_CA "Proporciona la retroalimentació de força (force feedback) d'un joc de curses per a Chihiro (OutRun 2, Maximum Tune) en forma de vibració al comandament del port 1, amb aquesta intensitat."
+#define OPTION_VAL_75_CA NULL
 
 struct retro_core_option_v2_category option_cats_ca[] = {
     {
@@ -2668,6 +3200,32 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_CA,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_CA,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_CA },
+            { "dashboard",  OPTION_VAL_DASHBOARD_CA },
+            { "english",    OPTION_VAL_ENGLISH_CA },
+            { "japanese",   OPTION_VAL_JAPANESE_CA },
+            { "german",     OPTION_VAL_GERMAN_CA },
+            { "french",     OPTION_VAL_FRENCH_CA },
+            { "spanish",    OPTION_VAL_SPANISH_CA },
+            { "italian",    OPTION_VAL_ITALIAN_CA },
+            { "korean",     OPTION_VAL_KOREAN_CA },
+            { "chinese",    OPTION_VAL_CHINESE_CA },
+            { "portuguese", OPTION_VAL_PORTUGUESE_CA },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_CA,
@@ -2730,6 +3288,22 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_CA,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_CA,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_CA },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_CA,
@@ -2748,6 +3322,24 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
             { "8", OPTION_VAL_8_CA },
             { "9", OPTION_VAL_9_CA },
             { "10", OPTION_VAL_10_CA },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_CA,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_CA,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CA },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_CA },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_CA },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_CA },
+            { "16", OPTION_VAL_16_CA },
             { NULL, NULL },
         },
         "1"
@@ -2800,10 +3392,13 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_CA,
@@ -2816,7 +3411,7 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -3008,6 +3603,36 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_CA,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_CA,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_CA },
+            { "60", OPTION_VAL_60_CA },
+            { "70", OPTION_VAL_70_CA },
+            { "80", OPTION_VAL_80_CA },
+            { "90", OPTION_VAL_90_CA },
+            { "100", OPTION_VAL_100_CA },
+            { "110", OPTION_VAL_110_CA },
+            { "120", OPTION_VAL_120_CA },
+            { "130", OPTION_VAL_130_CA },
+            { "140", OPTION_VAL_140_CA },
+            { "150", OPTION_VAL_150_CA },
+            { "160", OPTION_VAL_160_CA },
+            { "170", OPTION_VAL_170_CA },
+            { "180", OPTION_VAL_180_CA },
+            { "190", OPTION_VAL_190_CA },
+            { "200", OPTION_VAL_200_CA },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -3065,7 +3690,7 @@ struct retro_core_options_v2 options_ca = {
 #define CATEGORY_CHIHIRO_LABEL_CHS "世嘉 Chihiro 基板"
 #define CATEGORY_CHIHIRO_INFO_0_CHS "世嘉 Chihiro 街机游戏相关设置：包含免费游玩、光枪游戏的瞄准方式以及赛车游戏的力反馈调节。"
 #define XEMU_MEMORY_LABEL_CHS "系统内存 (MB)"
-#define XEMU_MEMORY_INFO_0_CHS "系统内存容量。64 MB 为标准配置；128 MB 仅用于开发调试机。"
+#define XEMU_MEMORY_INFO_0_CHS NULL
 #define OPTION_VAL_64_CHS NULL
 #define OPTION_VAL_128_CHS NULL
 #define XEMU_NETWORK_BACKEND_LABEL_CHS "网络后端"
@@ -3077,6 +3702,19 @@ struct retro_core_options_v2 options_ca = {
 #define XEMU_HARD_FPU_INFO_0_CHS "使用宿主机的 FPU 来模拟 x87 指令。速度更快，但可能会有轻微的精度偏差。"
 #define XEMU_CPU_BOOST_LABEL_CHS NULL
 #define XEMU_CPU_BOOST_INFO_0_CHS "为虚拟机 CPU 及音频处理器启用更快的执行路径：包括原生 SSE 指令集和更宽的跳转缓存。若游戏出现运行异常，请将其关闭。"
+#define XEMU_LANGUAGE_LABEL_CHS "系统语言"
+#define XEMU_LANGUAGE_INFO_0_CHS NULL
+#define OPTION_VAL_AUTO_CHS "自动"
+#define OPTION_VAL_DASHBOARD_CHS NULL
+#define OPTION_VAL_ENGLISH_CHS "英语"
+#define OPTION_VAL_JAPANESE_CHS "日语"
+#define OPTION_VAL_GERMAN_CHS "德语"
+#define OPTION_VAL_FRENCH_CHS "法语"
+#define OPTION_VAL_SPANISH_CHS "西班牙语"
+#define OPTION_VAL_ITALIAN_CHS "意大利语"
+#define OPTION_VAL_KOREAN_CHS "韩语"
+#define OPTION_VAL_CHINESE_CHS "中文"
+#define OPTION_VAL_PORTUGUESE_CHS "葡萄牙语"
 #define XEMU_HDD_TRIM_LABEL_CHS NULL
 #define XEMU_HDD_TRIM_INFO_0_CHS NULL
 #define XEMU_RENDERER_LABEL_CHS "图形 API (需重启)"
@@ -3085,13 +3723,13 @@ struct retro_core_options_v2 options_ca = {
 #define OPTION_VAL_OPENGL_CHS NULL
 #define XEMU_VIDEO_ASPECT_LABEL_CHS NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_CHS NULL
-#define OPTION_VAL_DASHBOARD_CHS NULL
 #define OPTION_VAL_4_3_CHS NULL
 #define OPTION_VAL_16_9_CHS NULL
 #define OPTION_VAL_LETTERBOX_CHS NULL
 #define XEMU_ASPECT_RATIO_LABEL_CHS "核心宽高比"
 #define XEMU_ASPECT_RATIO_INFO_0_CHS NULL
-#define OPTION_VAL_AUTO_CHS "自动"
+#define XEMU_OVERSCAN_CROP_LABEL_CHS "裁剪垂直过扫描"
+#define XEMU_OVERSCAN_CROP_INFO_0_CHS NULL
 #define XEMU_SURFACE_SCALE_LABEL_CHS NULL
 #define XEMU_SURFACE_SCALE_INFO_0_CHS "缩放内部渲染分辨率。较高的数值可提升画质，但会降低运行性能。"
 #define OPTION_VAL_1_CHS NULL
@@ -3104,6 +3742,13 @@ struct retro_core_options_v2 options_ca = {
 #define OPTION_VAL_8_CHS NULL
 #define OPTION_VAL_9_CHS NULL
 #define OPTION_VAL_10_CHS NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_CHS "各向异性过滤"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_CHS NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CHS "原生"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_CHS NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_CHS NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_CHS NULL
+#define OPTION_VAL_16_CHS NULL
 #define XEMU_AVPACK_LABEL_CHS NULL
 #define XEMU_AVPACK_INFO_0_CHS "选择影音线缆类型。会影响可用的视频输出模式。"
 #define OPTION_VAL_HDTV_CHS "高清电视 (HDTV)"
@@ -3113,8 +3758,8 @@ struct retro_core_options_v2 options_ca = {
 #define OPTION_VAL_VGA_CHS NULL
 #define XEMU_AUDIO_THREAD_LABEL_CHS "独立音频线程 (需重启)"
 #define XEMU_AUDIO_THREAD_INFO_0_CHS NULL
-#define XEMU_USE_DSP_LABEL_CHS "APU DSP 模拟"
-#define XEMU_USE_DSP_INFO_0_CHS "启用 DSP 模拟以提高音频精确度。可能会影响运行性能。"
+#define XEMU_USE_DSP_LABEL_CHS NULL
+#define XEMU_USE_DSP_INFO_0_CHS NULL
 #define XEMU_DSP_JIT_LABEL_CHS NULL
 #define XEMU_DSP_JIT_INFO_0_CHS NULL
 #define XEMU_HRTF_LABEL_CHS NULL
@@ -3157,14 +3802,26 @@ struct retro_core_options_v2 options_ca = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_CHS "控制《死亡之屋 3》、《VR 战警 3》和《幽灵小队》等游戏的瞄准方式。“鼠标”：使用鼠标（或 RetroArch 的光枪）瞄准，左键射击，右键为枪械功能键（如上膛、换武器），中键为踏板或连发速率；“模拟摇杆”：使用左摇杆或方向键瞄准，R2 开火，L2 为枪械功能键，L 键为踏板或连发速率，R 键向屏幕外射击。"
 #define OPTION_VAL_MOUSE_CHS "鼠标"
 #define OPTION_VAL_STICK_CHS "模拟摇杆"
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_CHS NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_CHS NULL
+#define OPTION_VAL_50_CHS NULL
+#define OPTION_VAL_70_CHS NULL
+#define OPTION_VAL_90_CHS NULL
+#define OPTION_VAL_110_CHS NULL
+#define OPTION_VAL_120_CHS NULL
+#define OPTION_VAL_130_CHS NULL
+#define OPTION_VAL_140_CHS NULL
+#define OPTION_VAL_150_CHS NULL
+#define OPTION_VAL_160_CHS NULL
+#define OPTION_VAL_170_CHS NULL
+#define OPTION_VAL_180_CHS NULL
+#define OPTION_VAL_190_CHS NULL
+#define OPTION_VAL_200_CHS NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_CHS "游戏准星显示"
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CHS "在画面上叠加绘制玩家的瞄准准星，1 号玩家显示为红色，2 号玩家显示为蓝色。"
 #define XEMU_CHIHIRO_FFB_LABEL_CHS "力反馈震动"
 #define XEMU_CHIHIRO_FFB_INFO_0_CHS "将 Chihiro 赛车游戏（如《OutRun 2》、《湾岸午夜最高极速》）的力反馈信号转换为端口 1 手柄的震动效果，强度为此处设定的百分比。"
-#define OPTION_VAL_50_CHS NULL
 #define OPTION_VAL_75_CHS NULL
-#define OPTION_VAL_150_CHS NULL
-#define OPTION_VAL_200_CHS NULL
 
 struct retro_core_option_v2_category option_cats_chs[] = {
     {
@@ -3271,6 +3928,32 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_CHS,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_CHS,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_CHS },
+            { "dashboard",  OPTION_VAL_DASHBOARD_CHS },
+            { "english",    OPTION_VAL_ENGLISH_CHS },
+            { "japanese",   OPTION_VAL_JAPANESE_CHS },
+            { "german",     OPTION_VAL_GERMAN_CHS },
+            { "french",     OPTION_VAL_FRENCH_CHS },
+            { "spanish",    OPTION_VAL_SPANISH_CHS },
+            { "italian",    OPTION_VAL_ITALIAN_CHS },
+            { "korean",     OPTION_VAL_KOREAN_CHS },
+            { "chinese",    OPTION_VAL_CHINESE_CHS },
+            { "portuguese", OPTION_VAL_PORTUGUESE_CHS },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_CHS,
@@ -3333,6 +4016,22 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_CHS,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_CHS,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_CHS },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_CHS,
@@ -3351,6 +4050,24 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
             { "8", OPTION_VAL_8_CHS },
             { "9", OPTION_VAL_9_CHS },
             { "10", OPTION_VAL_10_CHS },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_CHS,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_CHS,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CHS },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_CHS },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_CHS },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_CHS },
+            { "16", OPTION_VAL_16_CHS },
             { NULL, NULL },
         },
         "1"
@@ -3403,10 +4120,13 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_CHS,
@@ -3419,7 +4139,7 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -3611,6 +4331,36 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_CHS,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_CHS,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_CHS },
+            { "60", OPTION_VAL_60_CHS },
+            { "70", OPTION_VAL_70_CHS },
+            { "80", OPTION_VAL_80_CHS },
+            { "90", OPTION_VAL_90_CHS },
+            { "100", OPTION_VAL_100_CHS },
+            { "110", OPTION_VAL_110_CHS },
+            { "120", OPTION_VAL_120_CHS },
+            { "130", OPTION_VAL_130_CHS },
+            { "140", OPTION_VAL_140_CHS },
+            { "150", OPTION_VAL_150_CHS },
+            { "160", OPTION_VAL_160_CHS },
+            { "170", OPTION_VAL_170_CHS },
+            { "180", OPTION_VAL_180_CHS },
+            { "190", OPTION_VAL_190_CHS },
+            { "200", OPTION_VAL_200_CHS },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -3680,6 +4430,19 @@ struct retro_core_options_v2 options_chs = {
 #define XEMU_HARD_FPU_INFO_0_CHT NULL
 #define XEMU_CPU_BOOST_LABEL_CHT NULL
 #define XEMU_CPU_BOOST_INFO_0_CHT NULL
+#define XEMU_LANGUAGE_LABEL_CHT NULL
+#define XEMU_LANGUAGE_INFO_0_CHT NULL
+#define OPTION_VAL_AUTO_CHT "自動"
+#define OPTION_VAL_DASHBOARD_CHT NULL
+#define OPTION_VAL_ENGLISH_CHT "英語"
+#define OPTION_VAL_JAPANESE_CHT "日語"
+#define OPTION_VAL_GERMAN_CHT "德語"
+#define OPTION_VAL_FRENCH_CHT "法語"
+#define OPTION_VAL_SPANISH_CHT "西班牙語"
+#define OPTION_VAL_ITALIAN_CHT "意大利語"
+#define OPTION_VAL_KOREAN_CHT NULL
+#define OPTION_VAL_CHINESE_CHT NULL
+#define OPTION_VAL_PORTUGUESE_CHT NULL
 #define XEMU_HDD_TRIM_LABEL_CHT NULL
 #define XEMU_HDD_TRIM_INFO_0_CHT NULL
 #define XEMU_RENDERER_LABEL_CHT NULL
@@ -3688,13 +4451,13 @@ struct retro_core_options_v2 options_chs = {
 #define OPTION_VAL_OPENGL_CHT NULL
 #define XEMU_VIDEO_ASPECT_LABEL_CHT NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_CHT NULL
-#define OPTION_VAL_DASHBOARD_CHT NULL
 #define OPTION_VAL_4_3_CHT NULL
 #define OPTION_VAL_16_9_CHT NULL
 #define OPTION_VAL_LETTERBOX_CHT NULL
 #define XEMU_ASPECT_RATIO_LABEL_CHT NULL
 #define XEMU_ASPECT_RATIO_INFO_0_CHT NULL
-#define OPTION_VAL_AUTO_CHT "自動"
+#define XEMU_OVERSCAN_CROP_LABEL_CHT "裁剪垂直過度掃描"
+#define XEMU_OVERSCAN_CROP_INFO_0_CHT NULL
 #define XEMU_SURFACE_SCALE_LABEL_CHT NULL
 #define XEMU_SURFACE_SCALE_INFO_0_CHT NULL
 #define OPTION_VAL_1_CHT NULL
@@ -3707,6 +4470,13 @@ struct retro_core_options_v2 options_chs = {
 #define OPTION_VAL_8_CHT NULL
 #define OPTION_VAL_9_CHT NULL
 #define OPTION_VAL_10_CHT NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_CHT NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_CHT NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CHT "原始"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_CHT "2倍"
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_CHT "4倍"
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_CHT "8倍"
+#define OPTION_VAL_16_CHT "16倍"
 #define XEMU_AVPACK_LABEL_CHT NULL
 #define XEMU_AVPACK_INFO_0_CHT NULL
 #define OPTION_VAL_HDTV_CHT NULL
@@ -3760,14 +4530,26 @@ struct retro_core_options_v2 options_chs = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_CHT NULL
 #define OPTION_VAL_MOUSE_CHT "滑鼠"
 #define OPTION_VAL_STICK_CHT NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_CHT NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_CHT NULL
+#define OPTION_VAL_50_CHT NULL
+#define OPTION_VAL_70_CHT NULL
+#define OPTION_VAL_90_CHT NULL
+#define OPTION_VAL_110_CHT NULL
+#define OPTION_VAL_120_CHT NULL
+#define OPTION_VAL_130_CHT NULL
+#define OPTION_VAL_140_CHT NULL
+#define OPTION_VAL_150_CHT NULL
+#define OPTION_VAL_160_CHT NULL
+#define OPTION_VAL_170_CHT NULL
+#define OPTION_VAL_180_CHT NULL
+#define OPTION_VAL_190_CHT NULL
+#define OPTION_VAL_200_CHT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_CHT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CHT NULL
 #define XEMU_CHIHIRO_FFB_LABEL_CHT NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_CHT NULL
-#define OPTION_VAL_50_CHT NULL
 #define OPTION_VAL_75_CHT NULL
-#define OPTION_VAL_150_CHT NULL
-#define OPTION_VAL_200_CHT NULL
 
 struct retro_core_option_v2_category option_cats_cht[] = {
     {
@@ -3874,6 +4656,32 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_CHT,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_CHT,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_CHT },
+            { "dashboard",  OPTION_VAL_DASHBOARD_CHT },
+            { "english",    OPTION_VAL_ENGLISH_CHT },
+            { "japanese",   OPTION_VAL_JAPANESE_CHT },
+            { "german",     OPTION_VAL_GERMAN_CHT },
+            { "french",     OPTION_VAL_FRENCH_CHT },
+            { "spanish",    OPTION_VAL_SPANISH_CHT },
+            { "italian",    OPTION_VAL_ITALIAN_CHT },
+            { "korean",     OPTION_VAL_KOREAN_CHT },
+            { "chinese",    OPTION_VAL_CHINESE_CHT },
+            { "portuguese", OPTION_VAL_PORTUGUESE_CHT },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_CHT,
@@ -3936,6 +4744,22 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_CHT,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_CHT,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_CHT },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_CHT,
@@ -3954,6 +4778,24 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
             { "8", OPTION_VAL_8_CHT },
             { "9", OPTION_VAL_9_CHT },
             { "10", OPTION_VAL_10_CHT },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_CHT,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_CHT,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CHT },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_CHT },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_CHT },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_CHT },
+            { "16", OPTION_VAL_16_CHT },
             { NULL, NULL },
         },
         "1"
@@ -4006,10 +4848,13 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_CHT,
@@ -4022,7 +4867,7 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -4214,6 +5059,36 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_CHT,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_CHT,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_CHT },
+            { "60", OPTION_VAL_60_CHT },
+            { "70", OPTION_VAL_70_CHT },
+            { "80", OPTION_VAL_80_CHT },
+            { "90", OPTION_VAL_90_CHT },
+            { "100", OPTION_VAL_100_CHT },
+            { "110", OPTION_VAL_110_CHT },
+            { "120", OPTION_VAL_120_CHT },
+            { "130", OPTION_VAL_130_CHT },
+            { "140", OPTION_VAL_140_CHT },
+            { "150", OPTION_VAL_150_CHT },
+            { "160", OPTION_VAL_160_CHT },
+            { "170", OPTION_VAL_170_CHT },
+            { "180", OPTION_VAL_180_CHT },
+            { "190", OPTION_VAL_190_CHT },
+            { "200", OPTION_VAL_200_CHT },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -4283,6 +5158,19 @@ struct retro_core_options_v2 options_cht = {
 #define XEMU_HARD_FPU_INFO_0_CS NULL
 #define XEMU_CPU_BOOST_LABEL_CS NULL
 #define XEMU_CPU_BOOST_INFO_0_CS NULL
+#define XEMU_LANGUAGE_LABEL_CS NULL
+#define XEMU_LANGUAGE_INFO_0_CS NULL
+#define OPTION_VAL_AUTO_CS NULL
+#define OPTION_VAL_DASHBOARD_CS NULL
+#define OPTION_VAL_ENGLISH_CS "Angličtina"
+#define OPTION_VAL_JAPANESE_CS "Japonština"
+#define OPTION_VAL_GERMAN_CS "Němčina"
+#define OPTION_VAL_FRENCH_CS "Francouzština"
+#define OPTION_VAL_SPANISH_CS "Španělština"
+#define OPTION_VAL_ITALIAN_CS "Italský"
+#define OPTION_VAL_KOREAN_CS NULL
+#define OPTION_VAL_CHINESE_CS NULL
+#define OPTION_VAL_PORTUGUESE_CS NULL
 #define XEMU_HDD_TRIM_LABEL_CS NULL
 #define XEMU_HDD_TRIM_INFO_0_CS NULL
 #define XEMU_RENDERER_LABEL_CS NULL
@@ -4291,13 +5179,13 @@ struct retro_core_options_v2 options_cht = {
 #define OPTION_VAL_OPENGL_CS NULL
 #define XEMU_VIDEO_ASPECT_LABEL_CS NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_CS NULL
-#define OPTION_VAL_DASHBOARD_CS NULL
 #define OPTION_VAL_4_3_CS NULL
 #define OPTION_VAL_16_9_CS NULL
 #define OPTION_VAL_LETTERBOX_CS NULL
 #define XEMU_ASPECT_RATIO_LABEL_CS "Poměr Stran Jádra"
 #define XEMU_ASPECT_RATIO_INFO_0_CS NULL
-#define OPTION_VAL_AUTO_CS NULL
+#define XEMU_OVERSCAN_CROP_LABEL_CS "Oříznutí Vertikálního Přesahu"
+#define XEMU_OVERSCAN_CROP_INFO_0_CS NULL
 #define XEMU_SURFACE_SCALE_LABEL_CS NULL
 #define XEMU_SURFACE_SCALE_INFO_0_CS NULL
 #define OPTION_VAL_1_CS NULL
@@ -4310,6 +5198,13 @@ struct retro_core_options_v2 options_cht = {
 #define OPTION_VAL_8_CS NULL
 #define OPTION_VAL_9_CS NULL
 #define OPTION_VAL_10_CS NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_CS "Anizotropní Filtrování"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_CS NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CS "Nativní"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_CS NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_CS NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_CS NULL
+#define OPTION_VAL_16_CS NULL
 #define XEMU_AVPACK_LABEL_CS NULL
 #define XEMU_AVPACK_INFO_0_CS NULL
 #define OPTION_VAL_HDTV_CS NULL
@@ -4363,14 +5258,26 @@ struct retro_core_options_v2 options_cht = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_CS NULL
 #define OPTION_VAL_MOUSE_CS "Myš"
 #define OPTION_VAL_STICK_CS NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_CS NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_CS NULL
+#define OPTION_VAL_50_CS NULL
+#define OPTION_VAL_70_CS NULL
+#define OPTION_VAL_90_CS NULL
+#define OPTION_VAL_110_CS NULL
+#define OPTION_VAL_120_CS NULL
+#define OPTION_VAL_130_CS NULL
+#define OPTION_VAL_140_CS NULL
+#define OPTION_VAL_150_CS NULL
+#define OPTION_VAL_160_CS NULL
+#define OPTION_VAL_170_CS NULL
+#define OPTION_VAL_180_CS NULL
+#define OPTION_VAL_190_CS NULL
+#define OPTION_VAL_200_CS NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_CS NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CS NULL
 #define XEMU_CHIHIRO_FFB_LABEL_CS NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_CS NULL
-#define OPTION_VAL_50_CS NULL
 #define OPTION_VAL_75_CS NULL
-#define OPTION_VAL_150_CS NULL
-#define OPTION_VAL_200_CS NULL
 
 struct retro_core_option_v2_category option_cats_cs[] = {
     {
@@ -4477,6 +5384,32 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_CS,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_CS,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_CS },
+            { "dashboard",  OPTION_VAL_DASHBOARD_CS },
+            { "english",    OPTION_VAL_ENGLISH_CS },
+            { "japanese",   OPTION_VAL_JAPANESE_CS },
+            { "german",     OPTION_VAL_GERMAN_CS },
+            { "french",     OPTION_VAL_FRENCH_CS },
+            { "spanish",    OPTION_VAL_SPANISH_CS },
+            { "italian",    OPTION_VAL_ITALIAN_CS },
+            { "korean",     OPTION_VAL_KOREAN_CS },
+            { "chinese",    OPTION_VAL_CHINESE_CS },
+            { "portuguese", OPTION_VAL_PORTUGUESE_CS },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_CS,
@@ -4539,6 +5472,22 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_CS,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_CS,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_CS },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_CS,
@@ -4557,6 +5506,24 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
             { "8", OPTION_VAL_8_CS },
             { "9", OPTION_VAL_9_CS },
             { "10", OPTION_VAL_10_CS },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_CS,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_CS,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CS },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_CS },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_CS },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_CS },
+            { "16", OPTION_VAL_16_CS },
             { NULL, NULL },
         },
         "1"
@@ -4609,10 +5576,13 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_CS,
@@ -4625,7 +5595,7 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -4817,6 +5787,36 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_CS,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_CS,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_CS },
+            { "60", OPTION_VAL_60_CS },
+            { "70", OPTION_VAL_70_CS },
+            { "80", OPTION_VAL_80_CS },
+            { "90", OPTION_VAL_90_CS },
+            { "100", OPTION_VAL_100_CS },
+            { "110", OPTION_VAL_110_CS },
+            { "120", OPTION_VAL_120_CS },
+            { "130", OPTION_VAL_130_CS },
+            { "140", OPTION_VAL_140_CS },
+            { "150", OPTION_VAL_150_CS },
+            { "160", OPTION_VAL_160_CS },
+            { "170", OPTION_VAL_170_CS },
+            { "180", OPTION_VAL_180_CS },
+            { "190", OPTION_VAL_190_CS },
+            { "200", OPTION_VAL_200_CS },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -4886,6 +5886,19 @@ struct retro_core_options_v2 options_cs = {
 #define XEMU_HARD_FPU_INFO_0_CY NULL
 #define XEMU_CPU_BOOST_LABEL_CY NULL
 #define XEMU_CPU_BOOST_INFO_0_CY NULL
+#define XEMU_LANGUAGE_LABEL_CY NULL
+#define XEMU_LANGUAGE_INFO_0_CY NULL
+#define OPTION_VAL_AUTO_CY NULL
+#define OPTION_VAL_DASHBOARD_CY NULL
+#define OPTION_VAL_ENGLISH_CY NULL
+#define OPTION_VAL_JAPANESE_CY NULL
+#define OPTION_VAL_GERMAN_CY NULL
+#define OPTION_VAL_FRENCH_CY NULL
+#define OPTION_VAL_SPANISH_CY NULL
+#define OPTION_VAL_ITALIAN_CY NULL
+#define OPTION_VAL_KOREAN_CY NULL
+#define OPTION_VAL_CHINESE_CY NULL
+#define OPTION_VAL_PORTUGUESE_CY NULL
 #define XEMU_HDD_TRIM_LABEL_CY NULL
 #define XEMU_HDD_TRIM_INFO_0_CY NULL
 #define XEMU_RENDERER_LABEL_CY NULL
@@ -4894,13 +5907,13 @@ struct retro_core_options_v2 options_cs = {
 #define OPTION_VAL_OPENGL_CY NULL
 #define XEMU_VIDEO_ASPECT_LABEL_CY NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_CY NULL
-#define OPTION_VAL_DASHBOARD_CY NULL
 #define OPTION_VAL_4_3_CY NULL
 #define OPTION_VAL_16_9_CY NULL
 #define OPTION_VAL_LETTERBOX_CY NULL
 #define XEMU_ASPECT_RATIO_LABEL_CY NULL
 #define XEMU_ASPECT_RATIO_INFO_0_CY NULL
-#define OPTION_VAL_AUTO_CY NULL
+#define XEMU_OVERSCAN_CROP_LABEL_CY NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_CY NULL
 #define XEMU_SURFACE_SCALE_LABEL_CY NULL
 #define XEMU_SURFACE_SCALE_INFO_0_CY NULL
 #define OPTION_VAL_1_CY NULL
@@ -4913,6 +5926,13 @@ struct retro_core_options_v2 options_cs = {
 #define OPTION_VAL_8_CY NULL
 #define OPTION_VAL_9_CY NULL
 #define OPTION_VAL_10_CY NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_CY NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_CY NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CY NULL
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_CY NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_CY NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_CY NULL
+#define OPTION_VAL_16_CY NULL
 #define XEMU_AVPACK_LABEL_CY NULL
 #define XEMU_AVPACK_INFO_0_CY NULL
 #define OPTION_VAL_HDTV_CY NULL
@@ -4966,14 +5986,26 @@ struct retro_core_options_v2 options_cs = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_CY NULL
 #define OPTION_VAL_MOUSE_CY NULL
 #define OPTION_VAL_STICK_CY NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_CY NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_CY NULL
+#define OPTION_VAL_50_CY NULL
+#define OPTION_VAL_70_CY NULL
+#define OPTION_VAL_90_CY NULL
+#define OPTION_VAL_110_CY NULL
+#define OPTION_VAL_120_CY NULL
+#define OPTION_VAL_130_CY NULL
+#define OPTION_VAL_140_CY NULL
+#define OPTION_VAL_150_CY NULL
+#define OPTION_VAL_160_CY NULL
+#define OPTION_VAL_170_CY NULL
+#define OPTION_VAL_180_CY NULL
+#define OPTION_VAL_190_CY NULL
+#define OPTION_VAL_200_CY NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_CY NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CY NULL
 #define XEMU_CHIHIRO_FFB_LABEL_CY NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_CY NULL
-#define OPTION_VAL_50_CY NULL
 #define OPTION_VAL_75_CY NULL
-#define OPTION_VAL_150_CY NULL
-#define OPTION_VAL_200_CY NULL
 
 struct retro_core_option_v2_category option_cats_cy[] = {
     {
@@ -5080,6 +6112,32 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_CY,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_CY,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_CY },
+            { "dashboard",  OPTION_VAL_DASHBOARD_CY },
+            { "english",    OPTION_VAL_ENGLISH_CY },
+            { "japanese",   OPTION_VAL_JAPANESE_CY },
+            { "german",     OPTION_VAL_GERMAN_CY },
+            { "french",     OPTION_VAL_FRENCH_CY },
+            { "spanish",    OPTION_VAL_SPANISH_CY },
+            { "italian",    OPTION_VAL_ITALIAN_CY },
+            { "korean",     OPTION_VAL_KOREAN_CY },
+            { "chinese",    OPTION_VAL_CHINESE_CY },
+            { "portuguese", OPTION_VAL_PORTUGUESE_CY },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_CY,
@@ -5142,6 +6200,22 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_CY,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_CY,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_CY },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_CY,
@@ -5160,6 +6234,24 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
             { "8", OPTION_VAL_8_CY },
             { "9", OPTION_VAL_9_CY },
             { "10", OPTION_VAL_10_CY },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_CY,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_CY,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CY },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_CY },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_CY },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_CY },
+            { "16", OPTION_VAL_16_CY },
             { NULL, NULL },
         },
         "1"
@@ -5212,10 +6304,13 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_CY,
@@ -5228,7 +6323,7 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -5420,6 +6515,36 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_CY,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_CY,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_CY },
+            { "60", OPTION_VAL_60_CY },
+            { "70", OPTION_VAL_70_CY },
+            { "80", OPTION_VAL_80_CY },
+            { "90", OPTION_VAL_90_CY },
+            { "100", OPTION_VAL_100_CY },
+            { "110", OPTION_VAL_110_CY },
+            { "120", OPTION_VAL_120_CY },
+            { "130", OPTION_VAL_130_CY },
+            { "140", OPTION_VAL_140_CY },
+            { "150", OPTION_VAL_150_CY },
+            { "160", OPTION_VAL_160_CY },
+            { "170", OPTION_VAL_170_CY },
+            { "180", OPTION_VAL_180_CY },
+            { "190", OPTION_VAL_190_CY },
+            { "200", OPTION_VAL_200_CY },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -5489,6 +6614,19 @@ struct retro_core_options_v2 options_cy = {
 #define XEMU_HARD_FPU_INFO_0_DA NULL
 #define XEMU_CPU_BOOST_LABEL_DA NULL
 #define XEMU_CPU_BOOST_INFO_0_DA NULL
+#define XEMU_LANGUAGE_LABEL_DA NULL
+#define XEMU_LANGUAGE_INFO_0_DA NULL
+#define OPTION_VAL_AUTO_DA NULL
+#define OPTION_VAL_DASHBOARD_DA NULL
+#define OPTION_VAL_ENGLISH_DA NULL
+#define OPTION_VAL_JAPANESE_DA NULL
+#define OPTION_VAL_GERMAN_DA NULL
+#define OPTION_VAL_FRENCH_DA NULL
+#define OPTION_VAL_SPANISH_DA NULL
+#define OPTION_VAL_ITALIAN_DA NULL
+#define OPTION_VAL_KOREAN_DA NULL
+#define OPTION_VAL_CHINESE_DA NULL
+#define OPTION_VAL_PORTUGUESE_DA NULL
 #define XEMU_HDD_TRIM_LABEL_DA NULL
 #define XEMU_HDD_TRIM_INFO_0_DA NULL
 #define XEMU_RENDERER_LABEL_DA NULL
@@ -5497,13 +6635,13 @@ struct retro_core_options_v2 options_cy = {
 #define OPTION_VAL_OPENGL_DA NULL
 #define XEMU_VIDEO_ASPECT_LABEL_DA NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_DA NULL
-#define OPTION_VAL_DASHBOARD_DA NULL
 #define OPTION_VAL_4_3_DA NULL
 #define OPTION_VAL_16_9_DA NULL
 #define OPTION_VAL_LETTERBOX_DA NULL
 #define XEMU_ASPECT_RATIO_LABEL_DA NULL
 #define XEMU_ASPECT_RATIO_INFO_0_DA NULL
-#define OPTION_VAL_AUTO_DA NULL
+#define XEMU_OVERSCAN_CROP_LABEL_DA NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_DA NULL
 #define XEMU_SURFACE_SCALE_LABEL_DA NULL
 #define XEMU_SURFACE_SCALE_INFO_0_DA NULL
 #define OPTION_VAL_1_DA NULL
@@ -5516,6 +6654,13 @@ struct retro_core_options_v2 options_cy = {
 #define OPTION_VAL_8_DA NULL
 #define OPTION_VAL_9_DA NULL
 #define OPTION_VAL_10_DA NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_DA NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_DA NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_DA NULL
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_DA NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_DA NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_DA NULL
+#define OPTION_VAL_16_DA NULL
 #define XEMU_AVPACK_LABEL_DA NULL
 #define XEMU_AVPACK_INFO_0_DA NULL
 #define OPTION_VAL_HDTV_DA NULL
@@ -5569,14 +6714,26 @@ struct retro_core_options_v2 options_cy = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_DA NULL
 #define OPTION_VAL_MOUSE_DA NULL
 #define OPTION_VAL_STICK_DA NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_DA NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_DA NULL
+#define OPTION_VAL_50_DA NULL
+#define OPTION_VAL_70_DA NULL
+#define OPTION_VAL_90_DA NULL
+#define OPTION_VAL_110_DA NULL
+#define OPTION_VAL_120_DA NULL
+#define OPTION_VAL_130_DA NULL
+#define OPTION_VAL_140_DA NULL
+#define OPTION_VAL_150_DA NULL
+#define OPTION_VAL_160_DA NULL
+#define OPTION_VAL_170_DA NULL
+#define OPTION_VAL_180_DA NULL
+#define OPTION_VAL_190_DA NULL
+#define OPTION_VAL_200_DA NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_DA NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_DA NULL
 #define XEMU_CHIHIRO_FFB_LABEL_DA NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_DA NULL
-#define OPTION_VAL_50_DA NULL
 #define OPTION_VAL_75_DA NULL
-#define OPTION_VAL_150_DA NULL
-#define OPTION_VAL_200_DA NULL
 
 struct retro_core_option_v2_category option_cats_da[] = {
     {
@@ -5683,6 +6840,32 @@ struct retro_core_option_v2_definition option_defs_da[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_DA,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_DA,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_DA },
+            { "dashboard",  OPTION_VAL_DASHBOARD_DA },
+            { "english",    OPTION_VAL_ENGLISH_DA },
+            { "japanese",   OPTION_VAL_JAPANESE_DA },
+            { "german",     OPTION_VAL_GERMAN_DA },
+            { "french",     OPTION_VAL_FRENCH_DA },
+            { "spanish",    OPTION_VAL_SPANISH_DA },
+            { "italian",    OPTION_VAL_ITALIAN_DA },
+            { "korean",     OPTION_VAL_KOREAN_DA },
+            { "chinese",    OPTION_VAL_CHINESE_DA },
+            { "portuguese", OPTION_VAL_PORTUGUESE_DA },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_DA,
@@ -5745,6 +6928,22 @@ struct retro_core_option_v2_definition option_defs_da[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_DA,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_DA,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_DA },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_DA,
@@ -5763,6 +6962,24 @@ struct retro_core_option_v2_definition option_defs_da[] = {
             { "8", OPTION_VAL_8_DA },
             { "9", OPTION_VAL_9_DA },
             { "10", OPTION_VAL_10_DA },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_DA,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_DA,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_DA },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_DA },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_DA },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_DA },
+            { "16", OPTION_VAL_16_DA },
             { NULL, NULL },
         },
         "1"
@@ -5815,10 +7032,13 @@ struct retro_core_option_v2_definition option_defs_da[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_DA,
@@ -5831,7 +7051,7 @@ struct retro_core_option_v2_definition option_defs_da[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -6023,6 +7243,36 @@ struct retro_core_option_v2_definition option_defs_da[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_DA,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_DA,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_DA },
+            { "60", OPTION_VAL_60_DA },
+            { "70", OPTION_VAL_70_DA },
+            { "80", OPTION_VAL_80_DA },
+            { "90", OPTION_VAL_90_DA },
+            { "100", OPTION_VAL_100_DA },
+            { "110", OPTION_VAL_110_DA },
+            { "120", OPTION_VAL_120_DA },
+            { "130", OPTION_VAL_130_DA },
+            { "140", OPTION_VAL_140_DA },
+            { "150", OPTION_VAL_150_DA },
+            { "160", OPTION_VAL_160_DA },
+            { "170", OPTION_VAL_170_DA },
+            { "180", OPTION_VAL_180_DA },
+            { "190", OPTION_VAL_190_DA },
+            { "200", OPTION_VAL_200_DA },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -6069,18 +7319,18 @@ struct retro_core_options_v2 options_da = {
 
 /* RETRO_LANGUAGE_DE */
 
-#define CATEGORY_SYSTEM_LABEL_DE NULL
-#define CATEGORY_SYSTEM_INFO_0_DE NULL
+#define CATEGORY_SYSTEM_LABEL_DE "System (Neustart)"
+#define CATEGORY_SYSTEM_INFO_0_DE "Das Gerät selbst: Arbeitsspeicher, Netzwerk, Startvorgang und CPU. Wird beim Starten des Inhalts erfasst (Festplatte beim Schließen bereinigen, wenn der Inhalt beendet wird)."
 #define CATEGORY_VIDEO_LABEL_DE NULL
 #define CATEGORY_VIDEO_INFO_0_DE "Videorendering-Einstellungen konfigurieren."
 #define CATEGORY_AUDIO_LABEL_DE NULL
 #define CATEGORY_AUDIO_INFO_0_DE "Audioemulationseinstellungen konfigurieren."
 #define CATEGORY_CONTROLS_LABEL_DE "Steuerung"
-#define CATEGORY_CONTROLS_INFO_0_DE NULL
+#define CATEGORY_CONTROLS_INFO_0_DE "Vibration und Deadzone der Analogsticks, pro Spieler."
 #define CATEGORY_CHIHIRO_LABEL_DE NULL
-#define CATEGORY_CHIHIRO_INFO_0_DE NULL
+#define CATEGORY_CHIHIRO_INFO_0_DE "Die Arcade-Spiele für Sega Chihiro: Freispiele, Zielerfassung bei Lightgun-Spielen und Force Feedback bei Rennspielen."
 #define XEMU_MEMORY_LABEL_DE "Systemspeicher (MB)"
-#define XEMU_MEMORY_INFO_0_DE "Größe des Systemspeichers. 64 MB ist der Standardwert; Debug-Kits verwenden 128 MB."
+#define XEMU_MEMORY_INFO_0_DE "Legt die Größe des System-RAMs der Xbox fest. 64 MB sind Standard, 128 MB werden von Debug-Kits verwendet. Eine Sega Chihiro verfügt unabhängig von dieser Einstellung immer über 128 MB."
 #define OPTION_VAL_64_DE NULL
 #define OPTION_VAL_128_DE NULL
 #define XEMU_NETWORK_BACKEND_LABEL_DE "Netzwerk-Backend"
@@ -6090,24 +7340,37 @@ struct retro_core_options_v2 options_da = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_DE "Die Xbox-Startanimation überspringen."
 #define XEMU_HARD_FPU_LABEL_DE "Hardware-FPU-Emulation"
 #define XEMU_HARD_FPU_INFO_0_DE "Für die x87-Emulation die Host-FPU verwenden. Schneller, aber möglicherweise mit geringfügigen Ungenauigkeiten."
-#define XEMU_CPU_BOOST_LABEL_DE NULL
-#define XEMU_CPU_BOOST_INFO_0_DE NULL
-#define XEMU_HDD_TRIM_LABEL_DE NULL
-#define XEMU_HDD_TRIM_INFO_0_DE NULL
+#define XEMU_CPU_BOOST_LABEL_DE "CPU-Boost"
+#define XEMU_CPU_BOOST_INFO_0_DE "Schnellere Ausführungspfade für die Gast-CPU und den Audioprozessor: natives SSE und ein größerer Sprungcache. Deaktivieren, wenn ein Spiel nicht korrekt funktioniert."
+#define XEMU_LANGUAGE_LABEL_DE "Systemsprache"
+#define XEMU_LANGUAGE_INFO_0_DE "Die Sprache, die die Konsoleneinstellungen den Spielen vorgeben, anstelle der Einstellung des Dashboards. Bei „Dashboard“ bleibt die in der EEPROM gespeicherte Sprache erhalten. Bei „Automatisch“ wird die Sprache von RetroArch verwendet, sofern sie von der Xbox unterstützt wird, andernfalls Englisch."
+#define OPTION_VAL_AUTO_DE NULL
+#define OPTION_VAL_DASHBOARD_DE NULL
+#define OPTION_VAL_ENGLISH_DE "Englisch"
+#define OPTION_VAL_JAPANESE_DE "Japanisch"
+#define OPTION_VAL_GERMAN_DE "Deutsch"
+#define OPTION_VAL_FRENCH_DE "Französisch"
+#define OPTION_VAL_SPANISH_DE "Spanisch"
+#define OPTION_VAL_ITALIAN_DE "Italienisch"
+#define OPTION_VAL_KOREAN_DE "Koreanisch"
+#define OPTION_VAL_CHINESE_DE "Chinesisch"
+#define OPTION_VAL_PORTUGUESE_DE "Portugiesisch"
+#define XEMU_HDD_TRIM_LABEL_DE "Festplatte beim Schließen bereinigen"
+#define XEMU_HDD_TRIM_INFO_0_DE "Beim Schließen des Spiels werden die Cachepartitionen X, Y und Z der Festplatte geleert (Spiele formatieren sie bei Bedarf erneut). Außerdem wird das Abbild ohne ungenutzten Speicherplatz neu geschrieben, wodurch die Datei kleiner wird. Dafür wird vorübergehend genauso viel freier Speicherplatz benötigt, wie die Daten des Abbilds belegen. Wird übersprungen, solange das Abbild einen Speicherzustand enthält. Der Vorgang erfolgt beim Schließen des Spiels und nicht erst beim nächsten Start."
 #define XEMU_RENDERER_LABEL_DE "Grafik-API (Neustart)"
 #define XEMU_RENDERER_INFO_0_DE "Renderer für die Darstellung der emulierten GPU. Vulkan ist die Standardeinstellung; OpenGL dient als Ausweichlösung bei Treibern, mit denen Vulkan Probleme verursacht. Änderung wird nach einem Neustart von RetroArch wirksam. Unter Android wird immer Vulkan verwendet, unter macOS immer OpenGL."
 #define OPTION_VAL_VULKAN_DE NULL
 #define OPTION_VAL_OPENGL_DE NULL
-#define XEMU_VIDEO_ASPECT_LABEL_DE NULL
-#define XEMU_VIDEO_ASPECT_INFO_0_DE NULL
-#define OPTION_VAL_DASHBOARD_DE NULL
+#define XEMU_VIDEO_ASPECT_LABEL_DE "Systemseitenverhältnis (Neustart)"
+#define XEMU_VIDEO_ASPECT_INFO_0_DE "Das Anzeigeformat, das die Videoeinstellungen der Konsole den Spielen melden, anstelle der Einstellung des Dashboards. Bei 16:9 laufen Spiele, die Breitbild unterstützen, im Breitbildformat; bei 4:3 laufen sie im 4:3-Format. Auf das Format des Displays einstellen. „Letterbox“ entspricht dem 4:3-Format des Dashboards, wobei Breitbildspiele mit schwarzen Balken angezeigt werden. „Dashboard“ übernimmt die Einstellung des Dashboards."
 #define OPTION_VAL_4_3_DE NULL
 #define OPTION_VAL_16_9_DE NULL
 #define OPTION_VAL_LETTERBOX_DE NULL
 #define XEMU_ASPECT_RATIO_LABEL_DE "Core-Seitenverhältnis"
-#define XEMU_ASPECT_RATIO_INFO_0_DE NULL
-#define OPTION_VAL_AUTO_DE NULL
-#define XEMU_SURFACE_SCALE_LABEL_DE NULL
+#define XEMU_ASPECT_RATIO_INFO_0_DE "Das Format, in dem das Bild angezeigt wird. Am besten auf „Automatisch“ belassen, wodurch das Spielformat übernommen wird: 16:9, wenn die Konsole auf Breitbild eingestellt ist (Systemseitenverhältnis oder Dashboard) und das Spiel im 16:9-Format rendert; andernfalls 4:3, ebenso bei Sega Chihiro. 16:9 dehnt ein 4:3-Spiel auf das Breitbildformat."
+#define XEMU_OVERSCAN_CROP_LABEL_DE "Vertikalen Overscan zuschneiden"
+#define XEMU_OVERSCAN_CROP_INFO_0_DE NULL
+#define XEMU_SURFACE_SCALE_LABEL_DE "Interne Auflösungsskalierung (Neustart)"
 #define XEMU_SURFACE_SCALE_INFO_0_DE "Skaliert die interne Renderauflösung. Höhere Werte verbessern die Bildqualität, verringern aber die Leistung."
 #define OPTION_VAL_1_DE "1× (640 × 480)"
 #define OPTION_VAL_2_DE "2× (1280 × 960)"
@@ -6119,7 +7382,14 @@ struct retro_core_options_v2 options_da = {
 #define OPTION_VAL_8_DE "8× (5120 × 3840)"
 #define OPTION_VAL_9_DE "9× (5760 × 4320)"
 #define OPTION_VAL_10_DE "10× (6400 × 4800)"
-#define XEMU_AVPACK_LABEL_DE NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_DE "Anisotrope Filterung"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_DE "Der geringste Grad an anisotroper Filterung, mit dem die Texturen des Spiels geglättet werden. Dadurch bleiben schräg dargestellte Texturen scharf. Bei „Nativ“ bleibt die spielinterne Einstellung erhalten, die bei den meisten Xbox-Spielen keiner Filterung entspricht."
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_DE "Nativ"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_DE NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_DE NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_DE NULL
+#define OPTION_VAL_16_DE NULL
+#define XEMU_AVPACK_LABEL_DE "AV-Paket (Neustart)"
 #define XEMU_AVPACK_INFO_0_DE "AV-Pakettyp auswählen. Beeinflusst die verfügbaren Videomodi."
 #define OPTION_VAL_HDTV_DE NULL
 #define OPTION_VAL_COMPOSITE_DE NULL
@@ -6127,17 +7397,17 @@ struct retro_core_options_v2 options_da = {
 #define OPTION_VAL_SCART_DE NULL
 #define OPTION_VAL_VGA_DE NULL
 #define XEMU_AUDIO_THREAD_LABEL_DE "Audiothread (Neustart)"
-#define XEMU_AUDIO_THREAD_INFO_0_DE NULL
-#define XEMU_USE_DSP_LABEL_DE "APU-DSP-Emulation"
-#define XEMU_USE_DSP_INFO_0_DE "DSP-Emulation für eine höhere Audiogenauigkeit aktivieren. Kann die Leistung beeinträchtigen."
-#define XEMU_DSP_JIT_LABEL_DE NULL
-#define XEMU_DSP_JIT_INFO_0_DE NULL
+#define XEMU_AUDIO_THREAD_INFO_0_DE "Übergibt den Ton an den Audiothread von RetroArch, während die APU ihn abmischt, statt ihn wie im Standalone-Betrieb frameweise auszugeben. Dadurch läuft der Ton weiter, wenn die Bildausgabe stockt, etwa während Shader kompiliert werden. RetroArch-Versionen vor November 2026 verlangsamen damit das Menü, wenn „Menü-Bildrate (Bildratenbegrenzung)“ auf „Bildwiederholrate“ eingestellt ist. In diesem Fall stattdessen „Inhaltsrate“ einstellen."
+#define XEMU_USE_DSP_LABEL_DE "APU-DSP-Emulation (Neustart)"
+#define XEMU_USE_DSP_INFO_0_DE "Emuliert den DSP der APU, der die Soundeffekte, den Hall und einen Großteil der Musik der Spiele wiedergibt. Ohne diese Emulation klingt der Ton flach. Die Einstellung wird beim Start des Inhalts übernommen. Eine Änderung während des Spiels führte zu verzerrtem Ton."
+#define XEMU_DSP_JIT_LABEL_DE "DSP-JIT (Neustart)"
+#define XEMU_DSP_JIT_INFO_0_DE "Führt die Programme der APU-DSP-Emulation als kompilierten Code statt durch Interpretation aus. Dadurch wird die Ausführung beschleunigt, ähnlich wie beim DSP-JIT im Standalone-Betrieb. Wirkt sich nur aus, wenn die APU-DSP-Emulation aktiviert ist. Die Einstellung wird beim Start des Inhalts übernommen."
 #define XEMU_HRTF_LABEL_DE NULL
-#define XEMU_HRTF_INFO_0_DE NULL
-#define XEMU_VP_WORKERS_LABEL_DE NULL
-#define XEMU_VP_WORKERS_INFO_0_DE NULL
-#define XEMU_SMOOTH_FIRST_PLAY_LABEL_DE NULL
-#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_DE NULL
+#define XEMU_HRTF_INFO_0_DE "Positioniert die 3D-Klangquellen von Spielen, die diese Funktion verwenden, mithilfe kopfbezogener Übertragungsfunktionen (HRTF) wie auf der Konsole. Geeignet für Kopfhörer und Stereolautsprecher."
+#define XEMU_VP_WORKERS_LABEL_DE "Voice-Processor-Threads (Neustart)"
+#define XEMU_VP_WORKERS_INFO_0_DE "Die Threads, auf denen der Audioprozessor die Stimmen mischt. Bei „Automatisch“ wird ein Thread pro CPU-Kern verwendet."
+#define XEMU_SMOOTH_FIRST_PLAY_LABEL_DE "Ruckelfreier erster Start (Neustart)"
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_DE "Kompiliert beim Start die Shader, die ein Spiel bekanntermaßen verwendet, damit es in den ersten Minuten nicht zu Rucklern durch die Shaderkompilierung kommt. Unter OpenGL werden die kompilierten Shader im Shadercache gespeichert, der immer aktiviert ist."
 #define XEMU_AUDIO_VOLUME_LABEL_DE "Maximale Audiolautstärke (%)"
 #define XEMU_AUDIO_VOLUME_INFO_0_DE "Lautstärke der Xbox-Audioausgabe unabhängig von der RetroArch-Gesamtlautstärke begrenzen."
 #define OPTION_VAL_100_DE "100 %"
@@ -6147,39 +7417,51 @@ struct retro_core_options_v2 options_da = {
 #define OPTION_VAL_20_DE "20 %"
 #define OPTION_VAL_0_DE "Stummgeschaltet"
 #define XEMU_VK_FAST_PATHS_LABEL_DE "Vulkan-Schnellpfade (Neustart)"
-#define XEMU_VK_FAST_PATHS_INFO_0_DE NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_DE "Beeinflusst die Geschwindigkeit der Shaderkompilierung unter Vulkan. „Alle“ ist am schnellsten, kann aber bei einigen Spielen zu Abstürzen führen."
 #define OPTION_VAL_ALL_DE "Alle"
 #define OPTION_VAL_NO_GPL_DE "Keine Pipelinebibliotheken"
 #define OPTION_VAL_NO_DYN_DE "Keine dynamischen Zustände"
 #define OPTION_VAL_NONE_DE "Nein"
-#define XEMU_RUMBLE_P1_LABEL_DE NULL
-#define XEMU_RUMBLE_P1_INFO_0_DE NULL
-#define XEMU_RUMBLE_P2_LABEL_DE NULL
-#define XEMU_RUMBLE_P2_INFO_0_DE NULL
-#define XEMU_DEADZONE_P1_LABEL_DE NULL
-#define XEMU_DEADZONE_P1_INFO_0_DE NULL
+#define XEMU_RUMBLE_P1_LABEL_DE "Vibration (Spieler 1)"
+#define XEMU_RUMBLE_P1_INFO_0_DE "Der Controller von Spieler 1 vibriert bei Xbox-Spielen und durch das Force Feedback von Chihiro-Rennspielen. Bei „Aus“ wird keine dieser Funktionen verwendet."
+#define XEMU_RUMBLE_P2_LABEL_DE "Vibration (Spieler 2)"
+#define XEMU_RUMBLE_P2_INFO_0_DE "Der Controller von Spieler 2 vibriert bei Xbox-Spielen und durch das Force Feedback von Chihiro-Rennspielen. Bei „Aus“ wird keine dieser Funktionen verwendet."
+#define XEMU_DEADZONE_P1_LABEL_DE "Analog-Deadzone (Spieler 1)"
+#define XEMU_DEADZONE_P1_INFO_0_DE "Wie weit die Analogsticks von Spieler 1 bewegt werden müssen, bevor dies vom Spiel erkannt wird. Gilt für beide Analogsticks sowohl bei Xbox als auch bei Sega Chihiro. Der verbleibende Bewegungsbereich wird auf den vollen Eingabebereich skaliert."
 #define OPTION_VAL_0_XEMU_DEADZONE_P1_DE "0 %"
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_DE "5 %"
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_DE "10 %"
 #define OPTION_VAL_15_DE "15 %"
 #define OPTION_VAL_25_DE "25 %"
 #define OPTION_VAL_30_DE "30 %"
-#define XEMU_DEADZONE_P2_LABEL_DE NULL
-#define XEMU_DEADZONE_P2_INFO_0_DE NULL
+#define XEMU_DEADZONE_P2_LABEL_DE "Analog-Deadzone (Spieler 2)"
+#define XEMU_DEADZONE_P2_INFO_0_DE "Wie weit die Analogsticks von Spieler 2 bewegt werden müssen, bevor dies vom Spiel erkannt wird. Gilt für beide Analogsticks sowohl bei Xbox als auch bei Sega Chihiro. Der verbleibende Bewegungsbereich wird auf den vollen Eingabebereich skaliert."
 #define XEMU_CHIHIRO_FREEPLAY_LABEL_DE "Freispiel (Neustart)"
 #define XEMU_CHIHIRO_FREEPLAY_INFO_0_DE "Startet Sega-Chihiro-Spiele im Freispielmodus, ohne Münzeinwurf. Bei „Aus“ wird mit „Auswählen“ eine Münze eingeworfen."
 #define XEMU_CHIHIRO_GUN_AIM_LABEL_DE "Lightgun-Zielpunkt"
-#define XEMU_CHIHIRO_GUN_AIM_INFO_0_DE NULL
+#define XEMU_CHIHIRO_GUN_AIM_INFO_0_DE "Zielsteuerung in House of the Dead III, Virtua Cop 3 und Ghost Squad. Mouse: Die Maus (oder die Lightgun von RetroArch) dient zum Zielen, die linke Maustaste zum Schießen, die rechte Maustaste ist die Funktionstaste der Waffe (Nachladen, Waffenwechsel), die mittlere Maustaste dient als Pedal oder zum Einstellen der Feuerrate. Analogstick: Der linke Analogstick oder das Steuerkreuz dient zum Zielen, R2 zum Schießen, L2 ist die Funktionstaste der Waffe, L das Pedal oder die Feuerrate und R löst einen Schuss außerhalb des Bildschirms aus."
 #define OPTION_VAL_MOUSE_DE "Maus"
-#define OPTION_VAL_STICK_DE NULL
-#define XEMU_CHIHIRO_CROSSHAIR_LABEL_DE NULL
-#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_DE NULL
-#define XEMU_CHIHIRO_FFB_LABEL_DE NULL
-#define XEMU_CHIHIRO_FFB_INFO_0_DE NULL
+#define OPTION_VAL_STICK_DE "Analogstick"
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_DE "Empfindlichkeit der Stick-Zielsteuerung"
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_DE "Wie schnell der Stick das Fadenkreuz bei „Light Gun Aim on Analog Stick“ bewegt. Die Bewegung erfolgt horizontal und vertikal gleich schnell. Bei 100 % wird die Bildhöhe bei vollständig ausgelenktem Stick in etwa einer Sekunde durchquert. Die Maus zielt auf die Position des Mauszeigers."
 #define OPTION_VAL_50_DE "50 %"
-#define OPTION_VAL_75_DE "75 %"
+#define OPTION_VAL_70_DE "70 %"
+#define OPTION_VAL_90_DE "90 %"
+#define OPTION_VAL_110_DE "110 %"
+#define OPTION_VAL_120_DE "120 %"
+#define OPTION_VAL_130_DE "130 %"
+#define OPTION_VAL_140_DE "140 %"
 #define OPTION_VAL_150_DE "150 %"
+#define OPTION_VAL_160_DE "160 %"
+#define OPTION_VAL_170_DE "170 %"
+#define OPTION_VAL_180_DE "180 %"
+#define OPTION_VAL_190_DE "190 %"
 #define OPTION_VAL_200_DE "200 %"
+#define XEMU_CHIHIRO_CROSSHAIR_LABEL_DE "Fadenkreuz"
+#define XEMU_CHIHIRO_CROSSHAIR_INFO_0_DE "Zeigt die Zielposition jedes Spielers als Fadenkreuz über dem Spielbild an, Spieler 1 in Rot, Spieler 2 in Blau."
+#define XEMU_CHIHIRO_FFB_LABEL_DE "Force-Feedback-Vibration"
+#define XEMU_CHIHIRO_FFB_INFO_0_DE "Gibt das Force Feedback eines Chihiro-Rennspiels (OutRun 2, Maximum Tune) mit dieser Stärke als Vibration auf dem Controller an Port 1 aus."
+#define OPTION_VAL_75_DE "75 %"
 
 struct retro_core_option_v2_category option_cats_de[] = {
     {
@@ -6286,6 +7568,32 @@ struct retro_core_option_v2_definition option_defs_de[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_DE,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_DE,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_DE },
+            { "dashboard",  OPTION_VAL_DASHBOARD_DE },
+            { "english",    OPTION_VAL_ENGLISH_DE },
+            { "japanese",   OPTION_VAL_JAPANESE_DE },
+            { "german",     OPTION_VAL_GERMAN_DE },
+            { "french",     OPTION_VAL_FRENCH_DE },
+            { "spanish",    OPTION_VAL_SPANISH_DE },
+            { "italian",    OPTION_VAL_ITALIAN_DE },
+            { "korean",     OPTION_VAL_KOREAN_DE },
+            { "chinese",    OPTION_VAL_CHINESE_DE },
+            { "portuguese", OPTION_VAL_PORTUGUESE_DE },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_DE,
@@ -6348,6 +7656,22 @@ struct retro_core_option_v2_definition option_defs_de[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_DE,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_DE,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_DE },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_DE,
@@ -6366,6 +7690,24 @@ struct retro_core_option_v2_definition option_defs_de[] = {
             { "8", OPTION_VAL_8_DE },
             { "9", OPTION_VAL_9_DE },
             { "10", OPTION_VAL_10_DE },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_DE,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_DE,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_DE },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_DE },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_DE },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_DE },
+            { "16", OPTION_VAL_16_DE },
             { NULL, NULL },
         },
         "1"
@@ -6418,10 +7760,13 @@ struct retro_core_option_v2_definition option_defs_de[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_DE,
@@ -6434,7 +7779,7 @@ struct retro_core_option_v2_definition option_defs_de[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -6626,6 +7971,36 @@ struct retro_core_option_v2_definition option_defs_de[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_DE,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_DE,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_DE },
+            { "60", OPTION_VAL_60_DE },
+            { "70", OPTION_VAL_70_DE },
+            { "80", OPTION_VAL_80_DE },
+            { "90", OPTION_VAL_90_DE },
+            { "100", OPTION_VAL_100_DE },
+            { "110", OPTION_VAL_110_DE },
+            { "120", OPTION_VAL_120_DE },
+            { "130", OPTION_VAL_130_DE },
+            { "140", OPTION_VAL_140_DE },
+            { "150", OPTION_VAL_150_DE },
+            { "160", OPTION_VAL_160_DE },
+            { "170", OPTION_VAL_170_DE },
+            { "180", OPTION_VAL_180_DE },
+            { "190", OPTION_VAL_190_DE },
+            { "200", OPTION_VAL_200_DE },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -6695,6 +8070,19 @@ struct retro_core_options_v2 options_de = {
 #define XEMU_HARD_FPU_INFO_0_EL NULL
 #define XEMU_CPU_BOOST_LABEL_EL NULL
 #define XEMU_CPU_BOOST_INFO_0_EL NULL
+#define XEMU_LANGUAGE_LABEL_EL NULL
+#define XEMU_LANGUAGE_INFO_0_EL NULL
+#define OPTION_VAL_AUTO_EL "Αυτόματο"
+#define OPTION_VAL_DASHBOARD_EL NULL
+#define OPTION_VAL_ENGLISH_EL "Αγγλικά"
+#define OPTION_VAL_JAPANESE_EL "Ιαπωνικά"
+#define OPTION_VAL_GERMAN_EL "Γερμανός"
+#define OPTION_VAL_FRENCH_EL "Γαλλική γλώσσα"
+#define OPTION_VAL_SPANISH_EL "Ισπανικά"
+#define OPTION_VAL_ITALIAN_EL "Ιταλικά"
+#define OPTION_VAL_KOREAN_EL NULL
+#define OPTION_VAL_CHINESE_EL NULL
+#define OPTION_VAL_PORTUGUESE_EL NULL
 #define XEMU_HDD_TRIM_LABEL_EL NULL
 #define XEMU_HDD_TRIM_INFO_0_EL NULL
 #define XEMU_RENDERER_LABEL_EL NULL
@@ -6703,13 +8091,13 @@ struct retro_core_options_v2 options_de = {
 #define OPTION_VAL_OPENGL_EL NULL
 #define XEMU_VIDEO_ASPECT_LABEL_EL NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_EL NULL
-#define OPTION_VAL_DASHBOARD_EL NULL
 #define OPTION_VAL_4_3_EL NULL
 #define OPTION_VAL_16_9_EL NULL
 #define OPTION_VAL_LETTERBOX_EL NULL
 #define XEMU_ASPECT_RATIO_LABEL_EL NULL
 #define XEMU_ASPECT_RATIO_INFO_0_EL NULL
-#define OPTION_VAL_AUTO_EL "Αυτόματο"
+#define XEMU_OVERSCAN_CROP_LABEL_EL NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_EL NULL
 #define XEMU_SURFACE_SCALE_LABEL_EL NULL
 #define XEMU_SURFACE_SCALE_INFO_0_EL NULL
 #define OPTION_VAL_1_EL NULL
@@ -6722,6 +8110,13 @@ struct retro_core_options_v2 options_de = {
 #define OPTION_VAL_8_EL NULL
 #define OPTION_VAL_9_EL NULL
 #define OPTION_VAL_10_EL NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_EL NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_EL NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_EL "Ντόπιος"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_EL NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_EL NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_EL NULL
+#define OPTION_VAL_16_EL NULL
 #define XEMU_AVPACK_LABEL_EL NULL
 #define XEMU_AVPACK_INFO_0_EL NULL
 #define OPTION_VAL_HDTV_EL NULL
@@ -6775,14 +8170,26 @@ struct retro_core_options_v2 options_de = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_EL NULL
 #define OPTION_VAL_MOUSE_EL NULL
 #define OPTION_VAL_STICK_EL NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_EL NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_EL NULL
+#define OPTION_VAL_50_EL NULL
+#define OPTION_VAL_70_EL NULL
+#define OPTION_VAL_90_EL NULL
+#define OPTION_VAL_110_EL NULL
+#define OPTION_VAL_120_EL NULL
+#define OPTION_VAL_130_EL NULL
+#define OPTION_VAL_140_EL NULL
+#define OPTION_VAL_150_EL NULL
+#define OPTION_VAL_160_EL NULL
+#define OPTION_VAL_170_EL NULL
+#define OPTION_VAL_180_EL NULL
+#define OPTION_VAL_190_EL NULL
+#define OPTION_VAL_200_EL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_EL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_EL NULL
 #define XEMU_CHIHIRO_FFB_LABEL_EL NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_EL NULL
-#define OPTION_VAL_50_EL NULL
 #define OPTION_VAL_75_EL NULL
-#define OPTION_VAL_150_EL NULL
-#define OPTION_VAL_200_EL NULL
 
 struct retro_core_option_v2_category option_cats_el[] = {
     {
@@ -6889,6 +8296,32 @@ struct retro_core_option_v2_definition option_defs_el[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_EL,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_EL,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_EL },
+            { "dashboard",  OPTION_VAL_DASHBOARD_EL },
+            { "english",    OPTION_VAL_ENGLISH_EL },
+            { "japanese",   OPTION_VAL_JAPANESE_EL },
+            { "german",     OPTION_VAL_GERMAN_EL },
+            { "french",     OPTION_VAL_FRENCH_EL },
+            { "spanish",    OPTION_VAL_SPANISH_EL },
+            { "italian",    OPTION_VAL_ITALIAN_EL },
+            { "korean",     OPTION_VAL_KOREAN_EL },
+            { "chinese",    OPTION_VAL_CHINESE_EL },
+            { "portuguese", OPTION_VAL_PORTUGUESE_EL },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_EL,
@@ -6951,6 +8384,22 @@ struct retro_core_option_v2_definition option_defs_el[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_EL,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_EL,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_EL },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_EL,
@@ -6969,6 +8418,24 @@ struct retro_core_option_v2_definition option_defs_el[] = {
             { "8", OPTION_VAL_8_EL },
             { "9", OPTION_VAL_9_EL },
             { "10", OPTION_VAL_10_EL },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_EL,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_EL,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_EL },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_EL },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_EL },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_EL },
+            { "16", OPTION_VAL_16_EL },
             { NULL, NULL },
         },
         "1"
@@ -7021,10 +8488,13 @@ struct retro_core_option_v2_definition option_defs_el[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_EL,
@@ -7037,7 +8507,7 @@ struct retro_core_option_v2_definition option_defs_el[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -7229,6 +8699,36 @@ struct retro_core_option_v2_definition option_defs_el[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_EL,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_EL,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_EL },
+            { "60", OPTION_VAL_60_EL },
+            { "70", OPTION_VAL_70_EL },
+            { "80", OPTION_VAL_80_EL },
+            { "90", OPTION_VAL_90_EL },
+            { "100", OPTION_VAL_100_EL },
+            { "110", OPTION_VAL_110_EL },
+            { "120", OPTION_VAL_120_EL },
+            { "130", OPTION_VAL_130_EL },
+            { "140", OPTION_VAL_140_EL },
+            { "150", OPTION_VAL_150_EL },
+            { "160", OPTION_VAL_160_EL },
+            { "170", OPTION_VAL_170_EL },
+            { "180", OPTION_VAL_180_EL },
+            { "190", OPTION_VAL_190_EL },
+            { "200", OPTION_VAL_200_EL },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -7298,6 +8798,19 @@ struct retro_core_options_v2 options_el = {
 #define XEMU_HARD_FPU_INFO_0_EN NULL
 #define XEMU_CPU_BOOST_LABEL_EN NULL
 #define XEMU_CPU_BOOST_INFO_0_EN NULL
+#define XEMU_LANGUAGE_LABEL_EN NULL
+#define XEMU_LANGUAGE_INFO_0_EN NULL
+#define OPTION_VAL_AUTO_EN NULL
+#define OPTION_VAL_DASHBOARD_EN NULL
+#define OPTION_VAL_ENGLISH_EN NULL
+#define OPTION_VAL_JAPANESE_EN NULL
+#define OPTION_VAL_GERMAN_EN NULL
+#define OPTION_VAL_FRENCH_EN NULL
+#define OPTION_VAL_SPANISH_EN NULL
+#define OPTION_VAL_ITALIAN_EN NULL
+#define OPTION_VAL_KOREAN_EN NULL
+#define OPTION_VAL_CHINESE_EN NULL
+#define OPTION_VAL_PORTUGUESE_EN NULL
 #define XEMU_HDD_TRIM_LABEL_EN NULL
 #define XEMU_HDD_TRIM_INFO_0_EN NULL
 #define XEMU_RENDERER_LABEL_EN NULL
@@ -7306,13 +8819,13 @@ struct retro_core_options_v2 options_el = {
 #define OPTION_VAL_OPENGL_EN NULL
 #define XEMU_VIDEO_ASPECT_LABEL_EN NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_EN NULL
-#define OPTION_VAL_DASHBOARD_EN NULL
 #define OPTION_VAL_4_3_EN NULL
 #define OPTION_VAL_16_9_EN NULL
 #define OPTION_VAL_LETTERBOX_EN NULL
 #define XEMU_ASPECT_RATIO_LABEL_EN NULL
 #define XEMU_ASPECT_RATIO_INFO_0_EN NULL
-#define OPTION_VAL_AUTO_EN NULL
+#define XEMU_OVERSCAN_CROP_LABEL_EN NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_EN NULL
 #define XEMU_SURFACE_SCALE_LABEL_EN NULL
 #define XEMU_SURFACE_SCALE_INFO_0_EN NULL
 #define OPTION_VAL_1_EN NULL
@@ -7325,6 +8838,13 @@ struct retro_core_options_v2 options_el = {
 #define OPTION_VAL_8_EN NULL
 #define OPTION_VAL_9_EN NULL
 #define OPTION_VAL_10_EN NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_EN NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_EN NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_EN NULL
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_EN NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_EN NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_EN NULL
+#define OPTION_VAL_16_EN NULL
 #define XEMU_AVPACK_LABEL_EN NULL
 #define XEMU_AVPACK_INFO_0_EN NULL
 #define OPTION_VAL_HDTV_EN NULL
@@ -7378,14 +8898,26 @@ struct retro_core_options_v2 options_el = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_EN NULL
 #define OPTION_VAL_MOUSE_EN NULL
 #define OPTION_VAL_STICK_EN NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_EN NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_EN NULL
+#define OPTION_VAL_50_EN NULL
+#define OPTION_VAL_70_EN NULL
+#define OPTION_VAL_90_EN NULL
+#define OPTION_VAL_110_EN NULL
+#define OPTION_VAL_120_EN NULL
+#define OPTION_VAL_130_EN NULL
+#define OPTION_VAL_140_EN NULL
+#define OPTION_VAL_150_EN NULL
+#define OPTION_VAL_160_EN NULL
+#define OPTION_VAL_170_EN NULL
+#define OPTION_VAL_180_EN NULL
+#define OPTION_VAL_190_EN NULL
+#define OPTION_VAL_200_EN NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_EN NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_EN NULL
 #define XEMU_CHIHIRO_FFB_LABEL_EN NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_EN NULL
-#define OPTION_VAL_50_EN NULL
 #define OPTION_VAL_75_EN NULL
-#define OPTION_VAL_150_EN NULL
-#define OPTION_VAL_200_EN NULL
 
 struct retro_core_option_v2_category option_cats_en[] = {
     {
@@ -7492,6 +9024,32 @@ struct retro_core_option_v2_definition option_defs_en[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_EN,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_EN,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_EN },
+            { "dashboard",  OPTION_VAL_DASHBOARD_EN },
+            { "english",    OPTION_VAL_ENGLISH_EN },
+            { "japanese",   OPTION_VAL_JAPANESE_EN },
+            { "german",     OPTION_VAL_GERMAN_EN },
+            { "french",     OPTION_VAL_FRENCH_EN },
+            { "spanish",    OPTION_VAL_SPANISH_EN },
+            { "italian",    OPTION_VAL_ITALIAN_EN },
+            { "korean",     OPTION_VAL_KOREAN_EN },
+            { "chinese",    OPTION_VAL_CHINESE_EN },
+            { "portuguese", OPTION_VAL_PORTUGUESE_EN },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_EN,
@@ -7554,6 +9112,22 @@ struct retro_core_option_v2_definition option_defs_en[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_EN,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_EN,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_EN },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_EN,
@@ -7572,6 +9146,24 @@ struct retro_core_option_v2_definition option_defs_en[] = {
             { "8", OPTION_VAL_8_EN },
             { "9", OPTION_VAL_9_EN },
             { "10", OPTION_VAL_10_EN },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_EN,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_EN,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_EN },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_EN },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_EN },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_EN },
+            { "16", OPTION_VAL_16_EN },
             { NULL, NULL },
         },
         "1"
@@ -7624,10 +9216,13 @@ struct retro_core_option_v2_definition option_defs_en[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_EN,
@@ -7640,7 +9235,7 @@ struct retro_core_option_v2_definition option_defs_en[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -7832,6 +9427,36 @@ struct retro_core_option_v2_definition option_defs_en[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_EN,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_EN,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_EN },
+            { "60", OPTION_VAL_60_EN },
+            { "70", OPTION_VAL_70_EN },
+            { "80", OPTION_VAL_80_EN },
+            { "90", OPTION_VAL_90_EN },
+            { "100", OPTION_VAL_100_EN },
+            { "110", OPTION_VAL_110_EN },
+            { "120", OPTION_VAL_120_EN },
+            { "130", OPTION_VAL_130_EN },
+            { "140", OPTION_VAL_140_EN },
+            { "150", OPTION_VAL_150_EN },
+            { "160", OPTION_VAL_160_EN },
+            { "170", OPTION_VAL_170_EN },
+            { "180", OPTION_VAL_180_EN },
+            { "190", OPTION_VAL_190_EN },
+            { "200", OPTION_VAL_200_EN },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -7901,6 +9526,19 @@ struct retro_core_options_v2 options_en = {
 #define XEMU_HARD_FPU_INFO_0_EO NULL
 #define XEMU_CPU_BOOST_LABEL_EO NULL
 #define XEMU_CPU_BOOST_INFO_0_EO NULL
+#define XEMU_LANGUAGE_LABEL_EO NULL
+#define XEMU_LANGUAGE_INFO_0_EO NULL
+#define OPTION_VAL_AUTO_EO "Aŭtomata"
+#define OPTION_VAL_DASHBOARD_EO NULL
+#define OPTION_VAL_ENGLISH_EO "Angla"
+#define OPTION_VAL_JAPANESE_EO "Japana"
+#define OPTION_VAL_GERMAN_EO "Germana"
+#define OPTION_VAL_FRENCH_EO "Franca"
+#define OPTION_VAL_SPANISH_EO "Hispana"
+#define OPTION_VAL_ITALIAN_EO "Itala"
+#define OPTION_VAL_KOREAN_EO NULL
+#define OPTION_VAL_CHINESE_EO NULL
+#define OPTION_VAL_PORTUGUESE_EO NULL
 #define XEMU_HDD_TRIM_LABEL_EO NULL
 #define XEMU_HDD_TRIM_INFO_0_EO NULL
 #define XEMU_RENDERER_LABEL_EO NULL
@@ -7909,13 +9547,13 @@ struct retro_core_options_v2 options_en = {
 #define OPTION_VAL_OPENGL_EO NULL
 #define XEMU_VIDEO_ASPECT_LABEL_EO NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_EO NULL
-#define OPTION_VAL_DASHBOARD_EO NULL
 #define OPTION_VAL_4_3_EO NULL
 #define OPTION_VAL_16_9_EO NULL
 #define OPTION_VAL_LETTERBOX_EO NULL
 #define XEMU_ASPECT_RATIO_LABEL_EO "Kerna bilda proporcio"
 #define XEMU_ASPECT_RATIO_INFO_0_EO NULL
-#define OPTION_VAL_AUTO_EO "Aŭtomata"
+#define XEMU_OVERSCAN_CROP_LABEL_EO "Forstuci vertikalan superskanon"
+#define XEMU_OVERSCAN_CROP_INFO_0_EO NULL
 #define XEMU_SURFACE_SCALE_LABEL_EO NULL
 #define XEMU_SURFACE_SCALE_INFO_0_EO NULL
 #define OPTION_VAL_1_EO NULL
@@ -7928,6 +9566,13 @@ struct retro_core_options_v2 options_en = {
 #define OPTION_VAL_8_EO NULL
 #define OPTION_VAL_9_EO NULL
 #define OPTION_VAL_10_EO NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_EO "Neizotropeca filtrado"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_EO NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_EO "Indiĝena"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_EO NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_EO NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_EO NULL
+#define OPTION_VAL_16_EO NULL
 #define XEMU_AVPACK_LABEL_EO NULL
 #define XEMU_AVPACK_INFO_0_EO NULL
 #define OPTION_VAL_HDTV_EO NULL
@@ -7981,14 +9626,26 @@ struct retro_core_options_v2 options_en = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_EO NULL
 #define OPTION_VAL_MOUSE_EO "Muso"
 #define OPTION_VAL_STICK_EO NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_EO NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_EO NULL
+#define OPTION_VAL_50_EO NULL
+#define OPTION_VAL_70_EO NULL
+#define OPTION_VAL_90_EO NULL
+#define OPTION_VAL_110_EO NULL
+#define OPTION_VAL_120_EO NULL
+#define OPTION_VAL_130_EO NULL
+#define OPTION_VAL_140_EO NULL
+#define OPTION_VAL_150_EO NULL
+#define OPTION_VAL_160_EO NULL
+#define OPTION_VAL_170_EO NULL
+#define OPTION_VAL_180_EO NULL
+#define OPTION_VAL_190_EO NULL
+#define OPTION_VAL_200_EO NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_EO NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_EO NULL
 #define XEMU_CHIHIRO_FFB_LABEL_EO NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_EO NULL
-#define OPTION_VAL_50_EO NULL
 #define OPTION_VAL_75_EO NULL
-#define OPTION_VAL_150_EO NULL
-#define OPTION_VAL_200_EO NULL
 
 struct retro_core_option_v2_category option_cats_eo[] = {
     {
@@ -8095,6 +9752,32 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_EO,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_EO,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_EO },
+            { "dashboard",  OPTION_VAL_DASHBOARD_EO },
+            { "english",    OPTION_VAL_ENGLISH_EO },
+            { "japanese",   OPTION_VAL_JAPANESE_EO },
+            { "german",     OPTION_VAL_GERMAN_EO },
+            { "french",     OPTION_VAL_FRENCH_EO },
+            { "spanish",    OPTION_VAL_SPANISH_EO },
+            { "italian",    OPTION_VAL_ITALIAN_EO },
+            { "korean",     OPTION_VAL_KOREAN_EO },
+            { "chinese",    OPTION_VAL_CHINESE_EO },
+            { "portuguese", OPTION_VAL_PORTUGUESE_EO },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_EO,
@@ -8157,6 +9840,22 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_EO,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_EO,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_EO },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_EO,
@@ -8175,6 +9874,24 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
             { "8", OPTION_VAL_8_EO },
             { "9", OPTION_VAL_9_EO },
             { "10", OPTION_VAL_10_EO },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_EO,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_EO,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_EO },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_EO },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_EO },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_EO },
+            { "16", OPTION_VAL_16_EO },
             { NULL, NULL },
         },
         "1"
@@ -8227,10 +9944,13 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_EO,
@@ -8243,7 +9963,7 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -8435,6 +10155,36 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_EO,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_EO,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_EO },
+            { "60", OPTION_VAL_60_EO },
+            { "70", OPTION_VAL_70_EO },
+            { "80", OPTION_VAL_80_EO },
+            { "90", OPTION_VAL_90_EO },
+            { "100", OPTION_VAL_100_EO },
+            { "110", OPTION_VAL_110_EO },
+            { "120", OPTION_VAL_120_EO },
+            { "130", OPTION_VAL_130_EO },
+            { "140", OPTION_VAL_140_EO },
+            { "150", OPTION_VAL_150_EO },
+            { "160", OPTION_VAL_160_EO },
+            { "170", OPTION_VAL_170_EO },
+            { "180", OPTION_VAL_180_EO },
+            { "190", OPTION_VAL_190_EO },
+            { "200", OPTION_VAL_200_EO },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -8481,18 +10231,18 @@ struct retro_core_options_v2 options_eo = {
 
 /* RETRO_LANGUAGE_ES */
 
-#define CATEGORY_SYSTEM_LABEL_ES NULL
-#define CATEGORY_SYSTEM_INFO_0_ES NULL
+#define CATEGORY_SYSTEM_LABEL_ES "Sistema (es necesario reiniciar)"
+#define CATEGORY_SYSTEM_INFO_0_ES "La máquina en sí misma: memoria, red, arranque y CPU. La configuración se aplicará al ejecutar un contenido (salvo Optimizar disco duro al cerrar)."
 #define CATEGORY_VIDEO_LABEL_ES "Vídeo"
 #define CATEGORY_VIDEO_INFO_0_ES "Configura el renderizado de vídeo."
 #define CATEGORY_AUDIO_LABEL_ES NULL
 #define CATEGORY_AUDIO_INFO_0_ES "Configura la emulación de audio."
 #define CATEGORY_CONTROLS_LABEL_ES "Controles"
-#define CATEGORY_CONTROLS_INFO_0_ES NULL
+#define CATEGORY_CONTROLS_INFO_0_ES "La vibración y la zona muerta de los sticks, configuradas para cada jugador."
 #define CATEGORY_CHIHIRO_LABEL_ES NULL
 #define CATEGORY_CHIHIRO_INFO_0_ES "Los juegos arcade de Sega Chihiro: el juego libre, el apuntado de los juegos de lightgun y el force feedback para los juegos de conducción."
 #define XEMU_MEMORY_LABEL_ES "Memoria del sistema (MB)"
-#define XEMU_MEMORY_INFO_0_ES "La cantidad de memoria RAM que tendrá el sistema. 64 MB es el valor estándar, 128 MB es para kits de depuración."
+#define XEMU_MEMORY_INFO_0_ES "La cantidad de RAM del sistema XBOX. 64 MB es el estándar, 128 MB es la cantidad de los kits de depuración. Una Sega Chihiro siempre tendrá 128 MB sin importar lo que se configure aquí."
 #define OPTION_VAL_64_ES NULL
 #define OPTION_VAL_128_ES NULL
 #define XEMU_NETWORK_BACKEND_LABEL_ES "Back-end de red"
@@ -8502,24 +10252,37 @@ struct retro_core_options_v2 options_eo = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_ES "Omite la animación de arranque de Xbox."
 #define XEMU_HARD_FPU_LABEL_ES "Emulación de FPU de hardware"
 #define XEMU_HARD_FPU_INFO_0_ES "Utiliza la FPU del host para emular el código x87. Es más rápido, pero tendrá pequeñas pérdidas de precisión."
-#define XEMU_CPU_BOOST_LABEL_ES NULL
+#define XEMU_CPU_BOOST_LABEL_ES "Mejorar rendimiento de CPU"
 #define XEMU_CPU_BOOST_INFO_0_ES "Rutas más rápidas para la CPU invitada y para el procesador de audio: SSE nativo y una mayor caché de saltos. Desactiva esta opción si un juego empieza a dar problemas."
-#define XEMU_HDD_TRIM_LABEL_ES NULL
-#define XEMU_HDD_TRIM_INFO_0_ES NULL
+#define XEMU_LANGUAGE_LABEL_ES "Idioma del sistema"
+#define XEMU_LANGUAGE_INFO_0_ES "El idioma que indicará la configuración de la consola a los juegos, sustituyendo al ajuste de la interfaz Xbox. Interfaz conservará el idioma configurado en la EEPROM. El valor automático es el idioma de RetroArch si existe en Xbox, en caso contrario, se usará el inglés."
+#define OPTION_VAL_AUTO_ES "Automática"
+#define OPTION_VAL_DASHBOARD_ES "Interfaz"
+#define OPTION_VAL_ENGLISH_ES "Inglés"
+#define OPTION_VAL_JAPANESE_ES "Japonés"
+#define OPTION_VAL_GERMAN_ES "Alemán"
+#define OPTION_VAL_FRENCH_ES "Francés"
+#define OPTION_VAL_SPANISH_ES "Español"
+#define OPTION_VAL_ITALIAN_ES "Italiano"
+#define OPTION_VAL_KOREAN_ES "Coreano"
+#define OPTION_VAL_CHINESE_ES "Chino"
+#define OPTION_VAL_PORTUGUESE_ES "Portugués"
+#define XEMU_HDD_TRIM_LABEL_ES "Optimizar disco duro al cerrar"
+#define XEMU_HDD_TRIM_INFO_0_ES "Vacía las particiones X, Y y Z de la caché del disco duro (los juegos las formatean según las vayan necesitando) al cerrar un juego y reescribe la imagen sin el espacio sin usar para reducir el tamaño del archivo. Necesitará la misma cantidad de espacio libre que ocuparán los datos de la imagen durante un momento. Essta opción se omitirá cuando haya guardados rápidos en la imagen. Se aplicará al cerrar al juego, no cuando se vuelva a arrancar."
 #define XEMU_RENDERER_LABEL_ES "API de gráficos (es necesario reiniciar)"
 #define XEMU_RENDERER_INFO_0_ES "El renderizador con el que se dibujará la GPU emulada. Vulkan es el predeterminado, OpenGL es el de respaldo para aquellos controladores en los que Vulkan dé problemas. Es necesario reiniciar RetroArch. Android utilizará siempre Vulkan y macOS utilizará OpenGL."
 #define OPTION_VAL_VULKAN_ES NULL
 #define OPTION_VAL_OPENGL_ES NULL
-#define XEMU_VIDEO_ASPECT_LABEL_ES NULL
-#define XEMU_VIDEO_ASPECT_INFO_0_ES NULL
-#define OPTION_VAL_DASHBOARD_ES NULL
+#define XEMU_VIDEO_ASPECT_LABEL_ES "Relación de aspecto del sistema (es necesario reiniciar)"
+#define XEMU_VIDEO_ASPECT_INFO_0_ES "La forma de la imagen que declara la configuración de vídeo de la consola a los juegos, ignorando la configuración de la Interfaz de Xbox. Si seleccionas 16:9, aquellos juegos compatibles con el formato panorámico se mostrarán así; seleccionando 4:3 se mostrarán en 4:3. Elige la relación de aspecto de tu pantalla. Con bandas mostrará la relación a 4:3 de la interfaz y mostrará los juegos panorámicos con bandas negras. Interfaz conservará el ajuste de la propia interfaz."
 #define OPTION_VAL_4_3_ES NULL
 #define OPTION_VAL_16_9_ES NULL
-#define OPTION_VAL_LETTERBOX_ES NULL
+#define OPTION_VAL_LETTERBOX_ES "Con bandas"
 #define XEMU_ASPECT_RATIO_LABEL_ES "Relación de aspecto del núcleo"
-#define XEMU_ASPECT_RATIO_INFO_0_ES NULL
-#define OPTION_VAL_AUTO_ES "Automática"
-#define XEMU_SURFACE_SCALE_LABEL_ES NULL
+#define XEMU_ASPECT_RATIO_INFO_0_ES "La forma con la que se mostrará la imagen. Lo mejor es seleccionar el valor automático, que respetará lo que diga el juego: 16:9 si la consola está configurada en formato panorámico (ya sea con Relación de aspecto del sistema o dentro de la interfaz de la consola) y el juego pueda renderizarse a 16:9, 4:3 en caso contrario y con juegos para Chihiro. 16:9 estirará un juego en 4:3 a una imagen panorámica."
+#define XEMU_OVERSCAN_CROP_LABEL_ES "Recortar sobrebarrido vertical"
+#define XEMU_OVERSCAN_CROP_INFO_0_ES NULL
+#define XEMU_SURFACE_SCALE_LABEL_ES "Escala de resolución interna (es necesario reiniciar)"
 #define XEMU_SURFACE_SCALE_INFO_0_ES "Escala la resolución interna de renderizado. Un valor más alto mejorará la calidad, pero reducirá el rendimiento."
 #define OPTION_VAL_1_ES "× 1 (640 × 480)"
 #define OPTION_VAL_2_ES "× 2 (1280 × 960)"
@@ -8531,7 +10294,14 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_8_ES "× 8 (5120 × 3840)"
 #define OPTION_VAL_9_ES "× 9 (5760 × 4320)"
 #define OPTION_VAL_10_ES "× 10 (6400 × 4800)"
-#define XEMU_AVPACK_LABEL_ES NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_ES "Filtrado anisotrópico"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_ES "La cantidad mínima de filtro anisotrópico que se aplicará a las texturas suavizadas de los juegos, manteniéndolas nítidas cuando se muestren inclinadas. Nativo mantendrá el valor de cada juego, que está desactivado en la mayoría de juegos de Xbox."
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_ES "Nativa"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_ES "× 2"
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_ES "× 4"
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_ES "× 8"
+#define OPTION_VAL_16_ES "× 16"
+#define XEMU_AVPACK_LABEL_ES "Cable AV (es necesario reiniciar)"
 #define XEMU_AVPACK_INFO_0_ES "Selecciona el tipo de cable AV. Afectará a los modos de vídeo disponibles."
 #define OPTION_VAL_HDTV_ES NULL
 #define OPTION_VAL_COMPOSITE_ES "Vídeo compuesto"
@@ -8539,17 +10309,17 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_SCART_ES NULL
 #define OPTION_VAL_VGA_ES NULL
 #define XEMU_AUDIO_THREAD_LABEL_ES "Hilo para audio (es necesario reiniciar)"
-#define XEMU_AUDIO_THREAD_INFO_0_ES NULL
-#define XEMU_USE_DSP_LABEL_ES "Emulación del DSP de la APU"
-#define XEMU_USE_DSP_INFO_0_ES "Activa la emulación del DSP para mejorar la fidelidad del audio. Podría afectar al rendimiento."
-#define XEMU_DSP_JIT_LABEL_ES NULL
-#define XEMU_DSP_JIT_INFO_0_ES NULL
-#define XEMU_HRTF_LABEL_ES NULL
-#define XEMU_HRTF_INFO_0_ES NULL
-#define XEMU_VP_WORKERS_LABEL_ES NULL
-#define XEMU_VP_WORKERS_INFO_0_ES NULL
+#define XEMU_AUDIO_THREAD_INFO_0_ES "Envía el sonido al hilo de audio de RetroArch a medida que lo vaya mezclando la APU, tal y como lo reproduciría la aplicación en vez de enviar solo la cantidad de sonido que tendría un fotograma: el sonido seguirá reproduciéndose cuando haya parones de vídeo, como ocurriría durante la compilación de shaders. Toda compilación de RetroArch previa a noviembre de 2026 ralentizará el menú con esta opción si el regulador de fotogramas del menú de RetroArch utiliza la frecuencia de la pantalla, en este caso debes configurar la frecuencia de fotogramas del menú a Frecuencia de contenido."
+#define XEMU_USE_DSP_LABEL_ES "Emulación del DSP de la APU (es necesario reiniciar)"
+#define XEMU_USE_DSP_INFO_0_ES "Emula el DSP de la APU, que reproduce los efectros de sonido, la reverberación y buena parte de la música de los juegos: sin esta opción, todos los sonidos sonarán secos. Esta opción se aplicará al ejecutar un contenido, si la cambias en mitad de una partida, el sonido se distorsionará."
+#define XEMU_DSP_JIT_LABEL_ES "JIT del DSP (es necesario reiniciar)"
+#define XEMU_DSP_JIT_INFO_0_ES "Ejecuta los programas de la emulación del DSP de la APU como código compilado en vez de interpretarlos: es más rápido, como haría el JIT en el DSP de la aplicación independiente. Solo hará efecto si se activa la emulación del DSP de la APU. Esta opción se aplicará al ejecutar un contenido."
+#define XEMU_HRTF_LABEL_ES "Función de transferencia relacionada con la cabeza (HRTF)"
+#define XEMU_HRTF_INFO_0_ES "Ubica las posiciones 3D de las voces en aquellos juegos compatibles con funciones de transferencia relacionadas con la cabeza, tal y como haría la consola. Para auriculares y altavoces estéreo."
+#define XEMU_VP_WORKERS_LABEL_ES "Hilos de procesamiento de voces (es necesario reiniciar)"
+#define XEMU_VP_WORKERS_INFO_0_ES "Los hilos usados por el procesador de voces de audio para mezclarlas. El valor automático utilizará un hilo por núcleo de la CPU."
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_ES "Primera ejecución fluida (es necesario reiniciar)"
-#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_ES NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_ES "Compila los shaders que se sabe que utiliza un juego concreto durante su arranque para no pasar los primeros minutos con tirones mientras se están compilando. OpenGL guardará lo compilado en la caché de shaders, que siempre estará activada."
 #define XEMU_AUDIO_VOLUME_LABEL_ES "Límite de volumen de audio (%)"
 #define XEMU_AUDIO_VOLUME_INFO_0_ES "Limita el volumen de la salida de audio de Xbox de forma independiente al volumen maestro de RetroArch."
 #define OPTION_VAL_100_ES "100 %"
@@ -8559,39 +10329,51 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_20_ES "20 %"
 #define OPTION_VAL_0_ES "Silenciado"
 #define XEMU_VK_FAST_PATHS_LABEL_ES "Rutas rápidas de Vulkan (es necesario reiniciar)"
-#define XEMU_VK_FAST_PATHS_INFO_0_ES NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_ES "Afecta a la velocidad de compilación de shaders en Vulkan. Todo es lo más rápido, pero podría provocar que se cuelguen algunos juegos."
 #define OPTION_VAL_ALL_ES "Todos"
 #define OPTION_VAL_NO_GPL_ES "Sin bibliotecas de canalización"
 #define OPTION_VAL_NO_DYN_ES "Sin estados dinámicos"
 #define OPTION_VAL_NONE_ES "No compartir"
-#define XEMU_RUMBLE_P1_LABEL_ES NULL
-#define XEMU_RUMBLE_P1_INFO_0_ES NULL
-#define XEMU_RUMBLE_P2_LABEL_ES NULL
-#define XEMU_RUMBLE_P2_INFO_0_ES NULL
-#define XEMU_DEADZONE_P1_LABEL_ES NULL
-#define XEMU_DEADZONE_P1_INFO_0_ES NULL
+#define XEMU_RUMBLE_P1_LABEL_ES "Vibración (jugador 1)"
+#define XEMU_RUMBLE_P1_INFO_0_ES "La vibración del mando del jugador 1, ya sea para juegos de Xbox o para el force feedback de un juego de conducción de Chihiro. Desactiva esta opción para que no haya vibración en ninguno de estos casos."
+#define XEMU_RUMBLE_P2_LABEL_ES "Vibración (jugador 2)"
+#define XEMU_RUMBLE_P2_INFO_0_ES "La vibración del mando del jugador 2, ya sea para juegos de Xbox o para el force feedback de un juego de conducción de Chihiro. Desactiva esta opción para que no haya vibración en ninguno de estos casos."
+#define XEMU_DEADZONE_P1_LABEL_ES "Zona muerta del stick analógico (jugador 1)"
+#define XEMU_DEADZONE_P1_INFO_0_ES "Establece el recorrido mínimo que deben tener los sticks analógicos del jugador 1 para que sean detectados por el juego: afecta a ambos sticks y tanto a Xbox como a Chihiro, el resto del recorrido se escalará al rango completo."
 #define OPTION_VAL_0_XEMU_DEADZONE_P1_ES "0 %"
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_ES "5 %"
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_ES "10 %"
 #define OPTION_VAL_15_ES "15 %"
 #define OPTION_VAL_25_ES "25 %"
 #define OPTION_VAL_30_ES "30 %"
-#define XEMU_DEADZONE_P2_LABEL_ES NULL
-#define XEMU_DEADZONE_P2_INFO_0_ES NULL
+#define XEMU_DEADZONE_P2_LABEL_ES "Zona muerta del stick analógico (jugador 2)"
+#define XEMU_DEADZONE_P2_INFO_0_ES "Establece el recorrido mínimo que deben tener los sticks analógicos del jugador 2 para que sean detectados por el juego: afecta a ambos sticks y tanto a Xbox como a Chihiro, el resto del recorrido se escalará al rango completo."
 #define XEMU_CHIHIRO_FREEPLAY_LABEL_ES "Juego libre (es necesario reiniciar)"
 #define XEMU_CHIHIRO_FREEPLAY_INFO_0_ES "Arranca los juegos de Sega Chihiro en modo de juego libre, sin necesitar introducir monedas. Desactiva esta opción y pulsa el botón SELECT para introducir una moneda."
 #define XEMU_CHIHIRO_GUN_AIM_LABEL_ES "Método de apuntado de lightguns"
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_ES "Indica qué es lo que apunta a la pantalla en House of the Dead III, Virtua Cop 3 y Ghost Squad. Ratón: apunta con el ratón (o la lightgun de RetroArch), dispara con el botón izquierdo, el botón derecho es el botón del arma (para empujar la corredera del arma o cambiar de arma), el botón central es el pedal o el selector de disparo. Stick analógico: apunta con el stick izquierdo o con la cruceta, dispara con R2, L2 es el botón del arma, L el pedal o el selector de disparo, y con R dispararás fuera de la pantalla."
 #define OPTION_VAL_MOUSE_ES "Ratón"
 #define OPTION_VAL_STICK_ES "Stick analógico"
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_ES "Sensibilidad de apuntado con sticks"
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_ES "Establece la velocidad con la que el stick moverá el punto de mira al usar sticks analógicos como método de apuntado de lightguns; al 100 %, mover el stick hasta un borde hará que recorra la pantalla de un lado a otro en apenas un segundo. El ratón apuntará a donde esté el cursor."
+#define OPTION_VAL_50_ES "50 %"
+#define OPTION_VAL_70_ES "70 %"
+#define OPTION_VAL_90_ES "90 %"
+#define OPTION_VAL_110_ES "110 %"
+#define OPTION_VAL_120_ES "120 %"
+#define OPTION_VAL_130_ES "130 %"
+#define OPTION_VAL_140_ES "140 %"
+#define OPTION_VAL_150_ES "150 %"
+#define OPTION_VAL_160_ES "160 %"
+#define OPTION_VAL_170_ES "170 %"
+#define OPTION_VAL_180_ES "180 %"
+#define OPTION_VAL_190_ES "190 %"
+#define OPTION_VAL_200_ES "200 %"
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_ES "Punto de mira"
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_ES "Dibuja la posición de la lightgun de cada jugador en pantalla: el punto de mira del jugador 1 es rojo y el del jugador 2 es azul."
 #define XEMU_CHIHIRO_FFB_LABEL_ES "Vibración con force feedback"
 #define XEMU_CHIHIRO_FFB_INFO_0_ES "Transmite la señal de force feedback de los juegos de carreras (OutRun 2, Maximum Tune) de Chihiro a la vibración del mando del puerto 1 con la fuerza indicada."
-#define OPTION_VAL_50_ES "50 %"
 #define OPTION_VAL_75_ES "75 %"
-#define OPTION_VAL_150_ES "150 %"
-#define OPTION_VAL_200_ES "200 %"
 
 struct retro_core_option_v2_category option_cats_es[] = {
     {
@@ -8698,6 +10480,32 @@ struct retro_core_option_v2_definition option_defs_es[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_ES,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_ES,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_ES },
+            { "dashboard",  OPTION_VAL_DASHBOARD_ES },
+            { "english",    OPTION_VAL_ENGLISH_ES },
+            { "japanese",   OPTION_VAL_JAPANESE_ES },
+            { "german",     OPTION_VAL_GERMAN_ES },
+            { "french",     OPTION_VAL_FRENCH_ES },
+            { "spanish",    OPTION_VAL_SPANISH_ES },
+            { "italian",    OPTION_VAL_ITALIAN_ES },
+            { "korean",     OPTION_VAL_KOREAN_ES },
+            { "chinese",    OPTION_VAL_CHINESE_ES },
+            { "portuguese", OPTION_VAL_PORTUGUESE_ES },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_ES,
@@ -8760,6 +10568,22 @@ struct retro_core_option_v2_definition option_defs_es[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_ES,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_ES,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_ES },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_ES,
@@ -8778,6 +10602,24 @@ struct retro_core_option_v2_definition option_defs_es[] = {
             { "8", OPTION_VAL_8_ES },
             { "9", OPTION_VAL_9_ES },
             { "10", OPTION_VAL_10_ES },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_ES,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_ES,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_ES },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_ES },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_ES },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_ES },
+            { "16", OPTION_VAL_16_ES },
             { NULL, NULL },
         },
         "1"
@@ -8830,10 +10672,13 @@ struct retro_core_option_v2_definition option_defs_es[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_ES,
@@ -8846,7 +10691,7 @@ struct retro_core_option_v2_definition option_defs_es[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -9038,6 +10883,36 @@ struct retro_core_option_v2_definition option_defs_es[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_ES,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_ES,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_ES },
+            { "60", OPTION_VAL_60_ES },
+            { "70", OPTION_VAL_70_ES },
+            { "80", OPTION_VAL_80_ES },
+            { "90", OPTION_VAL_90_ES },
+            { "100", OPTION_VAL_100_ES },
+            { "110", OPTION_VAL_110_ES },
+            { "120", OPTION_VAL_120_ES },
+            { "130", OPTION_VAL_130_ES },
+            { "140", OPTION_VAL_140_ES },
+            { "150", OPTION_VAL_150_ES },
+            { "160", OPTION_VAL_160_ES },
+            { "170", OPTION_VAL_170_ES },
+            { "180", OPTION_VAL_180_ES },
+            { "190", OPTION_VAL_190_ES },
+            { "200", OPTION_VAL_200_ES },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -9107,6 +10982,19 @@ struct retro_core_options_v2 options_es = {
 #define XEMU_HARD_FPU_INFO_0_FA NULL
 #define XEMU_CPU_BOOST_LABEL_FA NULL
 #define XEMU_CPU_BOOST_INFO_0_FA NULL
+#define XEMU_LANGUAGE_LABEL_FA NULL
+#define XEMU_LANGUAGE_INFO_0_FA NULL
+#define OPTION_VAL_AUTO_FA "خودکار"
+#define OPTION_VAL_DASHBOARD_FA NULL
+#define OPTION_VAL_ENGLISH_FA NULL
+#define OPTION_VAL_JAPANESE_FA NULL
+#define OPTION_VAL_GERMAN_FA NULL
+#define OPTION_VAL_FRENCH_FA NULL
+#define OPTION_VAL_SPANISH_FA NULL
+#define OPTION_VAL_ITALIAN_FA NULL
+#define OPTION_VAL_KOREAN_FA NULL
+#define OPTION_VAL_CHINESE_FA NULL
+#define OPTION_VAL_PORTUGUESE_FA NULL
 #define XEMU_HDD_TRIM_LABEL_FA NULL
 #define XEMU_HDD_TRIM_INFO_0_FA NULL
 #define XEMU_RENDERER_LABEL_FA NULL
@@ -9115,13 +11003,13 @@ struct retro_core_options_v2 options_es = {
 #define OPTION_VAL_OPENGL_FA NULL
 #define XEMU_VIDEO_ASPECT_LABEL_FA NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_FA NULL
-#define OPTION_VAL_DASHBOARD_FA NULL
 #define OPTION_VAL_4_3_FA NULL
 #define OPTION_VAL_16_9_FA NULL
 #define OPTION_VAL_LETTERBOX_FA NULL
 #define XEMU_ASPECT_RATIO_LABEL_FA NULL
 #define XEMU_ASPECT_RATIO_INFO_0_FA NULL
-#define OPTION_VAL_AUTO_FA "خودکار"
+#define XEMU_OVERSCAN_CROP_LABEL_FA NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_FA NULL
 #define XEMU_SURFACE_SCALE_LABEL_FA NULL
 #define XEMU_SURFACE_SCALE_INFO_0_FA NULL
 #define OPTION_VAL_1_FA NULL
@@ -9134,6 +11022,13 @@ struct retro_core_options_v2 options_es = {
 #define OPTION_VAL_8_FA NULL
 #define OPTION_VAL_9_FA NULL
 #define OPTION_VAL_10_FA NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_FA NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_FA NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_FA NULL
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_FA NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_FA NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_FA NULL
+#define OPTION_VAL_16_FA NULL
 #define XEMU_AVPACK_LABEL_FA NULL
 #define XEMU_AVPACK_INFO_0_FA NULL
 #define OPTION_VAL_HDTV_FA NULL
@@ -9187,14 +11082,26 @@ struct retro_core_options_v2 options_es = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_FA NULL
 #define OPTION_VAL_MOUSE_FA NULL
 #define OPTION_VAL_STICK_FA NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_FA NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_FA NULL
+#define OPTION_VAL_50_FA NULL
+#define OPTION_VAL_70_FA NULL
+#define OPTION_VAL_90_FA NULL
+#define OPTION_VAL_110_FA NULL
+#define OPTION_VAL_120_FA NULL
+#define OPTION_VAL_130_FA NULL
+#define OPTION_VAL_140_FA NULL
+#define OPTION_VAL_150_FA NULL
+#define OPTION_VAL_160_FA NULL
+#define OPTION_VAL_170_FA NULL
+#define OPTION_VAL_180_FA NULL
+#define OPTION_VAL_190_FA NULL
+#define OPTION_VAL_200_FA NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_FA NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_FA NULL
 #define XEMU_CHIHIRO_FFB_LABEL_FA NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_FA NULL
-#define OPTION_VAL_50_FA NULL
 #define OPTION_VAL_75_FA NULL
-#define OPTION_VAL_150_FA NULL
-#define OPTION_VAL_200_FA NULL
 
 struct retro_core_option_v2_category option_cats_fa[] = {
     {
@@ -9301,6 +11208,32 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_FA,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_FA,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_FA },
+            { "dashboard",  OPTION_VAL_DASHBOARD_FA },
+            { "english",    OPTION_VAL_ENGLISH_FA },
+            { "japanese",   OPTION_VAL_JAPANESE_FA },
+            { "german",     OPTION_VAL_GERMAN_FA },
+            { "french",     OPTION_VAL_FRENCH_FA },
+            { "spanish",    OPTION_VAL_SPANISH_FA },
+            { "italian",    OPTION_VAL_ITALIAN_FA },
+            { "korean",     OPTION_VAL_KOREAN_FA },
+            { "chinese",    OPTION_VAL_CHINESE_FA },
+            { "portuguese", OPTION_VAL_PORTUGUESE_FA },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_FA,
@@ -9363,6 +11296,22 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_FA,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_FA,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_FA },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_FA,
@@ -9381,6 +11330,24 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
             { "8", OPTION_VAL_8_FA },
             { "9", OPTION_VAL_9_FA },
             { "10", OPTION_VAL_10_FA },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_FA,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_FA,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_FA },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_FA },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_FA },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_FA },
+            { "16", OPTION_VAL_16_FA },
             { NULL, NULL },
         },
         "1"
@@ -9433,10 +11400,13 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_FA,
@@ -9449,7 +11419,7 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -9641,6 +11611,36 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_FA,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_FA,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_FA },
+            { "60", OPTION_VAL_60_FA },
+            { "70", OPTION_VAL_70_FA },
+            { "80", OPTION_VAL_80_FA },
+            { "90", OPTION_VAL_90_FA },
+            { "100", OPTION_VAL_100_FA },
+            { "110", OPTION_VAL_110_FA },
+            { "120", OPTION_VAL_120_FA },
+            { "130", OPTION_VAL_130_FA },
+            { "140", OPTION_VAL_140_FA },
+            { "150", OPTION_VAL_150_FA },
+            { "160", OPTION_VAL_160_FA },
+            { "170", OPTION_VAL_170_FA },
+            { "180", OPTION_VAL_180_FA },
+            { "190", OPTION_VAL_190_FA },
+            { "200", OPTION_VAL_200_FA },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -9710,6 +11710,19 @@ struct retro_core_options_v2 options_fa = {
 #define XEMU_HARD_FPU_INFO_0_FI NULL
 #define XEMU_CPU_BOOST_LABEL_FI NULL
 #define XEMU_CPU_BOOST_INFO_0_FI NULL
+#define XEMU_LANGUAGE_LABEL_FI NULL
+#define XEMU_LANGUAGE_INFO_0_FI NULL
+#define OPTION_VAL_AUTO_FI "Automaattinen"
+#define OPTION_VAL_DASHBOARD_FI NULL
+#define OPTION_VAL_ENGLISH_FI NULL
+#define OPTION_VAL_JAPANESE_FI NULL
+#define OPTION_VAL_GERMAN_FI NULL
+#define OPTION_VAL_FRENCH_FI NULL
+#define OPTION_VAL_SPANISH_FI NULL
+#define OPTION_VAL_ITALIAN_FI NULL
+#define OPTION_VAL_KOREAN_FI NULL
+#define OPTION_VAL_CHINESE_FI NULL
+#define OPTION_VAL_PORTUGUESE_FI NULL
 #define XEMU_HDD_TRIM_LABEL_FI NULL
 #define XEMU_HDD_TRIM_INFO_0_FI NULL
 #define XEMU_RENDERER_LABEL_FI NULL
@@ -9718,13 +11731,13 @@ struct retro_core_options_v2 options_fa = {
 #define OPTION_VAL_OPENGL_FI NULL
 #define XEMU_VIDEO_ASPECT_LABEL_FI NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_FI NULL
-#define OPTION_VAL_DASHBOARD_FI NULL
 #define OPTION_VAL_4_3_FI NULL
 #define OPTION_VAL_16_9_FI NULL
 #define OPTION_VAL_LETTERBOX_FI NULL
 #define XEMU_ASPECT_RATIO_LABEL_FI "Ytimen kuvasuhde"
 #define XEMU_ASPECT_RATIO_INFO_0_FI NULL
-#define OPTION_VAL_AUTO_FI "Automaattinen"
+#define XEMU_OVERSCAN_CROP_LABEL_FI NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_FI NULL
 #define XEMU_SURFACE_SCALE_LABEL_FI NULL
 #define XEMU_SURFACE_SCALE_INFO_0_FI NULL
 #define OPTION_VAL_1_FI NULL
@@ -9737,6 +11750,13 @@ struct retro_core_options_v2 options_fa = {
 #define OPTION_VAL_8_FI NULL
 #define OPTION_VAL_9_FI NULL
 #define OPTION_VAL_10_FI NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_FI "Anisotrooppinen suodatus"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_FI NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_FI "Natiivi"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_FI NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_FI NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_FI NULL
+#define OPTION_VAL_16_FI NULL
 #define XEMU_AVPACK_LABEL_FI NULL
 #define XEMU_AVPACK_INFO_0_FI NULL
 #define OPTION_VAL_HDTV_FI NULL
@@ -9790,14 +11810,26 @@ struct retro_core_options_v2 options_fa = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_FI NULL
 #define OPTION_VAL_MOUSE_FI "Hiiri"
 #define OPTION_VAL_STICK_FI NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_FI NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_FI NULL
+#define OPTION_VAL_50_FI "50 %"
+#define OPTION_VAL_70_FI "70 %"
+#define OPTION_VAL_90_FI "90 %"
+#define OPTION_VAL_110_FI "110 %"
+#define OPTION_VAL_120_FI "120 %"
+#define OPTION_VAL_130_FI "130 %"
+#define OPTION_VAL_140_FI "140 %"
+#define OPTION_VAL_150_FI "150 %"
+#define OPTION_VAL_160_FI "160 %"
+#define OPTION_VAL_170_FI "170 %"
+#define OPTION_VAL_180_FI "180 %"
+#define OPTION_VAL_190_FI "190 %"
+#define OPTION_VAL_200_FI "200 %"
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_FI NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_FI NULL
 #define XEMU_CHIHIRO_FFB_LABEL_FI NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_FI NULL
-#define OPTION_VAL_50_FI "50 %"
 #define OPTION_VAL_75_FI "75 %"
-#define OPTION_VAL_150_FI "150 %"
-#define OPTION_VAL_200_FI "200 %"
 
 struct retro_core_option_v2_category option_cats_fi[] = {
     {
@@ -9904,6 +11936,32 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_FI,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_FI,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_FI },
+            { "dashboard",  OPTION_VAL_DASHBOARD_FI },
+            { "english",    OPTION_VAL_ENGLISH_FI },
+            { "japanese",   OPTION_VAL_JAPANESE_FI },
+            { "german",     OPTION_VAL_GERMAN_FI },
+            { "french",     OPTION_VAL_FRENCH_FI },
+            { "spanish",    OPTION_VAL_SPANISH_FI },
+            { "italian",    OPTION_VAL_ITALIAN_FI },
+            { "korean",     OPTION_VAL_KOREAN_FI },
+            { "chinese",    OPTION_VAL_CHINESE_FI },
+            { "portuguese", OPTION_VAL_PORTUGUESE_FI },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_FI,
@@ -9966,6 +12024,22 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_FI,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_FI,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_FI },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_FI,
@@ -9984,6 +12058,24 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
             { "8", OPTION_VAL_8_FI },
             { "9", OPTION_VAL_9_FI },
             { "10", OPTION_VAL_10_FI },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_FI,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_FI,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_FI },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_FI },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_FI },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_FI },
+            { "16", OPTION_VAL_16_FI },
             { NULL, NULL },
         },
         "1"
@@ -10036,10 +12128,13 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_FI,
@@ -10052,7 +12147,7 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -10244,6 +12339,36 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_FI,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_FI,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_FI },
+            { "60", OPTION_VAL_60_FI },
+            { "70", OPTION_VAL_70_FI },
+            { "80", OPTION_VAL_80_FI },
+            { "90", OPTION_VAL_90_FI },
+            { "100", OPTION_VAL_100_FI },
+            { "110", OPTION_VAL_110_FI },
+            { "120", OPTION_VAL_120_FI },
+            { "130", OPTION_VAL_130_FI },
+            { "140", OPTION_VAL_140_FI },
+            { "150", OPTION_VAL_150_FI },
+            { "160", OPTION_VAL_160_FI },
+            { "170", OPTION_VAL_170_FI },
+            { "180", OPTION_VAL_180_FI },
+            { "190", OPTION_VAL_190_FI },
+            { "200", OPTION_VAL_200_FI },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -10301,7 +12426,7 @@ struct retro_core_options_v2 options_fi = {
 #define CATEGORY_CHIHIRO_LABEL_FR NULL
 #define CATEGORY_CHIHIRO_INFO_0_FR NULL
 #define XEMU_MEMORY_LABEL_FR "Mémoire système (Mo)"
-#define XEMU_MEMORY_INFO_0_FR "Quantité de RAM du système. 64 Mo est la norme ; 128 Mo sont utilisés par les kits de débogage."
+#define XEMU_MEMORY_INFO_0_FR NULL
 #define OPTION_VAL_64_FR "64 Mo"
 #define OPTION_VAL_128_FR "128 Mo"
 #define XEMU_NETWORK_BACKEND_LABEL_FR "Backend réseau"
@@ -10313,6 +12438,19 @@ struct retro_core_options_v2 options_fi = {
 #define XEMU_HARD_FPU_INFO_0_FR "Utiliser la FPU de l'hôte pour l'émulation x87. Plus rapide, mais peut entraîner de légères imprécisions."
 #define XEMU_CPU_BOOST_LABEL_FR NULL
 #define XEMU_CPU_BOOST_INFO_0_FR NULL
+#define XEMU_LANGUAGE_LABEL_FR "Langue du système"
+#define XEMU_LANGUAGE_INFO_0_FR NULL
+#define OPTION_VAL_AUTO_FR NULL
+#define OPTION_VAL_DASHBOARD_FR NULL
+#define OPTION_VAL_ENGLISH_FR "Anglais"
+#define OPTION_VAL_JAPANESE_FR "Japonais"
+#define OPTION_VAL_GERMAN_FR "Allemand"
+#define OPTION_VAL_FRENCH_FR "Français"
+#define OPTION_VAL_SPANISH_FR "Espagnol"
+#define OPTION_VAL_ITALIAN_FR "Italien"
+#define OPTION_VAL_KOREAN_FR "Coréen"
+#define OPTION_VAL_CHINESE_FR "Chinois"
+#define OPTION_VAL_PORTUGUESE_FR "Portugais"
 #define XEMU_HDD_TRIM_LABEL_FR NULL
 #define XEMU_HDD_TRIM_INFO_0_FR NULL
 #define XEMU_RENDERER_LABEL_FR "API graphique (redémarrage)"
@@ -10321,13 +12459,13 @@ struct retro_core_options_v2 options_fi = {
 #define OPTION_VAL_OPENGL_FR NULL
 #define XEMU_VIDEO_ASPECT_LABEL_FR NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_FR NULL
-#define OPTION_VAL_DASHBOARD_FR NULL
 #define OPTION_VAL_4_3_FR NULL
 #define OPTION_VAL_16_9_FR NULL
 #define OPTION_VAL_LETTERBOX_FR NULL
 #define XEMU_ASPECT_RATIO_LABEL_FR "Rapport d'aspect du cœur"
 #define XEMU_ASPECT_RATIO_INFO_0_FR NULL
-#define OPTION_VAL_AUTO_FR NULL
+#define XEMU_OVERSCAN_CROP_LABEL_FR "Recadrer le surbalayage vertical"
+#define XEMU_OVERSCAN_CROP_INFO_0_FR NULL
 #define XEMU_SURFACE_SCALE_LABEL_FR NULL
 #define XEMU_SURFACE_SCALE_INFO_0_FR "Ajuste l'échelle de la résolution de rendu interne. Des valeurs plus élevées améliorent la qualité mais réduisent les performances."
 #define OPTION_VAL_1_FR "x1 (640 x 480)"
@@ -10340,6 +12478,13 @@ struct retro_core_options_v2 options_fi = {
 #define OPTION_VAL_8_FR "x8 (5120 x 3840)"
 #define OPTION_VAL_9_FR "x9 (5760 x 4320)"
 #define OPTION_VAL_10_FR "x10 (6400 x 4800)"
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_FR "Filtrage anisotrope"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_FR NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_FR NULL
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_FR "x2"
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_FR "x4"
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_FR "x8"
+#define OPTION_VAL_16_FR "x16"
 #define XEMU_AVPACK_LABEL_FR NULL
 #define XEMU_AVPACK_INFO_0_FR "Sélectionner le type de pack AV. Cela influe sur les modes vidéo disponibles."
 #define OPTION_VAL_HDTV_FR "TVHD"
@@ -10349,8 +12494,8 @@ struct retro_core_options_v2 options_fi = {
 #define OPTION_VAL_VGA_FR NULL
 #define XEMU_AUDIO_THREAD_LABEL_FR NULL
 #define XEMU_AUDIO_THREAD_INFO_0_FR NULL
-#define XEMU_USE_DSP_LABEL_FR "Émulation du DSP de l'APU"
-#define XEMU_USE_DSP_INFO_0_FR "Activer l'émulation du DSP pour une meilleure fidélité audio. Cela peut affecter les performances."
+#define XEMU_USE_DSP_LABEL_FR NULL
+#define XEMU_USE_DSP_INFO_0_FR NULL
 #define XEMU_DSP_JIT_LABEL_FR NULL
 #define XEMU_DSP_JIT_INFO_0_FR NULL
 #define XEMU_HRTF_LABEL_FR NULL
@@ -10393,14 +12538,26 @@ struct retro_core_options_v2 options_fi = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_FR NULL
 #define OPTION_VAL_MOUSE_FR "Souris"
 #define OPTION_VAL_STICK_FR NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_FR NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_FR NULL
+#define OPTION_VAL_50_FR "50 %"
+#define OPTION_VAL_70_FR "70 %"
+#define OPTION_VAL_90_FR "90 %"
+#define OPTION_VAL_110_FR "110 %"
+#define OPTION_VAL_120_FR "120 %"
+#define OPTION_VAL_130_FR "130 %"
+#define OPTION_VAL_140_FR "140 %"
+#define OPTION_VAL_150_FR "150 %"
+#define OPTION_VAL_160_FR "160 %"
+#define OPTION_VAL_170_FR "170 %"
+#define OPTION_VAL_180_FR "180 %"
+#define OPTION_VAL_190_FR "190 %"
+#define OPTION_VAL_200_FR "200 %"
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_FR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_FR NULL
 #define XEMU_CHIHIRO_FFB_LABEL_FR NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_FR NULL
-#define OPTION_VAL_50_FR "50 %"
 #define OPTION_VAL_75_FR "75 %"
-#define OPTION_VAL_150_FR "150 %"
-#define OPTION_VAL_200_FR "200 %"
 
 struct retro_core_option_v2_category option_cats_fr[] = {
     {
@@ -10507,6 +12664,32 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_FR,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_FR,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_FR },
+            { "dashboard",  OPTION_VAL_DASHBOARD_FR },
+            { "english",    OPTION_VAL_ENGLISH_FR },
+            { "japanese",   OPTION_VAL_JAPANESE_FR },
+            { "german",     OPTION_VAL_GERMAN_FR },
+            { "french",     OPTION_VAL_FRENCH_FR },
+            { "spanish",    OPTION_VAL_SPANISH_FR },
+            { "italian",    OPTION_VAL_ITALIAN_FR },
+            { "korean",     OPTION_VAL_KOREAN_FR },
+            { "chinese",    OPTION_VAL_CHINESE_FR },
+            { "portuguese", OPTION_VAL_PORTUGUESE_FR },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_FR,
@@ -10569,6 +12752,22 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_FR,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_FR,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_FR },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_FR,
@@ -10587,6 +12786,24 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
             { "8", OPTION_VAL_8_FR },
             { "9", OPTION_VAL_9_FR },
             { "10", OPTION_VAL_10_FR },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_FR,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_FR,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_FR },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_FR },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_FR },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_FR },
+            { "16", OPTION_VAL_16_FR },
             { NULL, NULL },
         },
         "1"
@@ -10639,10 +12856,13 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_FR,
@@ -10655,7 +12875,7 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -10847,6 +13067,36 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_FR,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_FR,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_FR },
+            { "60", OPTION_VAL_60_FR },
+            { "70", OPTION_VAL_70_FR },
+            { "80", OPTION_VAL_80_FR },
+            { "90", OPTION_VAL_90_FR },
+            { "100", OPTION_VAL_100_FR },
+            { "110", OPTION_VAL_110_FR },
+            { "120", OPTION_VAL_120_FR },
+            { "130", OPTION_VAL_130_FR },
+            { "140", OPTION_VAL_140_FR },
+            { "150", OPTION_VAL_150_FR },
+            { "160", OPTION_VAL_160_FR },
+            { "170", OPTION_VAL_170_FR },
+            { "180", OPTION_VAL_180_FR },
+            { "190", OPTION_VAL_190_FR },
+            { "200", OPTION_VAL_200_FR },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -10904,7 +13154,7 @@ struct retro_core_options_v2 options_fr = {
 #define CATEGORY_CHIHIRO_LABEL_GA NULL
 #define CATEGORY_CHIHIRO_INFO_0_GA "Cluichí áircéid Sega Chihiro: súgradh saor in aisce, díriú i gcluichí gunna, agus aiseolas fórsa i gcluichí rásaíochta."
 #define XEMU_MEMORY_LABEL_GA "Cuimhne an Chórais (MB)"
-#define XEMU_MEMORY_INFO_0_GA "Méid an RAM córais. Is é 64 MB an caighdeán; úsáideann feisteas dífhabhtaithe 128 MB."
+#define XEMU_MEMORY_INFO_0_GA "Méid RAM an chórais san Xbox. Is é 64 MB an caighdeán; úsáideann feisteáin dífhabhtaithe 128 MB. Bíonn 128 MB i gcónaí ag Sega Chihiro, is cuma cad a deirtear anseo."
 #define OPTION_VAL_64_GA NULL
 #define OPTION_VAL_128_GA NULL
 #define XEMU_NETWORK_BACKEND_LABEL_GA "Cúlchóras Líonra"
@@ -10916,6 +13166,19 @@ struct retro_core_options_v2 options_fr = {
 #define XEMU_HARD_FPU_INFO_0_GA "Bain úsáid as FPU an óstaigh le haghaidh aithrise x87. Bíonn sé níos tapúla, ach d’fhéadfadh mion-mhíchruinneas a bheith i gceist."
 #define XEMU_CPU_BOOST_LABEL_GA "Treisiú LAP"
 #define XEMU_CPU_BOOST_INFO_0_GA "Bealaí níos tapúla don LAP aíonna agus don phróiseálaí fuaime: SSE dúchasach agus taisce léimneach níos leithne. Múch é má bhíonn fadhbanna le cluiche."
+#define XEMU_LANGUAGE_LABEL_GA "Teanga an Chórais"
+#define XEMU_LANGUAGE_INFO_0_GA "An teanga a shanntar do chluichí trí shocruithe an chonsóil, in áit na socruithe a bhaineann leis an deais. Coinníonn an deais an teanga atá stóráilte san EEPROM. Roghnaíonn an socrú 'Auto' teanga RetroArch má tá sí ar fáil ar an Xbox; murach sin, úsáidtear an Béarla."
+#define OPTION_VAL_AUTO_GA "Uathoibríoch"
+#define OPTION_VAL_DASHBOARD_GA "Painéal Rialúcháin"
+#define OPTION_VAL_ENGLISH_GA "Béarla"
+#define OPTION_VAL_JAPANESE_GA "Seapáinis"
+#define OPTION_VAL_GERMAN_GA "Gearmáinis"
+#define OPTION_VAL_FRENCH_GA "Fraincis"
+#define OPTION_VAL_SPANISH_GA "Spáinnis"
+#define OPTION_VAL_ITALIAN_GA "Iodáilis"
+#define OPTION_VAL_KOREAN_GA "Cóiréis"
+#define OPTION_VAL_CHINESE_GA "Sínis"
+#define OPTION_VAL_PORTUGUESE_GA "Portaingéilis"
 #define XEMU_HDD_TRIM_LABEL_GA "Trim an HDD agus é á dhúnadh"
 #define XEMU_HDD_TRIM_INFO_0_GA "Nuair a dhúntar an cluiche, glantar na deighiltí taisce X, Y agus Z ar an diosca crua (déanfaidh na cluichí iad a fhormáidiú arís nuair a bheidh siad ag teastáil uathu) agus athscríobhtar an íomhá gan an spás neamhúsáidte, rud a fhágann go laghdaítear méid an chomhaid. Teastaíonn méid spáis shaor atá comhionann le sonraí na híomhá, ar feadh tamaill. Ní dhéantar an próiseas seo má tá 'stát sábháilte' ag an íomhá. Déantar é seo nuair a dhúntar an cluiche, ní nuair a thosaítear arís é."
 #define XEMU_RENDERER_LABEL_GA "API Grafaice (Atosaigh)"
@@ -10924,13 +13187,13 @@ struct retro_core_options_v2 options_fr = {
 #define OPTION_VAL_OPENGL_GA NULL
 #define XEMU_VIDEO_ASPECT_LABEL_GA "Cóimheas Gné an Chórais (Atosaigh)"
 #define XEMU_VIDEO_ASPECT_INFO_0_GA "Socraíonn sé seo an fhormáid taispeána a thuairiscíonn an consól do chluichí, in áit an tsocraithe atá ag an deais. Má roghnaítear 16:9, rithfidh cluichí a thacaíonn le scáileán leathan i bhformáid scáileáin leathain; má roghnaítear 4:3, rithfidh siad i bhformáid 4:3. Roghnaigh an socrú a fhreagraíonn do chruth do scáileáin. Úsáideann an rogha 'Letterbox' formáid 4:3 na deais, ach taispeántar cluichí scáileáin leathain le barraí dubha ag an mbarr agus ag an mbun. Coinníonn an rogha 'Dashboard' an socrú atá ag an deais féin."
-#define OPTION_VAL_DASHBOARD_GA "Painéal Rialúcháin"
 #define OPTION_VAL_4_3_GA NULL
 #define OPTION_VAL_16_9_GA NULL
 #define OPTION_VAL_LETTERBOX_GA "Bosca litreacha"
 #define XEMU_ASPECT_RATIO_LABEL_GA "Cóimheas Gné Croí"
 #define XEMU_ASPECT_RATIO_INFO_0_GA "An cruth ina dtaispeántar an pictiúr. Is fearr é a fhágáil ar 'Auto', a leanann an cluiche: 16:9 nuair a bhíonn an consól socraithe ar scáileán leathan (Cóimheas Gné an Chórais nó an deais) agus an cluiche á rindreáil i 16:9; 4:3 ar shlí eile, nó ar chóras Chihiro. Síneann an suíomh 16:9 cluiche 4:3 amach chun an scáileán leathan a líonadh."
-#define OPTION_VAL_AUTO_GA "Uathoibríoch"
+#define XEMU_OVERSCAN_CROP_LABEL_GA "Bearr Ró-scanadh Ingearach"
+#define XEMU_OVERSCAN_CROP_INFO_0_GA NULL
 #define XEMU_SURFACE_SCALE_LABEL_GA "Scála Réitigh Inmheánaigh (Atosaigh)"
 #define XEMU_SURFACE_SCALE_INFO_0_GA "Déanann sé scálú ar an réiteach inmheánach rindreála. Feabhsaíonn luachanna níos airde an caighdeán ach laghdaíonn siad an fheidhmíocht."
 #define OPTION_VAL_1_GA NULL
@@ -10943,6 +13206,13 @@ struct retro_core_options_v2 options_fr = {
 #define OPTION_VAL_8_GA NULL
 #define OPTION_VAL_9_GA NULL
 #define OPTION_VAL_10_GA NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_GA "Scagadh Ainiseatrópach"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_GA "An scagadh is lú ainisotrópach a fhaigheann uigeachtaí réidh scagtha an chluiche, rud a choinníonn uigeachtaí ag claonadh géar. Fágann dúchasach féin an chluiche, rud nach bhfuil ann i gcás fhormhór na gcluichí Xbox."
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_GA "Dúchasach"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_GA NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_GA NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_GA NULL
+#define OPTION_VAL_16_GA NULL
 #define XEMU_AVPACK_LABEL_GA "Pacáiste AV (Atosaigh)"
 #define XEMU_AVPACK_INFO_0_GA "Roghnaigh an cineál pacáiste AV. Bíonn tionchar aige ar na modhanna físe atá ar fáil."
 #define OPTION_VAL_HDTV_GA NULL
@@ -10951,11 +13221,11 @@ struct retro_core_options_v2 options_fr = {
 #define OPTION_VAL_SCART_GA NULL
 #define OPTION_VAL_VGA_GA NULL
 #define XEMU_AUDIO_THREAD_LABEL_GA "Snáithe Fuaime (Atosaigh)"
-#define XEMU_AUDIO_THREAD_INFO_0_GA "Tugann sé an fhuaim do shnáithe fuaime RetroArch agus an APU á mheascadh, agus é á sheinm go neamhspleách, seachas fráma amháin a bheith in aghaidh gach fráma: leanann an fhuaim ar aghaidh agus na frámaí ag stopadh, amhail is dá mba rud é go mbíonn scáthaitheoirí ag tiomsú."
-#define XEMU_USE_DSP_LABEL_GA "Aithris APU DSP"
-#define XEMU_USE_DSP_INFO_0_GA "Cumasaigh aithris DSP chun cruinneas fuaime a fheabhsú. D’fhéadfadh tionchar a bheith aige ar an bhfeidhmíocht."
-#define XEMU_DSP_JIT_LABEL_GA NULL
-#define XEMU_DSP_JIT_INFO_0_GA "Ritheann sé cláir Aithriseoireachta DSP an APU mar chód tiomsaithe in áit iad a léirmhíniú: tá sé níos tapúla, cosúil le JIT DSP i bhfeidhmchlár neamhspleách. Ní dhéanann sé aon rud mura bhfuil Aithriseoireacht DSP an APU casta air."
+#define XEMU_AUDIO_THREAD_INFO_0_GA "Tugann sé an fhuaim do shnáithe fuaime RetroArch agus an APU á mheascadh, agus é á sheinm go neamhspleách, seachas fráma amháin in aghaidh gach fráma: leanann an fhuaim ar aghaidh agus na frámaí ag stopadh, mar a tharlaíonn agus scáthaitheoirí á dtiomsú. Moillíonn tógálacha RetroArch ó roimh Shamhain 2026 a roghchlár leis nuair a bhíonn Ráta Fráma Roghchláir (Frame Throttle) de réir Ráta Taispeána; ansin, socraigh é go Ráta Ábhair."
+#define XEMU_USE_DSP_LABEL_GA "Aithris DSP APU (Atosaigh)"
+#define XEMU_USE_DSP_INFO_0_GA "Déanann sé aithris ar DSP an APU, a sheinneann éifeachtaí na gcluichí, an t-athfhuaim agus cuid mhór den cheol iontu: gan é, bíonn an fhuaim gan bheocht. Déantar an socrú seo a chur i bhfeidhm nuair a thosaíonn an t-ábhar; má athraítear é fad is atá cluiche ar siúl, éiríonn an fhuaim saobh."
+#define XEMU_DSP_JIT_LABEL_GA "DSP JIT (Atosaigh)"
+#define XEMU_DSP_JIT_INFO_0_GA "Ritheann sé cláir Aithriseoireachta DSP an APU mar chód tiomsaithe seachas iad a léirmhíniú; tá sé níos tapúla, cosúil le JIT DSP i bhfeidhmchlár neamhspleách. Ní bhíonn aon éifeacht aige mura bhfuil Aithriseoireacht DSP an APU casta air. Déantar an gníomh seo nuair a thosaíonn an t-ábhar."
 #define XEMU_HRTF_LABEL_GA NULL
 #define XEMU_HRTF_INFO_0_GA "Cuireann sé guthanna 3D i gcluichí a bhaineann úsáid astu ina n-ionad cuí, ag baint úsáide as feidhmeanna aistrithe a bhaineann leis an gceann — díreach mar a dhéantar ar an gconsól — le haghaidh cluasán agus callairí steirió."
 #define XEMU_VP_WORKERS_LABEL_GA "Snáitheanna Próiseálaí Gutha (Atosaigh)"
@@ -10996,14 +13266,26 @@ struct retro_core_options_v2 options_fr = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_GA "Cad iad na haidhmeanna atá i House of the Dead III, Virtua Cop 3 agus Ghost Squad? Luch: déantar díriú leis an luch (nó le gunna solais *RetroArch*); scaoileann an cnaipe clé, feidhmíonn an cnaipe deas mar chnaipe an ghunna (chun an gunna a luchtú nó airm a athrú), agus rialaíonn an cnaipe lár an peadal nó an ráta scaoilte. Bata Analógach: déantar díriú leis an mbata clé nó leis an eochaircheap treo D-pad; scaoileann *R2*, feidhmíonn *L2* mar chnaipe an ghunna, rialaíonn *L* an peadal nó an ráta scaoilte, agus scaoileann *R* lasmuigh den scáileán."
 #define OPTION_VAL_MOUSE_GA "Luch"
 #define OPTION_VAL_STICK_GA "Maide Analógach"
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_GA "Íogaireacht Aimithe an Luamháin"
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_GA "An luas a ghluaiseann an luamhán an spriocphointe nuair a úsáidtear an luamhán analógach chun díriú – tá an luas céanna ann, bíodh sé ag gluaiseacht trasna nó suas is síos; ag 100%, má bhrúitear an luamhán go dtí an t-uasmhéid, trasnóidh an pointe airde an scáileáin i gceann soicind amháin, a bheag nó a mhór. Díríonn an luch ar an áit a bhfuil sí dírithe."
+#define OPTION_VAL_50_GA NULL
+#define OPTION_VAL_70_GA NULL
+#define OPTION_VAL_90_GA NULL
+#define OPTION_VAL_110_GA NULL
+#define OPTION_VAL_120_GA NULL
+#define OPTION_VAL_130_GA NULL
+#define OPTION_VAL_140_GA NULL
+#define OPTION_VAL_150_GA NULL
+#define OPTION_VAL_160_GA NULL
+#define OPTION_VAL_170_GA NULL
+#define OPTION_VAL_180_GA NULL
+#define OPTION_VAL_190_GA NULL
+#define OPTION_VAL_200_GA NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_GA "Croisghléas"
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_GA "Tarraingíonn sé sprioc gach imreora thar an bpictiúr; dearg d'Imreoir 1, gorm d'Imreoir 2."
 #define XEMU_CHIHIRO_FFB_LABEL_GA "Creathadh le haiseolas fórsa"
 #define XEMU_CHIHIRO_FFB_INFO_0_GA "Cuireann sé aiseolas fórsa ó chluiche rásaíochta Chihiro (OutRun 2, Maximum Tune) ar fáil mar chreathadh ar an rialtóir i bport 1, ag an déine seo."
-#define OPTION_VAL_50_GA NULL
 #define OPTION_VAL_75_GA NULL
-#define OPTION_VAL_150_GA NULL
-#define OPTION_VAL_200_GA NULL
 
 struct retro_core_option_v2_category option_cats_ga[] = {
     {
@@ -11110,6 +13392,32 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_GA,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_GA,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_GA },
+            { "dashboard",  OPTION_VAL_DASHBOARD_GA },
+            { "english",    OPTION_VAL_ENGLISH_GA },
+            { "japanese",   OPTION_VAL_JAPANESE_GA },
+            { "german",     OPTION_VAL_GERMAN_GA },
+            { "french",     OPTION_VAL_FRENCH_GA },
+            { "spanish",    OPTION_VAL_SPANISH_GA },
+            { "italian",    OPTION_VAL_ITALIAN_GA },
+            { "korean",     OPTION_VAL_KOREAN_GA },
+            { "chinese",    OPTION_VAL_CHINESE_GA },
+            { "portuguese", OPTION_VAL_PORTUGUESE_GA },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_GA,
@@ -11172,6 +13480,22 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_GA,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_GA,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_GA },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_GA,
@@ -11190,6 +13514,24 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
             { "8", OPTION_VAL_8_GA },
             { "9", OPTION_VAL_9_GA },
             { "10", OPTION_VAL_10_GA },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_GA,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_GA,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_GA },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_GA },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_GA },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_GA },
+            { "16", OPTION_VAL_16_GA },
             { NULL, NULL },
         },
         "1"
@@ -11242,10 +13584,13 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_GA,
@@ -11258,7 +13603,7 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -11450,6 +13795,36 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_GA,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_GA,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_GA },
+            { "60", OPTION_VAL_60_GA },
+            { "70", OPTION_VAL_70_GA },
+            { "80", OPTION_VAL_80_GA },
+            { "90", OPTION_VAL_90_GA },
+            { "100", OPTION_VAL_100_GA },
+            { "110", OPTION_VAL_110_GA },
+            { "120", OPTION_VAL_120_GA },
+            { "130", OPTION_VAL_130_GA },
+            { "140", OPTION_VAL_140_GA },
+            { "150", OPTION_VAL_150_GA },
+            { "160", OPTION_VAL_160_GA },
+            { "170", OPTION_VAL_170_GA },
+            { "180", OPTION_VAL_180_GA },
+            { "190", OPTION_VAL_190_GA },
+            { "200", OPTION_VAL_200_GA },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -11519,6 +13894,19 @@ struct retro_core_options_v2 options_ga = {
 #define XEMU_HARD_FPU_INFO_0_GL NULL
 #define XEMU_CPU_BOOST_LABEL_GL NULL
 #define XEMU_CPU_BOOST_INFO_0_GL NULL
+#define XEMU_LANGUAGE_LABEL_GL NULL
+#define XEMU_LANGUAGE_INFO_0_GL NULL
+#define OPTION_VAL_AUTO_GL NULL
+#define OPTION_VAL_DASHBOARD_GL NULL
+#define OPTION_VAL_ENGLISH_GL "Inglés"
+#define OPTION_VAL_JAPANESE_GL "Xaponés"
+#define OPTION_VAL_GERMAN_GL "Alemán"
+#define OPTION_VAL_FRENCH_GL "Francés"
+#define OPTION_VAL_SPANISH_GL "Español"
+#define OPTION_VAL_ITALIAN_GL "Italiano"
+#define OPTION_VAL_KOREAN_GL NULL
+#define OPTION_VAL_CHINESE_GL NULL
+#define OPTION_VAL_PORTUGUESE_GL NULL
 #define XEMU_HDD_TRIM_LABEL_GL NULL
 #define XEMU_HDD_TRIM_INFO_0_GL NULL
 #define XEMU_RENDERER_LABEL_GL NULL
@@ -11527,13 +13915,13 @@ struct retro_core_options_v2 options_ga = {
 #define OPTION_VAL_OPENGL_GL NULL
 #define XEMU_VIDEO_ASPECT_LABEL_GL NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_GL NULL
-#define OPTION_VAL_DASHBOARD_GL NULL
 #define OPTION_VAL_4_3_GL NULL
 #define OPTION_VAL_16_9_GL NULL
 #define OPTION_VAL_LETTERBOX_GL NULL
 #define XEMU_ASPECT_RATIO_LABEL_GL "Relación de aspecto do núcleo"
 #define XEMU_ASPECT_RATIO_INFO_0_GL NULL
-#define OPTION_VAL_AUTO_GL NULL
+#define XEMU_OVERSCAN_CROP_LABEL_GL "Recortar Overscan vertical"
+#define XEMU_OVERSCAN_CROP_INFO_0_GL NULL
 #define XEMU_SURFACE_SCALE_LABEL_GL NULL
 #define XEMU_SURFACE_SCALE_INFO_0_GL NULL
 #define OPTION_VAL_1_GL NULL
@@ -11546,6 +13934,13 @@ struct retro_core_options_v2 options_ga = {
 #define OPTION_VAL_8_GL NULL
 #define OPTION_VAL_9_GL NULL
 #define OPTION_VAL_10_GL NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_GL "Filtrado anisotrópico"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_GL NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_GL "Nativo"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_GL NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_GL NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_GL NULL
+#define OPTION_VAL_16_GL NULL
 #define XEMU_AVPACK_LABEL_GL NULL
 #define XEMU_AVPACK_INFO_0_GL NULL
 #define OPTION_VAL_HDTV_GL NULL
@@ -11599,14 +13994,26 @@ struct retro_core_options_v2 options_ga = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_GL NULL
 #define OPTION_VAL_MOUSE_GL "Rato"
 #define OPTION_VAL_STICK_GL NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_GL NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_GL NULL
+#define OPTION_VAL_50_GL NULL
+#define OPTION_VAL_70_GL NULL
+#define OPTION_VAL_90_GL NULL
+#define OPTION_VAL_110_GL NULL
+#define OPTION_VAL_120_GL NULL
+#define OPTION_VAL_130_GL NULL
+#define OPTION_VAL_140_GL NULL
+#define OPTION_VAL_150_GL NULL
+#define OPTION_VAL_160_GL NULL
+#define OPTION_VAL_170_GL NULL
+#define OPTION_VAL_180_GL NULL
+#define OPTION_VAL_190_GL NULL
+#define OPTION_VAL_200_GL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_GL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_GL NULL
 #define XEMU_CHIHIRO_FFB_LABEL_GL NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_GL NULL
-#define OPTION_VAL_50_GL NULL
 #define OPTION_VAL_75_GL NULL
-#define OPTION_VAL_150_GL NULL
-#define OPTION_VAL_200_GL NULL
 
 struct retro_core_option_v2_category option_cats_gl[] = {
     {
@@ -11713,6 +14120,32 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_GL,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_GL,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_GL },
+            { "dashboard",  OPTION_VAL_DASHBOARD_GL },
+            { "english",    OPTION_VAL_ENGLISH_GL },
+            { "japanese",   OPTION_VAL_JAPANESE_GL },
+            { "german",     OPTION_VAL_GERMAN_GL },
+            { "french",     OPTION_VAL_FRENCH_GL },
+            { "spanish",    OPTION_VAL_SPANISH_GL },
+            { "italian",    OPTION_VAL_ITALIAN_GL },
+            { "korean",     OPTION_VAL_KOREAN_GL },
+            { "chinese",    OPTION_VAL_CHINESE_GL },
+            { "portuguese", OPTION_VAL_PORTUGUESE_GL },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_GL,
@@ -11775,6 +14208,22 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_GL,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_GL,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_GL },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_GL,
@@ -11793,6 +14242,24 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
             { "8", OPTION_VAL_8_GL },
             { "9", OPTION_VAL_9_GL },
             { "10", OPTION_VAL_10_GL },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_GL,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_GL,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_GL },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_GL },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_GL },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_GL },
+            { "16", OPTION_VAL_16_GL },
             { NULL, NULL },
         },
         "1"
@@ -11845,10 +14312,13 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_GL,
@@ -11861,7 +14331,7 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -12053,6 +14523,36 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_GL,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_GL,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_GL },
+            { "60", OPTION_VAL_60_GL },
+            { "70", OPTION_VAL_70_GL },
+            { "80", OPTION_VAL_80_GL },
+            { "90", OPTION_VAL_90_GL },
+            { "100", OPTION_VAL_100_GL },
+            { "110", OPTION_VAL_110_GL },
+            { "120", OPTION_VAL_120_GL },
+            { "130", OPTION_VAL_130_GL },
+            { "140", OPTION_VAL_140_GL },
+            { "150", OPTION_VAL_150_GL },
+            { "160", OPTION_VAL_160_GL },
+            { "170", OPTION_VAL_170_GL },
+            { "180", OPTION_VAL_180_GL },
+            { "190", OPTION_VAL_190_GL },
+            { "200", OPTION_VAL_200_GL },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -12122,6 +14622,19 @@ struct retro_core_options_v2 options_gl = {
 #define XEMU_HARD_FPU_INFO_0_HE NULL
 #define XEMU_CPU_BOOST_LABEL_HE NULL
 #define XEMU_CPU_BOOST_INFO_0_HE NULL
+#define XEMU_LANGUAGE_LABEL_HE NULL
+#define XEMU_LANGUAGE_INFO_0_HE NULL
+#define OPTION_VAL_AUTO_HE NULL
+#define OPTION_VAL_DASHBOARD_HE NULL
+#define OPTION_VAL_ENGLISH_HE NULL
+#define OPTION_VAL_JAPANESE_HE NULL
+#define OPTION_VAL_GERMAN_HE NULL
+#define OPTION_VAL_FRENCH_HE NULL
+#define OPTION_VAL_SPANISH_HE NULL
+#define OPTION_VAL_ITALIAN_HE NULL
+#define OPTION_VAL_KOREAN_HE NULL
+#define OPTION_VAL_CHINESE_HE NULL
+#define OPTION_VAL_PORTUGUESE_HE NULL
 #define XEMU_HDD_TRIM_LABEL_HE NULL
 #define XEMU_HDD_TRIM_INFO_0_HE NULL
 #define XEMU_RENDERER_LABEL_HE NULL
@@ -12130,13 +14643,13 @@ struct retro_core_options_v2 options_gl = {
 #define OPTION_VAL_OPENGL_HE NULL
 #define XEMU_VIDEO_ASPECT_LABEL_HE NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_HE NULL
-#define OPTION_VAL_DASHBOARD_HE NULL
 #define OPTION_VAL_4_3_HE NULL
 #define OPTION_VAL_16_9_HE NULL
 #define OPTION_VAL_LETTERBOX_HE NULL
 #define XEMU_ASPECT_RATIO_LABEL_HE NULL
 #define XEMU_ASPECT_RATIO_INFO_0_HE NULL
-#define OPTION_VAL_AUTO_HE NULL
+#define XEMU_OVERSCAN_CROP_LABEL_HE NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_HE NULL
 #define XEMU_SURFACE_SCALE_LABEL_HE NULL
 #define XEMU_SURFACE_SCALE_INFO_0_HE NULL
 #define OPTION_VAL_1_HE NULL
@@ -12149,6 +14662,13 @@ struct retro_core_options_v2 options_gl = {
 #define OPTION_VAL_8_HE NULL
 #define OPTION_VAL_9_HE NULL
 #define OPTION_VAL_10_HE NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_HE NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_HE NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_HE NULL
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_HE NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_HE NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_HE NULL
+#define OPTION_VAL_16_HE NULL
 #define XEMU_AVPACK_LABEL_HE NULL
 #define XEMU_AVPACK_INFO_0_HE NULL
 #define OPTION_VAL_HDTV_HE NULL
@@ -12202,14 +14722,26 @@ struct retro_core_options_v2 options_gl = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_HE NULL
 #define OPTION_VAL_MOUSE_HE NULL
 #define OPTION_VAL_STICK_HE NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_HE NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_HE NULL
+#define OPTION_VAL_50_HE NULL
+#define OPTION_VAL_70_HE NULL
+#define OPTION_VAL_90_HE NULL
+#define OPTION_VAL_110_HE NULL
+#define OPTION_VAL_120_HE NULL
+#define OPTION_VAL_130_HE NULL
+#define OPTION_VAL_140_HE NULL
+#define OPTION_VAL_150_HE NULL
+#define OPTION_VAL_160_HE NULL
+#define OPTION_VAL_170_HE NULL
+#define OPTION_VAL_180_HE NULL
+#define OPTION_VAL_190_HE NULL
+#define OPTION_VAL_200_HE NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_HE NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_HE NULL
 #define XEMU_CHIHIRO_FFB_LABEL_HE NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_HE NULL
-#define OPTION_VAL_50_HE NULL
 #define OPTION_VAL_75_HE NULL
-#define OPTION_VAL_150_HE NULL
-#define OPTION_VAL_200_HE NULL
 
 struct retro_core_option_v2_category option_cats_he[] = {
     {
@@ -12316,6 +14848,32 @@ struct retro_core_option_v2_definition option_defs_he[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_HE,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_HE,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_HE },
+            { "dashboard",  OPTION_VAL_DASHBOARD_HE },
+            { "english",    OPTION_VAL_ENGLISH_HE },
+            { "japanese",   OPTION_VAL_JAPANESE_HE },
+            { "german",     OPTION_VAL_GERMAN_HE },
+            { "french",     OPTION_VAL_FRENCH_HE },
+            { "spanish",    OPTION_VAL_SPANISH_HE },
+            { "italian",    OPTION_VAL_ITALIAN_HE },
+            { "korean",     OPTION_VAL_KOREAN_HE },
+            { "chinese",    OPTION_VAL_CHINESE_HE },
+            { "portuguese", OPTION_VAL_PORTUGUESE_HE },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_HE,
@@ -12378,6 +14936,22 @@ struct retro_core_option_v2_definition option_defs_he[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_HE,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_HE,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_HE },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_HE,
@@ -12396,6 +14970,24 @@ struct retro_core_option_v2_definition option_defs_he[] = {
             { "8", OPTION_VAL_8_HE },
             { "9", OPTION_VAL_9_HE },
             { "10", OPTION_VAL_10_HE },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_HE,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_HE,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_HE },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_HE },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_HE },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_HE },
+            { "16", OPTION_VAL_16_HE },
             { NULL, NULL },
         },
         "1"
@@ -12448,10 +15040,13 @@ struct retro_core_option_v2_definition option_defs_he[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_HE,
@@ -12464,7 +15059,7 @@ struct retro_core_option_v2_definition option_defs_he[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -12656,6 +15251,36 @@ struct retro_core_option_v2_definition option_defs_he[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_HE,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_HE,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_HE },
+            { "60", OPTION_VAL_60_HE },
+            { "70", OPTION_VAL_70_HE },
+            { "80", OPTION_VAL_80_HE },
+            { "90", OPTION_VAL_90_HE },
+            { "100", OPTION_VAL_100_HE },
+            { "110", OPTION_VAL_110_HE },
+            { "120", OPTION_VAL_120_HE },
+            { "130", OPTION_VAL_130_HE },
+            { "140", OPTION_VAL_140_HE },
+            { "150", OPTION_VAL_150_HE },
+            { "160", OPTION_VAL_160_HE },
+            { "170", OPTION_VAL_170_HE },
+            { "180", OPTION_VAL_180_HE },
+            { "190", OPTION_VAL_190_HE },
+            { "200", OPTION_VAL_200_HE },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -12725,6 +15350,19 @@ struct retro_core_options_v2 options_he = {
 #define XEMU_HARD_FPU_INFO_0_HR NULL
 #define XEMU_CPU_BOOST_LABEL_HR NULL
 #define XEMU_CPU_BOOST_INFO_0_HR NULL
+#define XEMU_LANGUAGE_LABEL_HR NULL
+#define XEMU_LANGUAGE_INFO_0_HR NULL
+#define OPTION_VAL_AUTO_HR NULL
+#define OPTION_VAL_DASHBOARD_HR NULL
+#define OPTION_VAL_ENGLISH_HR "Engleski"
+#define OPTION_VAL_JAPANESE_HR "Japanski"
+#define OPTION_VAL_GERMAN_HR "Njemački"
+#define OPTION_VAL_FRENCH_HR "Francuski"
+#define OPTION_VAL_SPANISH_HR "Španjolski"
+#define OPTION_VAL_ITALIAN_HR "Talijanski"
+#define OPTION_VAL_KOREAN_HR NULL
+#define OPTION_VAL_CHINESE_HR NULL
+#define OPTION_VAL_PORTUGUESE_HR NULL
 #define XEMU_HDD_TRIM_LABEL_HR NULL
 #define XEMU_HDD_TRIM_INFO_0_HR NULL
 #define XEMU_RENDERER_LABEL_HR NULL
@@ -12733,13 +15371,13 @@ struct retro_core_options_v2 options_he = {
 #define OPTION_VAL_OPENGL_HR NULL
 #define XEMU_VIDEO_ASPECT_LABEL_HR NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_HR NULL
-#define OPTION_VAL_DASHBOARD_HR NULL
 #define OPTION_VAL_4_3_HR NULL
 #define OPTION_VAL_16_9_HR NULL
 #define OPTION_VAL_LETTERBOX_HR NULL
 #define XEMU_ASPECT_RATIO_LABEL_HR NULL
 #define XEMU_ASPECT_RATIO_INFO_0_HR NULL
-#define OPTION_VAL_AUTO_HR NULL
+#define XEMU_OVERSCAN_CROP_LABEL_HR "Obreži vertikalni overscan"
+#define XEMU_OVERSCAN_CROP_INFO_0_HR NULL
 #define XEMU_SURFACE_SCALE_LABEL_HR NULL
 #define XEMU_SURFACE_SCALE_INFO_0_HR NULL
 #define OPTION_VAL_1_HR NULL
@@ -12752,6 +15390,13 @@ struct retro_core_options_v2 options_he = {
 #define OPTION_VAL_8_HR NULL
 #define OPTION_VAL_9_HR NULL
 #define OPTION_VAL_10_HR NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_HR "Anizotropno filtriranje"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_HR NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_HR NULL
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_HR NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_HR NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_HR NULL
+#define OPTION_VAL_16_HR NULL
 #define XEMU_AVPACK_LABEL_HR NULL
 #define XEMU_AVPACK_INFO_0_HR NULL
 #define OPTION_VAL_HDTV_HR NULL
@@ -12805,14 +15450,26 @@ struct retro_core_options_v2 options_he = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_HR NULL
 #define OPTION_VAL_MOUSE_HR "Miš"
 #define OPTION_VAL_STICK_HR NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_HR NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_HR NULL
+#define OPTION_VAL_50_HR NULL
+#define OPTION_VAL_70_HR NULL
+#define OPTION_VAL_90_HR NULL
+#define OPTION_VAL_110_HR NULL
+#define OPTION_VAL_120_HR NULL
+#define OPTION_VAL_130_HR NULL
+#define OPTION_VAL_140_HR NULL
+#define OPTION_VAL_150_HR NULL
+#define OPTION_VAL_160_HR NULL
+#define OPTION_VAL_170_HR NULL
+#define OPTION_VAL_180_HR NULL
+#define OPTION_VAL_190_HR NULL
+#define OPTION_VAL_200_HR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_HR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_HR NULL
 #define XEMU_CHIHIRO_FFB_LABEL_HR NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_HR NULL
-#define OPTION_VAL_50_HR NULL
 #define OPTION_VAL_75_HR NULL
-#define OPTION_VAL_150_HR NULL
-#define OPTION_VAL_200_HR NULL
 
 struct retro_core_option_v2_category option_cats_hr[] = {
     {
@@ -12919,6 +15576,32 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_HR,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_HR,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_HR },
+            { "dashboard",  OPTION_VAL_DASHBOARD_HR },
+            { "english",    OPTION_VAL_ENGLISH_HR },
+            { "japanese",   OPTION_VAL_JAPANESE_HR },
+            { "german",     OPTION_VAL_GERMAN_HR },
+            { "french",     OPTION_VAL_FRENCH_HR },
+            { "spanish",    OPTION_VAL_SPANISH_HR },
+            { "italian",    OPTION_VAL_ITALIAN_HR },
+            { "korean",     OPTION_VAL_KOREAN_HR },
+            { "chinese",    OPTION_VAL_CHINESE_HR },
+            { "portuguese", OPTION_VAL_PORTUGUESE_HR },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_HR,
@@ -12981,6 +15664,22 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_HR,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_HR,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_HR },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_HR,
@@ -12999,6 +15698,24 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
             { "8", OPTION_VAL_8_HR },
             { "9", OPTION_VAL_9_HR },
             { "10", OPTION_VAL_10_HR },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_HR,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_HR,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_HR },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_HR },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_HR },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_HR },
+            { "16", OPTION_VAL_16_HR },
             { NULL, NULL },
         },
         "1"
@@ -13051,10 +15768,13 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_HR,
@@ -13067,7 +15787,7 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -13259,6 +15979,36 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_HR,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_HR,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_HR },
+            { "60", OPTION_VAL_60_HR },
+            { "70", OPTION_VAL_70_HR },
+            { "80", OPTION_VAL_80_HR },
+            { "90", OPTION_VAL_90_HR },
+            { "100", OPTION_VAL_100_HR },
+            { "110", OPTION_VAL_110_HR },
+            { "120", OPTION_VAL_120_HR },
+            { "130", OPTION_VAL_130_HR },
+            { "140", OPTION_VAL_140_HR },
+            { "150", OPTION_VAL_150_HR },
+            { "160", OPTION_VAL_160_HR },
+            { "170", OPTION_VAL_170_HR },
+            { "180", OPTION_VAL_180_HR },
+            { "190", OPTION_VAL_190_HR },
+            { "200", OPTION_VAL_200_HR },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -13328,6 +16078,19 @@ struct retro_core_options_v2 options_hr = {
 #define XEMU_HARD_FPU_INFO_0_HU NULL
 #define XEMU_CPU_BOOST_LABEL_HU NULL
 #define XEMU_CPU_BOOST_INFO_0_HU NULL
+#define XEMU_LANGUAGE_LABEL_HU NULL
+#define XEMU_LANGUAGE_INFO_0_HU NULL
+#define OPTION_VAL_AUTO_HU "Automatikus"
+#define OPTION_VAL_DASHBOARD_HU NULL
+#define OPTION_VAL_ENGLISH_HU "angol"
+#define OPTION_VAL_JAPANESE_HU "japán"
+#define OPTION_VAL_GERMAN_HU "német"
+#define OPTION_VAL_FRENCH_HU "francia"
+#define OPTION_VAL_SPANISH_HU "spanyol"
+#define OPTION_VAL_ITALIAN_HU "olasz"
+#define OPTION_VAL_KOREAN_HU NULL
+#define OPTION_VAL_CHINESE_HU NULL
+#define OPTION_VAL_PORTUGUESE_HU NULL
 #define XEMU_HDD_TRIM_LABEL_HU NULL
 #define XEMU_HDD_TRIM_INFO_0_HU NULL
 #define XEMU_RENDERER_LABEL_HU NULL
@@ -13336,13 +16099,13 @@ struct retro_core_options_v2 options_hr = {
 #define OPTION_VAL_OPENGL_HU NULL
 #define XEMU_VIDEO_ASPECT_LABEL_HU NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_HU NULL
-#define OPTION_VAL_DASHBOARD_HU NULL
 #define OPTION_VAL_4_3_HU NULL
 #define OPTION_VAL_16_9_HU NULL
 #define OPTION_VAL_LETTERBOX_HU NULL
 #define XEMU_ASPECT_RATIO_LABEL_HU "A mag képaránya"
 #define XEMU_ASPECT_RATIO_INFO_0_HU NULL
-#define OPTION_VAL_AUTO_HU "Automatikus"
+#define XEMU_OVERSCAN_CROP_LABEL_HU "Függőleges overscan levágása"
+#define XEMU_OVERSCAN_CROP_INFO_0_HU NULL
 #define XEMU_SURFACE_SCALE_LABEL_HU NULL
 #define XEMU_SURFACE_SCALE_INFO_0_HU NULL
 #define OPTION_VAL_1_HU NULL
@@ -13355,6 +16118,13 @@ struct retro_core_options_v2 options_hr = {
 #define OPTION_VAL_8_HU NULL
 #define OPTION_VAL_9_HU NULL
 #define OPTION_VAL_10_HU NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_HU "Anizotróp szûrés"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_HU NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_HU "Eredeti"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_HU NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_HU NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_HU NULL
+#define OPTION_VAL_16_HU NULL
 #define XEMU_AVPACK_LABEL_HU NULL
 #define XEMU_AVPACK_INFO_0_HU NULL
 #define OPTION_VAL_HDTV_HU NULL
@@ -13408,14 +16178,26 @@ struct retro_core_options_v2 options_hr = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_HU NULL
 #define OPTION_VAL_MOUSE_HU "Egér"
 #define OPTION_VAL_STICK_HU NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_HU NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_HU NULL
+#define OPTION_VAL_50_HU NULL
+#define OPTION_VAL_70_HU NULL
+#define OPTION_VAL_90_HU NULL
+#define OPTION_VAL_110_HU NULL
+#define OPTION_VAL_120_HU NULL
+#define OPTION_VAL_130_HU NULL
+#define OPTION_VAL_140_HU NULL
+#define OPTION_VAL_150_HU NULL
+#define OPTION_VAL_160_HU NULL
+#define OPTION_VAL_170_HU NULL
+#define OPTION_VAL_180_HU NULL
+#define OPTION_VAL_190_HU NULL
+#define OPTION_VAL_200_HU NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_HU NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_HU NULL
 #define XEMU_CHIHIRO_FFB_LABEL_HU NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_HU NULL
-#define OPTION_VAL_50_HU NULL
 #define OPTION_VAL_75_HU NULL
-#define OPTION_VAL_150_HU NULL
-#define OPTION_VAL_200_HU NULL
 
 struct retro_core_option_v2_category option_cats_hu[] = {
     {
@@ -13522,6 +16304,32 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_HU,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_HU,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_HU },
+            { "dashboard",  OPTION_VAL_DASHBOARD_HU },
+            { "english",    OPTION_VAL_ENGLISH_HU },
+            { "japanese",   OPTION_VAL_JAPANESE_HU },
+            { "german",     OPTION_VAL_GERMAN_HU },
+            { "french",     OPTION_VAL_FRENCH_HU },
+            { "spanish",    OPTION_VAL_SPANISH_HU },
+            { "italian",    OPTION_VAL_ITALIAN_HU },
+            { "korean",     OPTION_VAL_KOREAN_HU },
+            { "chinese",    OPTION_VAL_CHINESE_HU },
+            { "portuguese", OPTION_VAL_PORTUGUESE_HU },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_HU,
@@ -13584,6 +16392,22 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_HU,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_HU,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_HU },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_HU,
@@ -13602,6 +16426,24 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
             { "8", OPTION_VAL_8_HU },
             { "9", OPTION_VAL_9_HU },
             { "10", OPTION_VAL_10_HU },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_HU,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_HU,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_HU },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_HU },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_HU },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_HU },
+            { "16", OPTION_VAL_16_HU },
             { NULL, NULL },
         },
         "1"
@@ -13654,10 +16496,13 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_HU,
@@ -13670,7 +16515,7 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -13862,6 +16707,36 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_HU,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_HU,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_HU },
+            { "60", OPTION_VAL_60_HU },
+            { "70", OPTION_VAL_70_HU },
+            { "80", OPTION_VAL_80_HU },
+            { "90", OPTION_VAL_90_HU },
+            { "100", OPTION_VAL_100_HU },
+            { "110", OPTION_VAL_110_HU },
+            { "120", OPTION_VAL_120_HU },
+            { "130", OPTION_VAL_130_HU },
+            { "140", OPTION_VAL_140_HU },
+            { "150", OPTION_VAL_150_HU },
+            { "160", OPTION_VAL_160_HU },
+            { "170", OPTION_VAL_170_HU },
+            { "180", OPTION_VAL_180_HU },
+            { "190", OPTION_VAL_190_HU },
+            { "200", OPTION_VAL_200_HU },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -13931,6 +16806,19 @@ struct retro_core_options_v2 options_hu = {
 #define XEMU_HARD_FPU_INFO_0_ID NULL
 #define XEMU_CPU_BOOST_LABEL_ID NULL
 #define XEMU_CPU_BOOST_INFO_0_ID NULL
+#define XEMU_LANGUAGE_LABEL_ID NULL
+#define XEMU_LANGUAGE_INFO_0_ID NULL
+#define OPTION_VAL_AUTO_ID "Otomatis"
+#define OPTION_VAL_DASHBOARD_ID NULL
+#define OPTION_VAL_ENGLISH_ID "Bahasa Inggris"
+#define OPTION_VAL_JAPANESE_ID "Bahasa Jepang"
+#define OPTION_VAL_GERMAN_ID "Bahasa Jerman"
+#define OPTION_VAL_FRENCH_ID "Bahasa Perancis"
+#define OPTION_VAL_SPANISH_ID "Bahasa Spanyol"
+#define OPTION_VAL_ITALIAN_ID "Bahasa Itali"
+#define OPTION_VAL_KOREAN_ID NULL
+#define OPTION_VAL_CHINESE_ID NULL
+#define OPTION_VAL_PORTUGUESE_ID NULL
 #define XEMU_HDD_TRIM_LABEL_ID NULL
 #define XEMU_HDD_TRIM_INFO_0_ID NULL
 #define XEMU_RENDERER_LABEL_ID NULL
@@ -13939,13 +16827,13 @@ struct retro_core_options_v2 options_hu = {
 #define OPTION_VAL_OPENGL_ID NULL
 #define XEMU_VIDEO_ASPECT_LABEL_ID NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_ID NULL
-#define OPTION_VAL_DASHBOARD_ID NULL
 #define OPTION_VAL_4_3_ID NULL
 #define OPTION_VAL_16_9_ID NULL
 #define OPTION_VAL_LETTERBOX_ID NULL
 #define XEMU_ASPECT_RATIO_LABEL_ID NULL
 #define XEMU_ASPECT_RATIO_INFO_0_ID NULL
-#define OPTION_VAL_AUTO_ID "Otomatis"
+#define XEMU_OVERSCAN_CROP_LABEL_ID "Pangkas Lebihan Pindai Menegak"
+#define XEMU_OVERSCAN_CROP_INFO_0_ID NULL
 #define XEMU_SURFACE_SCALE_LABEL_ID NULL
 #define XEMU_SURFACE_SCALE_INFO_0_ID NULL
 #define OPTION_VAL_1_ID NULL
@@ -13958,6 +16846,13 @@ struct retro_core_options_v2 options_hu = {
 #define OPTION_VAL_8_ID NULL
 #define OPTION_VAL_9_ID NULL
 #define OPTION_VAL_10_ID NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_ID "Penyaringan Anisotropic"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_ID NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_ID "Lokal"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_ID NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_ID NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_ID NULL
+#define OPTION_VAL_16_ID NULL
 #define XEMU_AVPACK_LABEL_ID NULL
 #define XEMU_AVPACK_INFO_0_ID NULL
 #define OPTION_VAL_HDTV_ID NULL
@@ -14011,14 +16906,26 @@ struct retro_core_options_v2 options_hu = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_ID NULL
 #define OPTION_VAL_MOUSE_ID NULL
 #define OPTION_VAL_STICK_ID NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_ID NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_ID NULL
+#define OPTION_VAL_50_ID NULL
+#define OPTION_VAL_70_ID NULL
+#define OPTION_VAL_90_ID NULL
+#define OPTION_VAL_110_ID NULL
+#define OPTION_VAL_120_ID NULL
+#define OPTION_VAL_130_ID NULL
+#define OPTION_VAL_140_ID NULL
+#define OPTION_VAL_150_ID NULL
+#define OPTION_VAL_160_ID NULL
+#define OPTION_VAL_170_ID NULL
+#define OPTION_VAL_180_ID NULL
+#define OPTION_VAL_190_ID NULL
+#define OPTION_VAL_200_ID NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_ID NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_ID NULL
 #define XEMU_CHIHIRO_FFB_LABEL_ID NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_ID NULL
-#define OPTION_VAL_50_ID NULL
 #define OPTION_VAL_75_ID NULL
-#define OPTION_VAL_150_ID NULL
-#define OPTION_VAL_200_ID NULL
 
 struct retro_core_option_v2_category option_cats_id[] = {
     {
@@ -14125,6 +17032,32 @@ struct retro_core_option_v2_definition option_defs_id[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_ID,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_ID,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_ID },
+            { "dashboard",  OPTION_VAL_DASHBOARD_ID },
+            { "english",    OPTION_VAL_ENGLISH_ID },
+            { "japanese",   OPTION_VAL_JAPANESE_ID },
+            { "german",     OPTION_VAL_GERMAN_ID },
+            { "french",     OPTION_VAL_FRENCH_ID },
+            { "spanish",    OPTION_VAL_SPANISH_ID },
+            { "italian",    OPTION_VAL_ITALIAN_ID },
+            { "korean",     OPTION_VAL_KOREAN_ID },
+            { "chinese",    OPTION_VAL_CHINESE_ID },
+            { "portuguese", OPTION_VAL_PORTUGUESE_ID },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_ID,
@@ -14187,6 +17120,22 @@ struct retro_core_option_v2_definition option_defs_id[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_ID,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_ID,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_ID },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_ID,
@@ -14205,6 +17154,24 @@ struct retro_core_option_v2_definition option_defs_id[] = {
             { "8", OPTION_VAL_8_ID },
             { "9", OPTION_VAL_9_ID },
             { "10", OPTION_VAL_10_ID },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_ID,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_ID,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_ID },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_ID },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_ID },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_ID },
+            { "16", OPTION_VAL_16_ID },
             { NULL, NULL },
         },
         "1"
@@ -14257,10 +17224,13 @@ struct retro_core_option_v2_definition option_defs_id[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_ID,
@@ -14273,7 +17243,7 @@ struct retro_core_option_v2_definition option_defs_id[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -14465,6 +17435,36 @@ struct retro_core_option_v2_definition option_defs_id[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_ID,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_ID,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_ID },
+            { "60", OPTION_VAL_60_ID },
+            { "70", OPTION_VAL_70_ID },
+            { "80", OPTION_VAL_80_ID },
+            { "90", OPTION_VAL_90_ID },
+            { "100", OPTION_VAL_100_ID },
+            { "110", OPTION_VAL_110_ID },
+            { "120", OPTION_VAL_120_ID },
+            { "130", OPTION_VAL_130_ID },
+            { "140", OPTION_VAL_140_ID },
+            { "150", OPTION_VAL_150_ID },
+            { "160", OPTION_VAL_160_ID },
+            { "170", OPTION_VAL_170_ID },
+            { "180", OPTION_VAL_180_ID },
+            { "190", OPTION_VAL_190_ID },
+            { "200", OPTION_VAL_200_ID },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -14534,6 +17534,19 @@ struct retro_core_options_v2 options_id = {
 #define XEMU_HARD_FPU_INFO_0_IT NULL
 #define XEMU_CPU_BOOST_LABEL_IT NULL
 #define XEMU_CPU_BOOST_INFO_0_IT NULL
+#define XEMU_LANGUAGE_LABEL_IT NULL
+#define XEMU_LANGUAGE_INFO_0_IT NULL
+#define OPTION_VAL_AUTO_IT NULL
+#define OPTION_VAL_DASHBOARD_IT NULL
+#define OPTION_VAL_ENGLISH_IT "Inglese"
+#define OPTION_VAL_JAPANESE_IT "Giapponese"
+#define OPTION_VAL_GERMAN_IT "Tedesco"
+#define OPTION_VAL_FRENCH_IT "Francese"
+#define OPTION_VAL_SPANISH_IT "Spagnolo"
+#define OPTION_VAL_ITALIAN_IT "Italiano"
+#define OPTION_VAL_KOREAN_IT NULL
+#define OPTION_VAL_CHINESE_IT NULL
+#define OPTION_VAL_PORTUGUESE_IT NULL
 #define XEMU_HDD_TRIM_LABEL_IT NULL
 #define XEMU_HDD_TRIM_INFO_0_IT NULL
 #define XEMU_RENDERER_LABEL_IT NULL
@@ -14542,13 +17555,13 @@ struct retro_core_options_v2 options_id = {
 #define OPTION_VAL_OPENGL_IT NULL
 #define XEMU_VIDEO_ASPECT_LABEL_IT NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_IT NULL
-#define OPTION_VAL_DASHBOARD_IT NULL
 #define OPTION_VAL_4_3_IT NULL
 #define OPTION_VAL_16_9_IT NULL
 #define OPTION_VAL_LETTERBOX_IT NULL
 #define XEMU_ASPECT_RATIO_LABEL_IT "Rapporto d'aspetto Core"
 #define XEMU_ASPECT_RATIO_INFO_0_IT NULL
-#define OPTION_VAL_AUTO_IT NULL
+#define XEMU_OVERSCAN_CROP_LABEL_IT "Ritaglia Overscan Verticale"
+#define XEMU_OVERSCAN_CROP_INFO_0_IT NULL
 #define XEMU_SURFACE_SCALE_LABEL_IT NULL
 #define XEMU_SURFACE_SCALE_INFO_0_IT NULL
 #define OPTION_VAL_1_IT NULL
@@ -14561,6 +17574,13 @@ struct retro_core_options_v2 options_id = {
 #define OPTION_VAL_8_IT NULL
 #define OPTION_VAL_9_IT NULL
 #define OPTION_VAL_10_IT NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_IT "Filtro Anisotropico"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_IT NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_IT "Nativo"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_IT NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_IT NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_IT NULL
+#define OPTION_VAL_16_IT NULL
 #define XEMU_AVPACK_LABEL_IT NULL
 #define XEMU_AVPACK_INFO_0_IT NULL
 #define OPTION_VAL_HDTV_IT NULL
@@ -14614,14 +17634,26 @@ struct retro_core_options_v2 options_id = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_IT NULL
 #define OPTION_VAL_MOUSE_IT NULL
 #define OPTION_VAL_STICK_IT NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_IT NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_IT NULL
+#define OPTION_VAL_50_IT NULL
+#define OPTION_VAL_70_IT NULL
+#define OPTION_VAL_90_IT NULL
+#define OPTION_VAL_110_IT NULL
+#define OPTION_VAL_120_IT NULL
+#define OPTION_VAL_130_IT NULL
+#define OPTION_VAL_140_IT NULL
+#define OPTION_VAL_150_IT NULL
+#define OPTION_VAL_160_IT NULL
+#define OPTION_VAL_170_IT NULL
+#define OPTION_VAL_180_IT NULL
+#define OPTION_VAL_190_IT NULL
+#define OPTION_VAL_200_IT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_IT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_IT NULL
 #define XEMU_CHIHIRO_FFB_LABEL_IT NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_IT NULL
-#define OPTION_VAL_50_IT NULL
 #define OPTION_VAL_75_IT NULL
-#define OPTION_VAL_150_IT NULL
-#define OPTION_VAL_200_IT NULL
 
 struct retro_core_option_v2_category option_cats_it[] = {
     {
@@ -14728,6 +17760,32 @@ struct retro_core_option_v2_definition option_defs_it[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_IT,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_IT,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_IT },
+            { "dashboard",  OPTION_VAL_DASHBOARD_IT },
+            { "english",    OPTION_VAL_ENGLISH_IT },
+            { "japanese",   OPTION_VAL_JAPANESE_IT },
+            { "german",     OPTION_VAL_GERMAN_IT },
+            { "french",     OPTION_VAL_FRENCH_IT },
+            { "spanish",    OPTION_VAL_SPANISH_IT },
+            { "italian",    OPTION_VAL_ITALIAN_IT },
+            { "korean",     OPTION_VAL_KOREAN_IT },
+            { "chinese",    OPTION_VAL_CHINESE_IT },
+            { "portuguese", OPTION_VAL_PORTUGUESE_IT },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_IT,
@@ -14790,6 +17848,22 @@ struct retro_core_option_v2_definition option_defs_it[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_IT,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_IT,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_IT },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_IT,
@@ -14808,6 +17882,24 @@ struct retro_core_option_v2_definition option_defs_it[] = {
             { "8", OPTION_VAL_8_IT },
             { "9", OPTION_VAL_9_IT },
             { "10", OPTION_VAL_10_IT },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_IT,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_IT,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_IT },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_IT },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_IT },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_IT },
+            { "16", OPTION_VAL_16_IT },
             { NULL, NULL },
         },
         "1"
@@ -14860,10 +17952,13 @@ struct retro_core_option_v2_definition option_defs_it[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_IT,
@@ -14876,7 +17971,7 @@ struct retro_core_option_v2_definition option_defs_it[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -15068,6 +18163,36 @@ struct retro_core_option_v2_definition option_defs_it[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_IT,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_IT,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_IT },
+            { "60", OPTION_VAL_60_IT },
+            { "70", OPTION_VAL_70_IT },
+            { "80", OPTION_VAL_80_IT },
+            { "90", OPTION_VAL_90_IT },
+            { "100", OPTION_VAL_100_IT },
+            { "110", OPTION_VAL_110_IT },
+            { "120", OPTION_VAL_120_IT },
+            { "130", OPTION_VAL_130_IT },
+            { "140", OPTION_VAL_140_IT },
+            { "150", OPTION_VAL_150_IT },
+            { "160", OPTION_VAL_160_IT },
+            { "170", OPTION_VAL_170_IT },
+            { "180", OPTION_VAL_180_IT },
+            { "190", OPTION_VAL_190_IT },
+            { "200", OPTION_VAL_200_IT },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -15137,6 +18262,19 @@ struct retro_core_options_v2 options_it = {
 #define XEMU_HARD_FPU_INFO_0_JA NULL
 #define XEMU_CPU_BOOST_LABEL_JA NULL
 #define XEMU_CPU_BOOST_INFO_0_JA NULL
+#define XEMU_LANGUAGE_LABEL_JA NULL
+#define XEMU_LANGUAGE_INFO_0_JA NULL
+#define OPTION_VAL_AUTO_JA "自動"
+#define OPTION_VAL_DASHBOARD_JA NULL
+#define OPTION_VAL_ENGLISH_JA "英語"
+#define OPTION_VAL_JAPANESE_JA "日本語"
+#define OPTION_VAL_GERMAN_JA "ドイツ語"
+#define OPTION_VAL_FRENCH_JA "フランス語"
+#define OPTION_VAL_SPANISH_JA "スペイン語"
+#define OPTION_VAL_ITALIAN_JA "イタリア語"
+#define OPTION_VAL_KOREAN_JA NULL
+#define OPTION_VAL_CHINESE_JA NULL
+#define OPTION_VAL_PORTUGUESE_JA NULL
 #define XEMU_HDD_TRIM_LABEL_JA NULL
 #define XEMU_HDD_TRIM_INFO_0_JA NULL
 #define XEMU_RENDERER_LABEL_JA NULL
@@ -15145,13 +18283,13 @@ struct retro_core_options_v2 options_it = {
 #define OPTION_VAL_OPENGL_JA NULL
 #define XEMU_VIDEO_ASPECT_LABEL_JA NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_JA NULL
-#define OPTION_VAL_DASHBOARD_JA NULL
 #define OPTION_VAL_4_3_JA NULL
 #define OPTION_VAL_16_9_JA NULL
 #define OPTION_VAL_LETTERBOX_JA NULL
 #define XEMU_ASPECT_RATIO_LABEL_JA "コアアスペクト比"
 #define XEMU_ASPECT_RATIO_INFO_0_JA NULL
-#define OPTION_VAL_AUTO_JA "自動"
+#define XEMU_OVERSCAN_CROP_LABEL_JA "垂直オーバースキャンをトリミング"
+#define XEMU_OVERSCAN_CROP_INFO_0_JA NULL
 #define XEMU_SURFACE_SCALE_LABEL_JA NULL
 #define XEMU_SURFACE_SCALE_INFO_0_JA NULL
 #define OPTION_VAL_1_JA NULL
@@ -15164,6 +18302,13 @@ struct retro_core_options_v2 options_it = {
 #define OPTION_VAL_8_JA NULL
 #define OPTION_VAL_9_JA NULL
 #define OPTION_VAL_10_JA NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_JA "異方性フィルタリング"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_JA NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_JA "ネイティブ"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_JA NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_JA NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_JA NULL
+#define OPTION_VAL_16_JA NULL
 #define XEMU_AVPACK_LABEL_JA NULL
 #define XEMU_AVPACK_INFO_0_JA NULL
 #define OPTION_VAL_HDTV_JA NULL
@@ -15217,14 +18362,26 @@ struct retro_core_options_v2 options_it = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_JA NULL
 #define OPTION_VAL_MOUSE_JA "マウス"
 #define OPTION_VAL_STICK_JA NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_JA NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_JA NULL
+#define OPTION_VAL_50_JA NULL
+#define OPTION_VAL_70_JA NULL
+#define OPTION_VAL_90_JA NULL
+#define OPTION_VAL_110_JA NULL
+#define OPTION_VAL_120_JA NULL
+#define OPTION_VAL_130_JA NULL
+#define OPTION_VAL_140_JA NULL
+#define OPTION_VAL_150_JA NULL
+#define OPTION_VAL_160_JA NULL
+#define OPTION_VAL_170_JA NULL
+#define OPTION_VAL_180_JA NULL
+#define OPTION_VAL_190_JA NULL
+#define OPTION_VAL_200_JA NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_JA NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_JA NULL
 #define XEMU_CHIHIRO_FFB_LABEL_JA NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_JA NULL
-#define OPTION_VAL_50_JA NULL
 #define OPTION_VAL_75_JA NULL
-#define OPTION_VAL_150_JA NULL
-#define OPTION_VAL_200_JA NULL
 
 struct retro_core_option_v2_category option_cats_ja[] = {
     {
@@ -15331,6 +18488,32 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_JA,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_JA,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_JA },
+            { "dashboard",  OPTION_VAL_DASHBOARD_JA },
+            { "english",    OPTION_VAL_ENGLISH_JA },
+            { "japanese",   OPTION_VAL_JAPANESE_JA },
+            { "german",     OPTION_VAL_GERMAN_JA },
+            { "french",     OPTION_VAL_FRENCH_JA },
+            { "spanish",    OPTION_VAL_SPANISH_JA },
+            { "italian",    OPTION_VAL_ITALIAN_JA },
+            { "korean",     OPTION_VAL_KOREAN_JA },
+            { "chinese",    OPTION_VAL_CHINESE_JA },
+            { "portuguese", OPTION_VAL_PORTUGUESE_JA },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_JA,
@@ -15393,6 +18576,22 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_JA,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_JA,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_JA },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_JA,
@@ -15411,6 +18610,24 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
             { "8", OPTION_VAL_8_JA },
             { "9", OPTION_VAL_9_JA },
             { "10", OPTION_VAL_10_JA },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_JA,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_JA,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_JA },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_JA },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_JA },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_JA },
+            { "16", OPTION_VAL_16_JA },
             { NULL, NULL },
         },
         "1"
@@ -15463,10 +18680,13 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_JA,
@@ -15479,7 +18699,7 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -15671,6 +18891,36 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_JA,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_JA,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_JA },
+            { "60", OPTION_VAL_60_JA },
+            { "70", OPTION_VAL_70_JA },
+            { "80", OPTION_VAL_80_JA },
+            { "90", OPTION_VAL_90_JA },
+            { "100", OPTION_VAL_100_JA },
+            { "110", OPTION_VAL_110_JA },
+            { "120", OPTION_VAL_120_JA },
+            { "130", OPTION_VAL_130_JA },
+            { "140", OPTION_VAL_140_JA },
+            { "150", OPTION_VAL_150_JA },
+            { "160", OPTION_VAL_160_JA },
+            { "170", OPTION_VAL_170_JA },
+            { "180", OPTION_VAL_180_JA },
+            { "190", OPTION_VAL_190_JA },
+            { "200", OPTION_VAL_200_JA },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -15740,6 +18990,19 @@ struct retro_core_options_v2 options_ja = {
 #define XEMU_HARD_FPU_INFO_0_KO NULL
 #define XEMU_CPU_BOOST_LABEL_KO NULL
 #define XEMU_CPU_BOOST_INFO_0_KO NULL
+#define XEMU_LANGUAGE_LABEL_KO NULL
+#define XEMU_LANGUAGE_INFO_0_KO NULL
+#define OPTION_VAL_AUTO_KO "자동"
+#define OPTION_VAL_DASHBOARD_KO NULL
+#define OPTION_VAL_ENGLISH_KO "영어"
+#define OPTION_VAL_JAPANESE_KO "일본어"
+#define OPTION_VAL_GERMAN_KO "독일어"
+#define OPTION_VAL_FRENCH_KO "프랑스어"
+#define OPTION_VAL_SPANISH_KO "스페인어"
+#define OPTION_VAL_ITALIAN_KO "이탈리아어"
+#define OPTION_VAL_KOREAN_KO "한국어"
+#define OPTION_VAL_CHINESE_KO "중국어"
+#define OPTION_VAL_PORTUGUESE_KO "포르투갈어"
 #define XEMU_HDD_TRIM_LABEL_KO NULL
 #define XEMU_HDD_TRIM_INFO_0_KO NULL
 #define XEMU_RENDERER_LABEL_KO NULL
@@ -15748,13 +19011,13 @@ struct retro_core_options_v2 options_ja = {
 #define OPTION_VAL_OPENGL_KO NULL
 #define XEMU_VIDEO_ASPECT_LABEL_KO NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_KO NULL
-#define OPTION_VAL_DASHBOARD_KO NULL
 #define OPTION_VAL_4_3_KO NULL
 #define OPTION_VAL_16_9_KO NULL
 #define OPTION_VAL_LETTERBOX_KO NULL
 #define XEMU_ASPECT_RATIO_LABEL_KO "코어 화면비"
 #define XEMU_ASPECT_RATIO_INFO_0_KO NULL
-#define OPTION_VAL_AUTO_KO "자동"
+#define XEMU_OVERSCAN_CROP_LABEL_KO "세로 오버스캔 잘라내기"
+#define XEMU_OVERSCAN_CROP_INFO_0_KO NULL
 #define XEMU_SURFACE_SCALE_LABEL_KO NULL
 #define XEMU_SURFACE_SCALE_INFO_0_KO NULL
 #define OPTION_VAL_1_KO NULL
@@ -15767,6 +19030,13 @@ struct retro_core_options_v2 options_ja = {
 #define OPTION_VAL_8_KO NULL
 #define OPTION_VAL_9_KO NULL
 #define OPTION_VAL_10_KO NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_KO "비등방성 필터링"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_KO NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_KO "기본"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_KO NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_KO NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_KO NULL
+#define OPTION_VAL_16_KO NULL
 #define XEMU_AVPACK_LABEL_KO NULL
 #define XEMU_AVPACK_INFO_0_KO NULL
 #define OPTION_VAL_HDTV_KO NULL
@@ -15820,14 +19090,26 @@ struct retro_core_options_v2 options_ja = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_KO NULL
 #define OPTION_VAL_MOUSE_KO "마우스"
 #define OPTION_VAL_STICK_KO NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_KO NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_KO NULL
+#define OPTION_VAL_50_KO NULL
+#define OPTION_VAL_70_KO NULL
+#define OPTION_VAL_90_KO NULL
+#define OPTION_VAL_110_KO NULL
+#define OPTION_VAL_120_KO NULL
+#define OPTION_VAL_130_KO NULL
+#define OPTION_VAL_140_KO NULL
+#define OPTION_VAL_150_KO NULL
+#define OPTION_VAL_160_KO NULL
+#define OPTION_VAL_170_KO NULL
+#define OPTION_VAL_180_KO NULL
+#define OPTION_VAL_190_KO NULL
+#define OPTION_VAL_200_KO NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_KO NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_KO NULL
 #define XEMU_CHIHIRO_FFB_LABEL_KO NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_KO NULL
-#define OPTION_VAL_50_KO NULL
 #define OPTION_VAL_75_KO NULL
-#define OPTION_VAL_150_KO NULL
-#define OPTION_VAL_200_KO NULL
 
 struct retro_core_option_v2_category option_cats_ko[] = {
     {
@@ -15934,6 +19216,32 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_KO,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_KO,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_KO },
+            { "dashboard",  OPTION_VAL_DASHBOARD_KO },
+            { "english",    OPTION_VAL_ENGLISH_KO },
+            { "japanese",   OPTION_VAL_JAPANESE_KO },
+            { "german",     OPTION_VAL_GERMAN_KO },
+            { "french",     OPTION_VAL_FRENCH_KO },
+            { "spanish",    OPTION_VAL_SPANISH_KO },
+            { "italian",    OPTION_VAL_ITALIAN_KO },
+            { "korean",     OPTION_VAL_KOREAN_KO },
+            { "chinese",    OPTION_VAL_CHINESE_KO },
+            { "portuguese", OPTION_VAL_PORTUGUESE_KO },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_KO,
@@ -15996,6 +19304,22 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_KO,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_KO,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_KO },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_KO,
@@ -16014,6 +19338,24 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
             { "8", OPTION_VAL_8_KO },
             { "9", OPTION_VAL_9_KO },
             { "10", OPTION_VAL_10_KO },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_KO,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_KO,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_KO },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_KO },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_KO },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_KO },
+            { "16", OPTION_VAL_16_KO },
             { NULL, NULL },
         },
         "1"
@@ -16066,10 +19408,13 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_KO,
@@ -16082,7 +19427,7 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -16274,6 +19619,36 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_KO,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_KO,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_KO },
+            { "60", OPTION_VAL_60_KO },
+            { "70", OPTION_VAL_70_KO },
+            { "80", OPTION_VAL_80_KO },
+            { "90", OPTION_VAL_90_KO },
+            { "100", OPTION_VAL_100_KO },
+            { "110", OPTION_VAL_110_KO },
+            { "120", OPTION_VAL_120_KO },
+            { "130", OPTION_VAL_130_KO },
+            { "140", OPTION_VAL_140_KO },
+            { "150", OPTION_VAL_150_KO },
+            { "160", OPTION_VAL_160_KO },
+            { "170", OPTION_VAL_170_KO },
+            { "180", OPTION_VAL_180_KO },
+            { "190", OPTION_VAL_190_KO },
+            { "200", OPTION_VAL_200_KO },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -16343,6 +19718,19 @@ struct retro_core_options_v2 options_ko = {
 #define XEMU_HARD_FPU_INFO_0_NL NULL
 #define XEMU_CPU_BOOST_LABEL_NL NULL
 #define XEMU_CPU_BOOST_INFO_0_NL NULL
+#define XEMU_LANGUAGE_LABEL_NL NULL
+#define XEMU_LANGUAGE_INFO_0_NL NULL
+#define OPTION_VAL_AUTO_NL "Automatisch"
+#define OPTION_VAL_DASHBOARD_NL NULL
+#define OPTION_VAL_ENGLISH_NL "Engels"
+#define OPTION_VAL_JAPANESE_NL "Japans"
+#define OPTION_VAL_GERMAN_NL "Duits"
+#define OPTION_VAL_FRENCH_NL "Frans"
+#define OPTION_VAL_SPANISH_NL "Spaans"
+#define OPTION_VAL_ITALIAN_NL "Italiaans"
+#define OPTION_VAL_KOREAN_NL NULL
+#define OPTION_VAL_CHINESE_NL NULL
+#define OPTION_VAL_PORTUGUESE_NL NULL
 #define XEMU_HDD_TRIM_LABEL_NL NULL
 #define XEMU_HDD_TRIM_INFO_0_NL NULL
 #define XEMU_RENDERER_LABEL_NL NULL
@@ -16351,13 +19739,13 @@ struct retro_core_options_v2 options_ko = {
 #define OPTION_VAL_OPENGL_NL NULL
 #define XEMU_VIDEO_ASPECT_LABEL_NL NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_NL NULL
-#define OPTION_VAL_DASHBOARD_NL NULL
 #define OPTION_VAL_4_3_NL NULL
 #define OPTION_VAL_16_9_NL NULL
 #define OPTION_VAL_LETTERBOX_NL NULL
 #define XEMU_ASPECT_RATIO_LABEL_NL NULL
 #define XEMU_ASPECT_RATIO_INFO_0_NL NULL
-#define OPTION_VAL_AUTO_NL "Automatisch"
+#define XEMU_OVERSCAN_CROP_LABEL_NL NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_NL NULL
 #define XEMU_SURFACE_SCALE_LABEL_NL NULL
 #define XEMU_SURFACE_SCALE_INFO_0_NL NULL
 #define OPTION_VAL_1_NL NULL
@@ -16370,6 +19758,13 @@ struct retro_core_options_v2 options_ko = {
 #define OPTION_VAL_8_NL NULL
 #define OPTION_VAL_9_NL NULL
 #define OPTION_VAL_10_NL NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_NL NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_NL NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_NL "Standaard"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_NL NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_NL NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_NL NULL
+#define OPTION_VAL_16_NL NULL
 #define XEMU_AVPACK_LABEL_NL NULL
 #define XEMU_AVPACK_INFO_0_NL NULL
 #define OPTION_VAL_HDTV_NL NULL
@@ -16423,14 +19818,26 @@ struct retro_core_options_v2 options_ko = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_NL NULL
 #define OPTION_VAL_MOUSE_NL NULL
 #define OPTION_VAL_STICK_NL NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_NL NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_NL NULL
+#define OPTION_VAL_50_NL NULL
+#define OPTION_VAL_70_NL NULL
+#define OPTION_VAL_90_NL NULL
+#define OPTION_VAL_110_NL NULL
+#define OPTION_VAL_120_NL NULL
+#define OPTION_VAL_130_NL NULL
+#define OPTION_VAL_140_NL NULL
+#define OPTION_VAL_150_NL NULL
+#define OPTION_VAL_160_NL NULL
+#define OPTION_VAL_170_NL NULL
+#define OPTION_VAL_180_NL NULL
+#define OPTION_VAL_190_NL NULL
+#define OPTION_VAL_200_NL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_NL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_NL NULL
 #define XEMU_CHIHIRO_FFB_LABEL_NL NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_NL NULL
-#define OPTION_VAL_50_NL NULL
 #define OPTION_VAL_75_NL NULL
-#define OPTION_VAL_150_NL NULL
-#define OPTION_VAL_200_NL NULL
 
 struct retro_core_option_v2_category option_cats_nl[] = {
     {
@@ -16537,6 +19944,32 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_NL,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_NL,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_NL },
+            { "dashboard",  OPTION_VAL_DASHBOARD_NL },
+            { "english",    OPTION_VAL_ENGLISH_NL },
+            { "japanese",   OPTION_VAL_JAPANESE_NL },
+            { "german",     OPTION_VAL_GERMAN_NL },
+            { "french",     OPTION_VAL_FRENCH_NL },
+            { "spanish",    OPTION_VAL_SPANISH_NL },
+            { "italian",    OPTION_VAL_ITALIAN_NL },
+            { "korean",     OPTION_VAL_KOREAN_NL },
+            { "chinese",    OPTION_VAL_CHINESE_NL },
+            { "portuguese", OPTION_VAL_PORTUGUESE_NL },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_NL,
@@ -16599,6 +20032,22 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_NL,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_NL,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_NL },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_NL,
@@ -16617,6 +20066,24 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
             { "8", OPTION_VAL_8_NL },
             { "9", OPTION_VAL_9_NL },
             { "10", OPTION_VAL_10_NL },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_NL,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_NL,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_NL },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_NL },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_NL },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_NL },
+            { "16", OPTION_VAL_16_NL },
             { NULL, NULL },
         },
         "1"
@@ -16669,10 +20136,13 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_NL,
@@ -16685,7 +20155,7 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -16877,6 +20347,36 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_NL,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_NL,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_NL },
+            { "60", OPTION_VAL_60_NL },
+            { "70", OPTION_VAL_70_NL },
+            { "80", OPTION_VAL_80_NL },
+            { "90", OPTION_VAL_90_NL },
+            { "100", OPTION_VAL_100_NL },
+            { "110", OPTION_VAL_110_NL },
+            { "120", OPTION_VAL_120_NL },
+            { "130", OPTION_VAL_130_NL },
+            { "140", OPTION_VAL_140_NL },
+            { "150", OPTION_VAL_150_NL },
+            { "160", OPTION_VAL_160_NL },
+            { "170", OPTION_VAL_170_NL },
+            { "180", OPTION_VAL_180_NL },
+            { "190", OPTION_VAL_190_NL },
+            { "200", OPTION_VAL_200_NL },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -16946,6 +20446,19 @@ struct retro_core_options_v2 options_nl = {
 #define XEMU_HARD_FPU_INFO_0_NO NULL
 #define XEMU_CPU_BOOST_LABEL_NO NULL
 #define XEMU_CPU_BOOST_INFO_0_NO NULL
+#define XEMU_LANGUAGE_LABEL_NO NULL
+#define XEMU_LANGUAGE_INFO_0_NO NULL
+#define OPTION_VAL_AUTO_NO NULL
+#define OPTION_VAL_DASHBOARD_NO NULL
+#define OPTION_VAL_ENGLISH_NO NULL
+#define OPTION_VAL_JAPANESE_NO NULL
+#define OPTION_VAL_GERMAN_NO NULL
+#define OPTION_VAL_FRENCH_NO NULL
+#define OPTION_VAL_SPANISH_NO NULL
+#define OPTION_VAL_ITALIAN_NO NULL
+#define OPTION_VAL_KOREAN_NO NULL
+#define OPTION_VAL_CHINESE_NO NULL
+#define OPTION_VAL_PORTUGUESE_NO NULL
 #define XEMU_HDD_TRIM_LABEL_NO NULL
 #define XEMU_HDD_TRIM_INFO_0_NO NULL
 #define XEMU_RENDERER_LABEL_NO NULL
@@ -16954,13 +20467,13 @@ struct retro_core_options_v2 options_nl = {
 #define OPTION_VAL_OPENGL_NO NULL
 #define XEMU_VIDEO_ASPECT_LABEL_NO NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_NO NULL
-#define OPTION_VAL_DASHBOARD_NO NULL
 #define OPTION_VAL_4_3_NO NULL
 #define OPTION_VAL_16_9_NO NULL
 #define OPTION_VAL_LETTERBOX_NO NULL
 #define XEMU_ASPECT_RATIO_LABEL_NO NULL
 #define XEMU_ASPECT_RATIO_INFO_0_NO NULL
-#define OPTION_VAL_AUTO_NO NULL
+#define XEMU_OVERSCAN_CROP_LABEL_NO NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_NO NULL
 #define XEMU_SURFACE_SCALE_LABEL_NO NULL
 #define XEMU_SURFACE_SCALE_INFO_0_NO NULL
 #define OPTION_VAL_1_NO NULL
@@ -16973,6 +20486,13 @@ struct retro_core_options_v2 options_nl = {
 #define OPTION_VAL_8_NO NULL
 #define OPTION_VAL_9_NO NULL
 #define OPTION_VAL_10_NO NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_NO NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_NO NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_NO NULL
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_NO NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_NO NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_NO NULL
+#define OPTION_VAL_16_NO NULL
 #define XEMU_AVPACK_LABEL_NO NULL
 #define XEMU_AVPACK_INFO_0_NO NULL
 #define OPTION_VAL_HDTV_NO NULL
@@ -17026,14 +20546,26 @@ struct retro_core_options_v2 options_nl = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_NO NULL
 #define OPTION_VAL_MOUSE_NO NULL
 #define OPTION_VAL_STICK_NO NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_NO NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_NO NULL
+#define OPTION_VAL_50_NO NULL
+#define OPTION_VAL_70_NO NULL
+#define OPTION_VAL_90_NO NULL
+#define OPTION_VAL_110_NO NULL
+#define OPTION_VAL_120_NO NULL
+#define OPTION_VAL_130_NO NULL
+#define OPTION_VAL_140_NO NULL
+#define OPTION_VAL_150_NO NULL
+#define OPTION_VAL_160_NO NULL
+#define OPTION_VAL_170_NO NULL
+#define OPTION_VAL_180_NO NULL
+#define OPTION_VAL_190_NO NULL
+#define OPTION_VAL_200_NO NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_NO NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_NO NULL
 #define XEMU_CHIHIRO_FFB_LABEL_NO NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_NO NULL
-#define OPTION_VAL_50_NO NULL
 #define OPTION_VAL_75_NO NULL
-#define OPTION_VAL_150_NO NULL
-#define OPTION_VAL_200_NO NULL
 
 struct retro_core_option_v2_category option_cats_no[] = {
     {
@@ -17140,6 +20672,32 @@ struct retro_core_option_v2_definition option_defs_no[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_NO,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_NO,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_NO },
+            { "dashboard",  OPTION_VAL_DASHBOARD_NO },
+            { "english",    OPTION_VAL_ENGLISH_NO },
+            { "japanese",   OPTION_VAL_JAPANESE_NO },
+            { "german",     OPTION_VAL_GERMAN_NO },
+            { "french",     OPTION_VAL_FRENCH_NO },
+            { "spanish",    OPTION_VAL_SPANISH_NO },
+            { "italian",    OPTION_VAL_ITALIAN_NO },
+            { "korean",     OPTION_VAL_KOREAN_NO },
+            { "chinese",    OPTION_VAL_CHINESE_NO },
+            { "portuguese", OPTION_VAL_PORTUGUESE_NO },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_NO,
@@ -17202,6 +20760,22 @@ struct retro_core_option_v2_definition option_defs_no[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_NO,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_NO,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_NO },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_NO,
@@ -17220,6 +20794,24 @@ struct retro_core_option_v2_definition option_defs_no[] = {
             { "8", OPTION_VAL_8_NO },
             { "9", OPTION_VAL_9_NO },
             { "10", OPTION_VAL_10_NO },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_NO,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_NO,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_NO },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_NO },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_NO },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_NO },
+            { "16", OPTION_VAL_16_NO },
             { NULL, NULL },
         },
         "1"
@@ -17272,10 +20864,13 @@ struct retro_core_option_v2_definition option_defs_no[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_NO,
@@ -17288,7 +20883,7 @@ struct retro_core_option_v2_definition option_defs_no[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -17480,6 +21075,36 @@ struct retro_core_option_v2_definition option_defs_no[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_NO,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_NO,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_NO },
+            { "60", OPTION_VAL_60_NO },
+            { "70", OPTION_VAL_70_NO },
+            { "80", OPTION_VAL_80_NO },
+            { "90", OPTION_VAL_90_NO },
+            { "100", OPTION_VAL_100_NO },
+            { "110", OPTION_VAL_110_NO },
+            { "120", OPTION_VAL_120_NO },
+            { "130", OPTION_VAL_130_NO },
+            { "140", OPTION_VAL_140_NO },
+            { "150", OPTION_VAL_150_NO },
+            { "160", OPTION_VAL_160_NO },
+            { "170", OPTION_VAL_170_NO },
+            { "180", OPTION_VAL_180_NO },
+            { "190", OPTION_VAL_190_NO },
+            { "200", OPTION_VAL_200_NO },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -17549,6 +21174,19 @@ struct retro_core_options_v2 options_no = {
 #define XEMU_HARD_FPU_INFO_0_OR NULL
 #define XEMU_CPU_BOOST_LABEL_OR NULL
 #define XEMU_CPU_BOOST_INFO_0_OR NULL
+#define XEMU_LANGUAGE_LABEL_OR NULL
+#define XEMU_LANGUAGE_INFO_0_OR NULL
+#define OPTION_VAL_AUTO_OR NULL
+#define OPTION_VAL_DASHBOARD_OR NULL
+#define OPTION_VAL_ENGLISH_OR NULL
+#define OPTION_VAL_JAPANESE_OR NULL
+#define OPTION_VAL_GERMAN_OR NULL
+#define OPTION_VAL_FRENCH_OR NULL
+#define OPTION_VAL_SPANISH_OR NULL
+#define OPTION_VAL_ITALIAN_OR NULL
+#define OPTION_VAL_KOREAN_OR NULL
+#define OPTION_VAL_CHINESE_OR NULL
+#define OPTION_VAL_PORTUGUESE_OR NULL
 #define XEMU_HDD_TRIM_LABEL_OR NULL
 #define XEMU_HDD_TRIM_INFO_0_OR NULL
 #define XEMU_RENDERER_LABEL_OR NULL
@@ -17557,13 +21195,13 @@ struct retro_core_options_v2 options_no = {
 #define OPTION_VAL_OPENGL_OR NULL
 #define XEMU_VIDEO_ASPECT_LABEL_OR NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_OR NULL
-#define OPTION_VAL_DASHBOARD_OR NULL
 #define OPTION_VAL_4_3_OR NULL
 #define OPTION_VAL_16_9_OR NULL
 #define OPTION_VAL_LETTERBOX_OR NULL
 #define XEMU_ASPECT_RATIO_LABEL_OR NULL
 #define XEMU_ASPECT_RATIO_INFO_0_OR NULL
-#define OPTION_VAL_AUTO_OR NULL
+#define XEMU_OVERSCAN_CROP_LABEL_OR NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_OR NULL
 #define XEMU_SURFACE_SCALE_LABEL_OR NULL
 #define XEMU_SURFACE_SCALE_INFO_0_OR NULL
 #define OPTION_VAL_1_OR NULL
@@ -17576,6 +21214,13 @@ struct retro_core_options_v2 options_no = {
 #define OPTION_VAL_8_OR NULL
 #define OPTION_VAL_9_OR NULL
 #define OPTION_VAL_10_OR NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_OR NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_OR NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_OR NULL
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_OR NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_OR NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_OR NULL
+#define OPTION_VAL_16_OR NULL
 #define XEMU_AVPACK_LABEL_OR NULL
 #define XEMU_AVPACK_INFO_0_OR NULL
 #define OPTION_VAL_HDTV_OR NULL
@@ -17629,14 +21274,26 @@ struct retro_core_options_v2 options_no = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_OR NULL
 #define OPTION_VAL_MOUSE_OR NULL
 #define OPTION_VAL_STICK_OR NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_OR NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_OR NULL
+#define OPTION_VAL_50_OR NULL
+#define OPTION_VAL_70_OR NULL
+#define OPTION_VAL_90_OR NULL
+#define OPTION_VAL_110_OR NULL
+#define OPTION_VAL_120_OR NULL
+#define OPTION_VAL_130_OR NULL
+#define OPTION_VAL_140_OR NULL
+#define OPTION_VAL_150_OR NULL
+#define OPTION_VAL_160_OR NULL
+#define OPTION_VAL_170_OR NULL
+#define OPTION_VAL_180_OR NULL
+#define OPTION_VAL_190_OR NULL
+#define OPTION_VAL_200_OR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_OR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_OR NULL
 #define XEMU_CHIHIRO_FFB_LABEL_OR NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_OR NULL
-#define OPTION_VAL_50_OR NULL
 #define OPTION_VAL_75_OR NULL
-#define OPTION_VAL_150_OR NULL
-#define OPTION_VAL_200_OR NULL
 
 struct retro_core_option_v2_category option_cats_or[] = {
     {
@@ -17743,6 +21400,32 @@ struct retro_core_option_v2_definition option_defs_or[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_OR,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_OR,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_OR },
+            { "dashboard",  OPTION_VAL_DASHBOARD_OR },
+            { "english",    OPTION_VAL_ENGLISH_OR },
+            { "japanese",   OPTION_VAL_JAPANESE_OR },
+            { "german",     OPTION_VAL_GERMAN_OR },
+            { "french",     OPTION_VAL_FRENCH_OR },
+            { "spanish",    OPTION_VAL_SPANISH_OR },
+            { "italian",    OPTION_VAL_ITALIAN_OR },
+            { "korean",     OPTION_VAL_KOREAN_OR },
+            { "chinese",    OPTION_VAL_CHINESE_OR },
+            { "portuguese", OPTION_VAL_PORTUGUESE_OR },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_OR,
@@ -17805,6 +21488,22 @@ struct retro_core_option_v2_definition option_defs_or[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_OR,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_OR,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_OR },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_OR,
@@ -17823,6 +21522,24 @@ struct retro_core_option_v2_definition option_defs_or[] = {
             { "8", OPTION_VAL_8_OR },
             { "9", OPTION_VAL_9_OR },
             { "10", OPTION_VAL_10_OR },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_OR,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_OR,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_OR },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_OR },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_OR },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_OR },
+            { "16", OPTION_VAL_16_OR },
             { NULL, NULL },
         },
         "1"
@@ -17875,10 +21592,13 @@ struct retro_core_option_v2_definition option_defs_or[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_OR,
@@ -17891,7 +21611,7 @@ struct retro_core_option_v2_definition option_defs_or[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -18083,6 +21803,36 @@ struct retro_core_option_v2_definition option_defs_or[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_OR,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_OR,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_OR },
+            { "60", OPTION_VAL_60_OR },
+            { "70", OPTION_VAL_70_OR },
+            { "80", OPTION_VAL_80_OR },
+            { "90", OPTION_VAL_90_OR },
+            { "100", OPTION_VAL_100_OR },
+            { "110", OPTION_VAL_110_OR },
+            { "120", OPTION_VAL_120_OR },
+            { "130", OPTION_VAL_130_OR },
+            { "140", OPTION_VAL_140_OR },
+            { "150", OPTION_VAL_150_OR },
+            { "160", OPTION_VAL_160_OR },
+            { "170", OPTION_VAL_170_OR },
+            { "180", OPTION_VAL_180_OR },
+            { "190", OPTION_VAL_190_OR },
+            { "200", OPTION_VAL_200_OR },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -18152,6 +21902,19 @@ struct retro_core_options_v2 options_or = {
 #define XEMU_HARD_FPU_INFO_0_PL NULL
 #define XEMU_CPU_BOOST_LABEL_PL NULL
 #define XEMU_CPU_BOOST_INFO_0_PL NULL
+#define XEMU_LANGUAGE_LABEL_PL NULL
+#define XEMU_LANGUAGE_INFO_0_PL NULL
+#define OPTION_VAL_AUTO_PL "Automatyczny"
+#define OPTION_VAL_DASHBOARD_PL NULL
+#define OPTION_VAL_ENGLISH_PL "angielski"
+#define OPTION_VAL_JAPANESE_PL "japoński"
+#define OPTION_VAL_GERMAN_PL "niemiecki"
+#define OPTION_VAL_FRENCH_PL "francuski"
+#define OPTION_VAL_SPANISH_PL "hiszpański"
+#define OPTION_VAL_ITALIAN_PL "włoski"
+#define OPTION_VAL_KOREAN_PL NULL
+#define OPTION_VAL_CHINESE_PL NULL
+#define OPTION_VAL_PORTUGUESE_PL NULL
 #define XEMU_HDD_TRIM_LABEL_PL NULL
 #define XEMU_HDD_TRIM_INFO_0_PL NULL
 #define XEMU_RENDERER_LABEL_PL NULL
@@ -18160,13 +21923,13 @@ struct retro_core_options_v2 options_or = {
 #define OPTION_VAL_OPENGL_PL NULL
 #define XEMU_VIDEO_ASPECT_LABEL_PL NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_PL NULL
-#define OPTION_VAL_DASHBOARD_PL NULL
 #define OPTION_VAL_4_3_PL NULL
 #define OPTION_VAL_16_9_PL NULL
 #define OPTION_VAL_LETTERBOX_PL NULL
 #define XEMU_ASPECT_RATIO_LABEL_PL "Proporcje rdzenia"
 #define XEMU_ASPECT_RATIO_INFO_0_PL NULL
-#define OPTION_VAL_AUTO_PL "Automatyczny"
+#define XEMU_OVERSCAN_CROP_LABEL_PL "Przytnij pionowy overscan"
+#define XEMU_OVERSCAN_CROP_INFO_0_PL NULL
 #define XEMU_SURFACE_SCALE_LABEL_PL NULL
 #define XEMU_SURFACE_SCALE_INFO_0_PL NULL
 #define OPTION_VAL_1_PL NULL
@@ -18179,6 +21942,13 @@ struct retro_core_options_v2 options_or = {
 #define OPTION_VAL_8_PL NULL
 #define OPTION_VAL_9_PL NULL
 #define OPTION_VAL_10_PL NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_PL "Filtrowanie anizotropowe"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_PL NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_PL "Natywny"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_PL NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_PL NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_PL NULL
+#define OPTION_VAL_16_PL NULL
 #define XEMU_AVPACK_LABEL_PL NULL
 #define XEMU_AVPACK_INFO_0_PL NULL
 #define OPTION_VAL_HDTV_PL NULL
@@ -18232,14 +22002,26 @@ struct retro_core_options_v2 options_or = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_PL NULL
 #define OPTION_VAL_MOUSE_PL "Mysz"
 #define OPTION_VAL_STICK_PL NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_PL NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_PL NULL
+#define OPTION_VAL_50_PL "50 %"
+#define OPTION_VAL_70_PL NULL
+#define OPTION_VAL_90_PL NULL
+#define OPTION_VAL_110_PL NULL
+#define OPTION_VAL_120_PL NULL
+#define OPTION_VAL_130_PL NULL
+#define OPTION_VAL_140_PL NULL
+#define OPTION_VAL_150_PL NULL
+#define OPTION_VAL_160_PL NULL
+#define OPTION_VAL_170_PL NULL
+#define OPTION_VAL_180_PL NULL
+#define OPTION_VAL_190_PL NULL
+#define OPTION_VAL_200_PL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_PL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_PL NULL
 #define XEMU_CHIHIRO_FFB_LABEL_PL NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_PL NULL
-#define OPTION_VAL_50_PL "50 %"
 #define OPTION_VAL_75_PL NULL
-#define OPTION_VAL_150_PL NULL
-#define OPTION_VAL_200_PL NULL
 
 struct retro_core_option_v2_category option_cats_pl[] = {
     {
@@ -18346,6 +22128,32 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_PL,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_PL,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_PL },
+            { "dashboard",  OPTION_VAL_DASHBOARD_PL },
+            { "english",    OPTION_VAL_ENGLISH_PL },
+            { "japanese",   OPTION_VAL_JAPANESE_PL },
+            { "german",     OPTION_VAL_GERMAN_PL },
+            { "french",     OPTION_VAL_FRENCH_PL },
+            { "spanish",    OPTION_VAL_SPANISH_PL },
+            { "italian",    OPTION_VAL_ITALIAN_PL },
+            { "korean",     OPTION_VAL_KOREAN_PL },
+            { "chinese",    OPTION_VAL_CHINESE_PL },
+            { "portuguese", OPTION_VAL_PORTUGUESE_PL },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_PL,
@@ -18408,6 +22216,22 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_PL,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_PL,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_PL },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_PL,
@@ -18426,6 +22250,24 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
             { "8", OPTION_VAL_8_PL },
             { "9", OPTION_VAL_9_PL },
             { "10", OPTION_VAL_10_PL },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_PL,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_PL,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_PL },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_PL },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_PL },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_PL },
+            { "16", OPTION_VAL_16_PL },
             { NULL, NULL },
         },
         "1"
@@ -18478,10 +22320,13 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_PL,
@@ -18494,7 +22339,7 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -18686,6 +22531,36 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_PL,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_PL,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_PL },
+            { "60", OPTION_VAL_60_PL },
+            { "70", OPTION_VAL_70_PL },
+            { "80", OPTION_VAL_80_PL },
+            { "90", OPTION_VAL_90_PL },
+            { "100", OPTION_VAL_100_PL },
+            { "110", OPTION_VAL_110_PL },
+            { "120", OPTION_VAL_120_PL },
+            { "130", OPTION_VAL_130_PL },
+            { "140", OPTION_VAL_140_PL },
+            { "150", OPTION_VAL_150_PL },
+            { "160", OPTION_VAL_160_PL },
+            { "170", OPTION_VAL_170_PL },
+            { "180", OPTION_VAL_180_PL },
+            { "190", OPTION_VAL_190_PL },
+            { "200", OPTION_VAL_200_PL },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -18755,6 +22630,19 @@ struct retro_core_options_v2 options_pl = {
 #define XEMU_HARD_FPU_INFO_0_PT_BR NULL
 #define XEMU_CPU_BOOST_LABEL_PT_BR NULL
 #define XEMU_CPU_BOOST_INFO_0_PT_BR NULL
+#define XEMU_LANGUAGE_LABEL_PT_BR NULL
+#define XEMU_LANGUAGE_INFO_0_PT_BR NULL
+#define OPTION_VAL_AUTO_PT_BR "Automático"
+#define OPTION_VAL_DASHBOARD_PT_BR NULL
+#define OPTION_VAL_ENGLISH_PT_BR "Inglês"
+#define OPTION_VAL_JAPANESE_PT_BR "Japonês"
+#define OPTION_VAL_GERMAN_PT_BR "Alemão"
+#define OPTION_VAL_FRENCH_PT_BR "Francês"
+#define OPTION_VAL_SPANISH_PT_BR "Espanhol"
+#define OPTION_VAL_ITALIAN_PT_BR "Italiano"
+#define OPTION_VAL_KOREAN_PT_BR NULL
+#define OPTION_VAL_CHINESE_PT_BR NULL
+#define OPTION_VAL_PORTUGUESE_PT_BR NULL
 #define XEMU_HDD_TRIM_LABEL_PT_BR NULL
 #define XEMU_HDD_TRIM_INFO_0_PT_BR NULL
 #define XEMU_RENDERER_LABEL_PT_BR NULL
@@ -18763,13 +22651,13 @@ struct retro_core_options_v2 options_pl = {
 #define OPTION_VAL_OPENGL_PT_BR NULL
 #define XEMU_VIDEO_ASPECT_LABEL_PT_BR NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_PT_BR NULL
-#define OPTION_VAL_DASHBOARD_PT_BR NULL
 #define OPTION_VAL_4_3_PT_BR NULL
 #define OPTION_VAL_16_9_PT_BR NULL
 #define OPTION_VAL_LETTERBOX_PT_BR NULL
 #define XEMU_ASPECT_RATIO_LABEL_PT_BR "Proporção de tela do núcleo"
 #define XEMU_ASPECT_RATIO_INFO_0_PT_BR NULL
-#define OPTION_VAL_AUTO_PT_BR "Automático"
+#define XEMU_OVERSCAN_CROP_LABEL_PT_BR "Cortar overscan vertical"
+#define XEMU_OVERSCAN_CROP_INFO_0_PT_BR NULL
 #define XEMU_SURFACE_SCALE_LABEL_PT_BR NULL
 #define XEMU_SURFACE_SCALE_INFO_0_PT_BR NULL
 #define OPTION_VAL_1_PT_BR NULL
@@ -18782,6 +22670,13 @@ struct retro_core_options_v2 options_pl = {
 #define OPTION_VAL_8_PT_BR NULL
 #define OPTION_VAL_9_PT_BR NULL
 #define OPTION_VAL_10_PT_BR NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_PT_BR "Filtro anisotrópico"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_PT_BR NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_PT_BR "Nativo"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_PT_BR NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_PT_BR NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_PT_BR NULL
+#define OPTION_VAL_16_PT_BR NULL
 #define XEMU_AVPACK_LABEL_PT_BR NULL
 #define XEMU_AVPACK_INFO_0_PT_BR NULL
 #define OPTION_VAL_HDTV_PT_BR NULL
@@ -18835,14 +22730,26 @@ struct retro_core_options_v2 options_pl = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_PT_BR NULL
 #define OPTION_VAL_MOUSE_PT_BR NULL
 #define OPTION_VAL_STICK_PT_BR NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_PT_BR NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_PT_BR NULL
+#define OPTION_VAL_50_PT_BR NULL
+#define OPTION_VAL_70_PT_BR NULL
+#define OPTION_VAL_90_PT_BR NULL
+#define OPTION_VAL_110_PT_BR NULL
+#define OPTION_VAL_120_PT_BR NULL
+#define OPTION_VAL_130_PT_BR NULL
+#define OPTION_VAL_140_PT_BR NULL
+#define OPTION_VAL_150_PT_BR NULL
+#define OPTION_VAL_160_PT_BR NULL
+#define OPTION_VAL_170_PT_BR NULL
+#define OPTION_VAL_180_PT_BR NULL
+#define OPTION_VAL_190_PT_BR NULL
+#define OPTION_VAL_200_PT_BR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_PT_BR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_PT_BR NULL
 #define XEMU_CHIHIRO_FFB_LABEL_PT_BR NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_PT_BR NULL
-#define OPTION_VAL_50_PT_BR NULL
 #define OPTION_VAL_75_PT_BR NULL
-#define OPTION_VAL_150_PT_BR NULL
-#define OPTION_VAL_200_PT_BR NULL
 
 struct retro_core_option_v2_category option_cats_pt_br[] = {
     {
@@ -18949,6 +22856,32 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_PT_BR,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_PT_BR,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_PT_BR },
+            { "dashboard",  OPTION_VAL_DASHBOARD_PT_BR },
+            { "english",    OPTION_VAL_ENGLISH_PT_BR },
+            { "japanese",   OPTION_VAL_JAPANESE_PT_BR },
+            { "german",     OPTION_VAL_GERMAN_PT_BR },
+            { "french",     OPTION_VAL_FRENCH_PT_BR },
+            { "spanish",    OPTION_VAL_SPANISH_PT_BR },
+            { "italian",    OPTION_VAL_ITALIAN_PT_BR },
+            { "korean",     OPTION_VAL_KOREAN_PT_BR },
+            { "chinese",    OPTION_VAL_CHINESE_PT_BR },
+            { "portuguese", OPTION_VAL_PORTUGUESE_PT_BR },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_PT_BR,
@@ -19011,6 +22944,22 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_PT_BR,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_PT_BR,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_PT_BR },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_PT_BR,
@@ -19029,6 +22978,24 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
             { "8", OPTION_VAL_8_PT_BR },
             { "9", OPTION_VAL_9_PT_BR },
             { "10", OPTION_VAL_10_PT_BR },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_PT_BR,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_PT_BR,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_PT_BR },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_PT_BR },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_PT_BR },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_PT_BR },
+            { "16", OPTION_VAL_16_PT_BR },
             { NULL, NULL },
         },
         "1"
@@ -19081,10 +23048,13 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_PT_BR,
@@ -19097,7 +23067,7 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -19289,6 +23259,36 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_PT_BR,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_PT_BR,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_PT_BR },
+            { "60", OPTION_VAL_60_PT_BR },
+            { "70", OPTION_VAL_70_PT_BR },
+            { "80", OPTION_VAL_80_PT_BR },
+            { "90", OPTION_VAL_90_PT_BR },
+            { "100", OPTION_VAL_100_PT_BR },
+            { "110", OPTION_VAL_110_PT_BR },
+            { "120", OPTION_VAL_120_PT_BR },
+            { "130", OPTION_VAL_130_PT_BR },
+            { "140", OPTION_VAL_140_PT_BR },
+            { "150", OPTION_VAL_150_PT_BR },
+            { "160", OPTION_VAL_160_PT_BR },
+            { "170", OPTION_VAL_170_PT_BR },
+            { "180", OPTION_VAL_180_PT_BR },
+            { "190", OPTION_VAL_190_PT_BR },
+            { "200", OPTION_VAL_200_PT_BR },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -19358,6 +23358,19 @@ struct retro_core_options_v2 options_pt_br = {
 #define XEMU_HARD_FPU_INFO_0_PT_PT NULL
 #define XEMU_CPU_BOOST_LABEL_PT_PT NULL
 #define XEMU_CPU_BOOST_INFO_0_PT_PT NULL
+#define XEMU_LANGUAGE_LABEL_PT_PT NULL
+#define XEMU_LANGUAGE_INFO_0_PT_PT NULL
+#define OPTION_VAL_AUTO_PT_PT "Automático"
+#define OPTION_VAL_DASHBOARD_PT_PT NULL
+#define OPTION_VAL_ENGLISH_PT_PT "Inglês"
+#define OPTION_VAL_JAPANESE_PT_PT "Japonês"
+#define OPTION_VAL_GERMAN_PT_PT "Alemão"
+#define OPTION_VAL_FRENCH_PT_PT "Francês"
+#define OPTION_VAL_SPANISH_PT_PT "Espanhol"
+#define OPTION_VAL_ITALIAN_PT_PT "Italiano"
+#define OPTION_VAL_KOREAN_PT_PT NULL
+#define OPTION_VAL_CHINESE_PT_PT NULL
+#define OPTION_VAL_PORTUGUESE_PT_PT NULL
 #define XEMU_HDD_TRIM_LABEL_PT_PT NULL
 #define XEMU_HDD_TRIM_INFO_0_PT_PT NULL
 #define XEMU_RENDERER_LABEL_PT_PT NULL
@@ -19366,13 +23379,13 @@ struct retro_core_options_v2 options_pt_br = {
 #define OPTION_VAL_OPENGL_PT_PT NULL
 #define XEMU_VIDEO_ASPECT_LABEL_PT_PT NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_PT_PT NULL
-#define OPTION_VAL_DASHBOARD_PT_PT NULL
 #define OPTION_VAL_4_3_PT_PT NULL
 #define OPTION_VAL_16_9_PT_PT NULL
 #define OPTION_VAL_LETTERBOX_PT_PT NULL
 #define XEMU_ASPECT_RATIO_LABEL_PT_PT NULL
 #define XEMU_ASPECT_RATIO_INFO_0_PT_PT NULL
-#define OPTION_VAL_AUTO_PT_PT "Automático"
+#define XEMU_OVERSCAN_CROP_LABEL_PT_PT NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_PT_PT NULL
 #define XEMU_SURFACE_SCALE_LABEL_PT_PT NULL
 #define XEMU_SURFACE_SCALE_INFO_0_PT_PT NULL
 #define OPTION_VAL_1_PT_PT NULL
@@ -19385,6 +23398,13 @@ struct retro_core_options_v2 options_pt_br = {
 #define OPTION_VAL_8_PT_PT NULL
 #define OPTION_VAL_9_PT_PT NULL
 #define OPTION_VAL_10_PT_PT NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_PT_PT NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_PT_PT NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_PT_PT NULL
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_PT_PT NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_PT_PT NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_PT_PT NULL
+#define OPTION_VAL_16_PT_PT NULL
 #define XEMU_AVPACK_LABEL_PT_PT NULL
 #define XEMU_AVPACK_INFO_0_PT_PT NULL
 #define OPTION_VAL_HDTV_PT_PT NULL
@@ -19438,14 +23458,26 @@ struct retro_core_options_v2 options_pt_br = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_PT_PT NULL
 #define OPTION_VAL_MOUSE_PT_PT NULL
 #define OPTION_VAL_STICK_PT_PT NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_PT_PT NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_PT_PT NULL
+#define OPTION_VAL_50_PT_PT NULL
+#define OPTION_VAL_70_PT_PT NULL
+#define OPTION_VAL_90_PT_PT NULL
+#define OPTION_VAL_110_PT_PT NULL
+#define OPTION_VAL_120_PT_PT NULL
+#define OPTION_VAL_130_PT_PT NULL
+#define OPTION_VAL_140_PT_PT NULL
+#define OPTION_VAL_150_PT_PT NULL
+#define OPTION_VAL_160_PT_PT NULL
+#define OPTION_VAL_170_PT_PT NULL
+#define OPTION_VAL_180_PT_PT NULL
+#define OPTION_VAL_190_PT_PT NULL
+#define OPTION_VAL_200_PT_PT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_PT_PT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_PT_PT NULL
 #define XEMU_CHIHIRO_FFB_LABEL_PT_PT NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_PT_PT NULL
-#define OPTION_VAL_50_PT_PT NULL
 #define OPTION_VAL_75_PT_PT NULL
-#define OPTION_VAL_150_PT_PT NULL
-#define OPTION_VAL_200_PT_PT NULL
 
 struct retro_core_option_v2_category option_cats_pt_pt[] = {
     {
@@ -19552,6 +23584,32 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_PT_PT,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_PT_PT,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_PT_PT },
+            { "dashboard",  OPTION_VAL_DASHBOARD_PT_PT },
+            { "english",    OPTION_VAL_ENGLISH_PT_PT },
+            { "japanese",   OPTION_VAL_JAPANESE_PT_PT },
+            { "german",     OPTION_VAL_GERMAN_PT_PT },
+            { "french",     OPTION_VAL_FRENCH_PT_PT },
+            { "spanish",    OPTION_VAL_SPANISH_PT_PT },
+            { "italian",    OPTION_VAL_ITALIAN_PT_PT },
+            { "korean",     OPTION_VAL_KOREAN_PT_PT },
+            { "chinese",    OPTION_VAL_CHINESE_PT_PT },
+            { "portuguese", OPTION_VAL_PORTUGUESE_PT_PT },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_PT_PT,
@@ -19614,6 +23672,22 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_PT_PT,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_PT_PT,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_PT_PT },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_PT_PT,
@@ -19632,6 +23706,24 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
             { "8", OPTION_VAL_8_PT_PT },
             { "9", OPTION_VAL_9_PT_PT },
             { "10", OPTION_VAL_10_PT_PT },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_PT_PT,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_PT_PT,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_PT_PT },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_PT_PT },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_PT_PT },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_PT_PT },
+            { "16", OPTION_VAL_16_PT_PT },
             { NULL, NULL },
         },
         "1"
@@ -19684,10 +23776,13 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_PT_PT,
@@ -19700,7 +23795,7 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -19892,6 +23987,36 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_PT_PT,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_PT_PT,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_PT_PT },
+            { "60", OPTION_VAL_60_PT_PT },
+            { "70", OPTION_VAL_70_PT_PT },
+            { "80", OPTION_VAL_80_PT_PT },
+            { "90", OPTION_VAL_90_PT_PT },
+            { "100", OPTION_VAL_100_PT_PT },
+            { "110", OPTION_VAL_110_PT_PT },
+            { "120", OPTION_VAL_120_PT_PT },
+            { "130", OPTION_VAL_130_PT_PT },
+            { "140", OPTION_VAL_140_PT_PT },
+            { "150", OPTION_VAL_150_PT_PT },
+            { "160", OPTION_VAL_160_PT_PT },
+            { "170", OPTION_VAL_170_PT_PT },
+            { "180", OPTION_VAL_180_PT_PT },
+            { "190", OPTION_VAL_190_PT_PT },
+            { "200", OPTION_VAL_200_PT_PT },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -19961,6 +24086,19 @@ struct retro_core_options_v2 options_pt_pt = {
 #define XEMU_HARD_FPU_INFO_0_RU NULL
 #define XEMU_CPU_BOOST_LABEL_RU NULL
 #define XEMU_CPU_BOOST_INFO_0_RU NULL
+#define XEMU_LANGUAGE_LABEL_RU NULL
+#define XEMU_LANGUAGE_INFO_0_RU NULL
+#define OPTION_VAL_AUTO_RU "Автоматически"
+#define OPTION_VAL_DASHBOARD_RU NULL
+#define OPTION_VAL_ENGLISH_RU "Английский"
+#define OPTION_VAL_JAPANESE_RU "Японский"
+#define OPTION_VAL_GERMAN_RU "Немецкий"
+#define OPTION_VAL_FRENCH_RU "Французский"
+#define OPTION_VAL_SPANISH_RU "Испанский"
+#define OPTION_VAL_ITALIAN_RU "Итальянский"
+#define OPTION_VAL_KOREAN_RU NULL
+#define OPTION_VAL_CHINESE_RU NULL
+#define OPTION_VAL_PORTUGUESE_RU NULL
 #define XEMU_HDD_TRIM_LABEL_RU NULL
 #define XEMU_HDD_TRIM_INFO_0_RU NULL
 #define XEMU_RENDERER_LABEL_RU NULL
@@ -19969,13 +24107,13 @@ struct retro_core_options_v2 options_pt_pt = {
 #define OPTION_VAL_OPENGL_RU NULL
 #define XEMU_VIDEO_ASPECT_LABEL_RU NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_RU NULL
-#define OPTION_VAL_DASHBOARD_RU NULL
 #define OPTION_VAL_4_3_RU NULL
 #define OPTION_VAL_16_9_RU NULL
 #define OPTION_VAL_LETTERBOX_RU NULL
 #define XEMU_ASPECT_RATIO_LABEL_RU "Соотношение сторон ядра"
 #define XEMU_ASPECT_RATIO_INFO_0_RU NULL
-#define OPTION_VAL_AUTO_RU "Автоматически"
+#define XEMU_OVERSCAN_CROP_LABEL_RU "Кадрирование по вертикали"
+#define XEMU_OVERSCAN_CROP_INFO_0_RU NULL
 #define XEMU_SURFACE_SCALE_LABEL_RU NULL
 #define XEMU_SURFACE_SCALE_INFO_0_RU NULL
 #define OPTION_VAL_1_RU NULL
@@ -19988,6 +24126,13 @@ struct retro_core_options_v2 options_pt_pt = {
 #define OPTION_VAL_8_RU NULL
 #define OPTION_VAL_9_RU NULL
 #define OPTION_VAL_10_RU NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_RU "Анизотропная фильтрация"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_RU NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_RU "Исходное"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_RU NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_RU NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_RU NULL
+#define OPTION_VAL_16_RU NULL
 #define XEMU_AVPACK_LABEL_RU NULL
 #define XEMU_AVPACK_INFO_0_RU NULL
 #define OPTION_VAL_HDTV_RU NULL
@@ -20041,14 +24186,26 @@ struct retro_core_options_v2 options_pt_pt = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_RU NULL
 #define OPTION_VAL_MOUSE_RU "Мышь"
 #define OPTION_VAL_STICK_RU NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_RU NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_RU NULL
+#define OPTION_VAL_50_RU NULL
+#define OPTION_VAL_70_RU NULL
+#define OPTION_VAL_90_RU NULL
+#define OPTION_VAL_110_RU NULL
+#define OPTION_VAL_120_RU NULL
+#define OPTION_VAL_130_RU NULL
+#define OPTION_VAL_140_RU NULL
+#define OPTION_VAL_150_RU NULL
+#define OPTION_VAL_160_RU NULL
+#define OPTION_VAL_170_RU NULL
+#define OPTION_VAL_180_RU NULL
+#define OPTION_VAL_190_RU NULL
+#define OPTION_VAL_200_RU NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_RU NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_RU NULL
 #define XEMU_CHIHIRO_FFB_LABEL_RU NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_RU NULL
-#define OPTION_VAL_50_RU NULL
 #define OPTION_VAL_75_RU NULL
-#define OPTION_VAL_150_RU NULL
-#define OPTION_VAL_200_RU NULL
 
 struct retro_core_option_v2_category option_cats_ru[] = {
     {
@@ -20155,6 +24312,32 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_RU,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_RU,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_RU },
+            { "dashboard",  OPTION_VAL_DASHBOARD_RU },
+            { "english",    OPTION_VAL_ENGLISH_RU },
+            { "japanese",   OPTION_VAL_JAPANESE_RU },
+            { "german",     OPTION_VAL_GERMAN_RU },
+            { "french",     OPTION_VAL_FRENCH_RU },
+            { "spanish",    OPTION_VAL_SPANISH_RU },
+            { "italian",    OPTION_VAL_ITALIAN_RU },
+            { "korean",     OPTION_VAL_KOREAN_RU },
+            { "chinese",    OPTION_VAL_CHINESE_RU },
+            { "portuguese", OPTION_VAL_PORTUGUESE_RU },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_RU,
@@ -20217,6 +24400,22 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_RU,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_RU,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_RU },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_RU,
@@ -20235,6 +24434,24 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
             { "8", OPTION_VAL_8_RU },
             { "9", OPTION_VAL_9_RU },
             { "10", OPTION_VAL_10_RU },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_RU,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_RU,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_RU },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_RU },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_RU },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_RU },
+            { "16", OPTION_VAL_16_RU },
             { NULL, NULL },
         },
         "1"
@@ -20287,10 +24504,13 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_RU,
@@ -20303,7 +24523,7 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -20495,6 +24715,36 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_RU,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_RU,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_RU },
+            { "60", OPTION_VAL_60_RU },
+            { "70", OPTION_VAL_70_RU },
+            { "80", OPTION_VAL_80_RU },
+            { "90", OPTION_VAL_90_RU },
+            { "100", OPTION_VAL_100_RU },
+            { "110", OPTION_VAL_110_RU },
+            { "120", OPTION_VAL_120_RU },
+            { "130", OPTION_VAL_130_RU },
+            { "140", OPTION_VAL_140_RU },
+            { "150", OPTION_VAL_150_RU },
+            { "160", OPTION_VAL_160_RU },
+            { "170", OPTION_VAL_170_RU },
+            { "180", OPTION_VAL_180_RU },
+            { "190", OPTION_VAL_190_RU },
+            { "200", OPTION_VAL_200_RU },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -20552,7 +24802,7 @@ struct retro_core_options_v2 options_ru = {
 #define CATEGORY_CHIHIRO_LABEL_SK NULL
 #define CATEGORY_CHIHIRO_INFO_0_SK "Arkádové hry Sega Chihiro: hra zadarmo, mierenie v strieľačkách a spätná väzba v pretekárskych hrách."
 #define XEMU_MEMORY_LABEL_SK "Systémová pamäť (MB)"
-#define XEMU_MEMORY_INFO_0_SK "Veľkosť systémovej RAM. 64 MB je štandard; 128 MB používajú vývojárske súpravy."
+#define XEMU_MEMORY_INFO_0_SK NULL
 #define OPTION_VAL_64_SK NULL
 #define OPTION_VAL_128_SK NULL
 #define XEMU_NETWORK_BACKEND_LABEL_SK "Sieťový backend"
@@ -20564,6 +24814,19 @@ struct retro_core_options_v2 options_ru = {
 #define XEMU_HARD_FPU_INFO_0_SK "Použije FPU hostiteľa na emuláciu x87. Rýchlejšie, ale môže mať drobné nepresnosti."
 #define XEMU_CPU_BOOST_LABEL_SK "Zrýchlenie CPU"
 #define XEMU_CPU_BOOST_INFO_0_SK "Rýchlejšie cesty pre emulovaný procesor a zvukový procesor: natívne SSE a väčšia vyrovnávacia pamäť skokov. Vypnite, ak sa hra správa nesprávne."
+#define XEMU_LANGUAGE_LABEL_SK "Jazyk systému"
+#define XEMU_LANGUAGE_INFO_0_SK NULL
+#define OPTION_VAL_AUTO_SK NULL
+#define OPTION_VAL_DASHBOARD_SK NULL
+#define OPTION_VAL_ENGLISH_SK "Angličtina"
+#define OPTION_VAL_JAPANESE_SK "Japončina"
+#define OPTION_VAL_GERMAN_SK "Nemčina"
+#define OPTION_VAL_FRENCH_SK "Francúzština"
+#define OPTION_VAL_SPANISH_SK "Španielčina"
+#define OPTION_VAL_ITALIAN_SK "Taliančina"
+#define OPTION_VAL_KOREAN_SK "Kórejčina"
+#define OPTION_VAL_CHINESE_SK "Čínština"
+#define OPTION_VAL_PORTUGUESE_SK "Portugalčina"
 #define XEMU_HDD_TRIM_LABEL_SK "Orezať HDD pri zatvorení"
 #define XEMU_HDD_TRIM_INFO_0_SK "Po zatvorení hry vyprázdni vyrovnávacie oddiely X, Y a Z pevného disku (hry ich pri potrebe znova naformátujú) a prepíše obraz bez nevyužitého miesta, takže súbor sa zmenší. Na chvíľu potrebuje toľko voľného miesta, koľko dát obraz obsahuje. Preskočí sa, kým obraz obsahuje savestate. Robí sa pri zatvorení hry, nie pri jej ďalšom spustení."
 #define XEMU_RENDERER_LABEL_SK "Grafické API (reštart)"
@@ -20572,13 +24835,13 @@ struct retro_core_options_v2 options_ru = {
 #define OPTION_VAL_OPENGL_SK NULL
 #define XEMU_VIDEO_ASPECT_LABEL_SK "Systémový pomer strán (reštart)"
 #define XEMU_VIDEO_ASPECT_INFO_0_SK "Tvar obrazovky, ktorý video nastavenia konzoly hlásia hrám, namiesto nastavenia v dashboarde. Pri 16:9 bežia hry podporujúce široký obraz v širokom obraze, pri 4:3 v 4:3. Nastavte podľa tvaru vášho displeja. Letterbox je 4:3 z dashboardu s hrami v širokom obraze s čiernymi pruhmi. Dashboard ponechá nastavenie dashboardu."
-#define OPTION_VAL_DASHBOARD_SK NULL
 #define OPTION_VAL_4_3_SK NULL
 #define OPTION_VAL_16_9_SK NULL
 #define OPTION_VAL_LETTERBOX_SK NULL
 #define XEMU_ASPECT_RATIO_LABEL_SK "Pomer strán jadra"
 #define XEMU_ASPECT_RATIO_INFO_0_SK "Tvar, v ktorom sa obraz zobrazuje. Najlepšie je nechať Auto, ktoré sa riadi hrou: 16:9, keď je konzola nastavená na široký obraz (Systémový pomer strán alebo dashboard) a hra vykresľuje 16:9, inak 4:3, a na Chihiro tiež 4:3. 16:9 roztiahne hru v 4:3 na široký obraz."
-#define OPTION_VAL_AUTO_SK NULL
+#define XEMU_OVERSCAN_CROP_LABEL_SK "Orezať vertikálny overscan"
+#define XEMU_OVERSCAN_CROP_INFO_0_SK NULL
 #define XEMU_SURFACE_SCALE_LABEL_SK "Mierka interného rozlíšenia (reštart)"
 #define XEMU_SURFACE_SCALE_INFO_0_SK "Škáluje interné rozlíšenie vykresľovania. Vyššie hodnoty zlepšujú kvalitu, ale znižujú výkon."
 #define OPTION_VAL_1_SK NULL
@@ -20591,6 +24854,13 @@ struct retro_core_options_v2 options_ru = {
 #define OPTION_VAL_8_SK NULL
 #define OPTION_VAL_9_SK NULL
 #define OPTION_VAL_10_SK NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_SK "Anizotropné filtrovanie"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_SK NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_SK "Natívne"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_SK NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_SK NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_SK NULL
+#define OPTION_VAL_16_SK NULL
 #define XEMU_AVPACK_LABEL_SK "AV kábel (reštart)"
 #define XEMU_AVPACK_INFO_0_SK "Vyberte typ AV Packu. Ovplyvňuje dostupné režimy videa."
 #define OPTION_VAL_HDTV_SK NULL
@@ -20599,11 +24869,11 @@ struct retro_core_options_v2 options_ru = {
 #define OPTION_VAL_SCART_SK NULL
 #define OPTION_VAL_VGA_SK NULL
 #define XEMU_AUDIO_THREAD_LABEL_SK "Zvukové vlákno (reštart)"
-#define XEMU_AUDIO_THREAD_INFO_0_SK "Odovzdáva zvuk zvukovému vláknu RetroArchu tak, ako ho APU mixuje, ako ho prehráva samostatné xemu, namiesto dávky jednej snímky za snímku: zvuk pokračuje, aj keď sa snímky zastavia, napríklad pri kompilácii shaderov."
-#define XEMU_USE_DSP_LABEL_SK "Emulácia DSP v APU"
-#define XEMU_USE_DSP_INFO_0_SK "Zapne emuláciu DSP pre presnejší zvuk. Môže ovplyvniť výkon."
+#define XEMU_AUDIO_THREAD_INFO_0_SK NULL
+#define XEMU_USE_DSP_LABEL_SK NULL
+#define XEMU_USE_DSP_INFO_0_SK NULL
 #define XEMU_DSP_JIT_LABEL_SK NULL
-#define XEMU_DSP_JIT_INFO_0_SK "Spúšťa programy Emulácie DSP v APU ako skompilovaný kód namiesto ich interpretovania: rýchlejšie, ako DSP JIT samostatného xemu. Prejaví sa iba so zapnutou Emuláciou DSP v APU."
+#define XEMU_DSP_JIT_INFO_0_SK NULL
 #define XEMU_HRTF_LABEL_SK NULL
 #define XEMU_HRTF_INFO_0_SK "Umiestňuje 3D hlasy hier, ktoré ich používajú, pomocou funkcií prenosu vzhľadom na hlavu, ako na konzole, pre slúchadlá a stereo reproduktory."
 #define XEMU_VP_WORKERS_LABEL_SK "Vlákna hlasového procesora (reštart)"
@@ -20644,14 +24914,26 @@ struct retro_core_options_v2 options_ru = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_SK "Čím sa mieri v House of the Dead III, Virtua Cop 3 a Ghost Squad. Myš: mieri myš (alebo svetelná pištoľ RetroArchu), ľavé tlačidlo strieľa, pravé je tlačidlo pištole (prebitie, zmena zbrane), stredné pedál alebo rýchlosť streľby. Analógová páčka: mieri ľavá páčka alebo D-pad, R2 strieľa, L2 je tlačidlo pištole, L pedál alebo rýchlosť streľby, R strieľa mimo obrazovky."
 #define OPTION_VAL_MOUSE_SK "Myš"
 #define OPTION_VAL_STICK_SK "Analógová páčka"
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_SK NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_SK NULL
+#define OPTION_VAL_50_SK NULL
+#define OPTION_VAL_70_SK NULL
+#define OPTION_VAL_90_SK NULL
+#define OPTION_VAL_110_SK NULL
+#define OPTION_VAL_120_SK NULL
+#define OPTION_VAL_130_SK NULL
+#define OPTION_VAL_140_SK NULL
+#define OPTION_VAL_150_SK NULL
+#define OPTION_VAL_160_SK NULL
+#define OPTION_VAL_170_SK NULL
+#define OPTION_VAL_180_SK NULL
+#define OPTION_VAL_190_SK NULL
+#define OPTION_VAL_200_SK NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_SK "Zameriavač"
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_SK "Vykreslí mierenie každého hráča cez obraz, hráč 1 červený, hráč 2 modrý."
 #define XEMU_CHIHIRO_FFB_LABEL_SK "Spätná väzba ako vibrácie"
 #define XEMU_CHIHIRO_FFB_INFO_0_SK "Spätnú väzbu pretekárskych hier Chihiro (OutRun 2, Maximum Tune) dáva ako vibrácie na gamepad portu 1, s touto silou."
-#define OPTION_VAL_50_SK NULL
 #define OPTION_VAL_75_SK NULL
-#define OPTION_VAL_150_SK NULL
-#define OPTION_VAL_200_SK NULL
 
 struct retro_core_option_v2_category option_cats_sk[] = {
     {
@@ -20758,6 +25040,32 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_SK,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_SK,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_SK },
+            { "dashboard",  OPTION_VAL_DASHBOARD_SK },
+            { "english",    OPTION_VAL_ENGLISH_SK },
+            { "japanese",   OPTION_VAL_JAPANESE_SK },
+            { "german",     OPTION_VAL_GERMAN_SK },
+            { "french",     OPTION_VAL_FRENCH_SK },
+            { "spanish",    OPTION_VAL_SPANISH_SK },
+            { "italian",    OPTION_VAL_ITALIAN_SK },
+            { "korean",     OPTION_VAL_KOREAN_SK },
+            { "chinese",    OPTION_VAL_CHINESE_SK },
+            { "portuguese", OPTION_VAL_PORTUGUESE_SK },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_SK,
@@ -20820,6 +25128,22 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_SK,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_SK,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_SK },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_SK,
@@ -20838,6 +25162,24 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
             { "8", OPTION_VAL_8_SK },
             { "9", OPTION_VAL_9_SK },
             { "10", OPTION_VAL_10_SK },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_SK,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_SK,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_SK },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_SK },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_SK },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_SK },
+            { "16", OPTION_VAL_16_SK },
             { NULL, NULL },
         },
         "1"
@@ -20890,10 +25232,13 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_SK,
@@ -20906,7 +25251,7 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -21098,6 +25443,36 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_SK,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_SK,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_SK },
+            { "60", OPTION_VAL_60_SK },
+            { "70", OPTION_VAL_70_SK },
+            { "80", OPTION_VAL_80_SK },
+            { "90", OPTION_VAL_90_SK },
+            { "100", OPTION_VAL_100_SK },
+            { "110", OPTION_VAL_110_SK },
+            { "120", OPTION_VAL_120_SK },
+            { "130", OPTION_VAL_130_SK },
+            { "140", OPTION_VAL_140_SK },
+            { "150", OPTION_VAL_150_SK },
+            { "160", OPTION_VAL_160_SK },
+            { "170", OPTION_VAL_170_SK },
+            { "180", OPTION_VAL_180_SK },
+            { "190", OPTION_VAL_190_SK },
+            { "200", OPTION_VAL_200_SK },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -21167,6 +25542,19 @@ struct retro_core_options_v2 options_sk = {
 #define XEMU_HARD_FPU_INFO_0_SR NULL
 #define XEMU_CPU_BOOST_LABEL_SR NULL
 #define XEMU_CPU_BOOST_INFO_0_SR NULL
+#define XEMU_LANGUAGE_LABEL_SR NULL
+#define XEMU_LANGUAGE_INFO_0_SR NULL
+#define OPTION_VAL_AUTO_SR NULL
+#define OPTION_VAL_DASHBOARD_SR NULL
+#define OPTION_VAL_ENGLISH_SR NULL
+#define OPTION_VAL_JAPANESE_SR NULL
+#define OPTION_VAL_GERMAN_SR NULL
+#define OPTION_VAL_FRENCH_SR NULL
+#define OPTION_VAL_SPANISH_SR NULL
+#define OPTION_VAL_ITALIAN_SR NULL
+#define OPTION_VAL_KOREAN_SR NULL
+#define OPTION_VAL_CHINESE_SR NULL
+#define OPTION_VAL_PORTUGUESE_SR NULL
 #define XEMU_HDD_TRIM_LABEL_SR NULL
 #define XEMU_HDD_TRIM_INFO_0_SR NULL
 #define XEMU_RENDERER_LABEL_SR NULL
@@ -21175,13 +25563,13 @@ struct retro_core_options_v2 options_sk = {
 #define OPTION_VAL_OPENGL_SR NULL
 #define XEMU_VIDEO_ASPECT_LABEL_SR NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_SR NULL
-#define OPTION_VAL_DASHBOARD_SR NULL
 #define OPTION_VAL_4_3_SR NULL
 #define OPTION_VAL_16_9_SR NULL
 #define OPTION_VAL_LETTERBOX_SR NULL
 #define XEMU_ASPECT_RATIO_LABEL_SR NULL
 #define XEMU_ASPECT_RATIO_INFO_0_SR NULL
-#define OPTION_VAL_AUTO_SR NULL
+#define XEMU_OVERSCAN_CROP_LABEL_SR NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_SR NULL
 #define XEMU_SURFACE_SCALE_LABEL_SR NULL
 #define XEMU_SURFACE_SCALE_INFO_0_SR NULL
 #define OPTION_VAL_1_SR NULL
@@ -21194,6 +25582,13 @@ struct retro_core_options_v2 options_sk = {
 #define OPTION_VAL_8_SR NULL
 #define OPTION_VAL_9_SR NULL
 #define OPTION_VAL_10_SR NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_SR NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_SR NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_SR NULL
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_SR NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_SR NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_SR NULL
+#define OPTION_VAL_16_SR NULL
 #define XEMU_AVPACK_LABEL_SR NULL
 #define XEMU_AVPACK_INFO_0_SR NULL
 #define OPTION_VAL_HDTV_SR NULL
@@ -21247,14 +25642,26 @@ struct retro_core_options_v2 options_sk = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_SR NULL
 #define OPTION_VAL_MOUSE_SR NULL
 #define OPTION_VAL_STICK_SR NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_SR NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_SR NULL
+#define OPTION_VAL_50_SR NULL
+#define OPTION_VAL_70_SR NULL
+#define OPTION_VAL_90_SR NULL
+#define OPTION_VAL_110_SR NULL
+#define OPTION_VAL_120_SR NULL
+#define OPTION_VAL_130_SR NULL
+#define OPTION_VAL_140_SR NULL
+#define OPTION_VAL_150_SR NULL
+#define OPTION_VAL_160_SR NULL
+#define OPTION_VAL_170_SR NULL
+#define OPTION_VAL_180_SR NULL
+#define OPTION_VAL_190_SR NULL
+#define OPTION_VAL_200_SR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_SR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_SR NULL
 #define XEMU_CHIHIRO_FFB_LABEL_SR NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_SR NULL
-#define OPTION_VAL_50_SR NULL
 #define OPTION_VAL_75_SR NULL
-#define OPTION_VAL_150_SR NULL
-#define OPTION_VAL_200_SR NULL
 
 struct retro_core_option_v2_category option_cats_sr[] = {
     {
@@ -21361,6 +25768,32 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_SR,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_SR,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_SR },
+            { "dashboard",  OPTION_VAL_DASHBOARD_SR },
+            { "english",    OPTION_VAL_ENGLISH_SR },
+            { "japanese",   OPTION_VAL_JAPANESE_SR },
+            { "german",     OPTION_VAL_GERMAN_SR },
+            { "french",     OPTION_VAL_FRENCH_SR },
+            { "spanish",    OPTION_VAL_SPANISH_SR },
+            { "italian",    OPTION_VAL_ITALIAN_SR },
+            { "korean",     OPTION_VAL_KOREAN_SR },
+            { "chinese",    OPTION_VAL_CHINESE_SR },
+            { "portuguese", OPTION_VAL_PORTUGUESE_SR },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_SR,
@@ -21423,6 +25856,22 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_SR,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_SR,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_SR },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_SR,
@@ -21441,6 +25890,24 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
             { "8", OPTION_VAL_8_SR },
             { "9", OPTION_VAL_9_SR },
             { "10", OPTION_VAL_10_SR },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_SR,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_SR,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_SR },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_SR },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_SR },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_SR },
+            { "16", OPTION_VAL_16_SR },
             { NULL, NULL },
         },
         "1"
@@ -21493,10 +25960,13 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_SR,
@@ -21509,7 +25979,7 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -21701,6 +26171,36 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_SR,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_SR,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_SR },
+            { "60", OPTION_VAL_60_SR },
+            { "70", OPTION_VAL_70_SR },
+            { "80", OPTION_VAL_80_SR },
+            { "90", OPTION_VAL_90_SR },
+            { "100", OPTION_VAL_100_SR },
+            { "110", OPTION_VAL_110_SR },
+            { "120", OPTION_VAL_120_SR },
+            { "130", OPTION_VAL_130_SR },
+            { "140", OPTION_VAL_140_SR },
+            { "150", OPTION_VAL_150_SR },
+            { "160", OPTION_VAL_160_SR },
+            { "170", OPTION_VAL_170_SR },
+            { "180", OPTION_VAL_180_SR },
+            { "190", OPTION_VAL_190_SR },
+            { "200", OPTION_VAL_200_SR },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -21747,18 +26247,18 @@ struct retro_core_options_v2 options_sr = {
 
 /* RETRO_LANGUAGE_SV */
 
-#define CATEGORY_SYSTEM_LABEL_SV NULL
-#define CATEGORY_SYSTEM_INFO_0_SV NULL
+#define CATEGORY_SYSTEM_LABEL_SV "System (starta om)"
+#define CATEGORY_SYSTEM_INFO_0_SV "Själva maskinen: minne, nätverk, uppstart och processor. Används när innehållet startar (Trimma hårddisken vid stängning när den avslutas)."
 #define CATEGORY_VIDEO_LABEL_SV NULL
 #define CATEGORY_VIDEO_INFO_0_SV "Konfigurera inställningar för videorendering."
 #define CATEGORY_AUDIO_LABEL_SV "Ljud"
 #define CATEGORY_AUDIO_INFO_0_SV "Konfigurera inställningar för ljudemulering."
 #define CATEGORY_CONTROLS_LABEL_SV "Spelkontroller"
-#define CATEGORY_CONTROLS_INFO_0_SV NULL
+#define CATEGORY_CONTROLS_INFO_0_SV "Vibration och spakarnas dödzon, per spelare."
 #define CATEGORY_CHIHIRO_LABEL_SV NULL
 #define CATEGORY_CHIHIRO_INFO_0_SV "Sega Chihiro-arkadspel: gratisspel, sikte i skjutspel och kraftåterkoppling i racingspel."
 #define XEMU_MEMORY_LABEL_SV "Systemminne (MB)"
-#define XEMU_MEMORY_INFO_0_SV "Mängd system-RAM. 64 MB är standard; 128 MB används av utvecklingskit."
+#define XEMU_MEMORY_INFO_0_SV "Mängden system-RAM i Xboxen. 64 MB är standard; 128 MB används av felsökningskonsoler. En Sega Chihiro har alltid 128 MB, oavsett vad som står här."
 #define OPTION_VAL_64_SV NULL
 #define OPTION_VAL_128_SV NULL
 #define XEMU_NETWORK_BACKEND_LABEL_SV "Nätverksbakände"
@@ -21768,24 +26268,37 @@ struct retro_core_options_v2 options_sr = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_SV "Hoppa över Xbox-startanimeringen."
 #define XEMU_HARD_FPU_LABEL_SV "Maskinvaruemulering av FPU"
 #define XEMU_HARD_FPU_INFO_0_SV "Använd värdsystemets FPU för x87-emulering. Det går snabbare men kan ge mindre avvikelser."
-#define XEMU_CPU_BOOST_LABEL_SV NULL
+#define XEMU_CPU_BOOST_LABEL_SV "CPU-förstärkning"
 #define XEMU_CPU_BOOST_INFO_0_SV "Snabbare kodvägar för gästprocessorn och ljudprocessorn: inbyggd SSE och en större hoppcache. Stäng av om ett spel inte fungerar som det ska."
-#define XEMU_HDD_TRIM_LABEL_SV NULL
-#define XEMU_HDD_TRIM_INFO_0_SV NULL
+#define XEMU_LANGUAGE_LABEL_SV "Systemspråk"
+#define XEMU_LANGUAGE_INFO_0_SV "Språket som konsolens inställningar anger för spel i stället för instrumentpanelens inställning. Instrumentpanelen behåller språket i EEPROM-minnet. Med alternativet Automatiskt används RetroArchs språk när Xbox har det, annars engelska."
+#define OPTION_VAL_AUTO_SV "Automatiskt"
+#define OPTION_VAL_DASHBOARD_SV NULL
+#define OPTION_VAL_ENGLISH_SV "Engelska"
+#define OPTION_VAL_JAPANESE_SV "Japanska"
+#define OPTION_VAL_GERMAN_SV "Tyska"
+#define OPTION_VAL_FRENCH_SV "Franska"
+#define OPTION_VAL_SPANISH_SV "Spanska"
+#define OPTION_VAL_ITALIAN_SV "Italienska"
+#define OPTION_VAL_KOREAN_SV "Koreanska"
+#define OPTION_VAL_CHINESE_SV "Kinesiska"
+#define OPTION_VAL_PORTUGUESE_SV "Portugisiska"
+#define XEMU_HDD_TRIM_LABEL_SV "Trimma hårddisken vid stängning"
+#define XEMU_HDD_TRIM_INFO_0_SV "När spelet stängs töms hårddiskens cachepartitioner X, Y och Z (spelen formaterar dem igen när de behövs), och avbildningen skrivs om utan oanvänt utrymme så att filen krymper. Kräver tillfälligt lika mycket ledigt utrymme som avbildningens data. Hoppar över åtgärden medan avbildningen innehåller en sparad status. Utförs när spelet stängs, inte vid nästa start."
 #define XEMU_RENDERER_LABEL_SV "Grafik-API (omstart)"
 #define XEMU_RENDERER_INFO_0_SV "Den renderare som används för den emulerade GPU:n. Vulkan är standard; OpenGL används när Vulkan inte fungerar korrekt med grafikdrivrutinen. Ändringen börjar gälla när RetroArch har startats om. Android använder alltid Vulkan och macOS alltid OpenGL."
 #define OPTION_VAL_VULKAN_SV NULL
 #define OPTION_VAL_OPENGL_SV NULL
-#define XEMU_VIDEO_ASPECT_LABEL_SV NULL
-#define XEMU_VIDEO_ASPECT_INFO_0_SV NULL
-#define OPTION_VAL_DASHBOARD_SV NULL
+#define XEMU_VIDEO_ASPECT_LABEL_SV "Systemets bildförhållande (starta om)"
+#define XEMU_VIDEO_ASPECT_INFO_0_SV "Skärmformatet som konsolens videoinställningar rapporterar till spelen i stället för dashboardens inställning. Vid 16:9 körs spel med bredbildsstöd i bredbild, vid 4:3 körs de i 4:3. Ange skärmens format. Letterbox använder dashboardens 4:3 med bredbildsspel i brevlådeformat. Dashboard behåller dashboardens inställning."
 #define OPTION_VAL_4_3_SV NULL
 #define OPTION_VAL_16_9_SV NULL
-#define OPTION_VAL_LETTERBOX_SV NULL
+#define OPTION_VAL_LETTERBOX_SV "Brevlådeformat"
 #define XEMU_ASPECT_RATIO_LABEL_SV "Kärnspecifikt bildformat"
-#define XEMU_ASPECT_RATIO_INFO_0_SV NULL
-#define OPTION_VAL_AUTO_SV "Automatiskt"
-#define XEMU_SURFACE_SCALE_LABEL_SV NULL
+#define XEMU_ASPECT_RATIO_INFO_0_SV "Formatet som bilden visas i. Behåll helst Auto, som följer spelet: 16:9 när konsolen är inställd på bredbild (Systemets bildförhållande eller dashboarden) och spelet återger 16:9, annars 4:3 och även på Chihiro. 16:9 sträcker ut ett 4:3-spel till bredbild."
+#define XEMU_OVERSCAN_CROP_LABEL_SV "Beskär vertikal överskanning"
+#define XEMU_OVERSCAN_CROP_INFO_0_SV "Vissa spel renderar en bild på 448 linjer inom Xboxens 480 linjer, med svarta fält upptill och nedtill. Funktionen beskär automatiskt 16 av de 480 linjerna – både upptill och nedtill – för spel som finns med på kärnans lista över sådana titlar, och sträcker sedan ut resten till full höjd samtidigt som bildförhållandet bevaras."
+#define XEMU_SURFACE_SCALE_LABEL_SV "Intern upplösningsskala (starta om)"
 #define XEMU_SURFACE_SCALE_INFO_0_SV "Skalar den interna renderingsupplösningen. Högre värden förbättrar kvaliteten men minskar prestandan."
 #define OPTION_VAL_1_SV NULL
 #define OPTION_VAL_2_SV NULL
@@ -21797,7 +26310,14 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_8_SV NULL
 #define OPTION_VAL_9_SV NULL
 #define OPTION_VAL_10_SV NULL
-#define XEMU_AVPACK_LABEL_SV NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_SV "Anisotropisk filtrering"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_SV "Den lägsta anisotropiska filtrering som spelets mjukt filtrerade texturer får, vilket håller snedställda texturer skarpa. Ursprungligt läge behåller spelets egen inställning, som saknas i de flesta Xbox-spel."
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_SV "Inbyggd"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_SV NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_SV NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_SV NULL
+#define OPTION_VAL_16_SV NULL
+#define XEMU_AVPACK_LABEL_SV "AV-paket (starta om)"
 #define XEMU_AVPACK_INFO_0_SV "Välj AV-paketets typ. Påverkar tillgängliga videolägen."
 #define OPTION_VAL_HDTV_SV NULL
 #define OPTION_VAL_COMPOSITE_SV "Komposit"
@@ -21805,17 +26325,17 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_SCART_SV NULL
 #define OPTION_VAL_VGA_SV NULL
 #define XEMU_AUDIO_THREAD_LABEL_SV "Ljudtråd (starta om)"
-#define XEMU_AUDIO_THREAD_INFO_0_SV NULL
-#define XEMU_USE_DSP_LABEL_SV "Emulering av APU-DSP"
-#define XEMU_USE_DSP_INFO_0_SV "Aktivera DSP-emulering för bättre ljudnoggrannhet. Kan påverka prestandan."
-#define XEMU_DSP_JIT_LABEL_SV NULL
-#define XEMU_DSP_JIT_INFO_0_SV NULL
+#define XEMU_AUDIO_THREAD_INFO_0_SV "Lämnar ljudet till RetroArchs ljudtråd medan APU:n mixar det, som i den fristående versionen, i stället för en bildrutas ljud per bildruta: ljudet fortsätter medan bildrutorna stannar, till exempel medan shaders kompileras. RetroArch-byggen från före november 2026 gör menyerna långsammare med detta när Menybildfrekvens (Bildrutebegränsning) är Bildskärmsfrekvens; ställ där in den på Innehållsfrekvens."
+#define XEMU_USE_DSP_LABEL_SV "APU-DSP-emulering (omstart)"
+#define XEMU_USE_DSP_INFO_0_SV "Emulerar APU:ns DSP, som spelar spelens effekter, efterklang och mycket av musiken: utan den låter ljudet platt. Inställningen läses in när innehållet startar; att ändra den medan ett spel körs ger förvrängt ljud."
+#define XEMU_DSP_JIT_LABEL_SV "DSP-JIT (omstart)"
+#define XEMU_DSP_JIT_INFO_0_SV "Kör program för APU-DSP-emulering som kompilerad kod i stället för att tolka dem: snabbare, som den fristående versionens DSP-JIT. Har bara effekt när APU-DSP-emulering är aktiverad. Inställningen läses in när innehållet startar."
 #define XEMU_HRTF_LABEL_SV NULL
-#define XEMU_HRTF_INFO_0_SV NULL
-#define XEMU_VP_WORKERS_LABEL_SV NULL
-#define XEMU_VP_WORKERS_INFO_0_SV NULL
+#define XEMU_HRTF_INFO_0_SV "Placerar 3D-röster i spel som använder dem med huvudrelaterade överföringsfunktioner, som på konsolen, för hörlurar och stereohögtalare."
+#define XEMU_VP_WORKERS_LABEL_SV "Trådar för röstprocessor (starta om)"
+#define XEMU_VP_WORKERS_INFO_0_SV "Antal trådar som ljudets röstprocessor mixar rösterna på. Auto använder en per processorkärna."
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_SV "Jämn första spelstart (omstart)"
-#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_SV NULL
+#define XEMU_SMOOTH_FIRST_PLAY_INFO_0_SV "Kompilerar shaderprogram som ett spel är känt för att använda medan det startar, så att de första minuterna inte hackar medan de kompileras. På OpenGL sparas det som kompileras i shadercachen, som alltid är aktiverad."
 #define XEMU_AUDIO_VOLUME_LABEL_SV "Ljudvolymgräns (%)"
 #define XEMU_AUDIO_VOLUME_INFO_0_SV "Begränsa Xbox-ljudutgångens volym oberoende av RetroArchs huvudvolym."
 #define OPTION_VAL_100_SV NULL
@@ -21825,39 +26345,51 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_20_SV NULL
 #define OPTION_VAL_0_SV "Avstängd"
 #define XEMU_VK_FAST_PATHS_LABEL_SV "Snabba Vulkan-kodvägar (omstart)"
-#define XEMU_VK_FAST_PATHS_INFO_0_SV NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_SV "Påverkar shaderkompileringshastigheten på Vulkan. ”Alla” är snabbast men kan få vissa spel att krascha."
 #define OPTION_VAL_ALL_SV "Alla"
 #define OPTION_VAL_NO_GPL_SV "Inga pipelinebibliotek"
 #define OPTION_VAL_NO_DYN_SV "Inga dynamiska tillstånd"
 #define OPTION_VAL_NONE_SV "Ingen"
-#define XEMU_RUMBLE_P1_LABEL_SV NULL
-#define XEMU_RUMBLE_P1_INFO_0_SV NULL
-#define XEMU_RUMBLE_P2_LABEL_SV NULL
-#define XEMU_RUMBLE_P2_INFO_0_SV NULL
-#define XEMU_DEADZONE_P1_LABEL_SV NULL
-#define XEMU_DEADZONE_P1_INFO_0_SV NULL
+#define XEMU_RUMBLE_P1_LABEL_SV "Vibration (spelare 1)"
+#define XEMU_RUMBLE_P1_INFO_0_SV "Spelare 1:s handkontroll vibrerar både från Xbox-spelen och från force feedback i Chihiro-racingspel. Av stänger av båda."
+#define XEMU_RUMBLE_P2_LABEL_SV "Vibration (spelare 2)"
+#define XEMU_RUMBLE_P2_INFO_0_SV "Spelare 2:s handkontroll vibrerar både från Xbox-spelen och från force feedback i Chihiro-racingspel. Av stänger av båda."
+#define XEMU_DEADZONE_P1_LABEL_SV "Analog dödzon (spelare 1)"
+#define XEMU_DEADZONE_P1_INFO_0_SV "Hur långt spelare 1:s spakar kan tryckas innan spelet märker det, för båda spakarna på både Xbox och Chihiro. Resterande rörelse skalas upp till fullt utslag."
 #define OPTION_VAL_0_XEMU_DEADZONE_P1_SV "0 %"
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_SV "5 %"
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_SV "10 %"
 #define OPTION_VAL_15_SV NULL
 #define OPTION_VAL_25_SV "25 %"
 #define OPTION_VAL_30_SV NULL
-#define XEMU_DEADZONE_P2_LABEL_SV NULL
-#define XEMU_DEADZONE_P2_INFO_0_SV NULL
+#define XEMU_DEADZONE_P2_LABEL_SV "Analog dödzon (spelare 2)"
+#define XEMU_DEADZONE_P2_INFO_0_SV "Hur långt spelare 2:s spakar kan tryckas innan spelet märker det, för båda spakarna på både Xbox och Chihiro. Resterande rörelse skalas upp till fullt utslag."
 #define XEMU_CHIHIRO_FREEPLAY_LABEL_SV "Gratisspel (omstart)"
 #define XEMU_CHIHIRO_FREEPLAY_INFO_0_SV "Startar Sega Chihiro-spel utan mynt. När alternativet är avstängt lägger Select in ett mynt."
 #define XEMU_CHIHIRO_GUN_AIM_LABEL_SV "Sikta med ljuspistol"
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_SV "Välj hur du siktar i House of the Dead III, Virtua Cop 3 och Ghost Squad. Mus: sikta med musen (eller RetroArchs ljuspistol), skjut med vänster knapp, använd vapnets knapp med höger knapp (pumpa eller byt vapen) och använd pedalen eller eldhastigheten med mittenknappen. Analog spak: sikta med vänster spak eller styrkorset, skjut med R2, använd vapnets knapp med L2 och pedalen eller eldhastigheten med L. R skjuter utanför skärmen."
 #define OPTION_VAL_MOUSE_SV "Mus"
 #define OPTION_VAL_STICK_SV "Analog spak"
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_SV "Spakens siktkänslighet"
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_SV "Hur snabbt spaken flyttar siktet när ”Sikta med ljuspistol” använder analog spak, lika snabbt i sidled som uppåt och nedåt. Vid 100 % passerar en fullt utslagen spak bildens höjd på ungefär en sekund. Musen siktar där den pekar."
+#define OPTION_VAL_50_SV NULL
+#define OPTION_VAL_70_SV NULL
+#define OPTION_VAL_90_SV NULL
+#define OPTION_VAL_110_SV NULL
+#define OPTION_VAL_120_SV NULL
+#define OPTION_VAL_130_SV NULL
+#define OPTION_VAL_140_SV NULL
+#define OPTION_VAL_150_SV NULL
+#define OPTION_VAL_160_SV NULL
+#define OPTION_VAL_170_SV NULL
+#define OPTION_VAL_180_SV NULL
+#define OPTION_VAL_190_SV NULL
+#define OPTION_VAL_200_SV NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_SV "Sikte"
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_SV "Visar spelarnas sikten över bilden: spelare 1 i rött och spelare 2 i blått."
 #define XEMU_CHIHIRO_FFB_LABEL_SV "Vibration från kraftåterkoppling"
 #define XEMU_CHIHIRO_FFB_INFO_0_SV "Återger kraftåterkoppling från ett Chihiro-racingspel (OutRun 2, Maximum Tune) som vibration med denna styrka på handkontrollen i port 1."
-#define OPTION_VAL_50_SV NULL
 #define OPTION_VAL_75_SV NULL
-#define OPTION_VAL_150_SV NULL
-#define OPTION_VAL_200_SV NULL
 
 struct retro_core_option_v2_category option_cats_sv[] = {
     {
@@ -21964,6 +26496,32 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_SV,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_SV,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_SV },
+            { "dashboard",  OPTION_VAL_DASHBOARD_SV },
+            { "english",    OPTION_VAL_ENGLISH_SV },
+            { "japanese",   OPTION_VAL_JAPANESE_SV },
+            { "german",     OPTION_VAL_GERMAN_SV },
+            { "french",     OPTION_VAL_FRENCH_SV },
+            { "spanish",    OPTION_VAL_SPANISH_SV },
+            { "italian",    OPTION_VAL_ITALIAN_SV },
+            { "korean",     OPTION_VAL_KOREAN_SV },
+            { "chinese",    OPTION_VAL_CHINESE_SV },
+            { "portuguese", OPTION_VAL_PORTUGUESE_SV },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_SV,
@@ -22026,6 +26584,22 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_SV,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_SV,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_SV },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_SV,
@@ -22044,6 +26618,24 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
             { "8", OPTION_VAL_8_SV },
             { "9", OPTION_VAL_9_SV },
             { "10", OPTION_VAL_10_SV },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_SV,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_SV,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_SV },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_SV },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_SV },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_SV },
+            { "16", OPTION_VAL_16_SV },
             { NULL, NULL },
         },
         "1"
@@ -22096,10 +26688,13 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_SV,
@@ -22112,7 +26707,7 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -22304,6 +26899,36 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_SV,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_SV,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_SV },
+            { "60", OPTION_VAL_60_SV },
+            { "70", OPTION_VAL_70_SV },
+            { "80", OPTION_VAL_80_SV },
+            { "90", OPTION_VAL_90_SV },
+            { "100", OPTION_VAL_100_SV },
+            { "110", OPTION_VAL_110_SV },
+            { "120", OPTION_VAL_120_SV },
+            { "130", OPTION_VAL_130_SV },
+            { "140", OPTION_VAL_140_SV },
+            { "150", OPTION_VAL_150_SV },
+            { "160", OPTION_VAL_160_SV },
+            { "170", OPTION_VAL_170_SV },
+            { "180", OPTION_VAL_180_SV },
+            { "190", OPTION_VAL_190_SV },
+            { "200", OPTION_VAL_200_SV },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -22373,6 +26998,19 @@ struct retro_core_options_v2 options_sv = {
 #define XEMU_HARD_FPU_INFO_0_TH NULL
 #define XEMU_CPU_BOOST_LABEL_TH NULL
 #define XEMU_CPU_BOOST_INFO_0_TH NULL
+#define XEMU_LANGUAGE_LABEL_TH NULL
+#define XEMU_LANGUAGE_INFO_0_TH NULL
+#define OPTION_VAL_AUTO_TH "อัตโนมัติ"
+#define OPTION_VAL_DASHBOARD_TH NULL
+#define OPTION_VAL_ENGLISH_TH "อังกฤษ"
+#define OPTION_VAL_JAPANESE_TH "ญี่ปุ่น"
+#define OPTION_VAL_GERMAN_TH "เยอรมัน"
+#define OPTION_VAL_FRENCH_TH "ฝรั่งเศส"
+#define OPTION_VAL_SPANISH_TH "สเปน"
+#define OPTION_VAL_ITALIAN_TH "อิตาลี"
+#define OPTION_VAL_KOREAN_TH NULL
+#define OPTION_VAL_CHINESE_TH NULL
+#define OPTION_VAL_PORTUGUESE_TH NULL
 #define XEMU_HDD_TRIM_LABEL_TH NULL
 #define XEMU_HDD_TRIM_INFO_0_TH NULL
 #define XEMU_RENDERER_LABEL_TH NULL
@@ -22381,13 +27019,13 @@ struct retro_core_options_v2 options_sv = {
 #define OPTION_VAL_OPENGL_TH NULL
 #define XEMU_VIDEO_ASPECT_LABEL_TH NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_TH NULL
-#define OPTION_VAL_DASHBOARD_TH NULL
 #define OPTION_VAL_4_3_TH NULL
 #define OPTION_VAL_16_9_TH NULL
 #define OPTION_VAL_LETTERBOX_TH NULL
 #define XEMU_ASPECT_RATIO_LABEL_TH "อัตราส่วนภาพของคอร์"
 #define XEMU_ASPECT_RATIO_INFO_0_TH NULL
-#define OPTION_VAL_AUTO_TH "อัตโนมัติ"
+#define XEMU_OVERSCAN_CROP_LABEL_TH "ครอบตัดส่วนที่เกินขอบจอในแนวตั้ง"
+#define XEMU_OVERSCAN_CROP_INFO_0_TH NULL
 #define XEMU_SURFACE_SCALE_LABEL_TH NULL
 #define XEMU_SURFACE_SCALE_INFO_0_TH NULL
 #define OPTION_VAL_1_TH NULL
@@ -22400,6 +27038,13 @@ struct retro_core_options_v2 options_sv = {
 #define OPTION_VAL_8_TH NULL
 #define OPTION_VAL_9_TH NULL
 #define OPTION_VAL_10_TH NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_TH "การกรองพื้นผิวแบบAnisotropic"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_TH NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_TH "ดั้งเดิม"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_TH NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_TH NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_TH NULL
+#define OPTION_VAL_16_TH NULL
 #define XEMU_AVPACK_LABEL_TH NULL
 #define XEMU_AVPACK_INFO_0_TH NULL
 #define OPTION_VAL_HDTV_TH NULL
@@ -22453,14 +27098,26 @@ struct retro_core_options_v2 options_sv = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_TH NULL
 #define OPTION_VAL_MOUSE_TH "เมาส์"
 #define OPTION_VAL_STICK_TH NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_TH NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_TH NULL
+#define OPTION_VAL_50_TH NULL
+#define OPTION_VAL_70_TH NULL
+#define OPTION_VAL_90_TH NULL
+#define OPTION_VAL_110_TH NULL
+#define OPTION_VAL_120_TH NULL
+#define OPTION_VAL_130_TH NULL
+#define OPTION_VAL_140_TH NULL
+#define OPTION_VAL_150_TH NULL
+#define OPTION_VAL_160_TH NULL
+#define OPTION_VAL_170_TH NULL
+#define OPTION_VAL_180_TH NULL
+#define OPTION_VAL_190_TH NULL
+#define OPTION_VAL_200_TH NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_TH NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_TH NULL
 #define XEMU_CHIHIRO_FFB_LABEL_TH NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_TH NULL
-#define OPTION_VAL_50_TH NULL
 #define OPTION_VAL_75_TH NULL
-#define OPTION_VAL_150_TH NULL
-#define OPTION_VAL_200_TH NULL
 
 struct retro_core_option_v2_category option_cats_th[] = {
     {
@@ -22567,6 +27224,32 @@ struct retro_core_option_v2_definition option_defs_th[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_TH,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_TH,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_TH },
+            { "dashboard",  OPTION_VAL_DASHBOARD_TH },
+            { "english",    OPTION_VAL_ENGLISH_TH },
+            { "japanese",   OPTION_VAL_JAPANESE_TH },
+            { "german",     OPTION_VAL_GERMAN_TH },
+            { "french",     OPTION_VAL_FRENCH_TH },
+            { "spanish",    OPTION_VAL_SPANISH_TH },
+            { "italian",    OPTION_VAL_ITALIAN_TH },
+            { "korean",     OPTION_VAL_KOREAN_TH },
+            { "chinese",    OPTION_VAL_CHINESE_TH },
+            { "portuguese", OPTION_VAL_PORTUGUESE_TH },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_TH,
@@ -22629,6 +27312,22 @@ struct retro_core_option_v2_definition option_defs_th[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_TH,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_TH,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_TH },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_TH,
@@ -22647,6 +27346,24 @@ struct retro_core_option_v2_definition option_defs_th[] = {
             { "8", OPTION_VAL_8_TH },
             { "9", OPTION_VAL_9_TH },
             { "10", OPTION_VAL_10_TH },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_TH,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_TH,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_TH },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_TH },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_TH },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_TH },
+            { "16", OPTION_VAL_16_TH },
             { NULL, NULL },
         },
         "1"
@@ -22699,10 +27416,13 @@ struct retro_core_option_v2_definition option_defs_th[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_TH,
@@ -22715,7 +27435,7 @@ struct retro_core_option_v2_definition option_defs_th[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -22907,6 +27627,36 @@ struct retro_core_option_v2_definition option_defs_th[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_TH,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_TH,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_TH },
+            { "60", OPTION_VAL_60_TH },
+            { "70", OPTION_VAL_70_TH },
+            { "80", OPTION_VAL_80_TH },
+            { "90", OPTION_VAL_90_TH },
+            { "100", OPTION_VAL_100_TH },
+            { "110", OPTION_VAL_110_TH },
+            { "120", OPTION_VAL_120_TH },
+            { "130", OPTION_VAL_130_TH },
+            { "140", OPTION_VAL_140_TH },
+            { "150", OPTION_VAL_150_TH },
+            { "160", OPTION_VAL_160_TH },
+            { "170", OPTION_VAL_170_TH },
+            { "180", OPTION_VAL_180_TH },
+            { "190", OPTION_VAL_190_TH },
+            { "200", OPTION_VAL_200_TH },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -22976,6 +27726,19 @@ struct retro_core_options_v2 options_th = {
 #define XEMU_HARD_FPU_INFO_0_TR NULL
 #define XEMU_CPU_BOOST_LABEL_TR NULL
 #define XEMU_CPU_BOOST_INFO_0_TR NULL
+#define XEMU_LANGUAGE_LABEL_TR NULL
+#define XEMU_LANGUAGE_INFO_0_TR NULL
+#define OPTION_VAL_AUTO_TR "Otomatik"
+#define OPTION_VAL_DASHBOARD_TR NULL
+#define OPTION_VAL_ENGLISH_TR "İngilizce"
+#define OPTION_VAL_JAPANESE_TR "Japonca"
+#define OPTION_VAL_GERMAN_TR "Almanca"
+#define OPTION_VAL_FRENCH_TR "Fransızca"
+#define OPTION_VAL_SPANISH_TR "İspanyolca"
+#define OPTION_VAL_ITALIAN_TR "İtalyanca"
+#define OPTION_VAL_KOREAN_TR NULL
+#define OPTION_VAL_CHINESE_TR NULL
+#define OPTION_VAL_PORTUGUESE_TR NULL
 #define XEMU_HDD_TRIM_LABEL_TR NULL
 #define XEMU_HDD_TRIM_INFO_0_TR NULL
 #define XEMU_RENDERER_LABEL_TR NULL
@@ -22984,13 +27747,13 @@ struct retro_core_options_v2 options_th = {
 #define OPTION_VAL_OPENGL_TR NULL
 #define XEMU_VIDEO_ASPECT_LABEL_TR NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_TR NULL
-#define OPTION_VAL_DASHBOARD_TR NULL
 #define OPTION_VAL_4_3_TR NULL
 #define OPTION_VAL_16_9_TR NULL
 #define OPTION_VAL_LETTERBOX_TR NULL
 #define XEMU_ASPECT_RATIO_LABEL_TR "Çekirdek En Boy Oranı"
 #define XEMU_ASPECT_RATIO_INFO_0_TR NULL
-#define OPTION_VAL_AUTO_TR "Otomatik"
+#define XEMU_OVERSCAN_CROP_LABEL_TR "Dikey Aşırı Taramayı Kırp"
+#define XEMU_OVERSCAN_CROP_INFO_0_TR NULL
 #define XEMU_SURFACE_SCALE_LABEL_TR NULL
 #define XEMU_SURFACE_SCALE_INFO_0_TR NULL
 #define OPTION_VAL_1_TR NULL
@@ -23003,6 +27766,13 @@ struct retro_core_options_v2 options_th = {
 #define OPTION_VAL_8_TR NULL
 #define OPTION_VAL_9_TR NULL
 #define OPTION_VAL_10_TR NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_TR "Eşyönsüz Filtreleme"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_TR NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_TR "Özgün"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_TR NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_TR NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_TR NULL
+#define OPTION_VAL_16_TR NULL
 #define XEMU_AVPACK_LABEL_TR NULL
 #define XEMU_AVPACK_INFO_0_TR NULL
 #define OPTION_VAL_HDTV_TR NULL
@@ -23056,14 +27826,26 @@ struct retro_core_options_v2 options_th = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_TR NULL
 #define OPTION_VAL_MOUSE_TR "Fare"
 #define OPTION_VAL_STICK_TR NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_TR NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_TR NULL
+#define OPTION_VAL_50_TR "%50"
+#define OPTION_VAL_70_TR "%70"
+#define OPTION_VAL_90_TR "%90"
+#define OPTION_VAL_110_TR "%110"
+#define OPTION_VAL_120_TR "%120"
+#define OPTION_VAL_130_TR "%130"
+#define OPTION_VAL_140_TR "%140"
+#define OPTION_VAL_150_TR "%150"
+#define OPTION_VAL_160_TR "%160"
+#define OPTION_VAL_170_TR "%170"
+#define OPTION_VAL_180_TR "%180"
+#define OPTION_VAL_190_TR "%190"
+#define OPTION_VAL_200_TR "%200"
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_TR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_TR NULL
 #define XEMU_CHIHIRO_FFB_LABEL_TR NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_TR NULL
-#define OPTION_VAL_50_TR "%50"
 #define OPTION_VAL_75_TR "%75"
-#define OPTION_VAL_150_TR "%150"
-#define OPTION_VAL_200_TR "%200"
 
 struct retro_core_option_v2_category option_cats_tr[] = {
     {
@@ -23170,6 +27952,32 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_TR,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_TR,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_TR },
+            { "dashboard",  OPTION_VAL_DASHBOARD_TR },
+            { "english",    OPTION_VAL_ENGLISH_TR },
+            { "japanese",   OPTION_VAL_JAPANESE_TR },
+            { "german",     OPTION_VAL_GERMAN_TR },
+            { "french",     OPTION_VAL_FRENCH_TR },
+            { "spanish",    OPTION_VAL_SPANISH_TR },
+            { "italian",    OPTION_VAL_ITALIAN_TR },
+            { "korean",     OPTION_VAL_KOREAN_TR },
+            { "chinese",    OPTION_VAL_CHINESE_TR },
+            { "portuguese", OPTION_VAL_PORTUGUESE_TR },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_TR,
@@ -23232,6 +28040,22 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_TR,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_TR,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_TR },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_TR,
@@ -23250,6 +28074,24 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
             { "8", OPTION_VAL_8_TR },
             { "9", OPTION_VAL_9_TR },
             { "10", OPTION_VAL_10_TR },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_TR,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_TR,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_TR },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_TR },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_TR },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_TR },
+            { "16", OPTION_VAL_16_TR },
             { NULL, NULL },
         },
         "1"
@@ -23302,10 +28144,13 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_TR,
@@ -23318,7 +28163,7 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -23510,6 +28355,36 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_TR,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_TR,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_TR },
+            { "60", OPTION_VAL_60_TR },
+            { "70", OPTION_VAL_70_TR },
+            { "80", OPTION_VAL_80_TR },
+            { "90", OPTION_VAL_90_TR },
+            { "100", OPTION_VAL_100_TR },
+            { "110", OPTION_VAL_110_TR },
+            { "120", OPTION_VAL_120_TR },
+            { "130", OPTION_VAL_130_TR },
+            { "140", OPTION_VAL_140_TR },
+            { "150", OPTION_VAL_150_TR },
+            { "160", OPTION_VAL_160_TR },
+            { "170", OPTION_VAL_170_TR },
+            { "180", OPTION_VAL_180_TR },
+            { "190", OPTION_VAL_190_TR },
+            { "200", OPTION_VAL_200_TR },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -23579,6 +28454,19 @@ struct retro_core_options_v2 options_tr = {
 #define XEMU_HARD_FPU_INFO_0_TT NULL
 #define XEMU_CPU_BOOST_LABEL_TT NULL
 #define XEMU_CPU_BOOST_INFO_0_TT NULL
+#define XEMU_LANGUAGE_LABEL_TT NULL
+#define XEMU_LANGUAGE_INFO_0_TT NULL
+#define OPTION_VAL_AUTO_TT NULL
+#define OPTION_VAL_DASHBOARD_TT NULL
+#define OPTION_VAL_ENGLISH_TT "Инглизчә"
+#define OPTION_VAL_JAPANESE_TT "Япоча"
+#define OPTION_VAL_GERMAN_TT "Алманча"
+#define OPTION_VAL_FRENCH_TT "Французча"
+#define OPTION_VAL_SPANISH_TT "Испанча"
+#define OPTION_VAL_ITALIAN_TT "Итальянча"
+#define OPTION_VAL_KOREAN_TT NULL
+#define OPTION_VAL_CHINESE_TT NULL
+#define OPTION_VAL_PORTUGUESE_TT NULL
 #define XEMU_HDD_TRIM_LABEL_TT NULL
 #define XEMU_HDD_TRIM_INFO_0_TT NULL
 #define XEMU_RENDERER_LABEL_TT NULL
@@ -23587,13 +28475,13 @@ struct retro_core_options_v2 options_tr = {
 #define OPTION_VAL_OPENGL_TT NULL
 #define XEMU_VIDEO_ASPECT_LABEL_TT NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_TT NULL
-#define OPTION_VAL_DASHBOARD_TT NULL
 #define OPTION_VAL_4_3_TT NULL
 #define OPTION_VAL_16_9_TT NULL
 #define OPTION_VAL_LETTERBOX_TT NULL
 #define XEMU_ASPECT_RATIO_LABEL_TT NULL
 #define XEMU_ASPECT_RATIO_INFO_0_TT NULL
-#define OPTION_VAL_AUTO_TT NULL
+#define XEMU_OVERSCAN_CROP_LABEL_TT NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_TT NULL
 #define XEMU_SURFACE_SCALE_LABEL_TT NULL
 #define XEMU_SURFACE_SCALE_INFO_0_TT NULL
 #define OPTION_VAL_1_TT NULL
@@ -23606,6 +28494,13 @@ struct retro_core_options_v2 options_tr = {
 #define OPTION_VAL_8_TT NULL
 #define OPTION_VAL_9_TT NULL
 #define OPTION_VAL_10_TT NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_TT NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_TT NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_TT NULL
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_TT NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_TT NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_TT NULL
+#define OPTION_VAL_16_TT NULL
 #define XEMU_AVPACK_LABEL_TT NULL
 #define XEMU_AVPACK_INFO_0_TT NULL
 #define OPTION_VAL_HDTV_TT NULL
@@ -23659,14 +28554,26 @@ struct retro_core_options_v2 options_tr = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_TT NULL
 #define OPTION_VAL_MOUSE_TT NULL
 #define OPTION_VAL_STICK_TT NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_TT NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_TT NULL
+#define OPTION_VAL_50_TT NULL
+#define OPTION_VAL_70_TT NULL
+#define OPTION_VAL_90_TT NULL
+#define OPTION_VAL_110_TT NULL
+#define OPTION_VAL_120_TT NULL
+#define OPTION_VAL_130_TT NULL
+#define OPTION_VAL_140_TT NULL
+#define OPTION_VAL_150_TT NULL
+#define OPTION_VAL_160_TT NULL
+#define OPTION_VAL_170_TT NULL
+#define OPTION_VAL_180_TT NULL
+#define OPTION_VAL_190_TT NULL
+#define OPTION_VAL_200_TT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_TT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_TT NULL
 #define XEMU_CHIHIRO_FFB_LABEL_TT NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_TT NULL
-#define OPTION_VAL_50_TT NULL
 #define OPTION_VAL_75_TT NULL
-#define OPTION_VAL_150_TT NULL
-#define OPTION_VAL_200_TT NULL
 
 struct retro_core_option_v2_category option_cats_tt[] = {
     {
@@ -23773,6 +28680,32 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_TT,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_TT,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_TT },
+            { "dashboard",  OPTION_VAL_DASHBOARD_TT },
+            { "english",    OPTION_VAL_ENGLISH_TT },
+            { "japanese",   OPTION_VAL_JAPANESE_TT },
+            { "german",     OPTION_VAL_GERMAN_TT },
+            { "french",     OPTION_VAL_FRENCH_TT },
+            { "spanish",    OPTION_VAL_SPANISH_TT },
+            { "italian",    OPTION_VAL_ITALIAN_TT },
+            { "korean",     OPTION_VAL_KOREAN_TT },
+            { "chinese",    OPTION_VAL_CHINESE_TT },
+            { "portuguese", OPTION_VAL_PORTUGUESE_TT },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_TT,
@@ -23835,6 +28768,22 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_TT,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_TT,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_TT },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_TT,
@@ -23853,6 +28802,24 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
             { "8", OPTION_VAL_8_TT },
             { "9", OPTION_VAL_9_TT },
             { "10", OPTION_VAL_10_TT },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_TT,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_TT,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_TT },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_TT },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_TT },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_TT },
+            { "16", OPTION_VAL_16_TT },
             { NULL, NULL },
         },
         "1"
@@ -23905,10 +28872,13 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_TT,
@@ -23921,7 +28891,7 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -24113,6 +29083,36 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_TT,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_TT,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_TT },
+            { "60", OPTION_VAL_60_TT },
+            { "70", OPTION_VAL_70_TT },
+            { "80", OPTION_VAL_80_TT },
+            { "90", OPTION_VAL_90_TT },
+            { "100", OPTION_VAL_100_TT },
+            { "110", OPTION_VAL_110_TT },
+            { "120", OPTION_VAL_120_TT },
+            { "130", OPTION_VAL_130_TT },
+            { "140", OPTION_VAL_140_TT },
+            { "150", OPTION_VAL_150_TT },
+            { "160", OPTION_VAL_160_TT },
+            { "170", OPTION_VAL_170_TT },
+            { "180", OPTION_VAL_180_TT },
+            { "190", OPTION_VAL_190_TT },
+            { "200", OPTION_VAL_200_TT },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -24182,6 +29182,19 @@ struct retro_core_options_v2 options_tt = {
 #define XEMU_HARD_FPU_INFO_0_UK NULL
 #define XEMU_CPU_BOOST_LABEL_UK NULL
 #define XEMU_CPU_BOOST_INFO_0_UK NULL
+#define XEMU_LANGUAGE_LABEL_UK NULL
+#define XEMU_LANGUAGE_INFO_0_UK NULL
+#define OPTION_VAL_AUTO_UK "Автоматично"
+#define OPTION_VAL_DASHBOARD_UK NULL
+#define OPTION_VAL_ENGLISH_UK "Англійська"
+#define OPTION_VAL_JAPANESE_UK "Японська"
+#define OPTION_VAL_GERMAN_UK "Німецька"
+#define OPTION_VAL_FRENCH_UK "Французька"
+#define OPTION_VAL_SPANISH_UK "Іспанська"
+#define OPTION_VAL_ITALIAN_UK "Італійська"
+#define OPTION_VAL_KOREAN_UK NULL
+#define OPTION_VAL_CHINESE_UK NULL
+#define OPTION_VAL_PORTUGUESE_UK NULL
 #define XEMU_HDD_TRIM_LABEL_UK NULL
 #define XEMU_HDD_TRIM_INFO_0_UK NULL
 #define XEMU_RENDERER_LABEL_UK NULL
@@ -24190,13 +29203,13 @@ struct retro_core_options_v2 options_tt = {
 #define OPTION_VAL_OPENGL_UK NULL
 #define XEMU_VIDEO_ASPECT_LABEL_UK NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_UK NULL
-#define OPTION_VAL_DASHBOARD_UK NULL
 #define OPTION_VAL_4_3_UK NULL
 #define OPTION_VAL_16_9_UK NULL
 #define OPTION_VAL_LETTERBOX_UK NULL
 #define XEMU_ASPECT_RATIO_LABEL_UK "Співвідношення сторін ядра"
 #define XEMU_ASPECT_RATIO_INFO_0_UK NULL
-#define OPTION_VAL_AUTO_UK "Автоматично"
+#define XEMU_OVERSCAN_CROP_LABEL_UK "Обрізати вертикальний обхід"
+#define XEMU_OVERSCAN_CROP_INFO_0_UK NULL
 #define XEMU_SURFACE_SCALE_LABEL_UK NULL
 #define XEMU_SURFACE_SCALE_INFO_0_UK NULL
 #define OPTION_VAL_1_UK NULL
@@ -24209,6 +29222,13 @@ struct retro_core_options_v2 options_tt = {
 #define OPTION_VAL_8_UK NULL
 #define OPTION_VAL_9_UK NULL
 #define OPTION_VAL_10_UK NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_UK "Анізотропна фільтрація"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_UK NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_UK "Рідний"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_UK NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_UK NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_UK NULL
+#define OPTION_VAL_16_UK NULL
 #define XEMU_AVPACK_LABEL_UK NULL
 #define XEMU_AVPACK_INFO_0_UK NULL
 #define OPTION_VAL_HDTV_UK NULL
@@ -24262,14 +29282,26 @@ struct retro_core_options_v2 options_tt = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_UK NULL
 #define OPTION_VAL_MOUSE_UK "Миша"
 #define OPTION_VAL_STICK_UK NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_UK NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_UK NULL
+#define OPTION_VAL_50_UK NULL
+#define OPTION_VAL_70_UK NULL
+#define OPTION_VAL_90_UK NULL
+#define OPTION_VAL_110_UK NULL
+#define OPTION_VAL_120_UK NULL
+#define OPTION_VAL_130_UK NULL
+#define OPTION_VAL_140_UK NULL
+#define OPTION_VAL_150_UK NULL
+#define OPTION_VAL_160_UK NULL
+#define OPTION_VAL_170_UK NULL
+#define OPTION_VAL_180_UK NULL
+#define OPTION_VAL_190_UK NULL
+#define OPTION_VAL_200_UK NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_UK NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_UK NULL
 #define XEMU_CHIHIRO_FFB_LABEL_UK NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_UK NULL
-#define OPTION_VAL_50_UK NULL
 #define OPTION_VAL_75_UK NULL
-#define OPTION_VAL_150_UK NULL
-#define OPTION_VAL_200_UK NULL
 
 struct retro_core_option_v2_category option_cats_uk[] = {
     {
@@ -24376,6 +29408,32 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_UK,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_UK,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_UK },
+            { "dashboard",  OPTION_VAL_DASHBOARD_UK },
+            { "english",    OPTION_VAL_ENGLISH_UK },
+            { "japanese",   OPTION_VAL_JAPANESE_UK },
+            { "german",     OPTION_VAL_GERMAN_UK },
+            { "french",     OPTION_VAL_FRENCH_UK },
+            { "spanish",    OPTION_VAL_SPANISH_UK },
+            { "italian",    OPTION_VAL_ITALIAN_UK },
+            { "korean",     OPTION_VAL_KOREAN_UK },
+            { "chinese",    OPTION_VAL_CHINESE_UK },
+            { "portuguese", OPTION_VAL_PORTUGUESE_UK },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_UK,
@@ -24438,6 +29496,22 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_UK,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_UK,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_UK },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_UK,
@@ -24456,6 +29530,24 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
             { "8", OPTION_VAL_8_UK },
             { "9", OPTION_VAL_9_UK },
             { "10", OPTION_VAL_10_UK },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_UK,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_UK,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_UK },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_UK },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_UK },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_UK },
+            { "16", OPTION_VAL_16_UK },
             { NULL, NULL },
         },
         "1"
@@ -24508,10 +29600,13 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_UK,
@@ -24524,7 +29619,7 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -24716,6 +29811,36 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_UK,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_UK,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_UK },
+            { "60", OPTION_VAL_60_UK },
+            { "70", OPTION_VAL_70_UK },
+            { "80", OPTION_VAL_80_UK },
+            { "90", OPTION_VAL_90_UK },
+            { "100", OPTION_VAL_100_UK },
+            { "110", OPTION_VAL_110_UK },
+            { "120", OPTION_VAL_120_UK },
+            { "130", OPTION_VAL_130_UK },
+            { "140", OPTION_VAL_140_UK },
+            { "150", OPTION_VAL_150_UK },
+            { "160", OPTION_VAL_160_UK },
+            { "170", OPTION_VAL_170_UK },
+            { "180", OPTION_VAL_180_UK },
+            { "190", OPTION_VAL_190_UK },
+            { "200", OPTION_VAL_200_UK },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -24785,6 +29910,19 @@ struct retro_core_options_v2 options_uk = {
 #define XEMU_HARD_FPU_INFO_0_VAL NULL
 #define XEMU_CPU_BOOST_LABEL_VAL NULL
 #define XEMU_CPU_BOOST_INFO_0_VAL NULL
+#define XEMU_LANGUAGE_LABEL_VAL NULL
+#define XEMU_LANGUAGE_INFO_0_VAL NULL
+#define OPTION_VAL_AUTO_VAL "Selecció automàtica"
+#define OPTION_VAL_DASHBOARD_VAL NULL
+#define OPTION_VAL_ENGLISH_VAL NULL
+#define OPTION_VAL_JAPANESE_VAL NULL
+#define OPTION_VAL_GERMAN_VAL NULL
+#define OPTION_VAL_FRENCH_VAL NULL
+#define OPTION_VAL_SPANISH_VAL NULL
+#define OPTION_VAL_ITALIAN_VAL NULL
+#define OPTION_VAL_KOREAN_VAL NULL
+#define OPTION_VAL_CHINESE_VAL NULL
+#define OPTION_VAL_PORTUGUESE_VAL NULL
 #define XEMU_HDD_TRIM_LABEL_VAL NULL
 #define XEMU_HDD_TRIM_INFO_0_VAL NULL
 #define XEMU_RENDERER_LABEL_VAL NULL
@@ -24793,13 +29931,13 @@ struct retro_core_options_v2 options_uk = {
 #define OPTION_VAL_OPENGL_VAL NULL
 #define XEMU_VIDEO_ASPECT_LABEL_VAL NULL
 #define XEMU_VIDEO_ASPECT_INFO_0_VAL NULL
-#define OPTION_VAL_DASHBOARD_VAL NULL
 #define OPTION_VAL_4_3_VAL NULL
 #define OPTION_VAL_16_9_VAL NULL
 #define OPTION_VAL_LETTERBOX_VAL NULL
 #define XEMU_ASPECT_RATIO_LABEL_VAL NULL
 #define XEMU_ASPECT_RATIO_INFO_0_VAL NULL
-#define OPTION_VAL_AUTO_VAL "Selecció automàtica"
+#define XEMU_OVERSCAN_CROP_LABEL_VAL NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_VAL NULL
 #define XEMU_SURFACE_SCALE_LABEL_VAL NULL
 #define XEMU_SURFACE_SCALE_INFO_0_VAL NULL
 #define OPTION_VAL_1_VAL NULL
@@ -24812,6 +29950,13 @@ struct retro_core_options_v2 options_uk = {
 #define OPTION_VAL_8_VAL NULL
 #define OPTION_VAL_9_VAL NULL
 #define OPTION_VAL_10_VAL NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_VAL NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_VAL NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_VAL NULL
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_VAL NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_VAL NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_VAL NULL
+#define OPTION_VAL_16_VAL NULL
 #define XEMU_AVPACK_LABEL_VAL NULL
 #define XEMU_AVPACK_INFO_0_VAL NULL
 #define OPTION_VAL_HDTV_VAL NULL
@@ -24865,14 +30010,26 @@ struct retro_core_options_v2 options_uk = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_VAL NULL
 #define OPTION_VAL_MOUSE_VAL NULL
 #define OPTION_VAL_STICK_VAL NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_VAL NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_VAL NULL
+#define OPTION_VAL_50_VAL NULL
+#define OPTION_VAL_70_VAL NULL
+#define OPTION_VAL_90_VAL NULL
+#define OPTION_VAL_110_VAL NULL
+#define OPTION_VAL_120_VAL NULL
+#define OPTION_VAL_130_VAL NULL
+#define OPTION_VAL_140_VAL NULL
+#define OPTION_VAL_150_VAL NULL
+#define OPTION_VAL_160_VAL NULL
+#define OPTION_VAL_170_VAL NULL
+#define OPTION_VAL_180_VAL NULL
+#define OPTION_VAL_190_VAL NULL
+#define OPTION_VAL_200_VAL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_VAL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_VAL NULL
 #define XEMU_CHIHIRO_FFB_LABEL_VAL NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_VAL NULL
-#define OPTION_VAL_50_VAL NULL
 #define OPTION_VAL_75_VAL NULL
-#define OPTION_VAL_150_VAL NULL
-#define OPTION_VAL_200_VAL NULL
 
 struct retro_core_option_v2_category option_cats_val[] = {
     {
@@ -24979,6 +30136,32 @@ struct retro_core_option_v2_definition option_defs_val[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_VAL,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_VAL,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_VAL },
+            { "dashboard",  OPTION_VAL_DASHBOARD_VAL },
+            { "english",    OPTION_VAL_ENGLISH_VAL },
+            { "japanese",   OPTION_VAL_JAPANESE_VAL },
+            { "german",     OPTION_VAL_GERMAN_VAL },
+            { "french",     OPTION_VAL_FRENCH_VAL },
+            { "spanish",    OPTION_VAL_SPANISH_VAL },
+            { "italian",    OPTION_VAL_ITALIAN_VAL },
+            { "korean",     OPTION_VAL_KOREAN_VAL },
+            { "chinese",    OPTION_VAL_CHINESE_VAL },
+            { "portuguese", OPTION_VAL_PORTUGUESE_VAL },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_VAL,
@@ -25041,6 +30224,22 @@ struct retro_core_option_v2_definition option_defs_val[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_VAL,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_VAL,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_VAL },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_VAL,
@@ -25059,6 +30258,24 @@ struct retro_core_option_v2_definition option_defs_val[] = {
             { "8", OPTION_VAL_8_VAL },
             { "9", OPTION_VAL_9_VAL },
             { "10", OPTION_VAL_10_VAL },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_VAL,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_VAL,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_VAL },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_VAL },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_VAL },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_VAL },
+            { "16", OPTION_VAL_16_VAL },
             { NULL, NULL },
         },
         "1"
@@ -25111,10 +30328,13 @@ struct retro_core_option_v2_definition option_defs_val[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_VAL,
@@ -25127,7 +30347,7 @@ struct retro_core_option_v2_definition option_defs_val[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -25319,6 +30539,36 @@ struct retro_core_option_v2_definition option_defs_val[] = {
         },
         "stick"
     },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_VAL,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_VAL,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_VAL },
+            { "60", OPTION_VAL_60_VAL },
+            { "70", OPTION_VAL_70_VAL },
+            { "80", OPTION_VAL_80_VAL },
+            { "90", OPTION_VAL_90_VAL },
+            { "100", OPTION_VAL_100_VAL },
+            { "110", OPTION_VAL_110_VAL },
+            { "120", OPTION_VAL_120_VAL },
+            { "130", OPTION_VAL_130_VAL },
+            { "140", OPTION_VAL_140_VAL },
+            { "150", OPTION_VAL_150_VAL },
+            { "160", OPTION_VAL_160_VAL },
+            { "170", OPTION_VAL_170_VAL },
+            { "180", OPTION_VAL_180_VAL },
+            { "190", OPTION_VAL_190_VAL },
+            { "200", OPTION_VAL_200_VAL },
+            { NULL, NULL },
+        },
+        "100"
+    },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */
     {
@@ -25376,7 +30626,7 @@ struct retro_core_options_v2 options_val = {
 #define CATEGORY_CHIHIRO_LABEL_VN NULL
 #define CATEGORY_CHIHIRO_INFO_0_VN "Các trò chơi thùng máy Sega Chihiro: chơi miễn phí, ngắm bắn trong các trò chơi bắn súng và phản hồi lực trong các trò chơi đua xe."
 #define XEMU_MEMORY_LABEL_VN "Bộ nhớ hệ thống (MB)"
-#define XEMU_MEMORY_INFO_0_VN "Dung lượng bộ nhớ RAM của hệ thống. 64 MB là tiêu chuẩn; 128 MB được sử dụng trên các bộ máy dành cho gỡ lỗi."
+#define XEMU_MEMORY_INFO_0_VN "Dung lượng bộ nhớ RAM hệ thống của Xbox. 64 MB là tiêu chuẩn; 128 MB được sử dụng trên các bộ máy phát triển. Sega Chihiro luôn có 128 MB, bất kể thiết lập này là gì."
 #define OPTION_VAL_64_VN NULL
 #define OPTION_VAL_128_VN NULL
 #define XEMU_NETWORK_BACKEND_LABEL_VN "Nền tảng mạng"
@@ -25388,6 +30638,19 @@ struct retro_core_options_v2 options_val = {
 #define XEMU_HARD_FPU_INFO_0_VN "Sử dụng bộ xử lý dấu phẩy động của máy chủ để mô phỏng x87. Tốc độ nhanh hơn nhưng có thể có một số sai lệch nhỏ."
 #define XEMU_CPU_BOOST_LABEL_VN "Tăng tốc bộ xử lý"
 #define XEMU_CPU_BOOST_INFO_0_VN "Các phương thức xử lý nhanh hơn cho bộ xử lý của máy được mô phỏng và bộ xử lý âm thanh: sử dụng trực tiếp tập lệnh SSE và bộ nhớ đệm lệnh nhảy lớn hơn. Tắt nếu trò chơi hoạt động bất thường."
+#define XEMU_LANGUAGE_LABEL_VN "Ngôn ngữ hệ thống"
+#define XEMU_LANGUAGE_INFO_0_VN NULL
+#define OPTION_VAL_AUTO_VN "Tự động"
+#define OPTION_VAL_DASHBOARD_VN "Bảng điều khiển chính"
+#define OPTION_VAL_ENGLISH_VN "Tiếng Anh"
+#define OPTION_VAL_JAPANESE_VN "Tiếng Nhật"
+#define OPTION_VAL_GERMAN_VN "Tiếng Đức"
+#define OPTION_VAL_FRENCH_VN "Tiếng Pháp"
+#define OPTION_VAL_SPANISH_VN "Tiếng Tây Ban Nha"
+#define OPTION_VAL_ITALIAN_VN "Tiếng Ý"
+#define OPTION_VAL_KOREAN_VN "Tiếng Hàn"
+#define OPTION_VAL_CHINESE_VN "Tiếng Trung"
+#define OPTION_VAL_PORTUGUESE_VN "Tiếng Bồ Đào Nha"
 #define XEMU_HDD_TRIM_LABEL_VN "Dọn ổ cứng khi đóng"
 #define XEMU_HDD_TRIM_INFO_0_VN "Khi trò chơi đóng, xóa các phân vùng bộ nhớ đệm X, Y và Z trên ổ cứng (trò chơi sẽ định dạng lại chúng khi cần) và ghi lại ảnh ổ đĩa để loại bỏ phần dung lượng không sử dụng, giúp giảm kích thước tệp. Tạm thời cần dung lượng trống tương đương với lượng dữ liệu trong ảnh ổ đĩa. Không thực hiện nếu ảnh ổ đĩa đang chứa trạng thái lưu. Thao tác được thực hiện khi trò chơi đóng, không phải khi khởi chạy lần tiếp theo."
 #define XEMU_RENDERER_LABEL_VN "Giao diện lập trình đồ họa (cần khởi động lại)"
@@ -25396,13 +30659,13 @@ struct retro_core_options_v2 options_val = {
 #define OPTION_VAL_OPENGL_VN NULL
 #define XEMU_VIDEO_ASPECT_LABEL_VN "Tỷ lệ khung hình của hệ máy (cần khởi động lại)"
 #define XEMU_VIDEO_ASPECT_INFO_0_VN "Tỷ lệ khung hình mà cài đặt video của máy chơi game cung cấp cho trò chơi, thay cho cài đặt của bảng điều khiển chính. Ở tỷ lệ 16:9, các trò chơi hỗ trợ màn hình rộng sẽ chạy ở chế độ màn hình rộng; ở tỷ lệ 4:3, chúng sẽ chạy ở tỷ lệ 4:3. Hãy đặt theo tỷ lệ màn hình của bạn. Chế độ viền đen giữ tỷ lệ 4:3 của bảng điều khiển chính và thêm viền đen cho các trò chơi màn hình rộng. Bảng điều khiển chính giữ nguyên cài đặt của bảng điều khiển chính."
-#define OPTION_VAL_DASHBOARD_VN "Bảng điều khiển chính"
 #define OPTION_VAL_4_3_VN NULL
 #define OPTION_VAL_16_9_VN NULL
 #define OPTION_VAL_LETTERBOX_VN "Viền đen"
 #define XEMU_ASPECT_RATIO_LABEL_VN "Tỷ lệ khung hình của trình giả lập"
 #define XEMU_ASPECT_RATIO_INFO_0_VN "Tỷ lệ khung hình khi hình ảnh được hiển thị. Tốt nhất nên để ở chế độ Tự động, chế độ này sẽ làm theo trò chơi: 16:9 khi máy chơi game được đặt ở chế độ màn hình rộng (Tỷ lệ khung hình của hệ máy hoặc bảng điều khiển chính) và trò chơi xuất hình ảnh ở tỷ lệ 16:9; nếu không thì là 4:3, đồng thời luôn là 4:3 trên Chihiro. Tỷ lệ 16:9 kéo giãn trò chơi 4:3 thành màn hình rộng."
-#define OPTION_VAL_AUTO_VN "Tự động"
+#define XEMU_OVERSCAN_CROP_LABEL_VN "Cắt phần Dư Khung hình Dọc"
+#define XEMU_OVERSCAN_CROP_INFO_0_VN NULL
 #define XEMU_SURFACE_SCALE_LABEL_VN "Tỷ lệ độ phân giải nội bộ (cần khởi động lại)"
 #define XEMU_SURFACE_SCALE_INFO_0_VN "Điều chỉnh độ phân giải Dựng hình nội bộ. Giá trị cao hơn cải thiện chất lượng hình ảnh nhưng làm giảm hiệu năng."
 #define OPTION_VAL_1_VN NULL
@@ -25415,6 +30678,13 @@ struct retro_core_options_v2 options_val = {
 #define OPTION_VAL_8_VN NULL
 #define OPTION_VAL_9_VN NULL
 #define OPTION_VAL_10_VN NULL
+#define XEMU_ANISOTROPIC_FILTERING_LABEL_VN "Lọc dị hướng"
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_VN "Mức lọc bất đẳng hướng tối thiểu áp dụng cho các kết cấu được trò chơi lọc mượt, giúp các kết cấu hiển thị ở góc nghiêng vẫn sắc nét. Nguyên bản giữ nguyên thiết lập của trò chơi, vốn không sử dụng tính năng này đối với hầu hết trò chơi Xbox."
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_VN "Nguyên bản"
+#define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_VN NULL
+#define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_VN NULL
+#define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_VN NULL
+#define OPTION_VAL_16_VN NULL
 #define XEMU_AVPACK_LABEL_VN "Bộ kết nối âm thanh hình ảnh (khởi động lại)"
 #define XEMU_AVPACK_INFO_0_VN "Chọn loại bộ kết nối âm thanh và hình ảnh. Ảnh hưởng đến các chế độ video khả dụng."
 #define OPTION_VAL_HDTV_VN NULL
@@ -25423,11 +30693,11 @@ struct retro_core_options_v2 options_val = {
 #define OPTION_VAL_SCART_VN NULL
 #define OPTION_VAL_VGA_VN NULL
 #define XEMU_AUDIO_THREAD_LABEL_VN "Luồng âm thanh (Cần khởi động lại)"
-#define XEMU_AUDIO_THREAD_INFO_0_VN "Chuyển âm thanh sang luồng âm thanh của RetroArch ngay khi bộ xử lý âm thanh của máy chơi game trộn xong, giống như khi chạy độc lập, thay vì gửi lượng âm thanh tương ứng với một khung hình ở mỗi khung hình: âm thanh vẫn tiếp tục phát khi khung hình bị khựng, chẳng hạn như lúc biên dịch bộ đổ bóng."
-#define XEMU_USE_DSP_LABEL_VN "Mô phỏng bộ xử lý tín hiệu số của APU"
-#define XEMU_USE_DSP_INFO_0_VN "Bật mô phỏng bộ xử lý tín hiệu số để tăng độ chính xác của âm thanh. Có thể ảnh hưởng đến hiệu năng."
-#define XEMU_DSP_JIT_LABEL_VN "Biên dịch tức thời bộ xử lý tín hiệu số"
-#define XEMU_DSP_JIT_INFO_0_VN "Chạy các chương trình của bộ xử lý tín hiệu số trong mô phỏng bộ xử lý âm thanh dưới dạng mã đã biên dịch thay vì thông dịch, giúp tăng tốc, tương tự chức năng biên dịch tức thời bộ xử lý tín hiệu số của bản độc lập. Chỉ có tác dụng khi bật mô phỏng bộ xử lý âm thanh."
+#define XEMU_AUDIO_THREAD_INFO_0_VN "Chuyển âm thanh sang luồng âm thanh của RetroArch ngay khi bộ xử lý âm thanh của máy chơi game trộn âm thanh xong, để chương trình độc lập phát âm thanh thay vì chờ đủ dữ liệu của một khung hình ở mỗi khung hình: âm thanh vẫn tiếp tục phát khi khung hình bị đình trệ, chẳng hạn trong lúc biên dịch bộ đổ bóng. Các bản RetroArch được xây dựng trước tháng 11 năm 2026 sẽ khiến trình đơn chạy chậm khi sử dụng thiết lập này và Tốc độ khung hình trình đơn (Giới hạn tốc độ khung hình) được đặt thành Tốc độ hiển thị; trong trường hợp đó, hãy đặt thành Tốc độ nội dung."
+#define XEMU_USE_DSP_LABEL_VN "Mô phỏng bộ xử lý tín hiệu số của APU (Khởi động lại)"
+#define XEMU_USE_DSP_INFO_0_VN "Mô phỏng bộ xử lý tín hiệu số của APU, bộ phận phát các hiệu ứng âm thanh, tiếng vang và phần lớn nhạc trong trò chơi: nếu không có nó, âm thanh sẽ trở nên đơn điệu. Thiết lập được áp dụng khi nội dung bắt đầu; thay đổi trong khi trò chơi đang chạy sẽ khiến âm thanh bị lỗi."
+#define XEMU_DSP_JIT_LABEL_VN "Biên dịch tức thời bộ xử lý tín hiệu số (Khởi động lại)"
+#define XEMU_DSP_JIT_INFO_0_VN "Chạy các chương trình của bộ mô phỏng xử lý tín hiệu số APU dưới dạng mã đã biên dịch thay vì thông dịch: nhanh hơn, tương tự như chế độ biên dịch tức thời bộ xử lý tín hiệu số của bản độc lập. Chỉ có tác dụng khi bật mô phỏng bộ xử lý tín hiệu số APU. Thiết lập được áp dụng khi nội dung bắt đầu."
 #define XEMU_HRTF_LABEL_VN "Mô phỏng âm thanh theo đặc tính truyền âm của đầu người"
 #define XEMU_HRTF_INFO_0_VN "Định vị âm thanh ba chiều của trò chơi có hỗ trợ bằng cách sử dụng hàm truyền đạt liên quan đến đầu người, giống như trên máy chơi game gốc, dành cho tai nghe và loa âm thanh nổi."
 #define XEMU_VP_WORKERS_LABEL_VN "Số luồng xử lý giọng nói (khởi động lại)"
@@ -25468,14 +30738,26 @@ struct retro_core_options_v2 options_val = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_VN "Cách ngắm bắn trong House of the Dead III, Virtua Cop 3 và Ghost Squad. Chuột: dùng chuột (hoặc súng quang của RetroArch) để ngắm, nút trái để bắn, nút phải để dùng nút chức năng của súng (bơm đạn, đổi vũ khí), nút giữa để đạp bàn đạp hoặc điều chỉnh tốc độ bắn. Cần analog: dùng cần trái hoặc bàn phím điều hướng để ngắm, R2 để bắn, L2 để dùng nút chức năng của súng, L để đạp bàn đạp hoặc điều chỉnh tốc độ bắn, R để bắn ra ngoài màn hình."
 #define OPTION_VAL_MOUSE_VN "Chuột"
 #define OPTION_VAL_STICK_VN "Cần analog"
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_VN "Độ nhạy ngắm bằng cần điều khiển"
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_VN "Tốc độ cần điều khiển di chuyển tâm ngắm khi bật Ngắm bằng súng quang trên cần điều khiển analog, với tốc độ ngang bằng tốc độ lên xuống; ở mức 100%, nghiêng cần điều khiển hết cỡ sẽ đưa tâm ngắm đi hết chiều cao hình ảnh trong khoảng một giây. Chuột ngắm tại vị trí con trỏ đang chỉ tới."
+#define OPTION_VAL_50_VN NULL
+#define OPTION_VAL_70_VN NULL
+#define OPTION_VAL_90_VN NULL
+#define OPTION_VAL_110_VN NULL
+#define OPTION_VAL_120_VN NULL
+#define OPTION_VAL_130_VN NULL
+#define OPTION_VAL_140_VN NULL
+#define OPTION_VAL_150_VN NULL
+#define OPTION_VAL_160_VN NULL
+#define OPTION_VAL_170_VN NULL
+#define OPTION_VAL_180_VN NULL
+#define OPTION_VAL_190_VN NULL
+#define OPTION_VAL_200_VN NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_VN "Tâm ngắm"
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_VN "Hiển thị tâm ngắm của từng người chơi trên hình ảnh, người chơi 1 màu đỏ, người chơi 2 màu xanh dương."
 #define XEMU_CHIHIRO_FFB_LABEL_VN "Rung phản hồi lực"
 #define XEMU_CHIHIRO_FFB_INFO_0_VN "Truyền phản hồi lực của các trò chơi đua xe Chihiro (OutRun 2, Maximum Tune) thành rung trên tay cầm ở cổng 1, với cường độ này."
-#define OPTION_VAL_50_VN NULL
 #define OPTION_VAL_75_VN NULL
-#define OPTION_VAL_150_VN NULL
-#define OPTION_VAL_200_VN NULL
 
 struct retro_core_option_v2_category option_cats_vn[] = {
     {
@@ -25582,6 +30864,32 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
      * as core options because they require text input which core options
      * don't support (dropdown only). Paths are auto-detected from
      * RetroArch's system directory instead. */
+    /* Auto by default rather than the standalone's EEPROM language: games
+     * then speak RetroArch's language without a trip to the dashboard
+     * (NNshi). */
+    {
+        "xemu_language",
+        XEMU_LANGUAGE_LABEL_VN,
+        NULL,
+        XEMU_LANGUAGE_INFO_0_VN,
+        NULL,
+        "system",
+        {
+            { "auto",       OPTION_VAL_AUTO_VN },
+            { "dashboard",  OPTION_VAL_DASHBOARD_VN },
+            { "english",    OPTION_VAL_ENGLISH_VN },
+            { "japanese",   OPTION_VAL_JAPANESE_VN },
+            { "german",     OPTION_VAL_GERMAN_VN },
+            { "french",     OPTION_VAL_FRENCH_VN },
+            { "spanish",    OPTION_VAL_SPANISH_VN },
+            { "italian",    OPTION_VAL_ITALIAN_VN },
+            { "korean",     OPTION_VAL_KOREAN_VN },
+            { "chinese",    OPTION_VAL_CHINESE_VN },
+            { "portuguese", OPTION_VAL_PORTUGUESE_VN },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_hdd_trim",
         XEMU_HDD_TRIM_LABEL_VN,
@@ -25644,6 +30952,22 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
         },
         "auto"
     },
+    /* Auto by default: standalone has no such option, and the listed games'
+     * bars are not part of what they mean to show (NNshi) */
+    {
+        "xemu_overscan_crop",
+        XEMU_OVERSCAN_CROP_LABEL_VN,
+        NULL,
+        XEMU_OVERSCAN_CROP_INFO_0_VN,
+        NULL,
+        "video",
+        {
+            { "off",  "Off" },
+            { "auto", OPTION_VAL_AUTO_VN },
+            { NULL, NULL },
+        },
+        "auto"
+    },
     {
         "xemu_surface_scale",
         XEMU_SURFACE_SCALE_LABEL_VN,
@@ -25662,6 +30986,24 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
             { "8", OPTION_VAL_8_VN },
             { "9", OPTION_VAL_9_VN },
             { "10", OPTION_VAL_10_VN },
+            { NULL, NULL },
+        },
+        "1"
+    },
+    /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
+    {
+        "xemu_anisotropic_filtering",
+        XEMU_ANISOTROPIC_FILTERING_LABEL_VN,
+        NULL,
+        XEMU_ANISOTROPIC_FILTERING_INFO_0_VN,
+        NULL,
+        "video",
+        {
+            { "1",  OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_VN },
+            { "2",  OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_VN },
+            { "4",  OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_VN },
+            { "8",  OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_VN },
+            { "16", OPTION_VAL_16_VN },
             { NULL, NULL },
         },
         "1"
@@ -25714,10 +31056,13 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
-    /* Defaults as standalone's (config_spec.yml: audio.use_dsp_jit,
-     * audio.hrtf, audio.vp.num_workers) */
+    /* APU DSP Emulation and DSP JIT on by default, unlike standalone: the
+     * sound is flat without the DSP, and it costs no speed, as the CPU
+     * thread is what limits xemu (NNshi). HRTF and the voice processor's
+     * threads as standalone's (config_spec.yml: audio.hrtf,
+     * audio.vp.num_workers) */
     {
         "xemu_dsp_jit",
         XEMU_DSP_JIT_LABEL_VN,
@@ -25730,7 +31075,7 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
             { "enabled",  "Enabled" },
             { NULL, NULL },
         },
-        "disabled"
+        "enabled"
     },
     {
         "xemu_hrtf",
@@ -25921,6 +31266,36 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
             { NULL, NULL },
         },
         "stick"
+    },
+    /* 100% is the speed the stick had up and down; across it now moves as
+     * fast, where it crossed the whole width in the same time (NNshi) */
+    {
+        "xemu_chihiro_stick_sensitivity",
+        XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_VN,
+        NULL,
+        XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_VN,
+        NULL,
+        "chihiro",
+        {
+            { "50", OPTION_VAL_50_VN },
+            { "60", OPTION_VAL_60_VN },
+            { "70", OPTION_VAL_70_VN },
+            { "80", OPTION_VAL_80_VN },
+            { "90", OPTION_VAL_90_VN },
+            { "100", OPTION_VAL_100_VN },
+            { "110", OPTION_VAL_110_VN },
+            { "120", OPTION_VAL_120_VN },
+            { "130", OPTION_VAL_130_VN },
+            { "140", OPTION_VAL_140_VN },
+            { "150", OPTION_VAL_150_VN },
+            { "160", OPTION_VAL_160_VN },
+            { "170", OPTION_VAL_170_VN },
+            { "180", OPTION_VAL_180_VN },
+            { "190", OPTION_VAL_190_VN },
+            { "200", OPTION_VAL_200_VN },
+            { NULL, NULL },
+        },
+        "100"
     },
     /* On by default: standalone shows the mouse cursor the light gun aims
      * with; a real light gun has no use for it */

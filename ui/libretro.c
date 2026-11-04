@@ -32,6 +32,7 @@
 #include <glib/gstdio.h>
 #include <zlib.h>
 #include "ui/libretro-widescreen-titles.h"
+#include "ui/libretro-overscan-titles.h"
 #include "ui/libretro-xdb-titles.h"
 #include "xemu-xbe.h"
 #include "qemu/bswap.h"
@@ -110,6 +111,7 @@ static bool game_loaded = false;
 static GLuint blit_program = 0;
 static GLuint blit_vao = 0;
 static GLint  blit_tex_loc = -1;
+static GLint  blit_crop_loc = -1;
 
 /* Vulkan HW render interface from RetroArch */
 static struct retro_hw_render_interface_vulkan *vulkan_if = NULL;
@@ -278,9 +280,10 @@ static const char *blit_fs_src =
     "#version 330 core\n"
     "in vec2 vTexCoord;\n"
     "uniform sampler2D uTex;\n"
+    "uniform vec2 uCrop;\n" /* rows shown: first, and how many, of 1 */
     "out vec4 FragColor;\n"
     "void main() {\n"
-    "    FragColor = texture(uTex, vTexCoord);\n"
+    "    FragColor = texture(uTex, vec2(vTexCoord.x, uCrop.x + vTexCoord.y * uCrop.y));\n"
     "}\n";
 
 static GLuint compile_shader(GLenum type, const char *src)
@@ -333,6 +336,7 @@ static void create_blit_resources(void)
     glDeleteShader(fs);
 
     blit_tex_loc = glGetUniformLocation(blit_program, "uTex");
+    blit_crop_loc = glGetUniformLocation(blit_program, "uCrop");
 
     glGenVertexArrays(1, &blit_vao);
 
@@ -375,6 +379,9 @@ static void blit_nv2a_texture(GLuint tex, unsigned width, unsigned height, uintp
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glUniform1i(blit_tex_loc, 0);
+    /* Crop Vertical Overscan: the same lines off the top and the bottom */
+    const float crop = qatomic_read(&xemu_libretro_overscan_crop) / 480.0f;
+    glUniform2f(blit_crop_loc, crop, 1.0f - 2.0f * crop);
 
     glBindVertexArray(blit_vao);
     glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -1223,6 +1230,10 @@ static void get_option_string(const char *key, char *buf, size_t buf_sz)
 /* The Aspect Ratio option: 4:3 and 16:9 say it outright, auto works it out
  * (wants_widescreen) */
 static int opt_aspect = 0; /* 0 auto, 1 4:3, 2 16:9 */
+static int opt_overscan_crop = 0; /* 0 off, 1 auto, 2 on */
+/* Lines of every 480 Crop Vertical Overscan takes off the top and the bottom
+ * of the frame handed to the frontend (pgraph/vk/libretro_shared.h) */
+int xemu_libretro_overscan_crop;
 
 /* The running title's ID and the dashboard's video settings, as the guest
  * has them now: read on the emulation thread, which holds the BQL the
@@ -1346,6 +1357,30 @@ static int compare_title_id(const void *a, const void *b)
     return x < y ? -1 : x > y;
 }
 
+static bool title_has_overscan(uint32_t title_id)
+{
+    return bsearch(&title_id, libretro_overscan_titles,
+                   ARRAY_SIZE(libretro_overscan_titles),
+                   sizeof(libretro_overscan_titles[0]),
+                   compare_title_id) != NULL;
+}
+
+/* Crop Vertical Overscan: a 448-line picture in 480 lines loses its bars;
+ * Auto for the titles on the list, which are all Xbox games (NNshi) */
+static void update_overscan_crop(void)
+{
+    const bool crop = opt_overscan_crop == 2 ||
+        (opt_overscan_crop == 1 &&
+         title_has_overscan(qatomic_read(&guest_title_id)));
+    const int lines = crop ? 16 : 0;
+
+    if (qatomic_read(&xemu_libretro_overscan_crop) != lines) {
+        qatomic_set(&xemu_libretro_overscan_crop, lines);
+        LRLOG_INFO("[xemu] Crop Vertical Overscan: %d of 480 lines at the "
+                   "top and the bottom\n", lines);
+    }
+}
+
 static bool title_renders_widescreen(uint32_t title_id)
 {
     return bsearch(&title_id, libretro_widescreen_titles,
@@ -1437,6 +1472,13 @@ static void update_variables(void)
     var.value = NULL;
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
         opt_aspect = !strcmp(var.value, "4:3") ? 1 : !strcmp(var.value, "16:9") ? 2 : 0;
+    }
+
+    var.key = "xemu_overscan_crop";
+    var.value = NULL;
+    opt_overscan_crop = 1; /* Auto, the default */
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        opt_overscan_crop = !strcmp(var.value, "auto") ? 1 : !strcmp(var.value, "on") ? 2 : 0;
     }
 
     var.key = "xemu_hdd_trim";
@@ -3676,6 +3718,7 @@ RETRO_API void retro_run(void)
     }
 
     update_aspect();
+    update_overscan_crop();
 
     /* ---- OpenGL path ---- */
     if (!use_vulkan) {

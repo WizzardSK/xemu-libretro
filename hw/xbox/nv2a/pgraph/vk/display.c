@@ -1197,17 +1197,37 @@ static void copy_display_to_frame(PGRAPHState *pg, VkCommandBuffer cmd)
                         VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                         VK_PIPELINE_STAGE_TRANSFER_BIT);
 
-    VkImageCopy region = {
-        .srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-        .srcSubresource.layerCount = 1,
-        .dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-        .dstSubresource.layerCount = 1,
-        .extent.width = disp->width,
-        .extent.height = disp->height,
-        .extent.depth = 1,
-    };
-    vkCmdCopyImage(cmd, disp->image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                   f->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+    /* Crop Vertical Overscan: the same lines off the top and the bottom,
+     * the rest stretched to the full height */
+    const int crop = (int)disp->height *
+                     qatomic_read(&xemu_libretro_overscan_crop) / 480;
+    if (crop > 0 && 2 * crop < (int)disp->height) {
+        VkImageBlit blit = {
+            .srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+            .srcSubresource.layerCount = 1,
+            .srcOffsets = { { 0, crop, 0 },
+                            { disp->width, disp->height - crop, 1 } },
+            .dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+            .dstSubresource.layerCount = 1,
+            .dstOffsets = { { 0, 0, 0 }, { disp->width, disp->height, 1 } },
+        };
+        vkCmdBlitImage(cmd, disp->image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                       f->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1,
+                       &blit, VK_FILTER_LINEAR);
+    } else {
+        VkImageCopy region = {
+            .srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+            .srcSubresource.layerCount = 1,
+            .dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+            .dstSubresource.layerCount = 1,
+            .extent.width = disp->width,
+            .extent.height = disp->height,
+            .extent.depth = 1,
+        };
+        vkCmdCopyImage(cmd, disp->image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                       f->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1,
+                       &region);
+    }
     draw_crosshairs(r, cmd, f->image, disp->width, disp->height);
 
     frame_image_barrier(cmd, f->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,

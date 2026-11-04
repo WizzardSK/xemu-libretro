@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- New option Video > Crop Vertical Overscan, after Core Aspect Ratio: Off (as before), Auto (the default) or On. Some games draw a 448-line picture inside the Xbox's 480 lines, with black bars above and below; the option crops 16 of every 480 lines at the top and at the bottom and stretches the rest to the full height, without changing the aspect ratio. Auto crops the games on the core's list (Burnout 3 and Revenge, Baldur's Gate: Dark Alliance I and II, Fallout: Brotherhood of Steel, Silent Hill 2 and 4, The Bard's Tale, Fatal Frame II, Manhunt, Def Jam: Fight for NY), On crops every game. It takes effect while the game runs (NNshi).
 - Burnout Revenge (both releases) is on the list of games that render 16:9, so System Aspect Ratio's Auto gives it 16:9 with Widescreen on (NNshi).
 - New option System > System Language (Auto, Dashboard, English, Japanese, German, French, Spanish, Italian, Korean, Chinese, Portuguese; Auto by default, NNshi): the language the console's settings give games, set in the EEPROM at each start as System Aspect Ratio is. Dashboard keeps the EEPROM's; Auto is RetroArch's language where the Xbox has it, English otherwise. An EEPROM made in another language no longer needs the dashboard to change it (Good Dragon).
 - System Memory's tooltip says it is the Xbox's: a Sega Chihiro always has its 128 MB (Akrido).

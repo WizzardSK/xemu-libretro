@@ -64,6 +64,10 @@ extern bool xemu_libretro_vk_context_ready;
 
 extern XemuLibretroVk xemu_libretro_vk;
 
+/* Crop Vertical Overscan (ui/libretro.c): lines of every 480 taken off the
+ * top and the bottom of the frame, the rest stretched to the full height */
+extern int xemu_libretro_overscan_crop;
+
 /* The frontend's queue lock, around every use of a shared queue; no-ops
  * while the renderer has a queue of its own */
 void xemu_libretro_vk_lock_queue(void);

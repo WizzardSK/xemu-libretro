@@ -265,13 +265,12 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_overscan_crop",
         "Crop Vertical Overscan",
         NULL,
-        "Some games draw a 448-line picture inside the Xbox's 480 lines, with black bars above and below. This crops 16 of every 480 lines at the top and at the bottom and stretches the rest to the full height, keeping the aspect ratio. Auto crops only the games on the core's list of such games, On crops every game.",
+        "Some games draw a 448-line picture inside the Xbox's 480 lines, with black bars above and below. Auto crops 16 of every 480 lines at the top and at the bottom of the games on the core's list of such games and stretches the rest to the full height, keeping the aspect ratio.",
         NULL,
         "video",
         {
             { "off",  "Off" },
             { "auto", "Auto" },
-            { "on",   "On" },
             { NULL, NULL },
         },
         "auto"

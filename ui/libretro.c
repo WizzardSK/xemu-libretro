@@ -1230,7 +1230,7 @@ static void get_option_string(const char *key, char *buf, size_t buf_sz)
 /* The Aspect Ratio option: 4:3 and 16:9 say it outright, auto works it out
  * (wants_widescreen) */
 static int opt_aspect = 0; /* 0 auto, 1 4:3, 2 16:9 */
-static int opt_overscan_crop = 0; /* 0 off, 1 auto, 2 on */
+static bool opt_overscan_crop = true; /* Auto */
 /* Lines of every 480 Crop Vertical Overscan takes off the top and the bottom
  * of the frame handed to the frontend (pgraph/vk/libretro_shared.h) */
 int xemu_libretro_overscan_crop;
@@ -1366,12 +1366,11 @@ static bool title_has_overscan(uint32_t title_id)
 }
 
 /* Crop Vertical Overscan: a 448-line picture in 480 lines loses its bars;
- * Auto for the titles on the list, which are all Xbox games (NNshi) */
+ * Auto for the titles on the list (NNshi) */
 static void update_overscan_crop(void)
 {
-    const bool crop = opt_overscan_crop == 2 ||
-        (opt_overscan_crop == 1 &&
-         title_has_overscan(qatomic_read(&guest_title_id)));
+    const bool crop = opt_overscan_crop &&
+        title_has_overscan(qatomic_read(&guest_title_id));
     const int lines = crop ? 16 : 0;
 
     if (qatomic_read(&xemu_libretro_overscan_crop) != lines) {
@@ -1476,10 +1475,9 @@ static void update_variables(void)
 
     var.key = "xemu_overscan_crop";
     var.value = NULL;
-    opt_overscan_crop = 1; /* Auto, the default */
-    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
-        opt_overscan_crop = !strcmp(var.value, "auto") ? 1 : !strcmp(var.value, "on") ? 2 : 0;
-    }
+    opt_overscan_crop = !(environ_cb &&
+                          environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
+                          var.value && !strcmp(var.value, "off"));
 
     var.key = "xemu_hdd_trim";
     var.value = NULL;

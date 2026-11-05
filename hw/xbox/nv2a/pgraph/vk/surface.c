@@ -1684,6 +1684,40 @@ void pgraph_vk_eager_frame_update(PGRAPHState *pg)
     }
 }
 
+/* Compatibility with the requested zeta format/address/pitch is checked by
+ * the caller (or the memo). A larger linear depth image can cover a smaller
+ * color pass without making a RAM roundtrip. Swizzled layouts and different
+ * AA/host scales cannot share that interpretation. */
+static inline bool zeta_covers_color(PGRAPHVkState *r, const SurfaceBinding *zeta)
+{
+    const SurfaceBinding *color = r->color_binding;
+    if (!color) {
+        return true;
+    }
+    if (zeta->width < color->width || zeta->height < color->height) {
+        return false;
+    }
+    if (zeta->width == color->width && zeta->height == color->height) {
+        return true;
+    }
+    return !zeta->swizzle && !color->swizzle &&
+           zeta->shape.anti_aliasing == color->shape.anti_aliasing &&
+           zeta->native_resolution == color->native_resolution;
+}
+
+/* The color attachment defines the render area when both are present.
+ * Keep its clip too: a memoized larger zeta must not expand the pass. */
+static void set_surface_binding_dimensions(PGRAPHState *pg, bool color,
+                                            const SurfaceBinding *surface)
+{
+    PGRAPHVkState *r = pg->vk_renderer_state;
+    if (!color && r->color_binding) {
+        surface = r->color_binding;
+    }
+    pgraph_set_surface_binding_dim(pg, surface->width, surface->height,
+                                   &surface->shape);
+}
+
 static void update_surface_part(NV2AState *d, bool upload, bool color)
 {
     PGRAPHState *pg = &d->pgraph;
@@ -1691,7 +1725,7 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
 
     /* Render-target memo, as on GL: registers that resolved to a binding
      * under the same shape generation swap it in without the full pass;
-     * a zeta binding must still match the color size. */
+     * a zeta binding must still cover the color target. */
     if (upload && tcg_enabled()) {
         Surface *sf = color ? &pg->surface_color : &pg->surface_zeta;
         if (sf->buffer_dirty) {
@@ -1700,13 +1734,10 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
                 SurfaceBinding *m = pgraph_rt_memo_match(
                     &r->rt_memo, color, i, dma, sf->offset, sf->pitch);
                 if (m && m != (color ? r->zeta_binding : r->color_binding) &&
-                    (color || !r->color_binding ||
-                     (m->width == r->color_binding->width &&
-                      m->height == r->color_binding->height))) {
+                    (color || zeta_covers_color(r, m))) {
                     eager_submit_at_switch(pg);
                     pgraph_vk_ensure_not_in_render_pass(pg);
-                    pgraph_set_surface_binding_dim(pg, m->width, m->height,
-                                                   &m->shape);
+                    set_surface_binding_dimensions(pg, color, m);
                     if (color) {
                         pg->surface_zeta.buffer_dirty = true;
                     }
@@ -1814,15 +1845,11 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
             }
 
             if (is_compatible && !color && r->color_binding) {
-                is_compatible &= (surface->width == r->color_binding->width) &&
-                                 (surface->height == r->color_binding->height);
+                is_compatible &= zeta_covers_color(r, surface);
             }
 
             if (is_compatible) {
-                // FIXME: Refactor
-                pgraph_set_surface_binding_dim(pg, surface->width,
-                                               surface->height,
-                                               &surface->shape);
+                set_surface_binding_dimensions(pg, color, surface);
                 surface->upload_pending |= mem_dirty;
                 pg->surface_zeta.buffer_dirty |= color;
                 should_create = false;
@@ -1872,9 +1899,7 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
             set_surface_label(pg, surface);
             surface_put(d, surface);
 
-            // FIXME: Refactor
-            pgraph_set_surface_binding_dim(pg, target.width, target.height,
-                                           &target.shape);
+            set_surface_binding_dimensions(pg, color, &target);
 
             if (color && r->zeta_binding &&
                 (r->zeta_binding->width != target.width ||
@@ -2016,10 +2041,9 @@ void pgraph_vk_surface_update(NV2AState *d, bool upload, bool color_write,
 
     touch_bound_surfaces(d, upload);
 
-    // Sanity check color and zeta dimensions match
+    /* A retained zeta may be larger; the framebuffer uses the color size. */
     if (r->color_binding && r->zeta_binding) {
-        assert(r->color_binding->width == r->zeta_binding->width);
-        assert(r->color_binding->height == r->zeta_binding->height);
+        assert(zeta_covers_color(r, r->zeta_binding));
     }
 
     /* Expiry counts in frames, so once per frame decides the same; the

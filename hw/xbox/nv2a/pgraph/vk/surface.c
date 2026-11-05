@@ -1687,7 +1687,7 @@ void pgraph_vk_eager_frame_update(PGRAPHState *pg)
 /* Compatibility with the requested zeta format/address/pitch is checked by
  * the caller (or the memo). A larger linear depth image can cover a smaller
  * color pass without making a RAM roundtrip. Swizzled layouts and different
- * AA/host scales cannot share that interpretation. */
+ * AA modes cannot share that interpretation. */
 static inline bool zeta_covers_color(PGRAPHVkState *r, const SurfaceBinding *zeta)
 {
     const SurfaceBinding *color = r->color_binding;
@@ -1700,9 +1700,10 @@ static inline bool zeta_covers_color(PGRAPHVkState *r, const SurfaceBinding *zet
     if (zeta->width == color->width && zeta->height == color->height) {
         return true;
     }
+    /* All surfaces here share one resolution scale (surface_scale_factor),
+     * so only the anti-aliasing mode has to match. */
     return !zeta->swizzle && !color->swizzle &&
-           zeta->shape.anti_aliasing == color->shape.anti_aliasing &&
-           zeta->native_resolution == color->native_resolution;
+           zeta->shape.anti_aliasing == color->shape.anti_aliasing;
 }
 
 /* The color attachment defines the render area when both are present.

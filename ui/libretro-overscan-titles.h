@@ -21,6 +21,7 @@ static const uint32_t libretro_overscan_titles[] = {
     0x4B4F0003, /* Dynasty Warriors 3 */
     0x4B4F0004, /* Dynasty Warriors 4 */
     0x4B4F0007, /* Dynasty Warriors 5 */
+    0x4E4D0009, /* Breakdown */
     0x53500001, /* Combat Elite: WWII Paratroopers */
     0x564E0006, /* Baldur's Gate: Dark Alliance */
     0x5655001A, /* Baldur's Gate: Dark Alliance */

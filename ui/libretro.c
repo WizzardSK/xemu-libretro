@@ -247,7 +247,6 @@ static const bool opt_cache_shaders = true;
 static bool opt_dsp_jit = true;
 static bool opt_hrtf = true;
 static int  opt_vp_workers = 0;
-static int  opt_audio_volume = 100;
 static int  opt_network_backend = 0; /* 0=disabled, 1=nat */
 
 /* ========================================================================= */
@@ -1666,22 +1665,13 @@ static void update_variables(void)
         opt_audio_thread = !strcmp(var.value, "enabled");
     }
 
-    var.key = "xemu_audio_volume";
-    var.value = NULL;
-    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
-        opt_audio_volume = atoi(var.value);
-        if (opt_audio_volume < 0) opt_audio_volume = 0;
-        if (opt_audio_volume > 100) opt_audio_volume = 100;
-    }
-
-    LRLOG_INFO("[xemu] Options: memory=%dMB, scale=%d, avpack=%d, cache=%d, volume=%d%%, network=%s\n",
+    LRLOG_INFO("[xemu] Options: memory=%dMB, scale=%d, avpack=%d, cache=%d, network=%s\n",
                opt_memory_mb, opt_surface_scale,
-               opt_avpack, opt_cache_shaders, opt_audio_volume,
+               opt_avpack, opt_cache_shaders,
                opt_network_backend == 1 ? "nat" : "disabled");
 
     /* Apply runtime-safe options */
     if (emu_initialized) {
-        g_config.audio.volume_limit = opt_audio_volume / 100.0f;
         g_config.audio.hrtf = opt_hrtf;
     }
 }
@@ -1780,7 +1770,7 @@ static void populate_config(const char *dvd_path)
 
     /* Critical defaults for libretro mode */
     g_config.general.show_welcome = false;
-    g_config.audio.volume_limit = opt_audio_volume / 100.0f;
+    g_config.audio.volume_limit = 1.0f;
     g_config.perf.cache_shaders = opt_cache_shaders;
 
     /* Set other options */

@@ -429,24 +429,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        "Audio Volume Limit (%)",
-        NULL,
-        "Limit Xbox audio output volume independently from RetroArch master volume.",
-        NULL,
-        "audio",
-        {
-            { "100", "100%" },
-            { "80",  "80%" },
-            { "60",  "60%" },
-            { "40",  "40%" },
-            { "20",  "20%" },
-            { "0",   "Muted" },
-            { NULL, NULL },
-        },
-        "100"
-    },
     /* No Pipeline Libraries by default, unlike standalone, which uses all:
      * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
      * dynamic states keep most of the speed; fewer still for a GPU that

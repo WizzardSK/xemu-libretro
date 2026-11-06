@@ -171,7 +171,6 @@ static const uint32_t libretro_widescreen_titles[] = {
     0x53570001, /* Enclave */
     0x54430001, /* Dead or Alive 3 */
     0x54430003, /* Ninja Gaiden */
-    0x54430006, /* Dead or Alive Ultimate */
     0x54430007, /* Dead or Alive Xtreme Beach Volleyball */
     0x5443000D, /* Ninja Gaiden Black */
     0x5443000E, /* Tecmo Arcade Classics */

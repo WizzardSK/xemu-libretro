@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- Signed G8B8 textures (bump and distortion data, as in Ninja Gaiden's water) are decoded before they are filtered, within and across mip levels, and the combiner's per-channel sign flags are honoured; from parallel-xbox (NNshi).
 - Audio Volume Limit (%) is gone: RetroArch has its own volume control (NNshi).
 - Crop Vertical Overscan: Breakdown is on the Auto list (NNshi).
 - Vulkan: when a game draws to a smaller colour target over a larger depth buffer it already has, the depth buffer is kept bound instead of being written back to RAM and made again at the smaller size, so its contents are no longer lost between passes (GunValkyrie's dash showed broken graphics, #3, SteveDoido). Taken from parallel-xbox (f530f09b), which adapted upstream xemu's open PR #3096 (voorunde).

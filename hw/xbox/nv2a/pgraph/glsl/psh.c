@@ -227,6 +227,7 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
     }
 
     for (int i = 0; i < 4; i++) {
+        state->g8b8_signed[i] = 0;
         for (int j = 0; j < 4; j++) {
             state->compare_mode[i][j] =
                 (pgraph_reg_r(pg, NV_PGRAPH_SHADERCLIPMODE) >> (4 * i + j)) & 1;
@@ -269,19 +270,6 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
             }
         }
 
-        /* Keep track of whether texture data has been loaded as signed
-         * normalized integers or not. This dictates whether or not we will need
-         * to re-map in fragment shader for certain texture modes (e.g.
-         * bumpenvmap).
-         *
-         * FIXME: When signed texture data is loaded as unsigned and remapped in
-         * fragment shader, there may be interpolation artifacts. Fix this to
-         * support signed textures more appropriately.
-         */
-#if 0 // FIXME
-        psh->snorm_tex[i] = (f.gl_internal_format == GL_RGB8_SNORM)
-                                 || (f.gl_internal_format == GL_RG8_SNORM);
-#endif
         state->shadow_map[i] = f.depth;
 
         uint32_t filter = pgraph_reg_r(pg, NV_PGRAPH_TEXFILTER0 + i * 4);
@@ -299,6 +287,35 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
         }
 
         state->conv_tex[i] = kernel;
+        /* Signed G8B8: matching min/mag filters and a single mip level.
+         * Mixed filtering, mip chains and color keys retain the old path. */
+        bool gb = color_format == NV097_SET_TEXTURE_FORMAT_COLOR_SZ_G8B8 ||
+                  color_format == NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_G8B8;
+        unsigned mode = (state->shader_stage_program >> (i * 5)) & 31;
+        unsigned mag_filter = GET_MASK(filter, NV_PGRAPH_TEXFILTER0_MAG);
+        bool linear_filter = mag_filter == 2 &&
+            (min_filter == NV_PGRAPH_TEXFILTER0_MIN_TENT_LOD0 ||
+             min_filter == NV_PGRAPH_TEXFILTER0_MIN_TENT_NEARESTLOD ||
+             min_filter == NV_PGRAPH_TEXFILTER0_MIN_TENT_TENT_LOD);
+        bool point_filter = mag_filter == 1 &&
+            (min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_LOD0 ||
+             min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_NEARESTLOD ||
+             min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_TENT_LOD);
+        if (gb && mode == PS_TEXTUREMODES_PROJECT2D && !cubemap &&
+            state->dim_tex[i] == 2 && !state->border_adjust[i] &&
+            GET_MASK(tex_fmt, NV_PGRAPH_TEXFMT0_MIPMAP_LEVELS) == 1 &&
+            state->colorkey_mode[i] == COLOR_KEY_NONE &&
+            !(state->alphakill[i] && (filter & NV_PGRAPH_TEXFILTER0_ASIGNED)) &&
+            (linear_filter || point_filter)) {
+            unsigned signs =
+                ((filter & NV_PGRAPH_TEXFILTER0_BSIGNED) ? 1 : 0) |
+                ((filter & NV_PGRAPH_TEXFILTER0_GSIGNED) ? 2 : 0) |
+                ((filter & NV_PGRAPH_TEXFILTER0_RSIGNED) ? 4 : 0) |
+                ((filter & NV_PGRAPH_TEXFILTER0_ASIGNED) ? 8 : 0);
+            if (signs) {
+                state->g8b8_signed[i] = signs | (linear_filter ? 16 : 0);
+            }
+        }
     }
 
     state->surface_zeta_format = pg->surface_shape.zeta_format;
@@ -1075,6 +1092,70 @@ static void emit_dynamic_combiner(struct PixelShader *ps, MString *preflight)
         "comb_final();\n");
 }
 
+/* A G8B8 texel's first byte feeds R/B, its second feeds G/A. Gather
+ * preserves the sampler's address modes while decoding each tap before the
+ * interpolation. Keep this result separate until dependent texture stages
+ * finish: their byte mappings differ from the signed combiner input. */
+static void psh_append_signed_g8b8(const struct PixelShader *ps, MString *vars,
+                                   int source)
+{
+    unsigned signs = ps->state->g8b8_signed[source];
+    if (!signs) {
+        return;
+    }
+    mstring_append_fmt(vars, "vec2 signedGB%d = vec2(sign3(t%d.b), sign3(t%d.g));\n",
+                       source, source, source);
+    if (!(signs & 16)) {
+        return;
+    }
+    if (ps->state->rect_tex[source]) {
+        mstring_append_fmt(vars,
+            "vec2 gbCoord%d = norm%d(pT%d.xy / %spT%d.w%s);\n",
+            source, source, source, ps->opts.vulkan ? "max(" : "(", source,
+            ps->opts.vulkan ? ", 1e-15)" : ")");
+    } else {
+        mstring_append_fmt(vars,
+            "vec2 gbCoord%d = pT%d.xy / %spT%d.w%s;\n",
+            source, source, ps->opts.vulkan ? "max(" : "(", source,
+            ps->opts.vulkan ? ", 1e-15)" : ")");
+    }
+    mstring_append_fmt(vars,
+        "vec2 gbFrac%d = fract(gbCoord%d * vec2(textureSize(texSamp%d, 0)) - 0.5);\n",
+        source, source, source);
+    for (int axis = 0; axis < 2; axis++) {
+        if (!(signs & (axis == 0 ? 5 : 10))) {
+            continue;
+        }
+        mstring_append_fmt(vars,
+            "vec4 gbTaps%d_%d = textureGather(texSamp%d, gbCoord%d, %d);\n",
+            source, axis, source, source, axis == 0 ? 2 : 1);
+        mstring_append_fmt(vars,
+            "gbTaps%d_%d = vec4(sign3(gbTaps%d_%d.x), sign3(gbTaps%d_%d.y), "
+            "sign3(gbTaps%d_%d.z), sign3(gbTaps%d_%d.w));\n",
+            source, axis, source, axis, source, axis, source, axis, source, axis);
+        /* Gather order: lower-left, lower-right, upper-right, upper-left. */
+        mstring_append_fmt(vars,
+            "signedGB%d.%c = mix(mix(gbTaps%d_%d.w, gbTaps%d_%d.z, gbFrac%d.x), "
+            "mix(gbTaps%d_%d.x, gbTaps%d_%d.y, gbFrac%d.x), gbFrac%d.y);\n",
+            source, axis == 0 ? 'x' : 'y',
+            source, axis, source, axis, source,
+            source, axis, source, axis, source, source);
+    }
+}
+
+static void psh_append_signed_bump(const struct PixelShader *ps, MString *vars,
+                                   int stage, const char *target)
+{
+    int source = ps->input_tex[stage];
+    unsigned signs = ps->state->g8b8_signed[source];
+    for (int axis = 0; axis < 2; axis++) {
+        if (signs & (1u << axis)) {
+            mstring_append_fmt(vars, "%s%d.%c = signedGB%d.%c;\n",
+                               target, stage, "xy"[axis], source, "xy"[axis]);
+        }
+    }
+}
+
 static MString* psh_convert(struct PixelShader *ps)
 {
     MString *preflight = mstring_new();
@@ -1466,16 +1547,10 @@ static MString* psh_convert(struct PixelShader *ps)
         case PS_TEXTUREMODES_BUMPENVMAP:
             assert(i >= 1);
 
-            if (ps->state->snorm_tex[ps->input_tex[i]]) {
-                /* Input color channels already signed (FIXME: May not always want signed textures in this case) */
-                mstring_append_fmt(vars, "vec2 dsdt%d = t%d.bg;\n",
-                                   i, ps->input_tex[i]);
-            } else {
-                /* Convert to signed (FIXME: loss of accuracy due to filtering/interpolation) */
-                mstring_append_fmt(vars, "vec2 dsdt%d = vec2(sign3(t%d.b), sign3(t%d.g));\n",
-                                   i, ps->input_tex[i], ps->input_tex[i]);
-            }
+            mstring_append_fmt(vars, "vec2 dsdt%d = vec2(sign3(t%d.b), sign3(t%d.g));\n",
+                               i, ps->input_tex[i], ps->input_tex[i]);
 
+            psh_append_signed_bump(ps, vars, i, "dsdt");
             mstring_append_fmt(vars, "dsdt%d = bumpMat[%d] * dsdt%d;\n", i, i, i);
 
             if (ps->state->dim_tex[i] == 2) {
@@ -1494,16 +1569,10 @@ static MString* psh_convert(struct PixelShader *ps)
         case PS_TEXTUREMODES_BUMPENVMAP_LUM:
             assert(i >= 1);
 
-            if (ps->state->snorm_tex[ps->input_tex[i]]) {
-                /* Input color channels already signed (FIXME: May not always want signed textures in this case) */
-                mstring_append_fmt(vars, "vec3 dsdtl%d = vec3(t%d.bg, sign3_to_0_to_1(t%d.r));\n",
-                                   i, ps->input_tex[i], ps->input_tex[i]);
-            } else {
-                /* Convert to signed (FIXME: loss of accuracy due to filtering/interpolation) */
-                mstring_append_fmt(vars, "vec3 dsdtl%d = vec3(sign3(t%d.b), sign3(t%d.g), t%d.r);\n",
-                                   i, ps->input_tex[i], ps->input_tex[i], ps->input_tex[i]);
-            }
+            mstring_append_fmt(vars, "vec3 dsdtl%d = vec3(sign3(t%d.b), sign3(t%d.g), t%d.r);\n",
+                               i, ps->input_tex[i], ps->input_tex[i], ps->input_tex[i]);
 
+            psh_append_signed_bump(ps, vars, i, "dsdtl");
             mstring_append_fmt(vars, "dsdtl%d.st = bumpMat[%d] * dsdtl%d.st;\n",
                                i, i, i);
 
@@ -1729,6 +1798,20 @@ static MString* psh_convert(struct PixelShader *ps)
                 "    return vec4(norm%d(coord.xy), 0, coord.w);\n"
                 "}\n",
                 i, i);
+            }
+            psh_append_signed_g8b8(ps, vars, i);
+        }
+    }
+
+    for (int unit = 0; unit < 4; unit++) {
+        unsigned signs = ps->state->g8b8_signed[unit];
+        for (int component = 0; component < 4; component++) {
+            unsigned bit = component == 0 ? 4 : component == 1 ? 2 :
+                           component == 2 ? 1 : 8;
+            if (signs & bit) {
+                mstring_append_fmt(vars, "t%d.%c = clamp(signedGB%d.%c, -1.0, 1.0);\n",
+                                   unit, "rgba"[component], unit,
+                                   component == 0 || component == 2 ? 'x' : 'y');
             }
         }
     }

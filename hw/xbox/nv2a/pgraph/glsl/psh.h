@@ -51,7 +51,9 @@ typedef struct PshState {
 
     bool point_sprite;
     bool rect_tex[4];
-    bool snorm_tex[4];
+    /* B/G/R/A signs in bits 0..3, bilinear in bit 4. Reuses the unused
+     * snorm_tex bytes so unsigned shader seeds keep their layout and keys. */
+    uint8_t g8b8_signed[4];
     bool compare_mode[4][4];
     bool alphakill[4];
     int colorkey_mode[4];

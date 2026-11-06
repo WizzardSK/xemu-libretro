@@ -1735,6 +1735,16 @@ static VkSampler create_sampler_for_state(PGRAPHState *pg,
     uint32_t sampler_max_anisotropy =
         MIN(r->device_props.limits.maxSamplerAnisotropy, max_anisotropy);
 
+    /* A zero maximum forces magnification in Vulkan. Allow a positive LOD
+     * for mixed G8B8 LOD0 filters, while nearest mip selection stays at zero. */
+    bool mixed_g8b8_lod0 = mip_levels == 1 && state.dimensionality == 2 &&
+        !state.cubemap && !state.border &&
+        (min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_LOD0 ||
+         min_filter == NV_PGRAPH_TEXFILTER0_MIN_TENT_LOD0) &&
+        vk_min_filter != vk_mag_filter &&
+        (state.color_format == NV097_SET_TEXTURE_FORMAT_COLOR_SZ_G8B8 ||
+         state.color_format == NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_G8B8);
+
     VkSamplerCreateInfo sampler_create_info = {
         .sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
         .magFilter = vk_mag_filter,
@@ -1755,7 +1765,8 @@ static VkSampler create_sampler_for_state(PGRAPHState *pg,
         .mipmapMode = mipmap_nearest ? VK_SAMPLER_MIPMAP_MODE_NEAREST :
                                        VK_SAMPLER_MIPMAP_MODE_LINEAR,
         .minLod = mipmap_en ? MIN(state.min_mipmap_level, state.levels - 1) : 0.0,
-        .maxLod = mipmap_en ? MIN(state.max_mipmap_level, state.levels - 1) : 0.0,
+        .maxLod = mixed_g8b8_lod0 ? 0.25f :
+                  mipmap_en ? MIN(state.max_mipmap_level, state.levels - 1) : 0.0f,
         .mipLodBias = lod_bias,
         .pNext = sampler_next_struct,
     };

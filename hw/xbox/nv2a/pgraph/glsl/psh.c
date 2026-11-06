@@ -287,8 +287,8 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
         }
 
         state->conv_tex[i] = kernel;
-        /* Signed G8B8: matching min/mag filters and a single mip level.
-         * Mixed filtering, mip chains and color keys retain the old path. */
+        /* Signed G8B8: a single mip level. Mixed LOD0 filters choose their
+         * reconstruction from the sampler's computed LOD. */
         bool gb = color_format == NV097_SET_TEXTURE_FORMAT_COLOR_SZ_G8B8 ||
                   color_format == NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_G8B8;
         unsigned mode = (state->shader_stage_program >> (i * 5)) & 31;
@@ -301,19 +301,23 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
             (min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_LOD0 ||
              min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_NEARESTLOD ||
              min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_TENT_LOD);
+        bool mixed_filter =
+            (mag_filter == 1 && min_filter == NV_PGRAPH_TEXFILTER0_MIN_TENT_LOD0) ||
+            (mag_filter == 2 && min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_LOD0);
         if (gb && mode == PS_TEXTUREMODES_PROJECT2D && !cubemap &&
             state->dim_tex[i] == 2 && !state->border_adjust[i] &&
             GET_MASK(tex_fmt, NV_PGRAPH_TEXFMT0_MIPMAP_LEVELS) == 1 &&
             state->colorkey_mode[i] == COLOR_KEY_NONE &&
             !(state->alphakill[i] && (filter & NV_PGRAPH_TEXFILTER0_ASIGNED)) &&
-            (linear_filter || point_filter)) {
+            (linear_filter || point_filter || mixed_filter)) {
             unsigned signs =
                 ((filter & NV_PGRAPH_TEXFILTER0_BSIGNED) ? 1 : 0) |
                 ((filter & NV_PGRAPH_TEXFILTER0_GSIGNED) ? 2 : 0) |
                 ((filter & NV_PGRAPH_TEXFILTER0_RSIGNED) ? 4 : 0) |
                 ((filter & NV_PGRAPH_TEXFILTER0_ASIGNED) ? 8 : 0);
             if (signs) {
-                state->g8b8_signed[i] = signs | (linear_filter ? 16 : 0);
+                state->g8b8_signed[i] = signs | (linear_filter ? 16 : 0) |
+                    (mixed_filter ? 64 | (mag_filter == 2 ? 32 : 16) : 0);
             }
         }
     }
@@ -1105,7 +1109,7 @@ static void psh_append_signed_g8b8(const struct PixelShader *ps, MString *vars,
     }
     mstring_append_fmt(vars, "vec2 signedGB%d = vec2(sign3(t%d.b), sign3(t%d.g));\n",
                        source, source, source);
-    if (!(signs & 16)) {
+    if (!(signs & (16 | 64))) {
         return;
     }
     if (ps->state->rect_tex[source]) {
@@ -1122,6 +1126,11 @@ static void psh_append_signed_g8b8(const struct PixelShader *ps, MString *vars,
     mstring_append_fmt(vars,
         "vec2 gbFrac%d = fract(gbCoord%d * vec2(textureSize(texSamp%d, 0)) - 0.5);\n",
         source, source, source);
+    if (signs & 64) {
+        mstring_append_fmt(vars,
+            "bool gbLinear%d = textureQueryLod(texSamp%d, gbCoord%d).y %s 0.0;\n",
+            source, source, source, signs & 16 ? ">" : "<=");
+    }
     for (int axis = 0; axis < 2; axis++) {
         if (!(signs & (axis == 0 ? 5 : 10))) {
             continue;
@@ -1134,12 +1143,20 @@ static void psh_append_signed_g8b8(const struct PixelShader *ps, MString *vars,
             "sign3(gbTaps%d_%d.z), sign3(gbTaps%d_%d.w));\n",
             source, axis, source, axis, source, axis, source, axis, source, axis);
         /* Gather order: lower-left, lower-right, upper-right, upper-left. */
+        g_autofree gchar *destination = signs & 64 ?
+            g_strdup_printf("float gbFiltered%d_%d", source, axis) :
+            g_strdup_printf("signedGB%d.%c", source, "xy"[axis]);
         mstring_append_fmt(vars,
-            "signedGB%d.%c = mix(mix(gbTaps%d_%d.w, gbTaps%d_%d.z, gbFrac%d.x), "
+            "%s = mix(mix(gbTaps%d_%d.w, gbTaps%d_%d.z, gbFrac%d.x), "
             "mix(gbTaps%d_%d.x, gbTaps%d_%d.y, gbFrac%d.x), gbFrac%d.y);\n",
-            source, axis == 0 ? 'x' : 'y',
+            destination,
             source, axis, source, axis, source,
             source, axis, source, axis, source, source);
+        if (signs & 64) {
+            mstring_append_fmt(vars,
+                "signedGB%d.%c = gbLinear%d ? gbFiltered%d_%d : signedGB%d.%c;\n",
+                source, "xy"[axis], source, source, axis, source, "xy"[axis]);
+        }
     }
 }
 

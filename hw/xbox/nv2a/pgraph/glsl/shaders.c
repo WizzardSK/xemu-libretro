@@ -67,6 +67,20 @@ static bool shader_reg_dirty(PGRAPHState *pg, unsigned int reg, uint32_t fields,
     return (pgraph_reg_r(pg, reg) & fields) != pg->shader_reg_snap[slot];
 }
 
+static bool signed_g8b8_address_dirty(PGRAPHState *pg, int i)
+{
+    if (!pgraph_is_reg_dirty(pg, NV_PGRAPH_TEXADDRESS0 + i * 4)) {
+        return false;
+    }
+    uint32_t fmt = pgraph_reg_r(pg, NV_PGRAPH_TEXFMT0 + i * 4);
+    uint32_t filter = pgraph_reg_r(pg, NV_PGRAPH_TEXFILTER0 + i * 4);
+    return GET_MASK(fmt, NV_PGRAPH_TEXFMT0_COLOR) ==
+               NV097_SET_TEXTURE_FORMAT_COLOR_SZ_G8B8 &&
+           GET_MASK(fmt, NV_PGRAPH_TEXFMT0_MIPMAP_LEVELS) > 1 &&
+           (filter & (NV_PGRAPH_TEXFILTER0_ASIGNED | NV_PGRAPH_TEXFILTER0_RSIGNED |
+                      NV_PGRAPH_TEXFILTER0_GSIGNED | NV_PGRAPH_TEXFILTER0_BSIGNED));
+}
+
 bool pgraph_glsl_check_shader_state_dirty(PGRAPHState *pg,
                                           const ShaderState *state)
 {
@@ -125,6 +139,7 @@ bool pgraph_glsl_check_shader_state_dirty(PGRAPHState *pg,
 
     for (int i = 0; i < 4; i++) {
         if (pgraph_is_reg_dirty(pg, NV_PGRAPH_TEXCTL0_0 + i * 4) ||
+            signed_g8b8_address_dirty(pg, i) ||
             shader_reg_dirty(pg, NV_PGRAPH_TEXFILTER0 + i * 4,
                              NV_PGRAPH_TEXFILTER0_SHADER_FIELDS, 5 + i) ||
             shader_reg_dirty(pg, NV_PGRAPH_TEXFMT0 + i * 4,

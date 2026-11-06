@@ -287,8 +287,8 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
         }
 
         state->conv_tex[i] = kernel;
-        /* Signed G8B8: a single mip level. Mixed LOD0 filters choose their
-         * reconstruction from the sampler's computed LOD. */
+        /* Signed G8B8. Mixed LOD0 filters choose reconstruction from the
+         * sampler's computed LOD; mipmapped filtering decodes each mip's taps. */
         bool gb = color_format == NV097_SET_TEXTURE_FORMAT_COLOR_SZ_G8B8 ||
                   color_format == NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_G8B8;
         unsigned mode = (state->shader_stage_program >> (i * 5)) & 31;
@@ -304,9 +304,28 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
         bool mixed_filter =
             (mag_filter == 1 && min_filter == NV_PGRAPH_TEXFILTER0_MIN_TENT_LOD0) ||
             (mag_filter == 2 && min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_LOD0);
+        bool mip_filter = false;
+        bool mip_lod0 = false;
+        if (gb && !f.linear && !cubemap && state->dim_tex[i] == 2 &&
+            GET_MASK(tex_fmt, NV_PGRAPH_TEXFMT0_MIPMAP_LEVELS) > 1 &&
+            (linear_filter || point_filter)) {
+            uint32_t address = pgraph_reg_r(pg, NV_PGRAPH_TEXADDRESS0 + i * 4);
+            TextureShape shape = pgraph_get_texture_shape(pg, i);
+            mip_lod0 = shape.max_mipmap_level == 0;
+            /* GL uses BASE_LEVEL for the lower clamp, while Vulkan uses
+             * minLod. Leave nonzero lower clamps and other address modes on
+             * the existing path until their backend differences are covered. */
+            mip_filter = shape.min_mipmap_level == 0 &&
+                GET_MASK(address, NV_PGRAPH_TEXADDRESS0_ADDRU) ==
+                    NV_PGRAPH_TEXADDRESS0_ADDRU_WRAP &&
+                GET_MASK(address, NV_PGRAPH_TEXADDRESS0_ADDRV) ==
+                    NV_PGRAPH_TEXADDRESS0_ADDRU_WRAP &&
+                min_filter >= NV_PGRAPH_TEXFILTER0_MIN_BOX_NEARESTLOD &&
+                min_filter <= NV_PGRAPH_TEXFILTER0_MIN_TENT_TENT_LOD;
+        }
         if (gb && mode == PS_TEXTUREMODES_PROJECT2D && !cubemap &&
             state->dim_tex[i] == 2 && !state->border_adjust[i] &&
-            GET_MASK(tex_fmt, NV_PGRAPH_TEXFMT0_MIPMAP_LEVELS) == 1 &&
+            (GET_MASK(tex_fmt, NV_PGRAPH_TEXFMT0_MIPMAP_LEVELS) == 1 || mip_filter) &&
             state->colorkey_mode[i] == COLOR_KEY_NONE &&
             !(state->alphakill[i] && (filter & NV_PGRAPH_TEXFILTER0_ASIGNED)) &&
             (linear_filter || point_filter || mixed_filter)) {
@@ -317,7 +336,10 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
                 ((filter & NV_PGRAPH_TEXFILTER0_ASIGNED) ? 8 : 0);
             if (signs) {
                 state->g8b8_signed[i] = signs | (linear_filter ? 16 : 0) |
-                    (mixed_filter ? 64 | (mag_filter == 2 ? 32 : 16) : 0);
+                    (mixed_filter ? 64 | (mag_filter == 2 ? 32 : 16) : 0) |
+                    (mip_filter ? 128 | (min_filter >=
+                        NV_PGRAPH_TEXFILTER0_MIN_BOX_TENT_LOD ? 64 : 0) |
+                        (mip_lod0 ? 32 : 0) : 0);
             }
         }
     }
@@ -1096,6 +1118,70 @@ static void emit_dynamic_combiner(struct PixelShader *ps, MString *preflight)
         "comb_final();\n");
 }
 
+/* Decode before filtering within a mip and between mips. The sampler query
+ * supplies bias, mip selection and upper clamping. texelFetch needs explicit
+ * wrap addressing. No implicit derivatives are used after the query. */
+static void psh_append_signed_g8b8_mips(const struct PixelShader *ps, MString *vars,
+                                        int source, unsigned signs)
+{
+    bool linear = signs & 16;
+    bool trilinear = signs & 64;
+    mstring_append_fmt(vars,
+        "vec2 gbCoord%d = pT%d.xy / %spT%d.w%s;\n",
+        source, source, ps->opts.vulkan ? "max(" : "(", source,
+        ps->opts.vulkan ? ", 1e-15)" : ")");
+    if (signs & 32) {
+        /* Some drivers' LOD queries ignore a zero maximum even when their
+         * sampling honors it. Also avoid querying an overridden footprint. */
+        mstring_append_fmt(vars, "float gbLod%d = 0.0;\n", source);
+    } else {
+        mstring_append_fmt(vars,
+            "float gbLod%d = max(textureQueryLod(texSamp%d, gbCoord%d).x, 0.0);\n",
+            source, source, source);
+    }
+    for (int mip = 0; mip < (trilinear ? 2 : 1); mip++) {
+        mstring_append_fmt(vars,
+            "int gbLevel%d_%d = int(%s(gbLod%d));\n"
+            "vec2 gbSize%d_%d = vec2(textureSize(texSamp%d, gbLevel%d_%d));\n"
+            "vec2 gbPos%d_%d = gbCoord%d * gbSize%d_%d%s;\n"
+            "vec2 gbBase%d_%d = floor(gbPos%d_%d);\n",
+            source, mip, mip ? "ceil" : "floor", source,
+            source, mip, source, source, mip,
+            source, mip, source, source, mip, linear ? " - 0.5" : "",
+            source, mip, source, mip);
+        for (int tap = 0; tap < (linear ? 4 : 1); tap++) {
+            mstring_append_fmt(vars,
+                "vec2 gbTap%d_%d_%d = texelFetch(texSamp%d, "
+                "ivec2(mod(gbBase%d_%d + vec2(%d.0, %d.0), gbSize%d_%d)), "
+                "gbLevel%d_%d).bg;\n"
+                "gbTap%d_%d_%d = vec2(sign3(gbTap%d_%d_%d.x), "
+                "sign3(gbTap%d_%d_%d.y));\n",
+                source, mip, tap, source, source, mip, tap & 1, tap >> 1,
+                source, mip, source, mip,
+                source, mip, tap, source, mip, tap, source, mip, tap);
+        }
+        if (linear) {
+            mstring_append_fmt(vars,
+                "vec2 gbWeight%d_%d = fract(gbPos%d_%d);\n"
+                "vec2 gbMip%d_%d = mix(mix(gbTap%d_%d_0, gbTap%d_%d_1, gbWeight%d_%d.x), "
+                "mix(gbTap%d_%d_2, gbTap%d_%d_3, gbWeight%d_%d.x), gbWeight%d_%d.y);\n",
+                source, mip, source, mip, source, mip,
+                source, mip, source, mip, source, mip,
+                source, mip, source, mip, source, mip, source, mip);
+        }
+    }
+    const char *value = linear ? "gbMip" : "gbTap";
+    const char *suffix = linear ? "" : "_0";
+    if (trilinear) {
+        mstring_append_fmt(vars,
+            "vec2 signedGB%d = mix(%s%d_0%s, %s%d_1%s, fract(gbLod%d));\n",
+            source, value, source, suffix, value, source, suffix, source);
+    } else {
+        mstring_append_fmt(vars, "vec2 signedGB%d = %s%d_0%s;\n",
+                           source, value, source, suffix);
+    }
+}
+
 /* A G8B8 texel's first byte feeds R/B, its second feeds G/A. Gather
  * preserves the sampler's address modes while decoding each tap before the
  * interpolation. Keep this result separate until dependent texture stages
@@ -1105,6 +1191,10 @@ static void psh_append_signed_g8b8(const struct PixelShader *ps, MString *vars,
 {
     unsigned signs = ps->state->g8b8_signed[source];
     if (!signs) {
+        return;
+    }
+    if ((signs & 128) && (signs & (16 | 64))) {
+        psh_append_signed_g8b8_mips(ps, vars, source, signs);
         return;
     }
     mstring_append_fmt(vars, "vec2 signedGB%d = vec2(sign3(t%d.b), sign3(t%d.g));\n",

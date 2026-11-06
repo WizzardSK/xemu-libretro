@@ -4,7 +4,6 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
-- Dead or Alive 1 Ultimate is off the list of games that render 16:9: only Dead or Alive 2 Ultimate supports widescreen (NNshi).
 - Signed G8B8 textures (bump and distortion data, as in Ninja Gaiden's water) are decoded before they are filtered, within and across mip levels, and the combiner's per-channel sign flags are honoured; from parallel-xbox (NNshi).
 - Audio Volume Limit (%) is gone: RetroArch has its own volume control (NNshi).
 - Crop Vertical Overscan: Breakdown is on the Auto list (NNshi).

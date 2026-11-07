@@ -35,6 +35,7 @@
 #include "ui/libretro-overscan-titles.h"
 #include "ui/libretro-xdb-titles.h"
 #include "ui/libretro-timeline.h"
+static void tl_close(void);
 #include "xemu-xbe.h"
 #include "qemu/bswap.h"
 #include "data/xbox_hdd.qcow2.h"

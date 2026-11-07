@@ -3528,6 +3528,38 @@ static uint64_t vblank_target;
 static int vblank_wait_off;
 static int64_t vblank_wait_sum_us;
 static int vblank_wait_timeouts;
+/* Some games complete their flip a little after they have acknowledged the
+ * vblank, on the same vblank: OutRun 2 NTSC-J up to 2-4 ms after it, where
+ * NTSC-U flips at once. The picture taken right after the acknowledgement
+ * then still showed the previous frame whenever that flip came after about
+ * 1.5 ms, so a frame was shown twice and the next one never (NNshi's frame
+ * timeline: 1 run in 9 in the race). A game that flipped after nearly every
+ * vblank of the last 32 is waited for until it has flipped after this one
+ * too, at most 8 ms; a game that flips every other vblank or less is not. */
+extern uint64_t xemu_lr_flip_increments;
+static uint64_t flip_incs_at_vblank;
+static uint32_t flip_history;
+static int64_t flip_wait_sum_us;
+static int flip_waits, flip_wait_timeouts;
+static void wait_for_flip(void)
+{
+    if (__builtin_popcount(flip_history) < 30) {
+        return;
+    }
+    const int64_t t0 = g_get_monotonic_time();
+    int64_t t = t0;
+    while (qatomic_read(&xemu_lr_flip_increments) <=
+           qatomic_read(&flip_incs_at_vblank)) {
+        if (t - t0 > 8000) {
+            flip_wait_timeouts++;
+            break;
+        }
+        g_usleep(100);
+        t = g_get_monotonic_time();
+    }
+    flip_waits++;
+    flip_wait_sum_us += t - t0;
+}
 static void wait_for_vblank_handled(void)
 {
     if (vblank_wait_off > 0) {
@@ -3546,6 +3578,9 @@ static void wait_for_vblank_handled(void)
         t = g_get_monotonic_time();
     }
     vblank_wait_sum_us += t - t0;
+    if (!vblank_wait_off) {
+        wait_for_flip();
+    }
 }
 static void libretro_vblank_bh(void *opaque)
 {
@@ -3554,6 +3589,7 @@ static void libretro_vblank_bh(void *opaque)
     if (delay > qatomic_read(&vblank_delay_max_us)) {
         qatomic_set(&vblank_delay_max_us, delay);
     }
+    qatomic_set(&flip_incs_at_vblank, qatomic_read(&xemu_lr_flip_increments));
     graphic_hw_update(opaque);
 
     /* about once a second */
@@ -3627,13 +3663,18 @@ RETRO_API void retro_run(void)
             LRLOG_INFO("[xemu] last 300 runs: %d flips, issued after the vblank "
                        "<8 ms %d, 8-14 %d, 14-16.7 %d, later %d; flip wait %.2f ms "
                        "(max %.2f); vblank raised %.2f ms after retro_run (max %.2f), "
-                       "handled by the guest %.2f ms after it (%d not within 4 ms)\n",
+                       "handled by the guest %.2f ms after it (%d not within 4 ms); "
+                       "waited for the flip in %d runs, %.2f ms (%d not within 8 ms)\n",
                        (int)flips, (int)ph[0], (int)ph[1], (int)ph[2], (int)ph[3],
                        flips ? wsum / 1e6 / flips : 0.0, wmax / 1e6,
                        vsum / 300000.0, vmax / 1000.0,
-                       vblank_wait_sum_us / 300000.0, vblank_wait_timeouts);
+                       vblank_wait_sum_us / 300000.0, vblank_wait_timeouts,
+                       flip_waits, flip_waits ? flip_wait_sum_us / 1000.0 / flip_waits : 0.0,
+                       flip_wait_timeouts);
             vblank_wait_sum_us = 0;
             vblank_wait_timeouts = 0;
+            flip_waits = flip_wait_timeouts = 0;
+            flip_wait_sum_us = 0;
         }
         st_guest_frames = guest_frames;
         st_new_frames = 0;
@@ -3651,6 +3692,10 @@ RETRO_API void retro_run(void)
         QemuConsole *con = nv2a_get_vga_console();
         if (con) {
             qatomic_set(&vblank_asked_us, g_get_monotonic_time());
+            /* whether the game flipped after the run before's vblank */
+            flip_history = (flip_history << 1) |
+                (qatomic_read(&xemu_lr_flip_increments) >
+                 qatomic_read(&flip_incs_at_vblank));
             vblank_target = qatomic_read(&xemu_lr_vblanks_raised) + 1;
             aio_bh_schedule_oneshot(qemu_get_aio_context(), libretro_vblank_bh,
                                     con);

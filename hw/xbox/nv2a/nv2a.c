@@ -271,6 +271,9 @@ uint64_t xemu_lr_flips;
 uint64_t xemu_lr_flip_phase[4]; /* <8, 8-14, 14-16.7, >16.7 ms */
 int64_t xemu_lr_flip_wait_sum_ns, xemu_lr_flip_wait_max_ns;
 int64_t xemu_lr_flip_stall_start_ns;
+/* The guest's flips as the kernel completes them (pgraph.c, the READ_3D
+ * increment): ui/libretro.c waits for the one after its vblank */
+uint64_t xemu_lr_flip_increments;
 /* Vblanks raised (gfx_update) and acknowledged by the guest's handler
  * (pcrtc.c), which is where it points the display at the frame it flipped:
  * retro_run takes the picture once the one it raised is handled */

@@ -1166,7 +1166,7 @@ static void osd_rect(void *ctx, int x, int y, int w, int h, bool white)
 static void draw_osd(PGRAPHVkState *r, VkCommandBuffer cmd, VkImage image,
                      int width, int height)
 {
-    if (!__atomic_load_n(&xemu_libretro_osd_shown, __ATOMIC_RELAXED) ||
+    if (!__atomic_load_n(&xemu_libretro_osd_fps100, __ATOMIC_RELAXED) ||
         !create_crosshair_buffer(r)) {
         return;
     }

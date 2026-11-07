@@ -46,11 +46,6 @@ bool xemu_tbrate_init(void);
 extern int64_t xemu_tbrate_flipsvc_ns, xemu_tbrate_fence_ns;
 void xemu_tbrate_lock_slow(QemuMutex *m);
 
-/* Internal Framerate's CPU reading (ui/libretro-osd.h): the time the vCPU has
- * spent halted, waiting for an interrupt, counted while the option is on. */
-extern int xemu_lr_osd_on;
-extern int64_t xemu_lr_cpu_halt_ns;
-
 static inline bool xemu_tbrate_enabled(void)
 {
     return likely(xemu_tbrate_state >= 0) ? xemu_tbrate_state

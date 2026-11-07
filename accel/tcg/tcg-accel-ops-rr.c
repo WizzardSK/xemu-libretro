@@ -36,8 +36,6 @@
 #include "tcg-accel-ops.h"
 #include "tcg-accel-ops-rr.h"
 #include "tcg-accel-ops-icount.h"
-#include "system/cpus.h"
-#include "qemu/timer.h"
 
 /* Kick all RR vCPUs */
 void rr_kick_vcpu_thread(CPUState *unused)
@@ -113,15 +111,7 @@ static void rr_wait_io_event(void)
 
     while (all_cpu_threads_idle()) {
         rr_stop_kick_timer();
-        if (unlikely(qatomic_read(&xemu_lr_osd_on))) {
-            /* Internal Framerate's CPU reading (include/system/cpus.h) */
-            int64_t t0 = get_clock();
-            qemu_cond_wait_bql(first_cpu->halt_cond);
-            qatomic_set(&xemu_lr_cpu_halt_ns,
-                        qatomic_read(&xemu_lr_cpu_halt_ns) + get_clock() - t0);
-        } else {
-            qemu_cond_wait_bql(first_cpu->halt_cond);
-        }
+        qemu_cond_wait_bql(first_cpu->halt_cond);
     }
 
     rr_start_kick_timer();

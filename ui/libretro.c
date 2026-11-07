@@ -216,40 +216,7 @@ static char opt_hdd_path[4096] = "";
 static bool opt_hdd_trim = false;
 /* Internal Framerate (ui/libretro-osd.h) */
 static bool opt_internal_fps = false;
-int xemu_libretro_osd_shown;
-unsigned int xemu_libretro_osd_fps100, xemu_libretro_osd_cpu1;
-
-/* Internal Framerate's CPU reading, at each retro_run: every 20 runs, the
- * share of the last 60 runs' time the vCPU was not halted */
-static void osd_cpu_run(void)
-{
-    static int64_t at[61], halt[61];
-    static unsigned int n, w, since;
-    if (!__atomic_load_n(&opt_internal_fps, __ATOMIC_RELAXED)) {
-        n = w = since = 0;
-        return;
-    }
-    at[w] = qemu_clock_get_ns(QEMU_CLOCK_REALTIME);
-    halt[w] = qatomic_read(&xemu_lr_cpu_halt_ns);
-    const unsigned int now = w;
-    w = (w + 1) % ARRAY_SIZE(at);
-    if (n < ARRAY_SIZE(at)) {
-        n++;
-    }
-    if (++since < 20 || n < 21) {
-        return;
-    }
-    since = 0;
-    const unsigned int old = (now + ARRAY_SIZE(at) - (n - 1)) % ARRAY_SIZE(at);
-    const int64_t span = at[now] - at[old], idle = halt[now] - halt[old];
-    if (span <= 0) {
-        return;
-    }
-    int64_t busy = 100 - (idle * 100 + span / 2) / span;
-    busy = MAX(0, MIN(100, busy));
-    __atomic_store_n(&xemu_libretro_osd_cpu1, (unsigned int)busy + 1,
-                     __ATOMIC_RELAXED);
-}
+unsigned int xemu_libretro_osd_fps100;
 
 void xemu_libretro_osd_frame(int64_t render_us)
 {
@@ -513,7 +480,7 @@ static void gl_osd_rect(void *ctx, int x, int y, int w, int h, bool white)
 
 static void draw_gl_osd(unsigned width, unsigned height, uintptr_t fbo)
 {
-    if (!__atomic_load_n(&xemu_libretro_osd_shown, __ATOMIC_RELAXED)) {
+    if (!__atomic_load_n(&xemu_libretro_osd_fps100, __ATOMIC_RELAXED)) {
         return;
     }
     int h = (int)height;
@@ -1584,14 +1551,6 @@ static void update_variables(void)
                      environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
                      var.value && !strcmp(var.value, "enabled"),
                      __ATOMIC_RELAXED);
-    /* the readings start again from none when the option is switched */
-    if (__atomic_load_n(&opt_internal_fps, __ATOMIC_RELAXED) !=
-        (bool)__atomic_load_n(&xemu_libretro_osd_shown, __ATOMIC_RELAXED)) {
-        __atomic_store_n(&xemu_libretro_osd_fps100, 0, __ATOMIC_RELAXED);
-        __atomic_store_n(&xemu_libretro_osd_cpu1, 0, __ATOMIC_RELAXED);
-    }
-    __atomic_store_n(&xemu_libretro_osd_shown, opt_internal_fps, __ATOMIC_RELAXED);
-    qatomic_set(&xemu_lr_osd_on, opt_internal_fps);
 
     var.key = "xemu_video_aspect";
     var.value = NULL;
@@ -3676,7 +3635,6 @@ static void libretro_vblank_bh(void *opaque)
 
 RETRO_API void retro_run(void)
 {
-    osd_cpu_run();
     static int run_count = 0;
     /* Where the time of a run goes, over the last 300 runs: the whole run
      * from the previous one's start, the wait for the renderer to draw the

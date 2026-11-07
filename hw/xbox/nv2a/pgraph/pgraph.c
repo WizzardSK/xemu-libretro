@@ -31,6 +31,9 @@
 #include "swizzle.h"
 #include "nv2a_vsh_emulator.h"
 #include "seed.h"
+#ifdef LIBRETRO
+#include "ui/libretro-timeline.h"
+#endif
 
 #define PG_GET_MASK(reg, mask) GET_MASK(pgraph_reg_r(pg, reg), mask)
 #define PG_SET_MASK(reg, mask, value)        \
@@ -729,9 +732,6 @@ static const struct {
     static const size_t METHOD_RANGE_END_NAME(gclass, name) = \
         METHOD_ADDR(gclass, name) + 4*stride;
 #include "methods.h.inc"
-#ifdef LIBRETRO
-#include "ui/libretro-timeline.h"
-#endif
 #undef DEF_METHOD
 #undef DEF_METHOD_RANGE
 #undef DEF_METHOD_CASE_4_OFFSET

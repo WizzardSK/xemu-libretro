@@ -215,7 +215,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_internal_fps",
         "Internal Framerate",
         NULL,
-        "Shows in the top left corner the frame rate the game could reach: the time it takes to draw a frame, as in standalone xemu's video debug overlay (MSPF), averaged over its last 60 frames and turned into frames per second. Updated every 20 frames. Takes effect right away.",
+        "Shows two readings in the top left corner, updated every 20 frames. GPU: the frame rate the game's GPU work allows, from the time between a frame's flip and the next FLIP_STALL as in standalone xemu's video debug overlay (MSPF), averaged over 60 frames; \"-\" for a game that does not wait at FLIP_STALL. CPU: how busy the guest CPU was over the last 60 frames, the time it did not sit halted waiting for an interrupt. Takes effect right away.",
         NULL,
         "system",
         {

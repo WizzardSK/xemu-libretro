@@ -472,10 +472,13 @@ void qemu_process_cpu_events(CPUState *cpu)
             slept = true;
             qemu_plugin_vcpu_idle_cb(cpu);
         }
-        if (unlikely(xemu_tbrate_enabled())) {
+        if (unlikely(xemu_tbrate_enabled() || qatomic_read(&xemu_lr_osd_on))) {
             int64_t t0 = get_clock();
             qemu_cond_wait(cpu->halt_cond, &bql);
-            xemu_vcpu_waits.halt_ns += get_clock() - t0;
+            t0 = get_clock() - t0;
+            xemu_vcpu_waits.halt_ns += t0;
+            qatomic_set(&xemu_lr_cpu_halt_ns,
+                        qatomic_read(&xemu_lr_cpu_halt_ns) + t0);
         } else {
             qemu_cond_wait(cpu->halt_cond, &bql);
         }
@@ -532,6 +535,8 @@ bool qemu_in_vcpu_thread(void)
 }
 
 XemuVcpuWaits xemu_vcpu_waits;
+int xemu_lr_osd_on;
+int64_t xemu_lr_cpu_halt_ns;
 int xemu_tbrate_state = -1;
 int64_t xemu_tbrate_flipsvc_ns, xemu_tbrate_fence_ns;
 

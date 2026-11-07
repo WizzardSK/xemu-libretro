@@ -118,6 +118,9 @@ void pgraph_write(void *opaque, hwaddr addr, uint64_t val, unsigned int size)
                         % PG_GET_MASK(NV_PGRAPH_SURFACE,
                                    NV_PGRAPH_SURFACE_MODULO_3D) );
             nv2a_profile_increment();
+#ifdef LIBRETRO
+            xemu_lr_tl('F');
+#endif
             pfifo_kick(d);
         }
         break;
@@ -726,6 +729,9 @@ static const struct {
     static const size_t METHOD_RANGE_END_NAME(gclass, name) = \
         METHOD_ADDR(gclass, name) + 4*stride;
 #include "methods.h.inc"
+#ifdef LIBRETRO
+#include "ui/libretro-timeline.h"
+#endif
 #undef DEF_METHOD
 #undef DEF_METHOD_RANGE
 #undef DEF_METHOD_CASE_4_OFFSET
@@ -1153,6 +1159,7 @@ DEF_METHOD(NV097, FLIP_STALL)
                            phase < 16700000 ? 2 : 3;
         qatomic_inc(&xemu_lr_flip_phase[bucket]);
         qatomic_inc(&xemu_lr_flips);
+        xemu_lr_tl('S');
         xemu_lr_flip_stall_start_ns = now;
     }
 #endif

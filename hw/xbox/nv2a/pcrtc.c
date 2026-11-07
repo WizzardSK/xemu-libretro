@@ -20,6 +20,9 @@
  */
 
 #include "nv2a_int.h"
+#ifdef LIBRETRO
+#include "ui/libretro-timeline.h"
+#endif
 
 uint64_t pcrtc_read(void *opaque, hwaddr addr, unsigned int size)
 {
@@ -75,6 +78,7 @@ void pcrtc_write(void *opaque, hwaddr addr, uint64_t val, unsigned int size)
             extern uint64_t xemu_lr_vblanks_raised, xemu_lr_vblanks_acked;
             qatomic_set(&xemu_lr_vblanks_acked,
                         qatomic_read(&xemu_lr_vblanks_raised));
+            xemu_lr_tl('A');
         }
 #endif
         break;

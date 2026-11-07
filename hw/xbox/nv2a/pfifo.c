@@ -20,6 +20,9 @@
  */
 
 #include "nv2a_int.h"
+#ifdef LIBRETRO
+#include "ui/libretro-timeline.h"
+#endif
 
 typedef struct RAMHTEntry {
     uint32_t handle;
@@ -142,6 +145,9 @@ static bool pfifo_stall_for_flip(NV2AState *d)
             /* The guest resumes submitting: the modelled GPU queue starts. */
             xemu_flip_completed_ns =
                 qemu_clock_get_ns(QEMU_CLOCK_REALTIME);
+#ifdef LIBRETRO
+            xemu_lr_tl('C');
+#endif
 #ifdef LIBRETRO
             {
                 extern int64_t xemu_lr_flip_stall_start_ns;

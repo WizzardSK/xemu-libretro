@@ -23,6 +23,9 @@
 #include "hw/xbox/nv2a/nv2a_int.h"
 #include "qemu/main-loop.h"
 #include "hw/xbox/xemu-anisotropy.h"
+#ifdef LIBRETRO
+#include "ui/libretro-timeline.h"
+#endif
 
 unsigned int xemu_min_anisotropy = 1;
 
@@ -290,6 +293,7 @@ static void nv2a_vga_gfx_update(void *opaque)
     d->pcrtc.pending_interrupts |= NV_PCRTC_INTR_0_VBLANK;
     qatomic_set(&xemu_lr_last_vblank_ns, qemu_clock_get_ns(QEMU_CLOCK_REALTIME));
     qatomic_inc(&xemu_lr_vblanks_raised);
+    xemu_lr_tl('V');
     /* The raster position (pcrtc.c) counts from the next vblank's deadline */
     qatomic_set(&d->vblank_deadline,
                 qemu_clock_get_ns(QEMU_CLOCK_REALTIME) +

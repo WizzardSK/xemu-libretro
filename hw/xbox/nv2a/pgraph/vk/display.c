@@ -22,6 +22,9 @@
 #include "ui/libretro-crosshair.h"
 #endif
 #include <math.h>
+#ifdef LIBRETRO
+#include "ui/libretro-timeline.h"
+#endif
 
 /* On the device the libretro core shares with its frontend, the display image
  * is a plain image: it is not exported to GL or to a second device */
@@ -1369,6 +1372,7 @@ static void render_display(PGRAPHState *pg, SurfaceBinding *surface)
         if (surface->vram_addr != disp->last_surface_addr ||
             surface->draw_time != disp->draw_time) {
             disp->guest_frame_count++;
+            xemu_lr_tl('G');
         }
         disp->last_surface_addr = surface->vram_addr;
         copy_display_to_frame(pg, cmd);

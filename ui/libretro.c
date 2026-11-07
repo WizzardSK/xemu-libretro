@@ -34,6 +34,7 @@
 #include "ui/libretro-widescreen-titles.h"
 #include "ui/libretro-overscan-titles.h"
 #include "ui/libretro-xdb-titles.h"
+#include "ui/libretro-timeline.h"
 #include "xemu-xbe.h"
 #include "qemu/bswap.h"
 #include "data/xbox_hdd.qcow2.h"
@@ -3491,6 +3492,7 @@ RETRO_API bool retro_load_game_special(unsigned type,
 
 RETRO_API void retro_unload_game(void)
 {
+    tl_close();
     LRLOG_INFO("[xemu] retro_unload_game\n");
 
     if (emu_thread_running) {
@@ -3564,8 +3566,100 @@ static void libretro_vblank_bh(void *opaque)
     }
 }
 
+
+/* Frame timeline (ui/libretro-timeline.h): events from any thread go into a
+ * ring, retro_run writes them out once per run */
+#define TL_RING 8192
+#define TL_MAX_RUNS 36000   /* ten minutes at 60 Hz */
+static struct { int64_t ns; char kind; } tl_ring[TL_RING];
+static uint32_t tl_w, tl_r;
+static int tl_on;
+static FILE *tl_file;
+static int64_t tl_prev_start;
+static uint64_t tl_prev_gf;
+static int tl_prev_new, tl_runs;
+
+void xemu_lr_tl(char kind)
+{
+    if (!qatomic_read(&tl_on)) {
+        return;
+    }
+    uint32_t i = qatomic_fetch_inc(&tl_w) % TL_RING;
+    tl_ring[i].ns = qemu_clock_get_ns(QEMU_CLOCK_REALTIME);
+    qatomic_set(&tl_ring[i].kind, kind);
+}
+
+static void tl_open(void)
+{
+    if (tl_file || !system_dir[0]) {
+        return;
+    }
+    g_autofree char *path = g_strdup_printf("%s/xemu/frametimeline.txt", system_dir);
+    tl_file = fopen(path, "w");
+    if (!tl_file) {
+        return;
+    }
+    fprintf(tl_file, "# one line per retro_run: run, ms since the first run, then the events "
+            "since the run before in ms from that run's start (V vblank raised, A acknowledged, "
+            "S FLIP_STALL, C flip wait over, F flip, G new guest frame drawn), then the guest "
+            "frame handed over and whether a picture was handed over (new 1) or the last one "
+            "repeated (new 0)\n");
+    tl_runs = 0; tl_prev_start = 0;
+    qatomic_set(&tl_r, qatomic_read(&tl_w));
+    qatomic_set(&tl_on, 1);
+    LRLOG_INFO("[xemu] Frame timeline: %s\n", path);
+}
+
+static void tl_close(void)
+{
+    qatomic_set(&tl_on, 0);
+    if (tl_file) {
+        fclose(tl_file);
+        tl_file = NULL;
+    }
+}
+
+/* At the start of a run: the line of the run before */
+static void tl_run(int64_t start_ns)
+{
+    if (!tl_file) {
+        return;
+    }
+    static int64_t first;
+    if (tl_prev_start) {
+        fprintf(tl_file, "%d %.2f |", tl_runs, (tl_prev_start - first) / 1e6);
+        const uint32_t w = qatomic_read(&tl_w);
+        uint32_t r = tl_r;
+        if (w - r > TL_RING) {
+            fprintf(tl_file, " (lost %u)", w - r - TL_RING);
+            r = w - TL_RING;
+        }
+        for (; r != w; r++) {
+            const uint32_t i = r % TL_RING;
+            fprintf(tl_file, " %c%+.2f", tl_ring[i].kind,
+                    (tl_ring[i].ns - tl_prev_start) / 1e6);
+        }
+        tl_r = w;
+        fprintf(tl_file, " | gf %llu new %d\n", (unsigned long long)tl_prev_gf, tl_prev_new);
+        if (++tl_runs % 60 == 0) {
+            fflush(tl_file);
+        }
+        if (tl_runs >= TL_MAX_RUNS) {
+            tl_close();
+            return;
+        }
+    } else {
+        first = start_ns;
+    }
+    tl_prev_start = start_ns;
+}
+
 RETRO_API void retro_run(void)
 {
+    if (game_loaded) {
+        tl_open();
+        tl_run(qemu_clock_get_ns(QEMU_CLOCK_REALTIME));
+    }
     static int run_count = 0;
     /* Where the time of a run goes, over the last 300 runs: the whole run
      * from the previous one's start, the wait for the renderer to draw the
@@ -3804,10 +3898,14 @@ RETRO_API void retro_run(void)
                 vulkan_if->set_image(vulkan_if->handle, &retro_vk_image, 0,
                                      NULL, VK_QUEUE_FAMILY_IGNORED);
                 st_new_frames++;
+                tl_prev_new = 1;
+                tl_prev_gf = nv2a_vk_libretro_guest_frames();
                 st_t = g_get_monotonic_time();
                 video_cb(RETRO_HW_FRAME_BUFFER_VALID, last_w, last_h, 0);
             } else {
                 /* nothing new drawn: the frontend repeats its last frame */
+                tl_prev_new = 0;
+                tl_prev_gf = nv2a_vk_libretro_guest_frames();
                 st_t = g_get_monotonic_time();
                 video_cb(NULL, last_w, last_h, 0);
             }

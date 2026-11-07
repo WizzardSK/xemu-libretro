@@ -18,6 +18,7 @@
  */
 
 #include "hw/xbox/nv2a/nv2a_int.h"
+#include "ui/libretro-osd.h"
 
 NV2AStats g_nv2a_stats;
 
@@ -84,6 +85,7 @@ void nv2a_profile_flip_stall(void)
     int64_t now = qemu_clock_get_us(QEMU_CLOCK_REALTIME);
     int64_t render_time = (now-g_nv2a_stats.last_flip_time)/1000;
 
+    xemu_libretro_osd_frame(now - g_nv2a_stats.last_flip_time);
     g_nv2a_stats.frame_working.mspf = render_time;
     g_nv2a_stats.frame_history[g_nv2a_stats.frame_ptr] =
         g_nv2a_stats.frame_working;

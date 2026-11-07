@@ -69,7 +69,7 @@ struct retro_core_option_v2_category option_cats_us[] = {
     {
         "system",
         "System (Restart)",
-        "The machine itself: memory, network, boot and CPU. Taken when the content starts (Trim HDD on Close when it closes)."
+        "The machine itself: memory, network, boot and CPU. Taken when the content starts (Trim HDD on Close when it closes, Internal Framerate right away)."
     },
     {
         "video",
@@ -202,6 +202,20 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "Trim HDD on Close",
         NULL,
         "When the game is closed, empties the hard disk's cache partitions X, Y and Z (games format them again when they need them) and rewrites the image without unused space, so the file shrinks. Needs as much free space as the image's data for a moment. Skipped while the image holds a savestate. Done when the game closes, not at its next start.",
+        NULL,
+        "system",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_internal_fps",
+        "Internal Framerate",
+        NULL,
+        "Shows in the top left corner the frame rate the game could reach: the time it takes to draw a frame, as in standalone xemu's video debug overlay (MSPF), averaged over its last 60 frames and turned into frames per second. Updated every 20 frames. Takes effect right away.",
         NULL,
         "system",
         {

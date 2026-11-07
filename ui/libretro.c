@@ -34,6 +34,7 @@
 #include "ui/libretro-widescreen-titles.h"
 #include "ui/libretro-overscan-titles.h"
 #include "ui/libretro-xdb-titles.h"
+#include "ui/libretro-osd.h"
 #include "xemu-xbe.h"
 #include "qemu/bswap.h"
 #include "data/xbox_hdd.qcow2.h"
@@ -213,6 +214,41 @@ static char opt_bios_path[4096] = "";
 static char opt_hdd_path[4096] = "";
 /* Trim HDD on Close (hdd_trim) */
 static bool opt_hdd_trim = false;
+/* Internal Framerate (ui/libretro-osd.h) */
+static bool opt_internal_fps = false;
+unsigned int xemu_libretro_osd_fps100;
+
+void xemu_libretro_osd_frame(int64_t render_us)
+{
+    static int64_t ring[60];
+    static unsigned int n, w, since;
+    if (!__atomic_load_n(&opt_internal_fps, __ATOMIC_RELAXED)) {
+        n = w = since = 0;
+        __atomic_store_n(&xemu_libretro_osd_fps100, 0, __ATOMIC_RELAXED);
+        return;
+    }
+    ring[w] = render_us > 0 ? render_us : 0;
+    w = (w + 1) % ARRAY_SIZE(ring);
+    if (n < ARRAY_SIZE(ring)) {
+        n++;
+    }
+    /* every 20 frames, and right away when it starts */
+    if (++since < 20 && n > 1) {
+        return;
+    }
+    since = 0;
+    int64_t sum = 0;
+    for (unsigned int i = 0; i < n; i++) {
+        sum += ring[i];
+    }
+    if (sum <= 0) {
+        return;
+    }
+    /* frames per second, in hundredths, rounded: n * 1e8 / sum of us */
+    int64_t fps100 = ((int64_t)n * 100000000LL + sum / 2) / sum;
+    __atomic_store_n(&xemu_libretro_osd_fps100,
+                     (unsigned int)MIN(fps100, 9999999), __ATOMIC_RELAXED);
+}
 static void hdd_trim(void);
 static char opt_eeprom_path[4096] = "";
 static char opt_dvd_path[4096] = "";
@@ -427,6 +463,32 @@ static void draw_gl_crosshairs(unsigned width, unsigned height, uintptr_t fbo)
             glScissor(cx - t / 2, cy - arm - edge, t, len);
             glClear(GL_COLOR_BUFFER_BIT);
         }
+    }
+    glDisable(GL_SCISSOR_TEST);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+/* Internal Framerate's text over the OpenGL frame (origin bottom left) */
+static void gl_osd_rect(void *ctx, int x, int y, int w, int h, bool white)
+{
+    const int height = *(const int *)ctx;
+    const float c = white ? 1.0f : 0.0f;
+    glClearColor(c, c, c, 1.0f);
+    glScissor(x, height - y - h, w, h);
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
+static void draw_gl_osd(unsigned width, unsigned height, uintptr_t fbo)
+{
+    if (!__atomic_load_n(&xemu_libretro_osd_fps100, __ATOMIC_RELAXED)) {
+        return;
+    }
+    int h = (int)height;
+    (void)width;
+    glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)fbo);
+    glEnable(GL_SCISSOR_TEST);
+    for (int pass = 0; pass < 2; pass++) {
+        xemu_libretro_osd_draw(h, pass, gl_osd_rect, &h);
     }
     glDisable(GL_SCISSOR_TEST);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -1482,6 +1544,13 @@ static void update_variables(void)
     var.value = NULL;
     opt_hdd_trim = environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value &&
                    !strcmp(var.value, "enabled");
+
+    var.key = "xemu_internal_fps";
+    var.value = NULL;
+    __atomic_store_n(&opt_internal_fps,
+                     environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
+                     var.value && !strcmp(var.value, "enabled"),
+                     __ATOMIC_RELAXED);
 
     var.key = "xemu_video_aspect";
     var.value = NULL;
@@ -3734,6 +3803,7 @@ RETRO_API void retro_run(void)
             }
             blit_nv2a_texture(tex, width, height, fbo);
             draw_gl_crosshairs(width, height, fbo);
+            draw_gl_osd(width, height, fbo);
         } else {
             /* No framebuffer yet */
             glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)fbo);

@@ -20,6 +20,7 @@
 #include "renderer.h"
 #ifdef LIBRETRO
 #include "ui/libretro-crosshair.h"
+#include "ui/libretro-osd.h"
 #endif
 #include <math.h>
 
@@ -1036,10 +1037,11 @@ static void frame_image_barrier(VkCommandBuffer cmd, VkImage image,
  * round again, by when the frontend is done with it.
  */
 /* The crosshairs' pixels, copied into the frame: a black outline, then
- * player 1's red and player 2's blue (R8G8B8A8 as little-endian words) */
+ * player 1's red and player 2's blue (R8G8B8A8 as little-endian words);
+ * Internal Framerate's text (ui/libretro-osd.h) takes the black and white */
 #define CROSSHAIR_PIXELS 1024
-static const uint32_t crosshair_colors[3] = {
-    0xFF000000u, 0xFF2828FFu, 0xFFFF8C28u,
+static const uint32_t crosshair_colors[4] = {
+    0xFF000000u, 0xFF2828FFu, 0xFFFF8C28u, 0xFFFFFFFFu,
 };
 static VkBuffer crosshair_buffer;
 static VmaAllocation crosshair_allocation;
@@ -1147,6 +1149,40 @@ static void draw_crosshairs(PGRAPHVkState *r, VkCommandBuffer cmd,
     }
 }
 
+/* Internal Framerate's text over the frame, as the crosshairs are drawn */
+typedef struct OsdTarget {
+    VkCommandBuffer cmd;
+    VkImage image;
+    int width, height;
+} OsdTarget;
+
+static void osd_rect(void *ctx, int x, int y, int w, int h, bool white)
+{
+    OsdTarget *t = ctx;
+    crosshair_bar(t->cmd, t->image, t->width, t->height, x, y, w, h,
+                  white ? 3 : 0);
+}
+
+static void draw_osd(PGRAPHVkState *r, VkCommandBuffer cmd, VkImage image,
+                     int width, int height)
+{
+    if (!__atomic_load_n(&xemu_libretro_osd_fps100, __ATOMIC_RELAXED) ||
+        !create_crosshair_buffer(r)) {
+        return;
+    }
+    OsdTarget t = { cmd, image, width, height };
+    for (int pass = 0; pass < 2; pass++) {
+        /* the white cells overwrite the outline's: ordered after it */
+        frame_image_barrier(cmd, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                            VK_ACCESS_TRANSFER_WRITE_BIT,
+                            VK_ACCESS_TRANSFER_WRITE_BIT,
+                            VK_PIPELINE_STAGE_TRANSFER_BIT,
+                            VK_PIPELINE_STAGE_TRANSFER_BIT);
+        xemu_libretro_osd_draw(height, pass, osd_rect, &t);
+    }
+}
+
 static void copy_display_to_frame(PGRAPHState *pg, VkCommandBuffer cmd)
 {
     PGRAPHVkState *r = pg->vk_renderer_state;
@@ -1229,6 +1265,7 @@ static void copy_display_to_frame(PGRAPHState *pg, VkCommandBuffer cmd)
                        &region);
     }
     draw_crosshairs(r, cmd, f->image, disp->width, disp->height);
+    draw_osd(r, cmd, f->image, disp->width, disp->height);
 
     frame_image_barrier(cmd, f->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                         VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,

@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- Internal Framerate (System, off by default): shows in the top left corner the frame rate the game could reach, from the time it takes to draw a frame (standalone xemu's MSPF), averaged over the last 60 frames and updated every 20, with two decimals; on both renderers, and it can be switched while a game runs (NNshi).
 - Signed G8B8 textures (bump and distortion data, as in Ninja Gaiden's water) are decoded before they are filtered, within and across mip levels, and the combiner's per-channel sign flags are honoured; from parallel-xbox (NNshi).
 - Audio Volume Limit (%) is gone: RetroArch has its own volume control (NNshi).
 - Crop Vertical Overscan: Breakdown is on the Auto list (NNshi).

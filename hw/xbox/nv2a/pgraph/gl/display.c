@@ -133,7 +133,11 @@ static struct {
     GLuint prog, vao, vbo, fbo, pvideo_tex;
     GLint tex_loc, pvideo_enable_loc, pvideo_tex_loc, pvideo_in_pos_loc,
           pvideo_pos_loc, pvideo_scale_loc, pvideo_color_key_enable_loc,
-          pvideo_color_key_loc, display_size_loc, line_offset_loc;
+          pvideo_color_key_loc, display_size_loc, line_offset_loc,
+          gamma_enable_loc, gamma_lut_loc;
+    /* The ramp the program's uniforms hold, valid with gamma_set */
+    PGRAPHGamma gamma;
+    bool gamma_set;
     struct {
         GLuint tex;
         GLint internal_format;
@@ -174,7 +178,10 @@ static void ui_init(void)
         "uniform vec3 pvideo_color_key;\n"
         "uniform vec2 display_size;\n"
         "uniform float line_offset;\n"
+        "uniform bool gamma_enable;\n"
+        "uniform uvec4 gamma_lut[64];\n"
         "layout(location = 0) out vec4 out_Color;\n"
+        PGRAPH_GAMMA_GLSL
         "void main()\n"
         "{\n"
         "    vec2 texCoord = gl_FragCoord.xy/display_size;\n"
@@ -193,6 +200,7 @@ static void ui_init(void)
         "            out_Color.rgba = texture(pvideo_tex, in_st);\n"
         "        }\n"
         "    }\n"
+        "    if (gamma_enable) out_Color.rgb = apply_gamma(out_Color.rgb);\n"
         "}\n";
 
     ui.prog = pgraph_gl_compile_shader(vs, fs);
@@ -206,6 +214,9 @@ static void ui_init(void)
     ui.pvideo_color_key_loc = glGetUniformLocation(ui.prog, "pvideo_color_key");
     ui.display_size_loc = glGetUniformLocation(ui.prog, "display_size");
     ui.line_offset_loc = glGetUniformLocation(ui.prog, "line_offset");
+    ui.gamma_enable_loc = glGetUniformLocation(ui.prog, "gamma_enable");
+    ui.gamma_lut_loc = glGetUniformLocation(ui.prog, "gamma_lut");
+    ui.gamma_set = false;
 
     glGenVertexArrays(1, &ui.vao);
     glBindVertexArray(ui.vao);
@@ -352,12 +363,17 @@ static void ui_resolve(NV2AState *d, const DispPost *p, int slot)
     glBindFramebuffer(GL_FRAMEBUFFER, ui.fbo);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ui.slot[slot].tex);
+    /* The DAC puts out eight bits a channel even from a 16-bit scanout:
+     * with a ramp, the display texture is RGBA8 whatever the surface */
+    GLint target_internal = p->gamma.enabled ? GL_RGBA8 : p->internal_format;
+    GLenum target_format = p->gamma.enabled ? GL_RGBA : p->format;
+    GLenum target_type = p->gamma.enabled ? GL_UNSIGNED_BYTE : p->type;
     bool recreate = (
-        p->internal_format != ui.slot[slot].internal_format
+        target_internal != ui.slot[slot].internal_format
         || width != ui.slot[slot].width
         || height != ui.slot[slot].height
-        || p->format != ui.slot[slot].format
-        || p->type != ui.slot[slot].type
+        || target_format != ui.slot[slot].format
+        || target_type != ui.slot[slot].type
         );
 
     if (recreate) {
@@ -372,11 +388,11 @@ static void ui_resolve(NV2AState *d, const DispPost *p, int slot)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        ui.slot[slot].internal_format = p->internal_format;
+        ui.slot[slot].internal_format = target_internal;
         ui.slot[slot].width = width;
         ui.slot[slot].height = height;
-        ui.slot[slot].format = p->format;
-        ui.slot[slot].type = p->type;
+        ui.slot[slot].format = target_format;
+        ui.slot[slot].type = target_type;
         glTexImage2D(GL_TEXTURE_2D, 0, ui.slot[slot].internal_format,
                      ui.slot[slot].width, ui.slot[slot].height, 0,
                      ui.slot[slot].format, ui.slot[slot].type, NULL);
@@ -392,6 +408,15 @@ static void ui_resolve(NV2AState *d, const DispPost *p, int slot)
     glBindVertexArray(ui.vao);
     glBindBuffer(GL_ARRAY_BUFFER, ui.vbo);
     glUseProgram(ui.prog);
+    if (!ui.gamma_set || p->gamma.enabled != ui.gamma.enabled ||
+        memcmp(p->gamma.ramp, ui.gamma.ramp, sizeof(ui.gamma.ramp))) {
+        glUniform1i(ui.gamma_enable_loc, p->gamma.enabled);
+        if (p->gamma.enabled) {
+            glUniform4uiv(ui.gamma_lut_loc, 64, p->gamma.ramp);
+        }
+        ui.gamma = p->gamma;
+        ui.gamma_set = true;
+    }
     glProgramUniform1i(ui.prog, ui.tex_loc, 0);
     glUniform2f(ui.display_size_loc, width, height);
     glUniform1f(ui.line_offset_loc, line_offset);
@@ -506,7 +531,10 @@ static bool post_scanout(NV2AState *d, bool *fresh)
     d->vga.get_resolution(&d->vga, &disp_width, &disp_height);
     bool interlaced = d->vga.cr[NV_PRMCIO_INTERLACE_MODE] !=
                       NV_PRMCIO_INTERLACE_MODE_DISABLED;
+    PGRAPHGamma gamma;
+    pgraph_gamma_read(&gamma, d->puserdac.palette);
     if (r->disp_last_surface != NULL &&
+        !memcmp(gamma.ramp, r->disp_last_gamma.ramp, sizeof(gamma.ramp)) &&
         surface == r->disp_last_surface &&
         surface->draw_time == r->disp_last_draw_time &&
         !surface->upload_pending && !pvideo &&
@@ -541,6 +569,7 @@ static bool post_scanout(NV2AState *d, bool *fresh)
         .interlaced = interlaced,
         .scale = d->pgraph.surface_scale_factor,
         .pvideo = pvideo,
+        .gamma = gamma,
     };
     if (pvideo) {
         const uint32_t *regs = d->pvideo.regs;
@@ -578,6 +607,7 @@ static bool post_scanout(NV2AState *d, bool *fresh)
     r->disp_last_height = disp_height;
     r->disp_last_interlaced = interlaced;
     r->disp_last_scale = d->pgraph.surface_scale_factor;
+    r->disp_last_gamma = gamma;
     *fresh = true;
     return true;
 }

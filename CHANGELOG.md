@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- The DAC's gamma ramp a game sets (the NV_USER_DAC palette) is applied to the picture, after the video overlay, on both renderers; it was ignored, and Baldur's Gate: Dark Alliance looked washed out. A ramp that leaves colours as they are costs nothing. After parallel-xbox (a0ee82d8), adapted to this core's display paths (NNshi).
 - In a game that flips after nearly every vblank, the core waits after the vblank until the game's flip for it is done (at most 8 ms) before it takes the picture: OutRun 2 NTSC-J completes its flips up to 4 ms after the vblank, and about one run in nine showed the previous frame again. Games at 30 fps or less are not waited for (NNshi).
 - MSPF Overlay (Video, last, off by default): shows in the top left corner the frame rate the game could reach, from the time it takes to draw a frame (standalone xemu's MSPF), averaged over the last 60 frames and updated every 20, with two decimals; on both renderers, and it can be switched while a game runs. While it is on, the core also writes its 300-run frame lines (the guest's flips against the frontend's runs) to RetroArch's log; off, it no longer writes them (NNshi).
 - Signed G8B8 textures (bump and distortion data, as in Ninja Gaiden's water) are decoded before they are filtered, within and across mip levels, and the combiner's per-channel sign flags are honoured; from parallel-xbox (NNshi).

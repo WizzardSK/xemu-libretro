@@ -31,6 +31,7 @@
 #include "hw/xbox/nv2a/pgraph/cost.h"
 #include "hw/xbox/nv2a/pgraph/surface.h"
 #include "hw/xbox/nv2a/pgraph/texture.h"
+#include "hw/xbox/nv2a/pgraph/gamma.h"
 #include "hw/xbox/nv2a/pgraph/glsl/shaders.h"
 #include "hw/xbox/nv2a/pgraph/glsl/uniform-cache.h"
 
@@ -307,6 +308,14 @@ typedef struct PGRAPHVkDisplayState {
     VkDescriptorPool descriptor_pool;
     VkDescriptorSetLayout descriptor_set_layout;
     VkDescriptorSet descriptor_set;
+
+    /* The DAC's ramp (binding 2), rewritten when it changes; the display is
+     * drawn and waited for one frame at a time, so one buffer does */
+    VkBuffer gamma_buffer;
+    VmaAllocation gamma_allocation;
+    void *gamma_mapped;
+    PGRAPHGamma gamma;
+    bool gamma_set;
 
     VkPipelineLayout pipeline_layout;
     VkPipeline pipeline;

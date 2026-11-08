@@ -211,8 +211,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "disabled"
     },
-        "disabled"
-    },
     {
         "xemu_renderer",
         "Graphics API (Restart)",

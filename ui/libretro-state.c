@@ -19,6 +19,7 @@
 #include "qemu/osdep.h"
 #include "qemu/cutils.h"
 #include "qapi/error.h"
+#include "qemu/yank.h"
 #include "exec/cpu-common.h"
 #include "exec/target_page.h"
 #include "io/channel-buffer.h"
@@ -167,6 +168,18 @@ bool lr_state_load(const void *data, size_t size, Error **errp)
     f = qemu_file_new_input(QIO_CHANNEL(bioc));
     object_unref(OBJECT(bioc)); /* the file holds the channel now */
     mis->from_src_file = f;
+    /* as load_snapshot() has it: migration_incoming_state_destroy()
+     * unregisters the migration's yank instance, and asserted when the
+     * load had not registered one (the crash on every load, NNshi) */
+    if (!yank_register_instance(MIGRATION_YANK_INSTANCE, errp)) {
+        mis->from_src_file = NULL;
+        qemu_fclose(f);
+        bdrv_drain_all_end();
+        if (was_running) {
+            vm_start();
+        }
+        return false;
+    }
     ret = qemu_loadvm_state(f, errp);
     /* closes f, as load_snapshot() has it */
     migration_incoming_state_destroy();

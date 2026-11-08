@@ -221,6 +221,10 @@ static const char *display_frag_glsl =
     "#version 450\n"
     "layout(binding = 0) uniform sampler2D tex;\n"
     "layout(binding = 1) uniform sampler2D pvideo_tex;\n"
+    "layout(binding = 2, std140) uniform GammaRamp {\n"
+    "    uint gamma_enable;\n"
+    "    uvec4 gamma_lut[64];\n"
+    "};\n"
     "layout(push_constant, std430) uniform PushConstants {\n"
     "    float line_offset;\n"
     "    vec2 display_size;\n"
@@ -232,6 +236,7 @@ static const char *display_frag_glsl =
     "    vec3 pvideo_color_key;\n"
     "};\n"
     "layout(location = 0) out vec4 out_Color;\n"
+    PGRAPH_GAMMA_GLSL
     "void main()\n"
     "{\n"
     "    vec2 tex_coord = gl_FragCoord.xy/display_size;\n"
@@ -252,21 +257,28 @@ static const char *display_frag_glsl =
     "            out_Color.rgba = texture(pvideo_tex, in_st);\n"
     "        }\n"
     "    }\n"
+    "    if (gamma_enable != 0u) out_Color.rgb = apply_gamma(out_Color.rgb);\n"
     "}\n";
 
 static void create_descriptor_pool(PGRAPHState *pg)
 {
     PGRAPHVkState *r = pg->vk_renderer_state;
 
-    VkDescriptorPoolSize pool_sizes = {
-        .type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-        .descriptorCount = 2,
+    VkDescriptorPoolSize pool_sizes[] = {
+        {
+            .type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+            .descriptorCount = 2,
+        },
+        {
+            .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+            .descriptorCount = 1,
+        },
     };
 
     VkDescriptorPoolCreateInfo pool_info = {
         .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-        .poolSizeCount = 1,
-        .pPoolSizes = &pool_sizes,
+        .poolSizeCount = ARRAY_SIZE(pool_sizes),
+        .pPoolSizes = pool_sizes,
         .maxSets = 1,
         .flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
     };
@@ -286,13 +298,14 @@ static void create_descriptor_set_layout(PGRAPHState *pg)
 {
     PGRAPHVkState *r = pg->vk_renderer_state;
 
-    VkDescriptorSetLayoutBinding bindings[2];
+    VkDescriptorSetLayoutBinding bindings[3];
 
     for (int i = 0; i < ARRAY_SIZE(bindings); i++) {
         bindings[i] = (VkDescriptorSetLayoutBinding){
             .binding = i,
             .descriptorCount = 1,
-            .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+            .descriptorType = i == 2 ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER :
+                                       VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
             .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
         };
     }
@@ -328,6 +341,88 @@ static void create_descriptor_sets(PGRAPHState *pg)
     };
     VK_CHECK(vkAllocateDescriptorSets(r->device, &alloc_info,
                                       &r->display.descriptor_set));
+}
+
+/* std140: the flag in the first 16 bytes, then the 64 uvec4s */
+#define GAMMA_BUFFER_SIZE (16 + 256 * sizeof(uint32_t))
+
+static void create_gamma_buffer(PGRAPHState *pg)
+{
+    PGRAPHVkState *r = pg->vk_renderer_state;
+    PGRAPHVkDisplayState *disp = &r->display;
+
+    VkBufferCreateInfo buffer_info = {
+        .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+        .size = GAMMA_BUFFER_SIZE,
+        .usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+        .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
+    };
+    VmaAllocationCreateInfo alloc_info = {
+        .usage = VMA_MEMORY_USAGE_AUTO_PREFER_HOST,
+        .flags = VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT |
+                 VMA_ALLOCATION_CREATE_MAPPED_BIT,
+    };
+    VmaAllocationInfo info;
+    VK_CHECK(vmaCreateBuffer(r->allocator, &buffer_info, &alloc_info,
+                             &disp->gamma_buffer, &disp->gamma_allocation,
+                             &info));
+    disp->gamma_mapped = info.pMappedData;
+    memset(disp->gamma_mapped, 0, GAMMA_BUFFER_SIZE);
+    vmaFlushAllocation(r->allocator, disp->gamma_allocation, 0, VK_WHOLE_SIZE);
+    disp->gamma_set = false;
+
+    VkDescriptorBufferInfo buffer_desc = {
+        .buffer = disp->gamma_buffer,
+        .offset = 0,
+        .range = GAMMA_BUFFER_SIZE,
+    };
+    VkWriteDescriptorSet write = {
+        .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+        .dstSet = disp->descriptor_set,
+        .dstBinding = 2,
+        .dstArrayElement = 0,
+        .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+        .descriptorCount = 1,
+        .pBufferInfo = &buffer_desc,
+    };
+    vkUpdateDescriptorSets(r->device, 1, &write, 0, NULL);
+}
+
+static void destroy_gamma_buffer(PGRAPHState *pg)
+{
+    PGRAPHVkState *r = pg->vk_renderer_state;
+    PGRAPHVkDisplayState *disp = &r->display;
+
+    if (disp->gamma_buffer != VK_NULL_HANDLE) {
+        vmaDestroyBuffer(r->allocator, disp->gamma_buffer,
+                         disp->gamma_allocation);
+        disp->gamma_buffer = VK_NULL_HANDLE;
+        disp->gamma_allocation = VK_NULL_HANDLE;
+        disp->gamma_mapped = NULL;
+    }
+}
+
+/* The guest's ramp into the buffer when it has changed. The display of the
+ * frame before has been waited for (pgraph_vk_end_single_time_commands), so
+ * nothing on the GPU reads the buffer meanwhile. */
+static void update_gamma(PGRAPHState *pg)
+{
+    NV2AState *d = container_of(pg, NV2AState, pgraph);
+    PGRAPHVkDisplayState *disp = &pg->vk_renderer_state->display;
+
+    PGRAPHGamma gamma;
+    pgraph_gamma_read(&gamma, d->puserdac.palette);
+    if (disp->gamma_set && gamma.enabled == disp->gamma.enabled &&
+        !memcmp(gamma.ramp, disp->gamma.ramp, sizeof(gamma.ramp))) {
+        return;
+    }
+    uint32_t *words = disp->gamma_mapped;
+    words[0] = gamma.enabled;
+    memcpy(&words[4], gamma.ramp, sizeof(gamma.ramp));
+    vmaFlushAllocation(pg->vk_renderer_state->allocator,
+                       disp->gamma_allocation, 0, VK_WHOLE_SIZE);
+    disp->gamma = gamma;
+    disp->gamma_set = true;
 }
 
 static void create_render_pass(PGRAPHState *pg)
@@ -1315,6 +1410,7 @@ static void render_display(PGRAPHState *pg, SurfaceBinding *surface)
 
     update_uniforms(pg, surface);
     update_descriptor_set(pg, surface);
+    update_gamma(pg);
 
     VkCommandBuffer cmd = pgraph_vk_begin_single_time_commands(pg);
     pgraph_vk_begin_debug_marker(r, cmd, RGBA_YELLOW,
@@ -1455,6 +1551,7 @@ void pgraph_vk_init_display(PGRAPHState *pg)
     create_descriptor_pool(pg);
     create_descriptor_set_layout(pg);
     create_descriptor_sets(pg);
+    create_gamma_buffer(pg);
     create_render_pass(pg);
     create_display_pipeline(pg);
     create_surface_sampler(pg);
@@ -1477,6 +1574,7 @@ void pgraph_vk_finalize_display(PGRAPHState *pg)
     destroy_surface_sampler(pg);
     destroy_display_pipeline(pg);
     destroy_render_pass(pg);
+    destroy_gamma_buffer(pg);
     destroy_descriptor_set_layout(pg);
     destroy_descriptor_pool(pg);
 }

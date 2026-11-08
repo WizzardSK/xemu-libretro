@@ -35,6 +35,7 @@
 #include "hw/xbox/nv2a/pgraph/cost.h"
 #include "hw/xbox/nv2a/pgraph/surface.h"
 #include "hw/xbox/nv2a/pgraph/texture.h"
+#include "hw/xbox/nv2a/pgraph/gamma.h"
 #include "hw/xbox/nv2a/pgraph/glsl/shaders.h"
 #include "hw/xbox/nv2a/pgraph/glsl/uniform-cache.h"
 
@@ -72,6 +73,7 @@ typedef struct DispPost {
     unsigned int scale;
     bool pvideo;
     DispPvideo pv;
+    PGRAPHGamma gamma; /* the DAC's ramp for this frame */
     GLsync rendered; /* render-context fence: the frame's draws are queued */
 } DispPost;
 
@@ -279,6 +281,7 @@ typedef struct PGRAPHGLState {
     int disp_last_width, disp_last_height;
     bool disp_last_interlaced;
     unsigned int disp_last_scale;
+    PGRAPHGamma disp_last_gamma;
 
     Lru element_cache;
     VertexLruNode *element_cache_entries;

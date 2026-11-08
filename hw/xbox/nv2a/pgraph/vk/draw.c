@@ -22,6 +22,15 @@
 #include "qemu/fast-hash.h"
 #include "ui/xemu-settings.h"
 #include "renderer.h"
+
+#ifdef LIBRETRO
+/* Subpixel Offset Scaling (ui/libretro.c): when upscaling, the viewport is
+ * moved and widened by 0.5 * (scale - 1) + 0.25 pixels, so the pixel centres
+ * of the higher resolution line up with the native ones (upstream xemu PR
+ * #3065). Helps some games (Jade Empire, Blinx), breaks others (Splinter
+ * Cell), so it is an option, off by default (NNshi). */
+extern int xemu_libretro_subpixel_offset;
+#endif
 #include <math.h>
 
 static void pump_quiesce(PGRAPHVkState *r);
@@ -3251,9 +3260,20 @@ static void begin_draw(PGRAPHState *pg)
                      vp_height = pg->surface_binding_dim.height;
         pgraph_apply_scaling_factor(pg, &vp_width, &vp_height);
 
+#ifdef LIBRETRO
+        float vp_offset = qatomic_read(&xemu_libretro_subpixel_offset) &&
+                          pg->surface_scale_factor > 1
+                          ? 0.5f * (pg->surface_scale_factor - 1) + 0.25f
+                          : 0.0f;
+#else
+        float vp_offset = 0.0f;
+#endif
+
         VkViewport viewport = {
-            .width = vp_width,
-            .height = vp_height,
+            .x = -vp_offset,
+            .y = -vp_offset,
+            .width = vp_width + vp_offset,
+            .height = vp_height + vp_offset,
             .minDepth = 0.0,
             .maxDepth = 1.0,
         };

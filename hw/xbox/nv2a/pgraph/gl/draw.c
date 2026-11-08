@@ -26,6 +26,15 @@
 #include "debug.h"
 #include "renderer.h"
 
+#ifdef LIBRETRO
+/* Subpixel Offset Scaling (ui/libretro.c): when upscaling, the viewport is
+ * moved and widened by 0.5 * (scale - 1) + 0.25 pixels, so the pixel centres
+ * of the higher resolution line up with the native ones (upstream xemu PR
+ * #3065). Helps some games (Jade Empire, Blinx), breaks others (Splinter
+ * Cell), so it is an option, off by default (NNshi). */
+extern int xemu_libretro_subpixel_offset;
+#endif
+
 /* GL queries of the cost model (cost.c): fragment-shader invocations, a
  * target the game's zpass query never uses, and SAMPLES_PASSED while the
  * game's query is closed. */
@@ -482,7 +491,26 @@ void pgraph_gl_draw_begin(NV2AState *d)
     unsigned int vp_width = pg->surface_binding_dim.width,
                  vp_height = pg->surface_binding_dim.height;
     pgraph_apply_scaling_factor(pg, &vp_width, &vp_height);
-    glViewport(0, 0, vp_width, vp_height);
+
+#ifdef LIBRETRO
+    float vp_offset = qatomic_read(&xemu_libretro_subpixel_offset) &&
+                      pg->surface_scale_factor > 1
+                      ? 0.5f * (pg->surface_scale_factor - 1) + 0.25f
+                      : 0.0f;
+#else
+    float vp_offset = 0.0f;
+#endif
+    if (vp_offset != 0.0f) {
+        float vp_bounds[4] = {
+            -vp_offset,
+            -vp_offset,
+            (float)vp_width + vp_offset,
+            (float)vp_height + vp_offset,
+        };
+        glViewportIndexedfv(0, vp_bounds);
+    } else {
+        glViewport(0, 0, vp_width, vp_height);
+    }
 
     /* Surface clip */
     /* FIXME: Consider moving to PSH w/ window clip */

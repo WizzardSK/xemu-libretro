@@ -4,6 +4,8 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- New option Video > Subpixel Offset Scaling, after Internal Resolution Scale (OFF by default): with a scale above 1x the picture is moved by a fraction of a pixel so the higher resolution's pixels line up with the original ones. It fixes ghosting and seams in some games (Jade Empire, Blinx) and breaks others (Splinter Cell). It takes effect while the game runs. From upstream xemu's open PR #3065 (NNshi).
+- Crop Vertical Overscan: Panzer Dragoon Orta is on the Auto list (NNshi).
 - The DAC's gamma ramp a game sets (the NV_USER_DAC palette) is applied to the picture, after the video overlay, on both renderers; it was ignored, and Baldur's Gate: Dark Alliance looked washed out. A ramp that leaves colours as they are costs nothing. After parallel-xbox (a0ee82d8), adapted to this core's display paths (NNshi).
 - Point sprites whose size the game's vertex program sets are scaled with the internal resolution, as those of the fixed pipeline already were: upscaled, they came out at native size (Baldur's Gate: Dark Alliance's shadows). From parallel-xbox (e161cd08) (NNshi).
 - In a game that flips after nearly every vblank, the core waits after the vblank until the game's flip for it is done (at most 8 ms) before it takes the picture: OutRun 2 NTSC-J completes its flips up to 4 ms after the vblank, and about one run in nine showed the previous frame again. Games at 30 fps or less are not waited for (NNshi).

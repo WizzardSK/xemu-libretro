@@ -297,6 +297,21 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        "Subpixel Offset Scaling",
+        NULL,
+        "With an Internal Resolution Scale above 1x, moves the picture by a fraction of a pixel so the pixels of the higher resolution line up with the original ones. Fixes ghosting and seams in some games (Jade Empire, Blinx) and breaks others (Splinter Cell). Off is as before.",
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",

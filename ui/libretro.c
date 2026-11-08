@@ -1295,6 +1295,8 @@ static bool opt_overscan_crop = true; /* Auto */
 /* Lines of every 480 Crop Vertical Overscan takes off the top and the bottom
  * of the frame handed to the frontend (pgraph/vk/libretro_shared.h) */
 int xemu_libretro_overscan_crop;
+/* Subpixel Offset Scaling, read by both renderers when they draw */
+int xemu_libretro_subpixel_offset;
 
 /* The running title's ID and the dashboard's video settings, as the guest
  * has them now: read on the emulation thread, which holds the BQL the
@@ -1539,6 +1541,12 @@ static void update_variables(void)
     opt_overscan_crop = !(environ_cb &&
                           environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
                           var.value && !strcmp(var.value, "off"));
+
+    var.key = "xemu_subpixel_offset";
+    var.value = NULL;
+    qatomic_set(&xemu_libretro_subpixel_offset,
+                environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
+                var.value && !strcmp(var.value, "on"));
 
     var.key = "xemu_hdd_trim";
     var.value = NULL;

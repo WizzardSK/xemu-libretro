@@ -17,6 +17,7 @@
 #include "qapi/error.h"
 #include "system/cpus.h"
 #include "migration/snapshot.h"
+#include "libretro-state.h"
 #include "ui/console.h"
 #include "hw/xbox/nv2a/nv2a.h"
 #include "hw/xbox/xemu-anisotropy.h"
@@ -198,6 +199,9 @@ enum {
     SNAPSHOT_LOAD,
 };
 static volatile int snapshot_request = SNAPSHOT_NONE;
+/* The frontend's buffer the request saves into or loads from */
+static void *snapshot_buf;
+static size_t snapshot_len;
 static volatile bool snapshot_done = false;
 static volatile bool snapshot_result = false;
 /* The emu thread posts it when it has handled a snapshot request. QEMU's
@@ -2017,23 +2021,18 @@ static void *emu_thread_func(void *opaque)
             bool ok = false;
             Error *snap_err = NULL;
 
+            /* The machine's state into the frontend's buffer and back
+             * (libretro-state.c); this thread holds the BQL */
             if (req == SNAPSHOT_SAVE) {
-                ok = save_snapshot("libretro_save", true, NULL, false, NULL, &snap_err);
-                if (!ok && snap_err) {
-                    error_free(snap_err);
-                }
+                ok = lr_state_save(snapshot_buf, snapshot_len, &snap_err);
             } else if (req == SNAPSHOT_LOAD) {
-                bool was_running = runstate_is_running();
-                vm_stop(RUN_STATE_RESTORE_VM);
-                ok = load_snapshot("libretro_save", NULL, false, NULL, &snap_err);
-                if (ok && was_running) {
-                    vm_start();
-                } else if (!ok) {
-                    if (snap_err) {
-                        error_free(snap_err);
-                    }
-                    if (was_running) vm_start();
-                }
+                ok = lr_state_load(snapshot_buf, snapshot_len, &snap_err);
+            }
+            if (!ok && snap_err) {
+                LRLOG_ERROR("[xemu] savestate %s failed: %s\n",
+                            req == SNAPSHOT_SAVE ? "save" : "load",
+                            error_get_pretty(snap_err));
+                error_free(snap_err);
             }
 
             snapshot_result = ok;
@@ -4047,20 +4046,7 @@ RETRO_API void retro_reset(void)
 /* Save states via QEMU snapshot system                                      */
 /* ========================================================================= */
 
-/*
- * Save state header for RetroArch's .state file.
- * Actual VM state lives in the qcow2 HDD image via QEMU snapshots.
- */
-#define LIBRETRO_SAVESTATE_SIZE  4096
-#define LIBRETRO_SAVESTATE_MAGIC 0x58454D55 /* 'XEMU' */
-
-struct libretro_savestate_header {
-    uint32_t magic;
-    uint32_t version;
-    uint64_t timestamp;
-};
-
-static bool snapshot_dispatch(int request_type, int timeout_ms)
+static bool snapshot_dispatch(int request_type, void *buf, size_t len, int timeout_ms)
 {
     if (!snapshot_sem_initialized) {
         qemu_sem_init(&snapshot_done_sem, 0);
@@ -4072,6 +4058,8 @@ static bool snapshot_dispatch(int request_type, int timeout_ms)
 
     snapshot_done = false;
     snapshot_result = false;
+    snapshot_buf = buf;
+    snapshot_len = len;
     snapshot_request = request_type;
 
     /* Wait for the emu thread to process it */
@@ -4084,55 +4072,40 @@ static bool snapshot_dispatch(int request_type, int timeout_ms)
     return snapshot_result;
 }
 
+/*
+ * Savestates: the whole machine (CPU, devices, RAM) as QEMU's migration
+ * stream in RetroArch's buffer, saved and loaded on the emulation thread
+ * (libretro-state.c). The size is the most a state can take, fixed once
+ * the machine is built; the HDD is not in it.
+ */
 RETRO_API size_t retro_serialize_size(void)
 {
+    static size_t size;
     if (!emu_initialized) return 0;
-    return LIBRETRO_SAVESTATE_SIZE;
+    if (!size)
+        size = lr_state_size();
+    return size;
 }
 
 RETRO_API bool retro_serialize(void *data, size_t size)
 {
-    if (!emu_initialized || !data || size < LIBRETRO_SAVESTATE_SIZE)
+    if (!emu_initialized || !data)
         return false;
-
-    memset(data, 0, LIBRETRO_SAVESTATE_SIZE);
-
-    bool ok = snapshot_dispatch(SNAPSHOT_SAVE, 30000);
-
-    if (!ok) {
+    if (!snapshot_dispatch(SNAPSHOT_SAVE, data, size, 30000)) {
         LRLOG_INFO("[xemu] retro_serialize: save failed\n");
         return false;
     }
-
-    struct libretro_savestate_header *hdr = (struct libretro_savestate_header *)data;
-    hdr->magic = LIBRETRO_SAVESTATE_MAGIC;
-    hdr->version = 1;
-    hdr->timestamp = (uint64_t)time(NULL);
-
-    LRLOG_INFO("[xemu] retro_serialize: snapshot saved to HDD image\n");
     return true;
 }
 
 RETRO_API bool retro_unserialize(const void *data, size_t size)
 {
-    if (!emu_initialized || !data || size < LIBRETRO_SAVESTATE_SIZE)
+    if (!emu_initialized || !data)
         return false;
-
-    const struct libretro_savestate_header *hdr =
-        (const struct libretro_savestate_header *)data;
-    if (hdr->magic != LIBRETRO_SAVESTATE_MAGIC) {
-        LRLOG_INFO("[xemu] retro_unserialize: invalid magic 0x%08x\n", hdr->magic);
-        return false;
-    }
-
-    bool ok = snapshot_dispatch(SNAPSHOT_LOAD, 30000);
-
-    if (!ok) {
+    if (!snapshot_dispatch(SNAPSHOT_LOAD, (void *)data, size, 30000)) {
         LRLOG_INFO("[xemu] retro_unserialize: load failed\n");
         return false;
     }
-
-    LRLOG_INFO("[xemu] retro_unserialize: snapshot loaded from HDD image\n");
     return true;
 }
 

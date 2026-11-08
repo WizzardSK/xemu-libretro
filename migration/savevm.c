@@ -1893,6 +1893,16 @@ int qemu_save_device_state(QEMUFile *f)
     return qemu_file_get_error(f);
 }
 
+#ifdef LIBRETRO
+/* The libretro core's savestates (ui/libretro-state.c): the snapshot's
+ * stream, into a buffer of the frontend's instead of the HDD image */
+int qemu_savevm_state_libretro(QEMUFile *f, Error **errp);
+int qemu_savevm_state_libretro(QEMUFile *f, Error **errp)
+{
+    return qemu_savevm_state(f, errp);
+}
+#endif
+
 static SaveStateEntry *find_se(const char *idstr, uint32_t instance_id)
 {
     SaveStateEntry *se;

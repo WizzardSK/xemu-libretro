@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- Savestates hold the whole machine in RetroArch's state file: the CPU, every device and the 64 MB of RAM as QEMU's migration stream (about 70 MB), written into RetroArch's buffer and read from it, so slots and state files work as in other cores. They used to be a snapshot inside the HDD image, one for all slots, with only a header in the state file. The HDD is not in a state: one loaded after the game has written to the disk since finds the disk as it is now. States of earlier builds don't load. After parallel-xbox's savestates (NNshi).
 - New option Video > Subpixel Offset Scaling, after Internal Resolution Scale (OFF by default): with a scale above 1x the picture is moved by a fraction of a pixel so the higher resolution's pixels line up with the original ones. It fixes ghosting and seams in some games (Jade Empire, Blinx) and breaks others (Splinter Cell). It takes effect while the game runs. From upstream xemu's open PR #3065 (NNshi).
 - Crop Vertical Overscan: Panzer Dragoon Orta, Soulcalibur II and R: Racing Evolution are on the Auto list (NNshi).
 - The DAC's gamma ramp a game sets (the NV_USER_DAC palette) is applied to the picture, after the video overlay, on both renderers; it was ignored, and Baldur's Gate: Dark Alliance looked washed out. A ramp that leaves colours as they are costs nothing. After parallel-xbox (a0ee82d8), adapted to this core's display paths (NNshi).

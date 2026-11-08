@@ -69,7 +69,7 @@ struct retro_core_option_v2_category option_cats_us[] = {
     {
         "system",
         "System (Restart)",
-        "The machine itself: memory, network, boot and CPU. Taken when the content starts (Trim HDD on Close when it closes, Internal Framerate right away)."
+        "The machine itself: memory, network, boot and CPU. Taken when the content starts (Trim HDD on Close when it closes)."
     },
     {
         "video",
@@ -211,18 +211,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "disabled"
     },
-    {
-        "xemu_internal_fps",
-        "Internal Framerate",
-        NULL,
-        "Shows in the top left corner the frame rate the game could reach: the time it takes to draw a frame, as in standalone xemu's video debug overlay (MSPF), averaged over its last 60 frames and turned into frames per second. Updated every 20 frames. Takes effect right away.",
-        NULL,
-        "system",
-        {
-            { "disabled", NULL },
-            { "enabled",  NULL },
-            { NULL, NULL },
-        },
         "disabled"
     },
     {
@@ -462,6 +450,20 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { NULL, NULL },
         },
         "no_gpl"
+    },
+    {
+        "xemu_mspf_overlay",
+        "MSPF Overlay",
+        NULL,
+        "Shows in the top left corner the frame rate the game could reach: the time it takes to draw a frame, as in standalone xemu's video debug overlay (MSPF), averaged over its last 60 frames and turned into frames per second, updated every 20 frames. Valid only when the GPU is what limits the game. While on, the core also writes to RetroArch's log every 300 runs how the guest's frames and the frontend's runs lined up. Takes effect right away.",
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",

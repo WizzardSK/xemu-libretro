@@ -214,7 +214,7 @@ static char opt_bios_path[4096] = "";
 static char opt_hdd_path[4096] = "";
 /* Trim HDD on Close (hdd_trim) */
 static bool opt_hdd_trim = false;
-/* Internal Framerate (ui/libretro-osd.h) */
+/* MSPF Overlay (ui/libretro-osd.h) */
 static bool opt_internal_fps = false;
 unsigned int xemu_libretro_osd_fps100;
 
@@ -468,7 +468,7 @@ static void draw_gl_crosshairs(unsigned width, unsigned height, uintptr_t fbo)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-/* Internal Framerate's text over the OpenGL frame (origin bottom left) */
+/* MSPF Overlay's text over the OpenGL frame (origin bottom left) */
 static void gl_osd_rect(void *ctx, int x, int y, int w, int h, bool white)
 {
     const int height = *(const int *)ctx;
@@ -1545,7 +1545,7 @@ static void update_variables(void)
     opt_hdd_trim = environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value &&
                    !strcmp(var.value, "enabled");
 
-    var.key = "xemu_internal_fps";
+    var.key = "xemu_mspf_overlay";
     var.value = NULL;
     __atomic_store_n(&opt_internal_fps,
                      environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
@@ -3698,13 +3698,16 @@ RETRO_API void retro_run(void)
     }
 
     run_count++;
-    if (run_count <= 5 || (run_count % 300) == 0) {
+    /* the 300-run lines only while MSPF Overlay is on (NNshi): a frame
+     * presentation benchmark switched with it */
+    const bool frame_log = __atomic_load_n(&opt_internal_fps, __ATOMIC_RELAXED);
+    if (run_count <= 5 || (frame_log && (run_count % 300) == 0)) {
         LRLOG_INFO("[xemu] retro_run #%d (emu_init=%d ctx_ready=%d game=%d)\n",
                    run_count, emu_initialized, context_ready, game_loaded);
     }
     if ((run_count % 300) == 0 && use_vulkan && xemu_libretro_vk.active) {
         const uint64_t guest_frames = nv2a_vk_libretro_guest_frames();
-        LRLOG_INFO("[xemu] last 300 runs: %d guest frames; %d new frames; run every %.2f ms "
+        if (frame_log) LRLOG_INFO("[xemu] last 300 runs: %d guest frames; %d new frames; run every %.2f ms "
                    "(max %.2f); renderer wait %.2f ms (max %.2f); video "
                    "callback %.2f ms (max %.2f); audio callback %.2f ms "
                    "(max %.2f)\n",
@@ -3729,7 +3732,7 @@ RETRO_API void retro_run(void)
             const int64_t wmax = qatomic_xchg(&xemu_lr_flip_wait_max_ns, 0);
             const int64_t vsum = qatomic_xchg(&vblank_delay_sum_us, 0);
             const int64_t vmax = qatomic_xchg(&vblank_delay_max_us, 0);
-            LRLOG_INFO("[xemu] last 300 runs: %d flips, issued after the vblank "
+            if (frame_log) LRLOG_INFO("[xemu] last 300 runs: %d flips, issued after the vblank "
                        "<8 ms %d, 8-14 %d, 14-16.7 %d, later %d; flip wait %.2f ms "
                        "(max %.2f); vblank raised %.2f ms after retro_run (max %.2f), "
                        "handled by the guest %.2f ms after it (%d not within 4 ms); "

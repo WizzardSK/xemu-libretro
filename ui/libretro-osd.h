@@ -1,5 +1,5 @@
 /*
- * Internal Framerate (NNshi): the guest's frame rate from its render time
+ * MSPF Overlay (NNshi): the guest's frame rate from its render time
  * (the MSPF of standalone xemu's video debug overlay), drawn in the top left
  * corner of the picture handed to the frontend. hw/xbox/nv2a/pgraph/profile.c
  * hands each frame's render time to xemu_libretro_osd_frame, ui/libretro.c

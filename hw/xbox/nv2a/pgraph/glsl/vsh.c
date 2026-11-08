@@ -467,6 +467,9 @@ MString *pgraph_glsl_gen_vsh(const VshState *state, GenVshGlslOptions opts)
             mstring_append(
                 body,
                 "  oPts.x = (pointSizeReg <= 0.0 ? 1.0 : pointSizeReg) * pointScale;\n");
+        } else {
+            /* oPts is in Xbox pixels, just like the fixed-function result. */
+            mstring_append(body, "  oPts.x *= pointScale;\n");
         }
     }
 

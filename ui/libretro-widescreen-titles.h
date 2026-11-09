@@ -4,7 +4,8 @@
  * regions have IDs of their own). The games are consolemods.org's list of
  * Xbox games with alternate display modes (16:9 column), their IDs taken
  * from MobCat's Xbox title ID database and the xemu cheat database by name,
- * and games testers found to have it (Burnout Revenge, NNshi).
+ * and games testers found to have it (Burnout Revenge, R: Racing Evolution,
+ * NNshi).
  * Sorted, for bsearch.
  */
 
@@ -142,6 +143,7 @@ static const uint32_t libretro_widescreen_titles[] = {
     0x4D570034, /* Mortal Kombat: Armageddon */
     0x4E4D0003, /* Soul Calibur II */
     0x4E4D0005, /* Dead to Rights */
+    0x4E4D0008, /* R: Racing Evolution */
     0x4E4D000B, /* Kill Switch */
     0x4E4D000F, /* I-Ninja */
     0x504C0006, /* Kingdom Under Fire: Heroes */

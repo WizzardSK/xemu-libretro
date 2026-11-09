@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- R: Racing Evolution is on the list of games that render 16:9, so System Aspect Ratio's Auto gives it 16:9 with Widescreen on (NNshi).
 - New option Video > Subpixel Offset Scaling, after Internal Resolution Scale (OFF by default): with a scale above 1x the picture is moved by a fraction of a pixel so the higher resolution's pixels line up with the original ones. It fixes ghosting and seams in some games (Jade Empire, Blinx) and breaks others (Splinter Cell). It takes effect while the game runs. From upstream xemu's open PR #3065 (NNshi).
 - Crop Vertical Overscan: Panzer Dragoon Orta, Soulcalibur II and R: Racing Evolution are on the Auto list (NNshi).
 - The DAC's gamma ramp a game sets (the NV_USER_DAC palette) is applied to the picture, after the video overlay, on both renderers; it was ignored, and Baldur's Gate: Dark Alliance looked washed out. A ramp that leaves colours as they are costs nothing. After parallel-xbox (a0ee82d8), adapted to this core's display paths (NNshi).

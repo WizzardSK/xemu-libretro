@@ -1447,6 +1447,48 @@ static void update_overscan_crop(void)
     }
 }
 
+/*
+ * Games that draw at native resolution whatever Internal Resolution Scale
+ * says until the scale is set again while they run, as in standalone xemu
+ * (there changing the scale away and back after the start fixes it,
+ * NNshi). For these the core sets the same scale again once, a while after
+ * the game's XBE is up: the surfaces are written back and made again at
+ * the scale. Sorted, for bsearch.
+ */
+static const uint32_t rescale_after_start_titles[] = {
+    0x4E4D0008, /* R: Racing Evolution */
+};
+/* HEURISTIC: after the logos have begun, before the menus */
+#define RESCALE_AFTER_START_US (2 * G_USEC_PER_SEC)
+
+/* The emulation thread, under the BQL, from its loop */
+static void rescale_after_start(void)
+{
+    extern bool runstate_is_running(void);
+    static uint32_t seen_title;
+    static int64_t due_us;
+    const uint32_t title = qatomic_read(&guest_title_id);
+
+    if (title != seen_title) {
+        seen_title = title;
+        due_us = 0;
+        if (opt_surface_scale > 1 &&
+            bsearch(&title, rescale_after_start_titles,
+                    ARRAY_SIZE(rescale_after_start_titles),
+                    sizeof(rescale_after_start_titles[0]),
+                    compare_title_id)) {
+            due_us = g_get_monotonic_time() + RESCALE_AFTER_START_US;
+        }
+    }
+    if (due_us && g_get_monotonic_time() >= due_us &&
+        runstate_is_running()) {
+        due_us = 0;
+        LRLOG_INFO("[xemu] title %08X: Internal Resolution Scale %dx set "
+                   "again after its start\n", title, opt_surface_scale);
+        nv2a_set_surface_scale_factor(opt_surface_scale);
+    }
+}
+
 static bool title_renders_widescreen(uint32_t title_id)
 {
     return bsearch(&title_id, libretro_widescreen_titles,
@@ -2013,6 +2055,7 @@ static void *emu_thread_func(void *opaque)
         }
 
         main_loop_wait(false);
+        rescale_after_start();
 
         /* Check for snapshot requests from RetroArch thread */
         if (snapshot_request != SNAPSHOT_NONE) {

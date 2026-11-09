@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- R: Racing Evolution draws at native resolution whatever Internal Resolution Scale says, in standalone xemu too, until the scale is changed while it runs. With a scale above 1x the core now sets the same scale again once, 2 seconds after the game has started, which makes its surfaces again at that scale (NNshi).
 - Savestates: with APU DSP Emulation on, the sound after a load was now and then garbled until the state was loaded again. The APU started running again while the state was still being loaded, its DSPs on their state from before the load writing into the loaded RAM; it now stays paused until the game runs again (NNshi).
 - Vulkan: a texture the CPU writes to after a draw of the same frame has sampled it is checked again at its next bind; the change showed only from the next frame on. Fixes the missing bloom in Jade Empire. From parallel-xbox (32caea67) (NNshi).
 - Vulkan: a surface the game hasn't used for five frames is evicted as other surfaces are, its content written back to RAM or owed to the first reader of that RAM, instead of always being written back. Fixes broken cubemap reflections on the cars in Burnout 3. From parallel-xbox (8e501f9a) (NNshi).

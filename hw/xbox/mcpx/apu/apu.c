@@ -356,7 +356,15 @@ static void mcpx_apu_reset_hold(Object *obj, ResetType type)
     qemu_mutex_lock(&d->lock);
     mcpx_apu_wait_for_idle(d);
     mcpx_apu_reset_locked(d);
-    mcpx_apu_resume(d);
+    /* With the VM stopped (a state being loaded resets the machine first)
+     * the APU stays paused until the VM runs (mcpx_apu_vm_state_change).
+     * Resumed here, it ran frames as soon as the load had put its
+     * registers back, while the rest was still loading: the DSPs on their
+     * state from before the load, writing into the loaded RAM, and the
+     * sound garbled until the next load, now and then (NNshi). */
+    if (runstate_is_running()) {
+        mcpx_apu_resume(d);
+    }
     qemu_mutex_unlock(&d->lock);
     bql_lock();
 }

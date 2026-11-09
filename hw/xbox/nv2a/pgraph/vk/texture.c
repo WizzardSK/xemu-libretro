@@ -414,9 +414,6 @@ static void mark_textures_possibly_dirty_visitor(Lru *lru, LruNode *node, void *
     struct pgraph_texture_possibly_dirty_struct *test = opaque;
 
     TextureBinding *tnode = container_of(node, TextureBinding, node);
-    if (tnode->possibly_dirty) {
-        return;
-    }
 
     uintptr_t k_tex_addr = tnode->key.texture_vram_offset;
     uintptr_t k_tex_end = k_tex_addr + tnode->key.texture_length - 1;
@@ -429,6 +426,13 @@ static void mark_textures_possibly_dirty_visitor(Lru *lru, LruNode *node, void *
     }
 
     tnode->possibly_dirty |= overlapping;
+    /* A newly found dirty page can hold a CPU write after an earlier draw
+     * of this frame sampled the texture: it is checked again at its next
+     * bind, not from the next frame on (parallel-xbox 32caea67, Jade
+     * Empire's bloom) */
+    if (overlapping) {
+        tnode->validation_frame = -1;
+    }
 }
 
 void pgraph_vk_mark_textures_possibly_dirty(NV2AState *d,
@@ -1927,8 +1931,9 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
     void *texture_data = (char*)d->vram_ptr + texture_vram_offset;
     void *palette_data = (char*)d->vram_ptr + texture_palette_vram_offset;
 
-    /* HEURISTIC: the content hash, the costly part of revalidation, runs at
-     * most once per frame per binding: bind_textures stamps
+    /* HEURISTIC: without a newly found dirty page, the content hash, the
+     * costly part of revalidation, runs at most once per frame per binding
+     * (mark_textures_possibly_dirty_visitor resets it): bind_textures stamps
      * validation_frame after this call (-1 on a fresh node, which always
      * hashes). The sampler is still resolved on every bind below. */
     uint64_t content_hash = 0;
@@ -2113,8 +2118,9 @@ static bool check_textures_dirty(PGRAPHState *pg)
             return true;
         }
         /* A binding whose RAM may have changed (possibly_dirty) revalidates
-         * at most once per frame. HEURISTIC: a RAM change after its first
-         * bind in a frame shows from the next frame on. */
+         * once per frame, and again when a dirty page of it is found after
+         * that (validation_frame reset to -1), as a CPU write between two
+         * draws of a frame */
         if (r->texture_bindings[i]->possibly_dirty &&
             r->texture_bindings[i]->validation_frame != pg->frame_time) {
             return true;

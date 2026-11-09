@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- Vulkan: a texture the CPU writes to after a draw of the same frame has sampled it is checked again at its next bind; the change showed only from the next frame on. Fixes the missing bloom in Jade Empire. From parallel-xbox (32caea67) (NNshi).
 - R: Racing Evolution is on the list of games that render 16:9, so System Aspect Ratio's Auto gives it 16:9 with Widescreen on (NNshi).
 - New option Video > Subpixel Offset Scaling, after Internal Resolution Scale (OFF by default): with a scale above 1x the picture is moved by a fraction of a pixel so the higher resolution's pixels line up with the original ones. It fixes ghosting and seams in some games (Jade Empire, Blinx) and breaks others (Splinter Cell). It takes effect while the game runs. From upstream xemu's open PR #3065 (NNshi).
 - Crop Vertical Overscan: Panzer Dragoon Orta, Soulcalibur II and R: Racing Evolution are on the Auto list (NNshi).

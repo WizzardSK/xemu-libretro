@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- Vulkan: a surface the game hasn't used for five frames is evicted as other surfaces are, its content written back to RAM or owed to the first reader of that RAM, instead of always being written back. Fixes broken cubemap reflections on the cars in Burnout 3. From parallel-xbox (8e501f9a) (NNshi).
 - R: Racing Evolution is on the list of games that render 16:9, so System Aspect Ratio's Auto gives it 16:9 with Widescreen on (NNshi).
 - New option Video > Subpixel Offset Scaling, after Internal Resolution Scale (OFF by default): with a scale above 1x the picture is moved by a fraction of a pixel so the higher resolution's pixels line up with the original ones. It fixes ghosting and seams in some games (Jade Empire, Blinx) and breaks others (Splinter Cell). It takes effect while the game runs. From upstream xemu's open PR #3065 (NNshi).
 - Crop Vertical Overscan: Panzer Dragoon Orta, Soulcalibur II and R: Racing Evolution are on the Auto list (NNshi).

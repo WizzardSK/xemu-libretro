@@ -1124,8 +1124,10 @@ static void expire_old_surfaces(NV2AState *d)
         int last_used = d->pgraph.frame_time - s->frame_time;
         if (last_used >= max_surface_frame_time_delta) {
             trace_nv2a_pgraph_surface_evict_reason("old", s->vram_addr);
-            pgraph_vk_surface_download_if_dirty(d, s);
-            invalidate_surface(d, s);
+            /* Age alone is not a RAM consumer: the content goes back to RAM
+             * or is owed to its first reader, as in other evictions
+             * (parallel-xbox 8e501f9a, Burnout 3's car reflections) */
+            evict_surface(d, s);
         }
     }
 }

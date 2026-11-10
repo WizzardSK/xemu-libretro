@@ -2040,6 +2040,20 @@ void pgraph_vk_surface_update(NV2AState *d, bool upload, bool color_write,
         }
     }
 
+    /* A color target bound by the draw pass (no upload: nothing unbinds the
+     * zeta there) can leave a larger zeta that no longer covers it -- a
+     * swizzled or another AA target, or one larger than the zeta (Virtua
+     * Cop 3, NFL Fever 2004, NNshi). The zeta is bound again for it, as the
+     * upload pass does after a color change. */
+    if (r->color_binding && r->zeta_binding &&
+        !zeta_covers_color(r, r->zeta_binding)) {
+        pg->surface_zeta.buffer_dirty = true;
+        unbind_surface(d, false);
+        if (zeta_write || pg->surface_zeta.write_enabled_cache) {
+            update_surface_part(d, upload, false);
+        }
+    }
+
     touch_bound_surfaces(d, upload);
 
     /* A retained zeta may be larger; the framebuffer uses the color size. */

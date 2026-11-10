@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- Four NV2A fixes from upstream xemu 0.8.137 ahead of the full upstream merge, the ones that came with Splinter Cell's FMVs stopping to flicker in xemu-macos: surface colour/zeta offsets given as RAM addresses (f78d85efb45), PFIFO CACHE1_DMA_CTL always valid (5906e2b556a), Y16 texture formats (ac72edfc2bc), passthru texture coordinates clamped (e7a681cf7f9) (NNshi).
 - Windows: the CPU, GPU (PFIFO) and audio frame threads run above normal priority, as in xemu-macos's Windows build. At normal priority they share their cores with every other thread of the system and of the frontend; the same scene ran at 32 or 46 fps from one run to the next (Splinter Cell, NNshi).
 - MSPF Overlay has a second line: standalone xemu's FPS from its video debug view, the game's flips per second, counted over a quarter of a second; the first line stays the rate from the render time (NNshi).
 - Vulkan: Virtua Cop 3 and NFL Fever 2004 stopped on an assertion (zeta_covers_color, surface.c) since a larger depth buffer stays bound for a smaller colour target. The kept depth buffer could stop covering the colour target: a draw bound a colour target it did not cover (another anti-aliasing mode, a swizzled target, or one larger than it), or the game switched to a swizzled target, which marks both bound surfaces swizzled. The depth buffer is now bound again for the colour target in both cases, as after a colour change between draws (NNshi).

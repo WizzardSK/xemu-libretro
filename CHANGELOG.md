@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- Windows: the CPU, GPU (PFIFO) and audio frame threads run above normal priority, as in xemu-macos's Windows build. At normal priority they share their cores with every other thread of the system and of the frontend; the same scene ran at 32 or 46 fps from one run to the next (Splinter Cell, NNshi).
 - MSPF Overlay has a second line: standalone xemu's FPS from its video debug view, the game's flips per second, counted over a quarter of a second; the first line stays the rate from the render time (NNshi).
 - Vulkan: Virtua Cop 3 and NFL Fever 2004 stopped on an assertion (zeta_covers_color, surface.c) since a larger depth buffer stays bound for a smaller colour target. The kept depth buffer could stop covering the colour target: a draw bound a colour target it did not cover (another anti-aliasing mode, a swizzled target, or one larger than it), or the game switched to a swizzled target, which marks both bound surfaces swizzled. The depth buffer is now bound again for the colour target in both cases, as after a colour change between draws (NNshi).
 - RDPMC (reading the CPU's performance counters) gives 0 instead of an invalid-instruction fault, as there are no counters emulated; on the console it never faults, and programs that read them (the XDK's FastCPU sample) crashed. From xemu's open pull request 2987 (EqUiNoX-Labs) (NNshi).

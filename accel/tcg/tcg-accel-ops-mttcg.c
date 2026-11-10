@@ -75,6 +75,17 @@ static void *mttcg_cpu_thread_fn(void *arg)
     rcu_add_force_rcu_notifier(&force_rcu.notifier);
     tcg_register_thread();
 
+#if defined(XBOX) && defined(_WIN32)
+    /*
+     * The guest runs on this thread and titles busy-poll, so at the normal
+     * priority it shares its core with every other runnable thread of the
+     * host and of the frontend. Above normal, as in xemu-macos's Windows
+     * build (with PFIFO and the APU frame thread). Run-to-run swings of
+     * 32 vs 46 fps in the same scene (Splinter Cell, NNshi).
+     */
+    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
+#endif
+
     bql_lock();
     qemu_thread_get_self(cpu->thread);
 

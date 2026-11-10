@@ -493,6 +493,11 @@ void *pfifo_thread(void *arg)
 {
     NV2AState *d = (NV2AState *)arg;
 
+#ifdef _WIN32
+    /* the vCPU waits on this thread; above normal with it (mttcg) */
+    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
+#endif
+
     pgraph_init_thread(d);
 
     rcu_register_thread();

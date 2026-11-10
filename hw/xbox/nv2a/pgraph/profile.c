@@ -35,6 +35,8 @@ void nv2a_profile_increment(void)
     int64_t delta = now - ts;
     if (delta >= fps_update_interval) {
         g_nv2a_stats.increment_fps = frame_count * 1000000 / delta;
+        __atomic_store_n(&xemu_libretro_osd_guest_fps,
+                         g_nv2a_stats.increment_fps, __ATOMIC_RELAXED);
         ts = now;
         frame_count = 0;
     }

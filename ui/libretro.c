@@ -221,6 +221,7 @@ static bool opt_hdd_trim = false;
 /* MSPF Overlay (ui/libretro-osd.h) */
 static bool opt_internal_fps = false;
 unsigned int xemu_libretro_osd_fps100;
+unsigned int xemu_libretro_osd_guest_fps;
 
 void xemu_libretro_osd_frame(int64_t render_us)
 {

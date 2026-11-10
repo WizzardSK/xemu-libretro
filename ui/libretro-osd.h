@@ -22,6 +22,11 @@
  * handed over. */
 extern unsigned int xemu_libretro_osd_fps100;
 
+/* Standalone xemu's FPS (its video debug view): the game's flips per
+ * second, counted over a quarter second (nv2a_profile_increment); shown under
+ * the rate above */
+extern unsigned int xemu_libretro_osd_guest_fps;
+
 /* One guest frame's render time, in microseconds: from the flip of the frame
  * before to this frame's FLIP_STALL, where it starts to wait for the vblank */
 void xemu_libretro_osd_frame(int64_t render_us);
@@ -50,7 +55,8 @@ static inline const uint8_t *xemu_libretro_osd_glyph(char c)
 /* The text's rectangles for one pass: 0 is the black outline, 1 the white
  * cells over it (the caller orders the second after the first). A cell is a
  * 200th of the picture's height, 2 to 10 pixels; the largest rectangle is a
- * row of three cells with its outline, 36x16 pixels. */
+ * row of three cells with its outline, 36x16 pixels. Two lines: the rate from
+ * the render time, and under it the flips per second. */
 static inline void xemu_libretro_osd_draw(int height, int pass,
                                           XemuLibretroOsdRect rect, void *ctx)
 {
@@ -59,14 +65,17 @@ static inline void xemu_libretro_osd_draw(int height, int pass,
     if (!fps100) {
         return;
     }
-    char buf[16];
-    snprintf(buf, sizeof(buf), "%u.%02u", fps100 / 100, fps100 % 100);
-    const char *text = buf;
+    char buf[2][16];
+    snprintf(buf[0], sizeof(buf[0]), "%u.%02u", fps100 / 100, fps100 % 100);
+    snprintf(buf[1], sizeof(buf[1]), "%u",
+             __atomic_load_n(&xemu_libretro_osd_guest_fps, __ATOMIC_RELAXED));
     int s = height / 200;
     s = s < 2 ? 2 : (s > 10 ? 10 : s);
     const int o = s / 3 > 0 ? s / 3 : 1;
+    for (int line = 0; line < 2; line++) {
+    const char *text = buf[line];
     int x = 2 * s;
-    const int y = 2 * s;
+    const int y = 2 * s + line * 7 * s;
     for (; *text; text++) {
         const uint8_t *g = xemu_libretro_osd_glyph(*text);
         if (!g) {
@@ -94,6 +103,7 @@ static inline void xemu_libretro_osd_draw(int height, int pass,
             }
         }
         x += (*text == '.' ? 2 : 4) * s;
+    }
     }
 }
 

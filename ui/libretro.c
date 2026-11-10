@@ -1515,21 +1515,41 @@ static bool wants_widescreen(void)
            xemu_get_widescreen();
 }
 
+/* The aspect RetroArch was last given (retro_get_system_av_info or
+ * SET_GEOMETRY), and what Auto went by, as last logged */
+static int aspect_reported = -1;
+static uint32_t aspect_last_title = UINT32_MAX, aspect_last_flags = UINT32_MAX;
+static int aspect_last_gpio = -1;
+
+/* When the content closes: the next one runs on the same machine
+ * (emu_thread_func), and its first aspect, at load, came from the last
+ * one's title and aspect line. With the aspect then thought already
+ * reported, its own title never changed it: NNshi's Ninja Gaiden Black at
+ * 4:3 four times in six after a 4:3 game. */
+static void aspect_forget(void)
+{
+    qatomic_set(&guest_title_id, 0);
+    qatomic_set(&xemu_aspect_gpio_value, -1);
+    xemu_set_widescreen(false);
+    aspect_reported = -1;
+    aspect_last_title = UINT32_MAX;
+    aspect_last_flags = UINT32_MAX;
+    aspect_last_gpio = -1;
+}
+
 /* RetroArch is told whenever the aspect changes, as standalone's display
  * follows the title */
 static void update_aspect(void)
 {
-    static int last = -1;
     const int widescreen = wants_widescreen() ? 1 : 0;
     libretro_chihiro_aim_across = widescreen ? 9.0f / 16.0f : 3.0f / 4.0f;
 
     /* What Auto goes by, whenever the title or the settings change */
-    static uint32_t last_title = UINT32_MAX, last_flags = UINT32_MAX;
     const uint32_t title = qatomic_read(&guest_title_id);
     const uint32_t flags = qatomic_read(&guest_video_flags);
-    if (title != last_title || flags != last_flags) {
-        last_title = title;
-        last_flags = flags;
+    if (title != aspect_last_title || flags != aspect_last_flags) {
+        aspect_last_title = title;
+        aspect_last_flags = flags;
         LRLOG_INFO("[xemu] Title ID %08X (%s), dashboard video settings "
                    "%08X (Widescreen %s)\n", title,
                    title_renders_widescreen(title) ? "on the 16:9 list"
@@ -1539,17 +1559,16 @@ static void update_aspect(void)
 
     /* What the title writes to the aspect line, whenever it changes: 5 is
      * widescreen, and a log then says why a title stayed at 4:3 */
-    static int last_gpio = -1;
     const int gpio = qatomic_read(&xemu_aspect_gpio_value);
-    if (gpio != last_gpio) {
-        last_gpio = gpio;
+    if (gpio != aspect_last_gpio) {
+        aspect_last_gpio = gpio;
         LRLOG_INFO("[xemu] Aspect line (PM GPIO 0x16) written: %d\n", gpio);
     }
 
-    if (widescreen == last) {
+    if (widescreen == aspect_reported) {
         return;
     }
-    last = widescreen;
+    aspect_reported = widescreen;
 
     struct retro_game_geometry geometry = {
         .base_width = 640,
@@ -3182,7 +3201,8 @@ RETRO_API void retro_get_system_av_info(struct retro_system_av_info *info)
     xemu_max_geometry(opt_surface_scale, &declared_max_width, &declared_max_height);
     info->geometry.max_width    = declared_max_width;
     info->geometry.max_height   = declared_max_height;
-    info->geometry.aspect_ratio = wants_widescreen() ? 16.0f / 9.0f : 4.0f / 3.0f;
+    aspect_reported = wants_widescreen() ? 1 : 0;
+    info->geometry.aspect_ratio = aspect_reported ? 16.0f / 9.0f : 4.0f / 3.0f;
     info->timing.fps            = 59.94;
     info->timing.sample_rate    = 48000.0;
 }
@@ -3626,6 +3646,7 @@ RETRO_API void retro_unload_game(void)
     }
     qatomic_set(&last_run_us, 0);
     qatomic_set(&frontend_paused, false);
+    aspect_forget();
 
     game_loaded = false;
     emu_initialized = false;

@@ -248,7 +248,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_aspect_ratio",
         "Core Aspect Ratio",
         NULL,
-        "The shape the picture is shown in. Best kept at Auto, which follows the game: 16:9 when the console is set to widescreen (System Aspect Ratio or the dashboard) and the game renders 16:9, 4:3 otherwise and on a Chihiro. 16:9 stretches a 4:3 game to widescreen.",
+        "The shape the picture is shown in. Best kept at Auto, which follows the game: 16:9 when the console is set to widescreen (System Aspect Ratio or the dashboard) and the game renders 16:9, or when a widescreen patch (Widescreen or 16-9 in its name) is on; 4:3 otherwise and on a Chihiro. 16:9 stretches a 4:3 game to widescreen.",
         NULL,
         "video",
         {

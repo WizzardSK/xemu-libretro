@@ -1308,6 +1308,9 @@ int xemu_libretro_subpixel_offset;
  * guest's memory and the EEPROM device need (poll_guest_title) */
 static uint32_t guest_title_id;
 static uint32_t guest_video_flags;
+/* A patch switched on that makes the game widescreen: "Widescreen" or "16-9"
+ * in its name (patch_manager_load), which Aspect Ratio Auto takes as 16:9 */
+static bool patched_widescreen;
 
 /* The EEPROM's video settings (user section, 0x94), and their Widescreen
  * bit */
@@ -1500,12 +1503,16 @@ static bool title_renders_widescreen(uint32_t title_id)
 
 /* Auto: 16:9 with Widescreen on in the dashboard's video settings and a
  * title that renders 16:9 then - one on the list, or one that sets the AV
- * pack's aspect line (acpi_xbox.c), which few do - and 4:3 for the rest
- * and on a Chihiro (NNshi) */
+ * pack's aspect line (acpi_xbox.c), which few do - or with a widescreen
+ * patch switched on, whatever the settings; 4:3 for the rest and on a
+ * Chihiro (NNshi) */
 static bool wants_widescreen(void)
 {
     if (opt_aspect != 0) {
         return opt_aspect == 2;
+    }
+    if (!emu_started_chihiro && patched_widescreen) {
+        return true;
     }
     if (emu_started_chihiro ||
         !(qatomic_read(&guest_video_flags) & EEPROM_VIDEO_WIDESCREEN)) {
@@ -2595,12 +2602,18 @@ static void patch_manager_load(const char *image, bool chihiro)
         g_dir_close(d);
     }
     patch_options_register();
+    patched_widescreen = false;
     for (guint i = 0; i < patch_files->len; i++) {
         const char *file = patch_files->pdata[i];
         g_autofree char *key = patch_option_key(file);
         struct retro_variable var = { key, NULL };
         if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value &&
             !strcmp(var.value, "enabled")) {
+            g_autofree char *lower = g_ascii_strdown(file, -1);
+            if (strstr(lower, "widescreen") || strstr(lower, "16-9")) {
+                patched_widescreen = true;
+                LRLOG_INFO("[xemu] Widescreen patch on (%s): Aspect Ratio Auto is 16:9\n", file);
+            }
             g_ptr_array_add(patch_enabled, g_hash_table_contains(patch_bundled, file)
                                                ? g_strdup_printf("bundled:%s", file)
                                                : g_strdup_printf("%s/%s", dir, file));

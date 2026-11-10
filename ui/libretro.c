@@ -218,10 +218,10 @@ static char opt_bios_path[4096] = "";
 static char opt_hdd_path[4096] = "";
 /* Trim HDD on Close (hdd_trim) */
 static bool opt_hdd_trim = false;
-/* MSPF Overlay (ui/libretro-osd.h) */
+/* Performance Overlay (ui/libretro-osd.h) */
 static bool opt_internal_fps = false;
 unsigned int xemu_libretro_osd_fps100;
-unsigned int xemu_libretro_osd_guest_fps;
+unsigned int xemu_libretro_osd_guest_fps100;
 
 void xemu_libretro_osd_frame(int64_t render_us)
 {
@@ -473,7 +473,7 @@ static void draw_gl_crosshairs(unsigned width, unsigned height, uintptr_t fbo)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-/* MSPF Overlay's text over the OpenGL frame (origin bottom left) */
+/* Performance Overlay's text over the OpenGL frame (origin bottom left) */
 static void gl_osd_rect(void *ctx, int x, int y, int w, int h, bool white)
 {
     const int height = *(const int *)ctx;
@@ -3749,7 +3749,7 @@ RETRO_API void retro_run(void)
     }
 
     run_count++;
-    /* the 300-run lines only while MSPF Overlay is on (NNshi): a frame
+    /* the 300-run lines only while Performance Overlay is on (NNshi): a frame
      * presentation benchmark switched with it */
     const bool frame_log = __atomic_load_n(&opt_internal_fps, __ATOMIC_RELAXED);
     if (run_count <= 5 || (frame_log && (run_count % 300) == 0)) {

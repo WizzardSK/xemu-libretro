@@ -1133,7 +1133,7 @@ static void frame_image_barrier(VkCommandBuffer cmd, VkImage image,
  */
 /* The crosshairs' pixels, copied into the frame: a black outline, then
  * player 1's red and player 2's blue (R8G8B8A8 as little-endian words);
- * MSPF Overlay's text (ui/libretro-osd.h) takes the black and white */
+ * Performance Overlay's text (ui/libretro-osd.h) takes the black and white */
 #define CROSSHAIR_PIXELS 1024
 static const uint32_t crosshair_colors[4] = {
     0xFF000000u, 0xFF2828FFu, 0xFFFF8C28u, 0xFFFFFFFFu,
@@ -1244,7 +1244,7 @@ static void draw_crosshairs(PGRAPHVkState *r, VkCommandBuffer cmd,
     }
 }
 
-/* MSPF Overlay's text over the frame, as the crosshairs are drawn */
+/* Performance Overlay's text over the frame, as the crosshairs are drawn */
 typedef struct OsdTarget {
     VkCommandBuffer cmd;
     VkImage image;

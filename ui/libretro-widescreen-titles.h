@@ -5,7 +5,7 @@
  * Xbox games with alternate display modes (16:9 column), their IDs taken
  * from MobCat's Xbox title ID database and the xemu cheat database by name,
  * and games testers found to have it (Burnout Revenge, R: Racing Evolution,
- * NNshi).
+ * NFL Fever 2004, NNshi).
  * Sorted, for bsearch.
  */
 
@@ -131,6 +131,7 @@ static const uint32_t libretro_widescreen_titles[] = {
     0x4D530039, /* Rallisport Challenge 2 */
     0x4D530041, /* Amped 2 */
     0x4D53004B, /* Project Gotham Racing 2 */
+    0x4D53004D, /* NFL Fever 2004 (NNshi) */
     0x4D530053, /* Grabbed by the Ghoulies */
     0x4D530064, /* Halo 2 */
     0x4D53006B, /* MechAssault 2: Lone Wolf */

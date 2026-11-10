@@ -466,9 +466,9 @@ struct retro_core_option_v2_definition option_defs_us[] = {
     },
     {
         "xemu_mspf_overlay",
-        "MSPF Overlay",
+        "Performance Overlay",
         NULL,
-        "Shows in the top left corner the frame rate the game could reach: the time it takes to draw a frame, as in standalone xemu's video debug overlay (MSPF), averaged over its last 60 frames and turned into frames per second, updated every 20 frames. Valid only when the GPU is what limits the game. While on, the core also writes to RetroArch's log every 300 runs how the guest's frames and the frontend's runs lined up. Takes effect right away.",
+        "Shows two lines in the top left corner. FPS: the frames per second the game shows, as in standalone xemu's video debug overlay, over its last 60 frames. GPU: the frame rate the game could reach from the time it takes to draw a frame (standalone's MSPF), averaged over its last 60 frames and updated every 20 frames; valid only when the GPU is what limits the game. While on, the core also writes to RetroArch's log every 300 runs how the guest's frames and the frontend's runs lined up. Takes effect right away.",
         NULL,
         "video",
         {

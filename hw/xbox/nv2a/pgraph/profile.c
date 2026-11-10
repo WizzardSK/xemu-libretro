@@ -31,12 +31,34 @@ void nv2a_profile_increment(void)
     static int64_t frame_count = 0;
     frame_count++;
 
+    /*
+     * Performance Overlay's FPS, in hundredths: the span of the last 60
+     * flips, so a 59.94 Hz game reads 59.94 rather than the whole-number
+     * count of a quarter second (NNshi)
+     */
+    {
+        static int64_t flips[60];
+        static unsigned int n, head;
+        flips[head] = now;
+        head = (head + 1) % 60;
+        if (n < 60) {
+            n++;
+        }
+        if (n > 1) {
+            int64_t oldest = flips[(head + 60 - n) % 60];
+            if (now > oldest) {
+                __atomic_store_n(&xemu_libretro_osd_guest_fps100,
+                                 (unsigned int)((int64_t)(n - 1) * 100000000 /
+                                                (now - oldest)),
+                                 __ATOMIC_RELAXED);
+            }
+        }
+    }
+
     static int64_t ts = 0;
     int64_t delta = now - ts;
     if (delta >= fps_update_interval) {
         g_nv2a_stats.increment_fps = frame_count * 1000000 / delta;
-        __atomic_store_n(&xemu_libretro_osd_guest_fps,
-                         g_nv2a_stats.increment_fps, __ATOMIC_RELAXED);
         ts = now;
         frame_count = 0;
     }

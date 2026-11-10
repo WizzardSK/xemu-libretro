@@ -444,10 +444,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "enabled"
     },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         "Vulkan Fast Paths (Restart)",
@@ -462,7 +460,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "none",     "None" },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
     },
     {
         "xemu_mspf_overlay",

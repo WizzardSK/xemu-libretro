@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- Vulkan: with Vulkan Fast Paths on All, RalliSport Challenge 2 stopped on an assertion (is_uniform && is_compressed, vsh.c) when loading a race. With All, a vertex program's shaders are prepared as soon as the game uploads it, from the vertex arrays of the last draw, and one of their masks already had the next draw's formats: an attribute could be both a constant and a packed array, which no draw has. They are now all taken from the vertex arrays as the next draw will set them (NNshi).
 - Four NV2A fixes from upstream xemu 0.8.137: surface colour/zeta offsets given as RAM addresses (f78d85efb45), PFIFO CACHE1_DMA_CTL always valid (5906e2b556a), Y16 texture formats (ac72edfc2bc), passthru texture coordinates clamped (e7a681cf7f9). They do not fix Splinter Cell's flickering FMVs, which flicker in upstream 0.8.139 too (NNshi).
 - Windows: the CPU, GPU (PFIFO) and audio frame threads run above normal priority, as in xemu-macos's Windows build. At normal priority they share their cores with every other thread of the system and of the frontend; the same scene ran at 32 or 46 fps from one run to the next (Splinter Cell, NNshi).
 - MSPF Overlay is now Performance Overlay, with two labelled lines: FPS, the frames per second the game shows (standalone xemu's FPS from its video debug view) with two decimals, over its last 60 frames, so a 59.94 Hz game reads 59.94; and GPU, the rate from the render time that was the overlay's only line (NNshi).

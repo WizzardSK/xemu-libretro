@@ -1788,6 +1788,28 @@ void pgraph_vk_prewarm_shaders(NV2AState *d)
     pg->program_data_dirty = saved_program_dirty;
     pg->primitive_mode = saved_prim;
 
+    /* The attribute masks are those of the last draw's vertex bind, except
+     * compressed_attrs, which SET_VERTEX_DATA_ARRAY_FORMAT updates at once:
+     * a slot that was uniform then and has a compressed format now is both,
+     * a state no draw meets (RalliSport Challenge 2 asserted on it in the
+     * vertex shader generator). Taken from the current arrays as the next
+     * draw's bind will. */
+    uint16_t uniform_attrs = 0, compressed_attrs = 0, swizzle_attrs = 0;
+    for (int i = 0; i < NV2A_VERTEXSHADER_ATTRIBUTES; i++) {
+        const VertexAttribute *attr = &pg->vertex_attributes[i];
+        if (!attr->count || !attr->stride) {
+            uniform_attrs |= 1 << i;
+        } else if (attr->format == NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_CMP) {
+            compressed_attrs |= 1 << i;
+        } else if (attr->format ==
+                   NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_UB_D3D) {
+            swizzle_attrs |= 1 << i;
+        }
+    }
+    state.vsh.uniform_attrs = uniform_attrs;
+    state.vsh.compressed_attrs = compressed_attrs;
+    state.vsh.swizzle_attrs = swizzle_attrs;
+
     if (state.vsh.is_fixed_function) {
         return;
     }

@@ -230,9 +230,12 @@ void libretro_input_set_rumble(unsigned port, uint16_t strong, uint16_t weak)
     }
 }
 
+/* What RetroArch's motors were last set to */
+static uint32_t rumble_applied[4];
+
 void libretro_input_apply_rumble(retro_set_rumble_state_t set_rumble_state)
 {
-    static uint32_t applied[4];
+    uint32_t *applied = rumble_applied;
 
     if (!set_rumble_state) {
         return;
@@ -247,6 +250,22 @@ void libretro_input_apply_rumble(retro_set_rumble_state_t set_rumble_state)
         set_rumble_state(port, RETRO_RUMBLE_STRONG, (uint16_t)(want >> 16));
         set_rumble_state(port, RETRO_RUMBLE_WEAK, (uint16_t)want);
         applied[port] = want;
+    }
+}
+
+/* A game closing: its motors stop, and the next game starts with them off.
+ * The values the guest last set stayed, as the machine and this file live on
+ * to the next game, which then started rumbling where the last one stopped
+ * (NNshi) */
+void libretro_input_stop_rumble(retro_set_rumble_state_t set_rumble_state)
+{
+    for (unsigned port = 0; port < 4; port++) {
+        qatomic_set(&libretro_rumble[port], 0);
+        if (set_rumble_state) {
+            set_rumble_state(port, RETRO_RUMBLE_STRONG, 0);
+            set_rumble_state(port, RETRO_RUMBLE_WEAK, 0);
+        }
+        rumble_applied[port] = 0;
     }
 }
 

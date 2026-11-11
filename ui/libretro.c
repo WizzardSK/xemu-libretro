@@ -2039,6 +2039,8 @@ static void *emu_thread_func(void *opaque)
          * clears it first, and failed on the Chihiro's missing drive, so
          * the switch took the machine for an Xbox and never ran (NNshi). */
         if (xemu_chihiro_mode()) {
+            extern void libretro_chihiro_reset_boards(void);
+            libretro_chihiro_reset_boards();
             if (strcmp(opt_dvd_path, machine_image)) {
                 chihiro_change_game();
                 LRLOG_INFO("[xemu] Chihiro: the media board holds %s now\n", opt_dvd_path);
@@ -3448,24 +3450,54 @@ static void load_refused(const char *text)
  * compiled). The APU still waits once about 64 ms is queued (apu.c). The
  * ring has one reader, this thread now; retro_run leaves it alone. RetroArch
  * stops calling while it pauses (audio_thread_set_state). */
+/* Set at each game's load: the first pull drops what the APU's ring holds,
+ * the boot's audio and, from the second game on, the end of the last one,
+ * which the machine kept and the next game started with (a short burst of
+ * the last game's sound, NNshi). Read by whichever of retro_run and
+ * RetroArch's audio thread pulls. */
+static bool audio_flush_pending = true;
+/* And the first 300 ms after it are silent: what the APU keeps through a
+ * reset (its DSPs' state, upstream's "FIXME: Reset DSP state") still came
+ * out as a pop or crackle before the Chihiro BIOS's jingle when the last
+ * game closed while it played sound (NNshi). Frames, at 48 kHz. */
+#define AUDIO_START_MUTE_FRAMES (48000 * 3 / 10)
+static int audio_mute_left;
+
+/* The stale audio dropped, at the first pull of each game, and the start
+ * muted (audio_mute_left); then the pulled frames, silent while the mute
+ * lasts */
+static void audio_start_flush(void)
+{
+    extern void libretro_audio_flush(void);
+    if (qatomic_xchg(&audio_flush_pending, false)) {
+        libretro_audio_flush();
+        audio_mute_left = AUDIO_START_MUTE_FRAMES;
+    }
+}
+
+static void audio_start_mute(int16_t *buf, int frames)
+{
+    const int n = MIN(frames, audio_mute_left);
+    if (n > 0) {
+        memset(buf, 0, (size_t)n * 2 * sizeof(int16_t));
+        audio_mute_left -= n;
+    }
+}
+
 static void audio_thread_callback(void)
 {
     extern int libretro_audio_pull(int16_t *out_buf, int max_frames);
-    extern void libretro_audio_flush(void);
-    static bool flushed = false;
     int16_t buf[1024 * 2];
 
     if (!emu_initialized || !audio_async_enabled || !audio_batch_cb) {
         g_usleep(2000);
         return;
     }
-    if (!flushed) {
-        /* the stale boot audio, as the frame-paced path drops it */
-        libretro_audio_flush();
-        flushed = true;
-    }
+    /* the stale audio, as the frame-paced path drops it */
+    audio_start_flush();
     const int frames = libretro_audio_pull(buf, 1024);
     if (frames > 0) {
+        audio_start_mute(buf, frames);
         audio_batch_cb(buf, frames);
     } else {
         g_usleep(1000);
@@ -3778,6 +3810,12 @@ RETRO_API void retro_unload_game(void)
     qatomic_set(&last_run_us, 0);
     qatomic_set(&frontend_paused, false);
     aspect_forget();
+    /* the guest has stopped: nothing sets the motors or fills the ring now */
+    {
+        extern void libretro_input_stop_rumble(retro_set_rumble_state_t);
+        libretro_input_stop_rumble(rumble.set_rumble_state);
+    }
+    qatomic_set(&audio_flush_pending, true);
 
     game_loaded = false;
     emu_initialized = false;
@@ -4194,14 +4232,9 @@ vk_audio:
      * does (audio_thread_callback) */
     if (audio_batch_cb && !audio_async) {
         extern int libretro_audio_pull(int16_t *out_buf, int max_frames);
-        extern void libretro_audio_flush(void);
 
-        /* One-time flush: discard stale boot audio on first active pull */
-        static bool audio_flushed = false;
-        if (!audio_flushed) {
-            libretro_audio_flush();
-            audio_flushed = true;
-        }
+        /* the stale audio, at the first pull of each game */
+        audio_start_flush();
 
         /* Exactly one frame's worth a call - 48000 / 59.94, 800 or 801 -
          * so RetroArch's audio sync paces retro_run, and with it the guest's
@@ -4222,6 +4255,7 @@ vk_audio:
             memset(&audio_buf[frames * 2], 0,
                    (size_t)(want - frames) * 2 * sizeof(int16_t));
         }
+        audio_start_mute(audio_buf, want);
         st_t = g_get_monotonic_time();
         audio_batch_cb(audio_buf, want);
         st_t = g_get_monotonic_time() - st_t;
@@ -4235,6 +4269,10 @@ RETRO_API void retro_reset(void)
     LRLOG_INFO("[xemu] retro_reset\n");
     if (emu_initialized) {
         qemu_system_reset_request(SHUTDOWN_CAUSE_GUEST_RESET);
+        /* as when a game closes: the motors stop, the old audio is dropped */
+        extern void libretro_input_stop_rumble(retro_set_rumble_state_t);
+        libretro_input_stop_rumble(rumble.set_rumble_state);
+        qatomic_set(&audio_flush_pending, true);
     }
 }
 

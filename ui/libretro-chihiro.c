@@ -322,6 +322,20 @@ static uint8_t wmmt_lever(void)
     return gate[gear];
 }
 
+/* The next game on the same machine (ui/libretro.c): its drive boards as
+ * at power-on. They are set up once, when the machine is built, and a
+ * machine reset does not reach them, so the next game started with the
+ * force feedback the last one was playing, and its rumble (NNshi). */
+void libretro_chihiro_reset_boards(void)
+{
+    if (chihiro_driveboard_global) {
+        driveboard_init(chihiro_driveboard_global);
+    }
+    if (chihiro_v257_global) {
+        v257_init(chihiro_v257_global);
+    }
+}
+
 /* The drive board's force feedback as rumble on port 1, the pad that
  * steers, as standalone gives it to a gamepad (chihiro_ffb_update in
  * ui/xemu-input.c): the Sega board's events and vibration (OutRun 2), the

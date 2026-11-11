@@ -2211,7 +2211,10 @@ static bool write_bundled_hdd(const char *path)
  * that writes past the XBE's end is skipped, as the file cannot grow, and
  * one for another file ("Apply to intro_17.lvl") is not listed. A .jmp
  * applies every line in it (xbe_apply_jmp): its groups that exclude each
- * other (one language or another) are deleted from the file to choose. */
+ * other (one language or another) are deleted from the file to choose.
+ * Bundled with them: the 16:9 database of XboxGraphicalPatches' OgXHD tool
+ * (wdb.dat), one "<game> (16-9 Widescreen, OgXHD).wdb" per title ID, listed
+ * for that title ID in any region and applied as OgXHD does (xbe_apply_wdb). */
 
 #define XISO_SECTOR 2048
 #define XBE_PATCH_CLUSTER 65536
@@ -2506,7 +2509,7 @@ static void patch_options_register(void)
     if (patch_files->len) {
         cats[n_cats].key = "patches";
         cats[n_cats].desc = "Patch Manager (Restart)";
-        cats[n_cats].info = "This game's patches, applied to its default.xbe when it starts: the 16:9, 60 FPS and miscellaneous ones of XboxGraphicalPatches bundled with the core, and those in system/xemu/patches.";
+        cats[n_cats].info = "This game's patches, applied to its default.xbe when it starts: the 16:9, 60 FPS and miscellaneous ones of XboxGraphicalPatches and the 16:9 ones of its OgXHD database bundled with the core, and those in system/xemu/patches.";
     }
     opts.categories = cats;
     opts.definitions = defs;
@@ -2613,9 +2616,14 @@ static void patch_manager_load(const char *image, bool chihiro)
             for (guint j = 0; j < patch_files->len && !have; j++) {
                 have = !g_ascii_strcasecmp(patch_files->pdata[j], bn);
             }
-            if (!have && ((g_str_has_suffix(lower, ".ips") && north_america) ||
-                          g_str_has_suffix(lower, ".bps")) &&
-                !strstr(lower, "apply to") && patch_is_for(bn, title_id, title_norm)) {
+            /* a .wdb by its title ID: its bytes to find check the release */
+            const bool wdb = g_str_has_suffix(lower, ".wdb");
+            const bool listed =
+                wdb ? libretro_bundled_patches[i].title_id == title_id
+                    : ((g_str_has_suffix(lower, ".ips") && north_america) ||
+                       g_str_has_suffix(lower, ".bps")) &&
+                      !strstr(lower, "apply to") && patch_is_for(bn, title_id, title_norm);
+            if (!have && listed) {
                 g_ptr_array_add(patch_files, g_strdup(bn));
                 g_hash_table_add(patch_bundled, g_strdup(bn));
             }
@@ -2794,6 +2802,59 @@ static bool jmp_hex(const char *hex, GByteArray *out)
  * are found (a patch that changes two places of the same bytes has the pair
  * twice). -2 when bytes to find are not in the XBE: the patch is for
  * another release's. */
+/* An OgXHD 16:9 patch (wdb.dat, scripts/gen_bundled_patches.py): lines of
+ * bytes to find, each followed by the bytes to put in their place. As OgXHD
+ * does, the XBE is read from start to end and every place one of them is
+ * found gets its replacement; a release that has only some of them gets
+ * those. The number of places changed, -2 when none of them is in this
+ * XBE (another release's), -1 when the patch is not valid. */
+static int xbe_apply_wdb(uint8_t *xbe, size_t size, const char *text, const char *name)
+{
+    g_auto(GStrv) lines = g_strsplit_set(text, "\r\n", -1);
+    g_autoptr(GPtrArray) pats = g_ptr_array_new_with_free_func((GDestroyNotify)g_byte_array_unref);
+    for (char **l = lines; *l; l++) {
+        char *s = g_strstrip(*l);
+        if (!s[0]) {
+            continue;
+        }
+        GByteArray *bytes = g_byte_array_new();
+        if (!jmp_hex(s, bytes) || !bytes->len) {
+            g_byte_array_unref(bytes);
+            return -1;
+        }
+        g_ptr_array_add(pats, bytes);
+    }
+    if (!pats->len || pats->len % 2) {
+        return -1;
+    }
+    for (guint p = 0; p < pats->len; p += 2) {
+        if (((GByteArray *)pats->pdata[p])->len != ((GByteArray *)pats->pdata[p + 1])->len) {
+            return -1;
+        }
+    }
+    int changed = 0;
+    for (size_t i = 0; i < size;) {
+        size_t step = 1;
+        for (guint p = 0; p < pats->len; p += 2) {
+            const GByteArray *find = pats->pdata[p], *put = pats->pdata[p + 1];
+            if (i + find->len <= size && xbe[i] == find->data[0] &&
+                !memcmp(xbe + i, find->data, find->len)) {
+                memcpy(xbe + i, put->data, put->len);
+                changed++;
+                step = find->len;
+                break;
+            }
+        }
+        i += step;
+    }
+    if (!changed) {
+        LRLOG_ERROR("[xemu] XBE patch %s: none of its bytes to find are in this "
+                    "default.xbe\n", name);
+        return -2;
+    }
+    return changed;
+}
+
 static int xbe_apply_jmp(uint8_t *xbe, size_t size, const char *text, const char *name)
 {
     g_auto(GStrv) lines = g_strsplit_set(text, "\r\n", -1);
@@ -2898,7 +2959,9 @@ char *xemu_libretro_xbe_patched(const char *image, uint64_t offset)
             if (!b) {
                 continue;
             }
-            data = g_memdup2(b->data, b->size);
+            /* with a NUL after it: .jmp and .wdb are read as text */
+            data = g_malloc0(b->size + 1);
+            memcpy(data, b->data, b->size);
             n = b->size;
         } else if (!g_file_get_contents(f, &data, &n, NULL)) {
             continue;
@@ -2906,12 +2969,14 @@ char *xemu_libretro_xbe_patched(const char *image, uint64_t offset)
         /* each patch on a copy, so one that fails leaves no half of itself */
         g_autofree uint8_t *copy = g_memdup2(xbe, size);
         g_autofree char *lower = g_ascii_strdown(f, -1);
+        const bool find_bytes = g_str_has_suffix(lower, ".jmp") || g_str_has_suffix(lower, ".wdb");
         const int r = g_str_has_suffix(lower, ".jmp") ? xbe_apply_jmp(copy, size, data, f)
+                    : g_str_has_suffix(lower, ".wdb") ? xbe_apply_wdb(copy, size, data, f)
                     : g_str_has_suffix(lower, ".bps") ? xbe_apply_bps(copy, size, (const uint8_t *)data, n)
                     : xbe_apply_ips(copy, size, (const uint8_t *)data, n);
         if (r == -2) {
             LRLOG_ERROR("[xemu] XBE patch %s not applied: it is for another release's "
-                        "default.xbe (%s)\n", f, g_str_has_suffix(lower, ".jmp") ? "bytes not found" : "CRC");
+                        "default.xbe (%s)\n", f, find_bytes ? "bytes not found" : "CRC");
             continue;
         }
         if (r < 0) {

@@ -376,7 +376,7 @@ static void nv2a_lock_fifo(NV2AState *d)
     bql_unlock();
     qemu_cond_wait(&d->pfifo.fifo_idle_cond, &d->pfifo.lock);
     bql_lock();
-    qemu_mutex_lock(&d->pgraph.lock);
+    nv2a_pgraph_lock_ext(d);
 }
 
 static void nv2a_unlock_fifo(NV2AState *d)

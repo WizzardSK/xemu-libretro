@@ -138,7 +138,11 @@ static bool pfifo_stall_for_flip(NV2AState *d)
     bool should_stall = false;
 
     if (qatomic_read(&d->pgraph.waiting_for_flip)) {
-        qemu_mutex_lock(&d->pgraph.lock);
+        /* a batch (pg_held) already holds it */
+        bool locked = d->pfifo.pg_held;
+        if (!locked) {
+            qemu_mutex_lock(&d->pgraph.lock);
+        }
         if (!is_flip_stall_complete(d)) {
             should_stall = true;
         } else {
@@ -159,7 +163,9 @@ static bool pfifo_stall_for_flip(NV2AState *d)
             }
 #endif
         }
-        qemu_mutex_unlock(&d->pgraph.lock);
+        if (!locked) {
+            qemu_mutex_unlock(&d->pgraph.lock);
+        }
     }
 
     return should_stall;
@@ -182,6 +188,55 @@ static inline void pfifo_idle_cond_wait(NV2AState *d)
     } else {
         qemu_cond_wait(&d->pfifo.fifo_cond, &d->pfifo.lock);
     }
+}
+
+/*
+ * Before a command (holding pfifo.lock): let go of it and hold pgraph.lock,
+ * which a batch may hold already.
+ */
+static inline void pfifo_puller_lock(NV2AState *d)
+{
+    qemu_mutex_unlock(&d->pfifo.lock);
+    if (!d->pfifo.pg_held) {
+        qemu_mutex_lock(&d->pgraph.lock);
+    }
+}
+
+/* Let go of a batch's pgraph.lock; a counted waiter gets ~20 us to take it
+ * first. */
+static void pfifo_pg_release(NV2AState *d, bool handoff)
+{
+    qemu_mutex_unlock(&d->pgraph.lock);
+    d->pfifo.pg_held = false;
+    d->pfifo.pg_run = 0;
+    if (handoff && qatomic_read(&d->pfifo.ext_waiters)) {
+        int64_t end = get_clock() + 20000;
+        while (qatomic_read(&d->pfifo.ext_waiters) && get_clock() < end) {
+            /* the waiter's wake is a few microseconds */
+        }
+    }
+}
+
+/*
+ * After a command (holding pgraph.lock): take pfifo.lock back. Keep
+ * pgraph.lock for the next command while pfifo.lock is free and no other
+ * thread waits for pgraph.lock, for up to PFIFO_PG_RUN commands: one lock
+ * pair less per command. The trylock never waits, so the pfifo -> pgraph
+ * order holds; when it fails, pgraph_write or a kicker holds pfifo.lock and
+ * pgraph.lock goes as before.
+ */
+#define PFIFO_PG_RUN 256
+
+static inline void pfifo_puller_relock(NV2AState *d)
+{
+    if (!qatomic_read(&d->pfifo.ext_waiters) &&
+        ++d->pfifo.pg_run < PFIFO_PG_RUN &&
+        qemu_mutex_trylock(&d->pfifo.lock) == 0) {
+        d->pfifo.pg_held = true;
+        return;
+    }
+    pfifo_pg_release(d, true);
+    qemu_mutex_lock(&d->pfifo.lock);
 }
 
 static ssize_t pfifo_run_puller(NV2AState *d, uint32_t method_entry,
@@ -223,8 +278,7 @@ static ssize_t pfifo_run_puller(NV2AState *d, uint32_t method_entry,
         SET_MASK(*pull1, NV_PFIFO_CACHE1_PULL1_ENGINE, entry.engine);
 
         // TODO: this is fucked
-        qemu_mutex_unlock(&d->pfifo.lock);
-        qemu_mutex_lock(&d->pgraph.lock);
+        pfifo_puller_lock(d);
 
         // Switch contexts if necessary
         if (can_fifo_access(d)) {
@@ -236,8 +290,7 @@ static ssize_t pfifo_run_puller(NV2AState *d, uint32_t method_entry,
             }
         }
 
-        qemu_mutex_unlock(&d->pgraph.lock);
-        qemu_mutex_lock(&d->pfifo.lock);
+        pfifo_puller_relock(d);
 
     } else if (method >= 0x100) {
         // method passed to engine
@@ -258,8 +311,7 @@ static ssize_t pfifo_run_puller(NV2AState *d, uint32_t method_entry,
         SET_MASK(*pull1, NV_PFIFO_CACHE1_PULL1_ENGINE, engine);
 
         // TODO: this is fucked
-        qemu_mutex_unlock(&d->pfifo.lock);
-        qemu_mutex_lock(&d->pgraph.lock);
+        pfifo_puller_lock(d);
 
         if (can_fifo_access(d)) {
             num_proc =
@@ -267,8 +319,7 @@ static ssize_t pfifo_run_puller(NV2AState *d, uint32_t method_entry,
                               num_words_available, max_lookahead_words, inc);
         }
 
-        qemu_mutex_unlock(&d->pgraph.lock);
-        qemu_mutex_lock(&d->pfifo.lock);
+        pfifo_puller_relock(d);
     } else {
         assert(!"Unrecognized pfifo puller method");
     }
@@ -476,6 +527,10 @@ static void pfifo_run_pusher(NV2AState *d)
         if (GET_MASK(*dma_state, NV_PFIFO_CACHE1_DMA_STATE_ERROR)) {
             break;
         }
+    }
+
+    if (d->pfifo.pg_held) {
+        pfifo_pg_release(d, false);
     }
 
     // NV2A_DPRINTF("DMA pusher done: max 0x%" HWADDR_PRIx ", 0x%" HWADDR_PRIx " - 0x%" HWADDR_PRIx "\n",

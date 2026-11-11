@@ -102,6 +102,8 @@ extern "C" {
 #define OPTION_VAL_8_AR NULL
 #define OPTION_VAL_9_AR NULL
 #define OPTION_VAL_10_AR NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_AR NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_AR NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_AR NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_AR NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_AR "الأصل"
@@ -128,30 +130,25 @@ extern "C" {
 #define XEMU_VP_WORKERS_INFO_0_AR NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_AR NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_AR NULL
-#define XEMU_AUDIO_VOLUME_LABEL_AR NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_AR NULL
-#define OPTION_VAL_100_AR NULL
-#define OPTION_VAL_80_AR NULL
-#define OPTION_VAL_60_AR NULL
-#define OPTION_VAL_40_AR NULL
-#define OPTION_VAL_20_AR NULL
-#define OPTION_VAL_0_AR NULL
 #define XEMU_VK_FAST_PATHS_LABEL_AR NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_AR NULL
 #define OPTION_VAL_ALL_AR "الكل"
 #define OPTION_VAL_NO_GPL_AR NULL
 #define OPTION_VAL_NO_DYN_AR NULL
 #define OPTION_VAL_NONE_AR "لاشيء"
+#define XEMU_MSPF_OVERLAY_LABEL_AR NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_AR NULL
 #define XEMU_RUMBLE_P1_LABEL_AR NULL
 #define XEMU_RUMBLE_P1_INFO_0_AR NULL
 #define XEMU_RUMBLE_P2_LABEL_AR NULL
 #define XEMU_RUMBLE_P2_INFO_0_AR NULL
 #define XEMU_DEADZONE_P1_LABEL_AR NULL
 #define XEMU_DEADZONE_P1_INFO_0_AR NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_AR NULL
+#define OPTION_VAL_0_AR NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_AR NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_AR NULL
 #define OPTION_VAL_15_AR NULL
+#define OPTION_VAL_20_AR NULL
 #define OPTION_VAL_25_AR NULL
 #define OPTION_VAL_30_AR NULL
 #define XEMU_DEADZONE_P2_LABEL_AR NULL
@@ -165,8 +162,11 @@ extern "C" {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_AR NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_AR NULL
 #define OPTION_VAL_50_AR NULL
+#define OPTION_VAL_60_AR NULL
 #define OPTION_VAL_70_AR NULL
+#define OPTION_VAL_80_AR NULL
 #define OPTION_VAL_90_AR NULL
+#define OPTION_VAL_100_AR NULL
 #define OPTION_VAL_110_AR NULL
 #define OPTION_VAL_120_AR NULL
 #define OPTION_VAL_130_AR NULL
@@ -179,6 +179,19 @@ extern "C" {
 #define OPTION_VAL_200_AR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_AR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_AR NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_AR NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_AR NULL
+#define OPTION_VAL_LINEAR_AR "خطي"
+#define OPTION_VAL_LOGARITHMIC_AR NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_AR NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_AR NULL
+#define OPTION_VAL_CUBIC_AR NULL
+#define OPTION_VAL_SQUARE_AR NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_AR NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_AR NULL
+#define OPTION_VAL_35_AR NULL
+#define OPTION_VAL_40_AR NULL
+#define OPTION_VAL_45_AR NULL
 #define XEMU_CHIHIRO_FFB_LABEL_AR NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_AR NULL
 #define OPTION_VAL_75_AR NULL
@@ -414,6 +427,21 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_AR,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_AR,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -546,28 +574,8 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_AR,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_AR,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_AR },
-            { "80",  OPTION_VAL_80_AR },
-            { "60",  OPTION_VAL_60_AR },
-            { "40",  OPTION_VAL_40_AR },
-            { "20",  OPTION_VAL_20_AR },
-            { "0",   OPTION_VAL_0_AR },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_AR,
@@ -582,7 +590,21 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
             { "none",     OPTION_VAL_NONE_AR },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_AR,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_AR,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -623,7 +645,7 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_AR },
+            { "0",  OPTION_VAL_0_AR },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_AR },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_AR },
             { "15", OPTION_VAL_15_AR },
@@ -645,7 +667,7 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_AR },
+            { "0",  OPTION_VAL_0_AR },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_AR },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_AR },
             { "15", OPTION_VAL_15_AR },
@@ -736,6 +758,58 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_AR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_AR,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_AR },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_AR },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_AR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_AR,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_AR },
+            { "square", OPTION_VAL_SQUARE_AR },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_AR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_AR,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_AR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_AR },
+            { "15", OPTION_VAL_15_AR },
+            { "20", OPTION_VAL_20_AR },
+            { "25", OPTION_VAL_25_AR },
+            { "30", OPTION_VAL_30_AR },
+            { "35", OPTION_VAL_35_AR },
+            { "40", OPTION_VAL_40_AR },
+            { "45", OPTION_VAL_45_AR },
+            { "50", OPTION_VAL_50_AR },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -830,6 +904,8 @@ struct retro_core_options_v2 options_ar = {
 #define OPTION_VAL_8_AST NULL
 #define OPTION_VAL_9_AST NULL
 #define OPTION_VAL_10_AST NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_AST NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_AST NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_AST "Filtru anisotrópicu"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_AST NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_AST NULL
@@ -856,30 +932,25 @@ struct retro_core_options_v2 options_ar = {
 #define XEMU_VP_WORKERS_INFO_0_AST NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_AST NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_AST NULL
-#define XEMU_AUDIO_VOLUME_LABEL_AST NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_AST NULL
-#define OPTION_VAL_100_AST NULL
-#define OPTION_VAL_80_AST NULL
-#define OPTION_VAL_60_AST NULL
-#define OPTION_VAL_40_AST NULL
-#define OPTION_VAL_20_AST NULL
-#define OPTION_VAL_0_AST NULL
 #define XEMU_VK_FAST_PATHS_LABEL_AST NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_AST NULL
 #define OPTION_VAL_ALL_AST NULL
 #define OPTION_VAL_NO_GPL_AST NULL
 #define OPTION_VAL_NO_DYN_AST NULL
 #define OPTION_VAL_NONE_AST NULL
+#define XEMU_MSPF_OVERLAY_LABEL_AST NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_AST NULL
 #define XEMU_RUMBLE_P1_LABEL_AST NULL
 #define XEMU_RUMBLE_P1_INFO_0_AST NULL
 #define XEMU_RUMBLE_P2_LABEL_AST NULL
 #define XEMU_RUMBLE_P2_INFO_0_AST NULL
 #define XEMU_DEADZONE_P1_LABEL_AST NULL
 #define XEMU_DEADZONE_P1_INFO_0_AST NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_AST NULL
+#define OPTION_VAL_0_AST NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_AST NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_AST NULL
 #define OPTION_VAL_15_AST NULL
+#define OPTION_VAL_20_AST NULL
 #define OPTION_VAL_25_AST NULL
 #define OPTION_VAL_30_AST NULL
 #define XEMU_DEADZONE_P2_LABEL_AST NULL
@@ -893,8 +964,11 @@ struct retro_core_options_v2 options_ar = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_AST NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_AST NULL
 #define OPTION_VAL_50_AST NULL
+#define OPTION_VAL_60_AST NULL
 #define OPTION_VAL_70_AST NULL
+#define OPTION_VAL_80_AST NULL
 #define OPTION_VAL_90_AST NULL
+#define OPTION_VAL_100_AST NULL
 #define OPTION_VAL_110_AST NULL
 #define OPTION_VAL_120_AST NULL
 #define OPTION_VAL_130_AST NULL
@@ -907,6 +981,19 @@ struct retro_core_options_v2 options_ar = {
 #define OPTION_VAL_200_AST NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_AST NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_AST NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_AST NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_AST NULL
+#define OPTION_VAL_LINEAR_AST NULL
+#define OPTION_VAL_LOGARITHMIC_AST NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_AST NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_AST NULL
+#define OPTION_VAL_CUBIC_AST NULL
+#define OPTION_VAL_SQUARE_AST NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_AST NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_AST NULL
+#define OPTION_VAL_35_AST NULL
+#define OPTION_VAL_40_AST NULL
+#define OPTION_VAL_45_AST NULL
 #define XEMU_CHIHIRO_FFB_LABEL_AST NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_AST NULL
 #define OPTION_VAL_75_AST NULL
@@ -1142,6 +1229,21 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_AST,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_AST,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -1274,28 +1376,8 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_AST,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_AST,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_AST },
-            { "80",  OPTION_VAL_80_AST },
-            { "60",  OPTION_VAL_60_AST },
-            { "40",  OPTION_VAL_40_AST },
-            { "20",  OPTION_VAL_20_AST },
-            { "0",   OPTION_VAL_0_AST },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_AST,
@@ -1310,7 +1392,21 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
             { "none",     OPTION_VAL_NONE_AST },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_AST,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_AST,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -1351,7 +1447,7 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_AST },
+            { "0",  OPTION_VAL_0_AST },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_AST },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_AST },
             { "15", OPTION_VAL_15_AST },
@@ -1373,7 +1469,7 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_AST },
+            { "0",  OPTION_VAL_0_AST },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_AST },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_AST },
             { "15", OPTION_VAL_15_AST },
@@ -1464,6 +1560,58 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_AST,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_AST,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_AST },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_AST },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_AST,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_AST,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_AST },
+            { "square", OPTION_VAL_SQUARE_AST },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_AST,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_AST,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_AST },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_AST },
+            { "15", OPTION_VAL_15_AST },
+            { "20", OPTION_VAL_20_AST },
+            { "25", OPTION_VAL_25_AST },
+            { "30", OPTION_VAL_30_AST },
+            { "35", OPTION_VAL_35_AST },
+            { "40", OPTION_VAL_40_AST },
+            { "45", OPTION_VAL_45_AST },
+            { "50", OPTION_VAL_50_AST },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -1558,6 +1706,8 @@ struct retro_core_options_v2 options_ast = {
 #define OPTION_VAL_8_BE NULL
 #define OPTION_VAL_9_BE NULL
 #define OPTION_VAL_10_BE NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_BE NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_BE NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_BE "Анізатропнае фільтраванне"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_BE NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_BE "Родная"
@@ -1584,30 +1734,25 @@ struct retro_core_options_v2 options_ast = {
 #define XEMU_VP_WORKERS_INFO_0_BE NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_BE NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_BE NULL
-#define XEMU_AUDIO_VOLUME_LABEL_BE NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_BE NULL
-#define OPTION_VAL_100_BE "100 %"
-#define OPTION_VAL_80_BE "80 %"
-#define OPTION_VAL_60_BE "60 %"
-#define OPTION_VAL_40_BE "40 %"
-#define OPTION_VAL_20_BE "20 %"
-#define OPTION_VAL_0_BE NULL
 #define XEMU_VK_FAST_PATHS_LABEL_BE NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_BE NULL
 #define OPTION_VAL_ALL_BE "Усе"
 #define OPTION_VAL_NO_GPL_BE NULL
 #define OPTION_VAL_NO_DYN_BE NULL
 #define OPTION_VAL_NONE_BE "Няма"
+#define XEMU_MSPF_OVERLAY_LABEL_BE NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_BE NULL
 #define XEMU_RUMBLE_P1_LABEL_BE NULL
 #define XEMU_RUMBLE_P1_INFO_0_BE NULL
 #define XEMU_RUMBLE_P2_LABEL_BE NULL
 #define XEMU_RUMBLE_P2_INFO_0_BE NULL
 #define XEMU_DEADZONE_P1_LABEL_BE NULL
 #define XEMU_DEADZONE_P1_INFO_0_BE NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_BE NULL
+#define OPTION_VAL_0_BE NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_BE NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_BE NULL
 #define OPTION_VAL_15_BE "15 %"
+#define OPTION_VAL_20_BE "20 %"
 #define OPTION_VAL_25_BE NULL
 #define OPTION_VAL_30_BE "30 %"
 #define XEMU_DEADZONE_P2_LABEL_BE NULL
@@ -1621,8 +1766,11 @@ struct retro_core_options_v2 options_ast = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_BE NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_BE NULL
 #define OPTION_VAL_50_BE "50 %"
+#define OPTION_VAL_60_BE "60 %"
 #define OPTION_VAL_70_BE "70 %"
+#define OPTION_VAL_80_BE "80 %"
 #define OPTION_VAL_90_BE "90 %"
+#define OPTION_VAL_100_BE "100 %"
 #define OPTION_VAL_110_BE "110 %"
 #define OPTION_VAL_120_BE "120 %"
 #define OPTION_VAL_130_BE "130 %"
@@ -1635,6 +1783,19 @@ struct retro_core_options_v2 options_ast = {
 #define OPTION_VAL_200_BE "200 %"
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_BE NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_BE NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_BE NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_BE NULL
+#define OPTION_VAL_LINEAR_BE "Лінейны"
+#define OPTION_VAL_LOGARITHMIC_BE NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_BE NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_BE NULL
+#define OPTION_VAL_CUBIC_BE NULL
+#define OPTION_VAL_SQUARE_BE NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_BE NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_BE NULL
+#define OPTION_VAL_35_BE "35 %"
+#define OPTION_VAL_40_BE "40 %"
+#define OPTION_VAL_45_BE NULL
 #define XEMU_CHIHIRO_FFB_LABEL_BE NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_BE NULL
 #define OPTION_VAL_75_BE "75 %"
@@ -1870,6 +2031,21 @@ struct retro_core_option_v2_definition option_defs_be[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_BE,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_BE,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -2002,28 +2178,8 @@ struct retro_core_option_v2_definition option_defs_be[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_BE,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_BE,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_BE },
-            { "80",  OPTION_VAL_80_BE },
-            { "60",  OPTION_VAL_60_BE },
-            { "40",  OPTION_VAL_40_BE },
-            { "20",  OPTION_VAL_20_BE },
-            { "0",   OPTION_VAL_0_BE },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_BE,
@@ -2038,7 +2194,21 @@ struct retro_core_option_v2_definition option_defs_be[] = {
             { "none",     OPTION_VAL_NONE_BE },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_BE,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_BE,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -2079,7 +2249,7 @@ struct retro_core_option_v2_definition option_defs_be[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_BE },
+            { "0",  OPTION_VAL_0_BE },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_BE },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_BE },
             { "15", OPTION_VAL_15_BE },
@@ -2101,7 +2271,7 @@ struct retro_core_option_v2_definition option_defs_be[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_BE },
+            { "0",  OPTION_VAL_0_BE },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_BE },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_BE },
             { "15", OPTION_VAL_15_BE },
@@ -2192,6 +2362,58 @@ struct retro_core_option_v2_definition option_defs_be[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_BE,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_BE,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_BE },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_BE },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_BE,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_BE,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_BE },
+            { "square", OPTION_VAL_SQUARE_BE },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_BE,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_BE,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_BE },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_BE },
+            { "15", OPTION_VAL_15_BE },
+            { "20", OPTION_VAL_20_BE },
+            { "25", OPTION_VAL_25_BE },
+            { "30", OPTION_VAL_30_BE },
+            { "35", OPTION_VAL_35_BE },
+            { "40", OPTION_VAL_40_BE },
+            { "45", OPTION_VAL_45_BE },
+            { "50", OPTION_VAL_50_BE },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -2286,6 +2508,8 @@ struct retro_core_options_v2 options_be = {
 #define OPTION_VAL_8_BG NULL
 #define OPTION_VAL_9_BG NULL
 #define OPTION_VAL_10_BG NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_BG NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_BG NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_BG NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_BG NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_BG NULL
@@ -2312,30 +2536,25 @@ struct retro_core_options_v2 options_be = {
 #define XEMU_VP_WORKERS_INFO_0_BG NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_BG NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_BG NULL
-#define XEMU_AUDIO_VOLUME_LABEL_BG NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_BG NULL
-#define OPTION_VAL_100_BG NULL
-#define OPTION_VAL_80_BG NULL
-#define OPTION_VAL_60_BG NULL
-#define OPTION_VAL_40_BG NULL
-#define OPTION_VAL_20_BG NULL
-#define OPTION_VAL_0_BG NULL
 #define XEMU_VK_FAST_PATHS_LABEL_BG NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_BG NULL
 #define OPTION_VAL_ALL_BG NULL
 #define OPTION_VAL_NO_GPL_BG NULL
 #define OPTION_VAL_NO_DYN_BG NULL
 #define OPTION_VAL_NONE_BG NULL
+#define XEMU_MSPF_OVERLAY_LABEL_BG NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_BG NULL
 #define XEMU_RUMBLE_P1_LABEL_BG NULL
 #define XEMU_RUMBLE_P1_INFO_0_BG NULL
 #define XEMU_RUMBLE_P2_LABEL_BG NULL
 #define XEMU_RUMBLE_P2_INFO_0_BG NULL
 #define XEMU_DEADZONE_P1_LABEL_BG NULL
 #define XEMU_DEADZONE_P1_INFO_0_BG NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_BG NULL
+#define OPTION_VAL_0_BG NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_BG NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_BG NULL
 #define OPTION_VAL_15_BG NULL
+#define OPTION_VAL_20_BG NULL
 #define OPTION_VAL_25_BG NULL
 #define OPTION_VAL_30_BG NULL
 #define XEMU_DEADZONE_P2_LABEL_BG NULL
@@ -2349,8 +2568,11 @@ struct retro_core_options_v2 options_be = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_BG NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_BG NULL
 #define OPTION_VAL_50_BG NULL
+#define OPTION_VAL_60_BG NULL
 #define OPTION_VAL_70_BG NULL
+#define OPTION_VAL_80_BG NULL
 #define OPTION_VAL_90_BG NULL
+#define OPTION_VAL_100_BG NULL
 #define OPTION_VAL_110_BG NULL
 #define OPTION_VAL_120_BG NULL
 #define OPTION_VAL_130_BG NULL
@@ -2363,6 +2585,19 @@ struct retro_core_options_v2 options_be = {
 #define OPTION_VAL_200_BG NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_BG NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_BG NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_BG NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_BG NULL
+#define OPTION_VAL_LINEAR_BG NULL
+#define OPTION_VAL_LOGARITHMIC_BG NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_BG NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_BG NULL
+#define OPTION_VAL_CUBIC_BG NULL
+#define OPTION_VAL_SQUARE_BG NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_BG NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_BG NULL
+#define OPTION_VAL_35_BG NULL
+#define OPTION_VAL_40_BG NULL
+#define OPTION_VAL_45_BG NULL
 #define XEMU_CHIHIRO_FFB_LABEL_BG NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_BG NULL
 #define OPTION_VAL_75_BG NULL
@@ -2598,6 +2833,21 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_BG,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_BG,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -2730,28 +2980,8 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_BG,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_BG,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_BG },
-            { "80",  OPTION_VAL_80_BG },
-            { "60",  OPTION_VAL_60_BG },
-            { "40",  OPTION_VAL_40_BG },
-            { "20",  OPTION_VAL_20_BG },
-            { "0",   OPTION_VAL_0_BG },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_BG,
@@ -2766,7 +2996,21 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
             { "none",     OPTION_VAL_NONE_BG },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_BG,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_BG,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -2807,7 +3051,7 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_BG },
+            { "0",  OPTION_VAL_0_BG },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_BG },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_BG },
             { "15", OPTION_VAL_15_BG },
@@ -2829,7 +3073,7 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_BG },
+            { "0",  OPTION_VAL_0_BG },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_BG },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_BG },
             { "15", OPTION_VAL_15_BG },
@@ -2921,6 +3165,58 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
         },
         "enabled"
     },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_BG,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_BG,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_BG },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_BG },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_BG,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_BG,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_BG },
+            { "square", OPTION_VAL_SQUARE_BG },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_BG,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_BG,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_BG },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_BG },
+            { "15", OPTION_VAL_15_BG },
+            { "20", OPTION_VAL_20_BG },
+            { "25", OPTION_VAL_25_BG },
+            { "30", OPTION_VAL_30_BG },
+            { "35", OPTION_VAL_35_BG },
+            { "40", OPTION_VAL_40_BG },
+            { "45", OPTION_VAL_45_BG },
+            { "50", OPTION_VAL_50_BG },
+            { NULL, NULL },
+        },
+        "25"
+    },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
     {
@@ -2962,7 +3258,7 @@ struct retro_core_options_v2 options_bg = {
 #define CATEGORY_CHIHIRO_LABEL_CA NULL
 #define CATEGORY_CHIHIRO_INFO_0_CA "Els jocs d'arcade per a Sega Chihiro: joc lliure, la punteria en els jocs de trets i la retroalimentació de força en els jocs de curses."
 #define XEMU_MEMORY_LABEL_CA "Memòria del sistema (MB)"
-#define XEMU_MEMORY_INFO_0_CA NULL
+#define XEMU_MEMORY_INFO_0_CA "Quantitat de memòria RAM del sistema de l'Xbox. 64 MB és l'estàndard; els kits de depuració (debug kits) utilitzen 128 MB. Una Sega Chihiro sempre té 128 MB, independentment del que indiqui això."
 #define OPTION_VAL_64_CA NULL
 #define OPTION_VAL_128_CA NULL
 #define XEMU_NETWORK_BACKEND_LABEL_CA "Backend de xarxa"
@@ -2975,7 +3271,7 @@ struct retro_core_options_v2 options_bg = {
 #define XEMU_CPU_BOOST_LABEL_CA NULL
 #define XEMU_CPU_BOOST_INFO_0_CA "Camins més ràpids per a la CPU convidada i el processador d'àudio: SSE natiu i una memòria cau de salts més àmplia. Desactiveu-ho si un joc presenta problemes."
 #define XEMU_LANGUAGE_LABEL_CA "Idioma del sistema"
-#define XEMU_LANGUAGE_INFO_0_CA NULL
+#define XEMU_LANGUAGE_INFO_0_CA "L'idioma que la configuració de la consola proporciona als jocs, en lloc de la configuració del tauler de control. El tauler de control manté l'idioma emmagatzemat a l'EEPROM. L'opció «Auto» correspon a l'idioma de RetroArch si la Xbox el té definit; en cas contrari, s'utilitza l'anglès."
 #define OPTION_VAL_AUTO_CA "Automàtic"
 #define OPTION_VAL_DASHBOARD_CA "Panell de control"
 #define OPTION_VAL_ENGLISH_CA "Anglès"
@@ -2999,9 +3295,9 @@ struct retro_core_options_v2 options_bg = {
 #define OPTION_VAL_16_9_CA NULL
 #define OPTION_VAL_LETTERBOX_CA "Format bústia"
 #define XEMU_ASPECT_RATIO_LABEL_CA "Relació d'aspecte del nucli"
-#define XEMU_ASPECT_RATIO_INFO_0_CA "La forma en què es mostra la imatge. El millor és deixar-ho en «Auto», ja que s'adapta al joc: 16:9 quan la consola està configurada en pantalla panoràmica (a la configuració del sistema o al menú principal) i el joc es renderitza en 16:9; en cas contrari —o si es tracta d'una placa Chihiro—, es mostra en 4:3. L'opció 16:9 estira un joc en format 4:3 per adaptar-lo a la pantalla panoràmica."
+#define XEMU_ASPECT_RATIO_INFO_0_CA "La forma en què es mostra la imatge. El més recomanable és deixar-ho en «Auto», ja que s'adapta al joc: 16:9 quan la consola està configurada en pantalla panoràmica (a la configuració del sistema o al menú principal) i el joc es renderitza en 16:9, o bé quan s'aplica un pedaç per a pantalla panoràmica (que inclou termes com «Widescreen» o «16-9» al nom); en cas contrari —o si es tracta d'una placa Chihiro—, s'utilitza el format 4:3. L'opció 16:9 estira un joc en format 4:3 per adaptar-lo a una pantalla panoràmica."
 #define XEMU_OVERSCAN_CROP_LABEL_CA "Retallar sobreescombrat vertical"
-#define XEMU_OVERSCAN_CROP_INFO_0_CA NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_CA "Alguns jocs generen una imatge de 448 línies dins de les 480 línies de l'Xbox, amb franges negres a la part superior i inferior. El sistema retalla automàticament 16 de cada 480 línies —tant a la part superior com a la inferior— en els jocs inclosos a la llista específica del nucli, i expandeix la resta fins a ocupar tota l'alçada, tot mantenint la relació d'aspecte."
 #define XEMU_SURFACE_SCALE_LABEL_CA "Escala de resolució interna (Cal reiniciar)"
 #define XEMU_SURFACE_SCALE_INFO_0_CA "Escala la resolució interna de renderització. Valors alts poden millorar la qualitat per reduir el rendiment."
 #define OPTION_VAL_1_CA NULL
@@ -3014,6 +3310,8 @@ struct retro_core_options_v2 options_bg = {
 #define OPTION_VAL_8_CA NULL
 #define OPTION_VAL_9_CA NULL
 #define OPTION_VAL_10_CA NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_CA "Escalat amb desplaçament subpíxel"
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_CA "Amb una escala de resolució interna superior a 1x, desplaça la imatge una fracció de píxel de manera que els píxels de la resolució més alta s'alineïn amb els originals. Soluciona l'efecte fantasma i les unions visibles en alguns jocs (Jade Empire, Blinx), però en fa fallar d'altres (Splinter Cell). L'opció desactivada manté el comportament anterior."
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_CA "Filtre anisotròpic"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_CA "El filtratge menys anisotròpic que obtenen les textures filtrades suaument del joc, cosa que manté les textures amb una inclinació nítida. El natiu deixa les textures pròpies del joc, que per a la majoria de jocs de Xbox no n'hi ha."
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CA "Nativa"
@@ -3029,7 +3327,7 @@ struct retro_core_options_v2 options_bg = {
 #define OPTION_VAL_SCART_CA NULL
 #define OPTION_VAL_VGA_CA NULL
 #define XEMU_AUDIO_THREAD_LABEL_CA "Fil d'àudio (Cal reiniciar)"
-#define XEMU_AUDIO_THREAD_INFO_0_CA NULL
+#define XEMU_AUDIO_THREAD_INFO_0_CA "Passa el so al fil d'àudio de RetroArch mentre l'APU el mescla, mentre el reprodueix de manera independent, en comptes de fer-ho amb un fotograma per fotograma: el so continua mentre els fotogrames s'aturen, com mentre els shaders compilen. Les compilacions de RetroArch anteriors al novembre del 2026 alenteixen el seu menú amb aquest valor quan la velocitat de fotogrames del menú (limitació de fotogrames) és la velocitat de visualització; allà, configureu-la a la velocitat de contingut."
 #define XEMU_USE_DSP_LABEL_CA "Emulació APU DSP (cal reiniciar)"
 #define XEMU_USE_DSP_INFO_0_CA "Emula el DSP de l'APU, que reprodueix els efectes dels jocs, la reverberació i gran part de la música: sense ell, el so resulta pla. S'ha d'activar abans que comenci el contingut; canviar-ne l'estat mentre un joc està en marxa provoca distorsions en el so."
 #define XEMU_DSP_JIT_LABEL_CA "DSP JIT (Cal reiniciar)"
@@ -3040,30 +3338,25 @@ struct retro_core_options_v2 options_bg = {
 #define XEMU_VP_WORKERS_INFO_0_CA "Fils en què el processador de veu d'àudio mescla les veus. L'opció «Auto» n'utilitza un per cada nucli de la CPU."
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_CA "Primera partida fluida (Cal reiniciar)"
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_CA "Compila els shaders que se sap que utilitza un joc durant l'inici, de manera que els primers minuts no presentin salts ni interrupcions mentre es duen a terme aquestes compilacions. En el cas d'OpenGL, els elements compilats es desen a la memòria cau de shaders, que està sempre activa."
-#define XEMU_AUDIO_VOLUME_LABEL_CA "Llindar del volum d'àudio (%)"
-#define XEMU_AUDIO_VOLUME_INFO_0_CA "Limita el volum de la sortida d'àudio de Xbox independentment del volum principal de RetroArch."
-#define OPTION_VAL_100_CA NULL
-#define OPTION_VAL_80_CA NULL
-#define OPTION_VAL_60_CA NULL
-#define OPTION_VAL_40_CA NULL
-#define OPTION_VAL_20_CA NULL
-#define OPTION_VAL_0_CA "Silenciat"
 #define XEMU_VK_FAST_PATHS_LABEL_CA "Rutes ràpides de Vulkan (Cal reiniciar)"
 #define XEMU_VK_FAST_PATHS_INFO_0_CA "Afecta la velocitat de compilació dels shaders a Vulkan. «Tots» és l'opció més ràpida, però pot fer que alguns jocs es bloquegin."
 #define OPTION_VAL_ALL_CA "Tots"
 #define OPTION_VAL_NO_GPL_CA "No hi ha llibreries de pipeline"
 #define OPTION_VAL_NO_DYN_CA "Sense estats dinàmics"
 #define OPTION_VAL_NONE_CA "Cap"
+#define XEMU_MSPF_OVERLAY_LABEL_CA "Superposició de rendiment"
+#define XEMU_MSPF_OVERLAY_INFO_0_CA "Mostra dues línies a l'angle superior esquerre. FPS: els fotogrames per segon que mostra el joc —tal com es veu a la superposició de depuració de vídeo del xemu autònom—, calculats a partir dels últims 60 fotogrames. GPU: la taxa de fotogrames que el joc podria assolir segons el temps necessari per dibuixar un fotograma (el MSPF de la versió autònoma); es calcula com a mitjana dels últims 60 fotogrames i s'actualitza cada 20 fotogrames. Aquesta dada només és vàlida quan la GPU és el factor limitant del joc. Si l'opció està activada, el nucli també registra al fitxer de registre (log) de RetroArch —cada 300 execucions— com s'han sincronitzat els fotogrames del sistema emulat amb les execucions de la interfície (frontend). Els canvis s'apliquen a l'instant."
 #define XEMU_RUMBLE_P1_LABEL_CA "Vibració (Jugador 1)"
 #define XEMU_RUMBLE_P1_INFO_0_CA "El comandament del jugador 1 vibra, tant amb els jocs d'Xbox com gràcies a la retroalimentació de força d'un joc de curses per a Chihiro. Si està apagat, no vibra en cap dels dos casos."
 #define XEMU_RUMBLE_P2_LABEL_CA "Vibració (Jugador 2)"
 #define XEMU_RUMBLE_P2_INFO_0_CA "El comandament del jugador 2 vibra, tant a causa dels jocs d'Xbox com de la retroalimentació de força d'un joc de curses per a Chihiro. Si està apagat, no hi ha cap de les dues coses."
 #define XEMU_DEADZONE_P1_LABEL_CA "Zona morta analògica (Jugador 1)"
 #define XEMU_DEADZONE_P1_INFO_0_CA "Fins a quin punt es poden moure les palanques del jugador 1 abans que el joc ho detecti —tant en el cas de les dues palanques com en les plataformes Xbox i Chihiro—; la resta del recorregut s'escala fins a completar-ne el rang total."
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_CA NULL
+#define OPTION_VAL_0_CA NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_CA NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_CA NULL
 #define OPTION_VAL_15_CA NULL
+#define OPTION_VAL_20_CA NULL
 #define OPTION_VAL_25_CA NULL
 #define OPTION_VAL_30_CA NULL
 #define XEMU_DEADZONE_P2_LABEL_CA "Zona morta analògica (Jugador 2)"
@@ -3077,8 +3370,11 @@ struct retro_core_options_v2 options_bg = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_CA "Sensibilitat de la palanca per apuntar"
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_CA "La velocitat a la qual la palanca desplaça el punt de mira (amb l'opció «Light Gun Aim on Analog Stick») és la mateixa tant en horitzontal com en vertical; al 100 %, si es mou la palanca fins al límit, el punt de mira recorre l'alçada de la imatge en aproximadament un segon. El ratolí apunta allà on s'assenyala."
 #define OPTION_VAL_50_CA NULL
+#define OPTION_VAL_60_CA NULL
 #define OPTION_VAL_70_CA NULL
+#define OPTION_VAL_80_CA NULL
 #define OPTION_VAL_90_CA NULL
+#define OPTION_VAL_100_CA NULL
 #define OPTION_VAL_110_CA NULL
 #define OPTION_VAL_120_CA NULL
 #define OPTION_VAL_130_CA NULL
@@ -3091,6 +3387,19 @@ struct retro_core_options_v2 options_bg = {
 #define OPTION_VAL_200_CA NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_CA "Punt de mira"
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CA "Dibuixa la mira de cada jugador sobre la imatge: vermella per al jugador 1 i blava per al jugador 2."
+#define XEMU_CHIHIRO_STEERING_LABEL_CA NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_CA NULL
+#define OPTION_VAL_LINEAR_CA "Lineal"
+#define OPTION_VAL_LOGARITHMIC_CA NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_CA NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_CA NULL
+#define OPTION_VAL_CUBIC_CA NULL
+#define OPTION_VAL_SQUARE_CA NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_CA NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_CA NULL
+#define OPTION_VAL_35_CA NULL
+#define OPTION_VAL_40_CA NULL
+#define OPTION_VAL_45_CA NULL
 #define XEMU_CHIHIRO_FFB_LABEL_CA "Vibració amb retroalimentació de força"
 #define XEMU_CHIHIRO_FFB_INFO_0_CA "Proporciona la retroalimentació de força (force feedback) d'un joc de curses per a Chihiro (OutRun 2, Maximum Tune) en forma de vibració al comandament del port 1, amb aquesta intensitat."
 #define OPTION_VAL_75_CA NULL
@@ -3326,6 +3635,21 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_CA,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_CA,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -3458,28 +3782,8 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_CA,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_CA,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_CA },
-            { "80",  OPTION_VAL_80_CA },
-            { "60",  OPTION_VAL_60_CA },
-            { "40",  OPTION_VAL_40_CA },
-            { "20",  OPTION_VAL_20_CA },
-            { "0",   OPTION_VAL_0_CA },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_CA,
@@ -3494,7 +3798,21 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
             { "none",     OPTION_VAL_NONE_CA },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_CA,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_CA,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -3535,7 +3853,7 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CA },
+            { "0",  OPTION_VAL_0_CA },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CA },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CA },
             { "15", OPTION_VAL_15_CA },
@@ -3557,7 +3875,7 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CA },
+            { "0",  OPTION_VAL_0_CA },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CA },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CA },
             { "15", OPTION_VAL_15_CA },
@@ -3648,6 +3966,58 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_CA,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_CA,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_CA },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_CA },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_CA,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_CA,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_CA },
+            { "square", OPTION_VAL_SQUARE_CA },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_CA,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_CA,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_CA },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CA },
+            { "15", OPTION_VAL_15_CA },
+            { "20", OPTION_VAL_20_CA },
+            { "25", OPTION_VAL_25_CA },
+            { "30", OPTION_VAL_30_CA },
+            { "35", OPTION_VAL_35_CA },
+            { "40", OPTION_VAL_40_CA },
+            { "45", OPTION_VAL_45_CA },
+            { "50", OPTION_VAL_50_CA },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -3742,6 +4112,8 @@ struct retro_core_options_v2 options_ca = {
 #define OPTION_VAL_8_CHS NULL
 #define OPTION_VAL_9_CHS NULL
 #define OPTION_VAL_10_CHS NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_CHS NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_CHS NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_CHS "各向异性过滤"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_CHS NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CHS "原生"
@@ -3768,30 +4140,25 @@ struct retro_core_options_v2 options_ca = {
 #define XEMU_VP_WORKERS_INFO_0_CHS NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_CHS "平滑首次游玩 (需重启)"
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_CHS NULL
-#define XEMU_AUDIO_VOLUME_LABEL_CHS "音频音量限制 (%)"
-#define XEMU_AUDIO_VOLUME_INFO_0_CHS "独立于 RetroArch 主音量限制 Xbox 的音频输出音量。"
-#define OPTION_VAL_100_CHS NULL
-#define OPTION_VAL_80_CHS NULL
-#define OPTION_VAL_60_CHS NULL
-#define OPTION_VAL_40_CHS NULL
-#define OPTION_VAL_20_CHS NULL
-#define OPTION_VAL_0_CHS "已静音"
 #define XEMU_VK_FAST_PATHS_LABEL_CHS "Vulkan 快速路径 (需重启)"
 #define XEMU_VK_FAST_PATHS_INFO_0_CHS NULL
 #define OPTION_VAL_ALL_CHS "全部"
 #define OPTION_VAL_NO_GPL_CHS "禁用管线库"
 #define OPTION_VAL_NO_DYN_CHS "禁用动态状态"
 #define OPTION_VAL_NONE_CHS "无"
+#define XEMU_MSPF_OVERLAY_LABEL_CHS "性能信息浮层"
+#define XEMU_MSPF_OVERLAY_INFO_0_CHS NULL
 #define XEMU_RUMBLE_P1_LABEL_CHS NULL
 #define XEMU_RUMBLE_P1_INFO_0_CHS NULL
 #define XEMU_RUMBLE_P2_LABEL_CHS NULL
 #define XEMU_RUMBLE_P2_INFO_0_CHS NULL
 #define XEMU_DEADZONE_P1_LABEL_CHS NULL
 #define XEMU_DEADZONE_P1_INFO_0_CHS NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_CHS NULL
+#define OPTION_VAL_0_CHS NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_CHS NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_CHS NULL
 #define OPTION_VAL_15_CHS NULL
+#define OPTION_VAL_20_CHS NULL
 #define OPTION_VAL_25_CHS NULL
 #define OPTION_VAL_30_CHS NULL
 #define XEMU_DEADZONE_P2_LABEL_CHS NULL
@@ -3805,8 +4172,11 @@ struct retro_core_options_v2 options_ca = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_CHS NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_CHS NULL
 #define OPTION_VAL_50_CHS NULL
+#define OPTION_VAL_60_CHS NULL
 #define OPTION_VAL_70_CHS NULL
+#define OPTION_VAL_80_CHS NULL
 #define OPTION_VAL_90_CHS NULL
+#define OPTION_VAL_100_CHS NULL
 #define OPTION_VAL_110_CHS NULL
 #define OPTION_VAL_120_CHS NULL
 #define OPTION_VAL_130_CHS NULL
@@ -3819,6 +4189,19 @@ struct retro_core_options_v2 options_ca = {
 #define OPTION_VAL_200_CHS NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_CHS "游戏准星显示"
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CHS "在画面上叠加绘制玩家的瞄准准星，1 号玩家显示为红色，2 号玩家显示为蓝色。"
+#define XEMU_CHIHIRO_STEERING_LABEL_CHS NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_CHS NULL
+#define OPTION_VAL_LINEAR_CHS "线性"
+#define OPTION_VAL_LOGARITHMIC_CHS NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_CHS NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_CHS NULL
+#define OPTION_VAL_CUBIC_CHS NULL
+#define OPTION_VAL_SQUARE_CHS NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_CHS NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_CHS NULL
+#define OPTION_VAL_35_CHS NULL
+#define OPTION_VAL_40_CHS NULL
+#define OPTION_VAL_45_CHS NULL
 #define XEMU_CHIHIRO_FFB_LABEL_CHS "力反馈震动"
 #define XEMU_CHIHIRO_FFB_INFO_0_CHS "将 Chihiro 赛车游戏（如《OutRun 2》、《湾岸午夜最高极速》）的力反馈信号转换为端口 1 手柄的震动效果，强度为此处设定的百分比。"
 #define OPTION_VAL_75_CHS NULL
@@ -4054,6 +4437,21 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_CHS,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_CHS,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -4186,28 +4584,8 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_CHS,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_CHS,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_CHS },
-            { "80",  OPTION_VAL_80_CHS },
-            { "60",  OPTION_VAL_60_CHS },
-            { "40",  OPTION_VAL_40_CHS },
-            { "20",  OPTION_VAL_20_CHS },
-            { "0",   OPTION_VAL_0_CHS },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_CHS,
@@ -4222,7 +4600,21 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
             { "none",     OPTION_VAL_NONE_CHS },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_CHS,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_CHS,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -4263,7 +4655,7 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CHS },
+            { "0",  OPTION_VAL_0_CHS },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CHS },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CHS },
             { "15", OPTION_VAL_15_CHS },
@@ -4285,7 +4677,7 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CHS },
+            { "0",  OPTION_VAL_0_CHS },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CHS },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CHS },
             { "15", OPTION_VAL_15_CHS },
@@ -4376,6 +4768,58 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_CHS,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_CHS,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_CHS },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_CHS },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_CHS,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_CHS,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_CHS },
+            { "square", OPTION_VAL_SQUARE_CHS },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_CHS,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_CHS,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_CHS },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CHS },
+            { "15", OPTION_VAL_15_CHS },
+            { "20", OPTION_VAL_20_CHS },
+            { "25", OPTION_VAL_25_CHS },
+            { "30", OPTION_VAL_30_CHS },
+            { "35", OPTION_VAL_35_CHS },
+            { "40", OPTION_VAL_40_CHS },
+            { "45", OPTION_VAL_45_CHS },
+            { "50", OPTION_VAL_50_CHS },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -4470,6 +4914,8 @@ struct retro_core_options_v2 options_chs = {
 #define OPTION_VAL_8_CHT NULL
 #define OPTION_VAL_9_CHT NULL
 #define OPTION_VAL_10_CHT NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_CHT NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_CHT NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_CHT NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_CHT NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CHT "原始"
@@ -4496,30 +4942,25 @@ struct retro_core_options_v2 options_chs = {
 #define XEMU_VP_WORKERS_INFO_0_CHT NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_CHT NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_CHT NULL
-#define XEMU_AUDIO_VOLUME_LABEL_CHT NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_CHT NULL
-#define OPTION_VAL_100_CHT NULL
-#define OPTION_VAL_80_CHT NULL
-#define OPTION_VAL_60_CHT NULL
-#define OPTION_VAL_40_CHT NULL
-#define OPTION_VAL_20_CHT NULL
-#define OPTION_VAL_0_CHT NULL
 #define XEMU_VK_FAST_PATHS_LABEL_CHT NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_CHT NULL
 #define OPTION_VAL_ALL_CHT "全部"
 #define OPTION_VAL_NO_GPL_CHT NULL
 #define OPTION_VAL_NO_DYN_CHT NULL
 #define OPTION_VAL_NONE_CHT "無"
+#define XEMU_MSPF_OVERLAY_LABEL_CHT NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_CHT NULL
 #define XEMU_RUMBLE_P1_LABEL_CHT NULL
 #define XEMU_RUMBLE_P1_INFO_0_CHT NULL
 #define XEMU_RUMBLE_P2_LABEL_CHT NULL
 #define XEMU_RUMBLE_P2_INFO_0_CHT NULL
 #define XEMU_DEADZONE_P1_LABEL_CHT NULL
 #define XEMU_DEADZONE_P1_INFO_0_CHT NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_CHT NULL
+#define OPTION_VAL_0_CHT NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_CHT NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_CHT NULL
 #define OPTION_VAL_15_CHT NULL
+#define OPTION_VAL_20_CHT NULL
 #define OPTION_VAL_25_CHT NULL
 #define OPTION_VAL_30_CHT NULL
 #define XEMU_DEADZONE_P2_LABEL_CHT NULL
@@ -4533,8 +4974,11 @@ struct retro_core_options_v2 options_chs = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_CHT NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_CHT NULL
 #define OPTION_VAL_50_CHT NULL
+#define OPTION_VAL_60_CHT NULL
 #define OPTION_VAL_70_CHT NULL
+#define OPTION_VAL_80_CHT NULL
 #define OPTION_VAL_90_CHT NULL
+#define OPTION_VAL_100_CHT NULL
 #define OPTION_VAL_110_CHT NULL
 #define OPTION_VAL_120_CHT NULL
 #define OPTION_VAL_130_CHT NULL
@@ -4547,6 +4991,19 @@ struct retro_core_options_v2 options_chs = {
 #define OPTION_VAL_200_CHT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_CHT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CHT NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_CHT NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_CHT NULL
+#define OPTION_VAL_LINEAR_CHT "線性"
+#define OPTION_VAL_LOGARITHMIC_CHT NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_CHT NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_CHT NULL
+#define OPTION_VAL_CUBIC_CHT NULL
+#define OPTION_VAL_SQUARE_CHT NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_CHT NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_CHT NULL
+#define OPTION_VAL_35_CHT NULL
+#define OPTION_VAL_40_CHT NULL
+#define OPTION_VAL_45_CHT NULL
 #define XEMU_CHIHIRO_FFB_LABEL_CHT NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_CHT NULL
 #define OPTION_VAL_75_CHT NULL
@@ -4782,6 +5239,21 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_CHT,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_CHT,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -4914,28 +5386,8 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_CHT,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_CHT,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_CHT },
-            { "80",  OPTION_VAL_80_CHT },
-            { "60",  OPTION_VAL_60_CHT },
-            { "40",  OPTION_VAL_40_CHT },
-            { "20",  OPTION_VAL_20_CHT },
-            { "0",   OPTION_VAL_0_CHT },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_CHT,
@@ -4950,7 +5402,21 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
             { "none",     OPTION_VAL_NONE_CHT },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_CHT,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_CHT,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -4991,7 +5457,7 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CHT },
+            { "0",  OPTION_VAL_0_CHT },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CHT },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CHT },
             { "15", OPTION_VAL_15_CHT },
@@ -5013,7 +5479,7 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CHT },
+            { "0",  OPTION_VAL_0_CHT },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CHT },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CHT },
             { "15", OPTION_VAL_15_CHT },
@@ -5104,6 +5570,58 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_CHT,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_CHT,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_CHT },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_CHT },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_CHT,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_CHT,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_CHT },
+            { "square", OPTION_VAL_SQUARE_CHT },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_CHT,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_CHT,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_CHT },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CHT },
+            { "15", OPTION_VAL_15_CHT },
+            { "20", OPTION_VAL_20_CHT },
+            { "25", OPTION_VAL_25_CHT },
+            { "30", OPTION_VAL_30_CHT },
+            { "35", OPTION_VAL_35_CHT },
+            { "40", OPTION_VAL_40_CHT },
+            { "45", OPTION_VAL_45_CHT },
+            { "50", OPTION_VAL_50_CHT },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -5198,6 +5716,8 @@ struct retro_core_options_v2 options_cht = {
 #define OPTION_VAL_8_CS NULL
 #define OPTION_VAL_9_CS NULL
 #define OPTION_VAL_10_CS NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_CS NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_CS NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_CS "Anizotropní Filtrování"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_CS NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CS "Nativní"
@@ -5224,30 +5744,25 @@ struct retro_core_options_v2 options_cht = {
 #define XEMU_VP_WORKERS_INFO_0_CS NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_CS NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_CS NULL
-#define XEMU_AUDIO_VOLUME_LABEL_CS NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_CS NULL
-#define OPTION_VAL_100_CS NULL
-#define OPTION_VAL_80_CS NULL
-#define OPTION_VAL_60_CS NULL
-#define OPTION_VAL_40_CS NULL
-#define OPTION_VAL_20_CS NULL
-#define OPTION_VAL_0_CS NULL
 #define XEMU_VK_FAST_PATHS_LABEL_CS NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_CS NULL
 #define OPTION_VAL_ALL_CS "Vše"
 #define OPTION_VAL_NO_GPL_CS NULL
 #define OPTION_VAL_NO_DYN_CS NULL
 #define OPTION_VAL_NONE_CS "Žádné"
+#define XEMU_MSPF_OVERLAY_LABEL_CS NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_CS NULL
 #define XEMU_RUMBLE_P1_LABEL_CS NULL
 #define XEMU_RUMBLE_P1_INFO_0_CS NULL
 #define XEMU_RUMBLE_P2_LABEL_CS NULL
 #define XEMU_RUMBLE_P2_INFO_0_CS NULL
 #define XEMU_DEADZONE_P1_LABEL_CS NULL
 #define XEMU_DEADZONE_P1_INFO_0_CS NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_CS NULL
+#define OPTION_VAL_0_CS NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_CS NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_CS NULL
 #define OPTION_VAL_15_CS NULL
+#define OPTION_VAL_20_CS NULL
 #define OPTION_VAL_25_CS NULL
 #define OPTION_VAL_30_CS NULL
 #define XEMU_DEADZONE_P2_LABEL_CS NULL
@@ -5261,8 +5776,11 @@ struct retro_core_options_v2 options_cht = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_CS NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_CS NULL
 #define OPTION_VAL_50_CS NULL
+#define OPTION_VAL_60_CS NULL
 #define OPTION_VAL_70_CS NULL
+#define OPTION_VAL_80_CS NULL
 #define OPTION_VAL_90_CS NULL
+#define OPTION_VAL_100_CS NULL
 #define OPTION_VAL_110_CS NULL
 #define OPTION_VAL_120_CS NULL
 #define OPTION_VAL_130_CS NULL
@@ -5275,6 +5793,19 @@ struct retro_core_options_v2 options_cht = {
 #define OPTION_VAL_200_CS NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_CS NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CS NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_CS NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_CS NULL
+#define OPTION_VAL_LINEAR_CS "Lineární"
+#define OPTION_VAL_LOGARITHMIC_CS NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_CS NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_CS NULL
+#define OPTION_VAL_CUBIC_CS NULL
+#define OPTION_VAL_SQUARE_CS NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_CS NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_CS NULL
+#define OPTION_VAL_35_CS NULL
+#define OPTION_VAL_40_CS NULL
+#define OPTION_VAL_45_CS NULL
 #define XEMU_CHIHIRO_FFB_LABEL_CS NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_CS NULL
 #define OPTION_VAL_75_CS NULL
@@ -5510,6 +6041,21 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_CS,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_CS,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -5642,28 +6188,8 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_CS,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_CS,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_CS },
-            { "80",  OPTION_VAL_80_CS },
-            { "60",  OPTION_VAL_60_CS },
-            { "40",  OPTION_VAL_40_CS },
-            { "20",  OPTION_VAL_20_CS },
-            { "0",   OPTION_VAL_0_CS },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_CS,
@@ -5678,7 +6204,21 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
             { "none",     OPTION_VAL_NONE_CS },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_CS,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_CS,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -5719,7 +6259,7 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CS },
+            { "0",  OPTION_VAL_0_CS },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CS },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CS },
             { "15", OPTION_VAL_15_CS },
@@ -5741,7 +6281,7 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CS },
+            { "0",  OPTION_VAL_0_CS },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CS },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CS },
             { "15", OPTION_VAL_15_CS },
@@ -5832,6 +6372,58 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_CS,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_CS,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_CS },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_CS },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_CS,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_CS,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_CS },
+            { "square", OPTION_VAL_SQUARE_CS },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_CS,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_CS,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_CS },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CS },
+            { "15", OPTION_VAL_15_CS },
+            { "20", OPTION_VAL_20_CS },
+            { "25", OPTION_VAL_25_CS },
+            { "30", OPTION_VAL_30_CS },
+            { "35", OPTION_VAL_35_CS },
+            { "40", OPTION_VAL_40_CS },
+            { "45", OPTION_VAL_45_CS },
+            { "50", OPTION_VAL_50_CS },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -5926,6 +6518,8 @@ struct retro_core_options_v2 options_cs = {
 #define OPTION_VAL_8_CY NULL
 #define OPTION_VAL_9_CY NULL
 #define OPTION_VAL_10_CY NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_CY NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_CY NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_CY NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_CY NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CY NULL
@@ -5952,30 +6546,25 @@ struct retro_core_options_v2 options_cs = {
 #define XEMU_VP_WORKERS_INFO_0_CY NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_CY NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_CY NULL
-#define XEMU_AUDIO_VOLUME_LABEL_CY NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_CY NULL
-#define OPTION_VAL_100_CY NULL
-#define OPTION_VAL_80_CY NULL
-#define OPTION_VAL_60_CY NULL
-#define OPTION_VAL_40_CY NULL
-#define OPTION_VAL_20_CY NULL
-#define OPTION_VAL_0_CY NULL
 #define XEMU_VK_FAST_PATHS_LABEL_CY NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_CY NULL
 #define OPTION_VAL_ALL_CY "Popeth"
 #define OPTION_VAL_NO_GPL_CY NULL
 #define OPTION_VAL_NO_DYN_CY NULL
 #define OPTION_VAL_NONE_CY "Dim"
+#define XEMU_MSPF_OVERLAY_LABEL_CY NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_CY NULL
 #define XEMU_RUMBLE_P1_LABEL_CY NULL
 #define XEMU_RUMBLE_P1_INFO_0_CY NULL
 #define XEMU_RUMBLE_P2_LABEL_CY NULL
 #define XEMU_RUMBLE_P2_INFO_0_CY NULL
 #define XEMU_DEADZONE_P1_LABEL_CY NULL
 #define XEMU_DEADZONE_P1_INFO_0_CY NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_CY NULL
+#define OPTION_VAL_0_CY NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_CY NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_CY NULL
 #define OPTION_VAL_15_CY NULL
+#define OPTION_VAL_20_CY NULL
 #define OPTION_VAL_25_CY NULL
 #define OPTION_VAL_30_CY NULL
 #define XEMU_DEADZONE_P2_LABEL_CY NULL
@@ -5989,8 +6578,11 @@ struct retro_core_options_v2 options_cs = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_CY NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_CY NULL
 #define OPTION_VAL_50_CY NULL
+#define OPTION_VAL_60_CY NULL
 #define OPTION_VAL_70_CY NULL
+#define OPTION_VAL_80_CY NULL
 #define OPTION_VAL_90_CY NULL
+#define OPTION_VAL_100_CY NULL
 #define OPTION_VAL_110_CY NULL
 #define OPTION_VAL_120_CY NULL
 #define OPTION_VAL_130_CY NULL
@@ -6003,6 +6595,19 @@ struct retro_core_options_v2 options_cs = {
 #define OPTION_VAL_200_CY NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_CY NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_CY NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_CY NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_CY NULL
+#define OPTION_VAL_LINEAR_CY NULL
+#define OPTION_VAL_LOGARITHMIC_CY NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_CY NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_CY NULL
+#define OPTION_VAL_CUBIC_CY NULL
+#define OPTION_VAL_SQUARE_CY NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_CY NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_CY NULL
+#define OPTION_VAL_35_CY NULL
+#define OPTION_VAL_40_CY NULL
+#define OPTION_VAL_45_CY NULL
 #define XEMU_CHIHIRO_FFB_LABEL_CY NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_CY NULL
 #define OPTION_VAL_75_CY NULL
@@ -6238,6 +6843,21 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_CY,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_CY,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -6370,28 +6990,8 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_CY,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_CY,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_CY },
-            { "80",  OPTION_VAL_80_CY },
-            { "60",  OPTION_VAL_60_CY },
-            { "40",  OPTION_VAL_40_CY },
-            { "20",  OPTION_VAL_20_CY },
-            { "0",   OPTION_VAL_0_CY },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_CY,
@@ -6406,7 +7006,21 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
             { "none",     OPTION_VAL_NONE_CY },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_CY,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_CY,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -6447,7 +7061,7 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CY },
+            { "0",  OPTION_VAL_0_CY },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CY },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CY },
             { "15", OPTION_VAL_15_CY },
@@ -6469,7 +7083,7 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_CY },
+            { "0",  OPTION_VAL_0_CY },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_CY },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CY },
             { "15", OPTION_VAL_15_CY },
@@ -6560,6 +7174,58 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_CY,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_CY,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_CY },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_CY },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_CY,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_CY,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_CY },
+            { "square", OPTION_VAL_SQUARE_CY },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_CY,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_CY,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_CY },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_CY },
+            { "15", OPTION_VAL_15_CY },
+            { "20", OPTION_VAL_20_CY },
+            { "25", OPTION_VAL_25_CY },
+            { "30", OPTION_VAL_30_CY },
+            { "35", OPTION_VAL_35_CY },
+            { "40", OPTION_VAL_40_CY },
+            { "45", OPTION_VAL_45_CY },
+            { "50", OPTION_VAL_50_CY },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -6654,6 +7320,8 @@ struct retro_core_options_v2 options_cy = {
 #define OPTION_VAL_8_DA NULL
 #define OPTION_VAL_9_DA NULL
 #define OPTION_VAL_10_DA NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_DA NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_DA NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_DA NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_DA NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_DA NULL
@@ -6680,30 +7348,25 @@ struct retro_core_options_v2 options_cy = {
 #define XEMU_VP_WORKERS_INFO_0_DA NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_DA NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_DA NULL
-#define XEMU_AUDIO_VOLUME_LABEL_DA NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_DA NULL
-#define OPTION_VAL_100_DA NULL
-#define OPTION_VAL_80_DA NULL
-#define OPTION_VAL_60_DA NULL
-#define OPTION_VAL_40_DA NULL
-#define OPTION_VAL_20_DA NULL
-#define OPTION_VAL_0_DA NULL
 #define XEMU_VK_FAST_PATHS_LABEL_DA NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_DA NULL
 #define OPTION_VAL_ALL_DA NULL
 #define OPTION_VAL_NO_GPL_DA NULL
 #define OPTION_VAL_NO_DYN_DA NULL
 #define OPTION_VAL_NONE_DA NULL
+#define XEMU_MSPF_OVERLAY_LABEL_DA NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_DA NULL
 #define XEMU_RUMBLE_P1_LABEL_DA NULL
 #define XEMU_RUMBLE_P1_INFO_0_DA NULL
 #define XEMU_RUMBLE_P2_LABEL_DA NULL
 #define XEMU_RUMBLE_P2_INFO_0_DA NULL
 #define XEMU_DEADZONE_P1_LABEL_DA NULL
 #define XEMU_DEADZONE_P1_INFO_0_DA NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_DA NULL
+#define OPTION_VAL_0_DA NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_DA NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_DA NULL
 #define OPTION_VAL_15_DA NULL
+#define OPTION_VAL_20_DA NULL
 #define OPTION_VAL_25_DA NULL
 #define OPTION_VAL_30_DA NULL
 #define XEMU_DEADZONE_P2_LABEL_DA NULL
@@ -6717,8 +7380,11 @@ struct retro_core_options_v2 options_cy = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_DA NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_DA NULL
 #define OPTION_VAL_50_DA NULL
+#define OPTION_VAL_60_DA NULL
 #define OPTION_VAL_70_DA NULL
+#define OPTION_VAL_80_DA NULL
 #define OPTION_VAL_90_DA NULL
+#define OPTION_VAL_100_DA NULL
 #define OPTION_VAL_110_DA NULL
 #define OPTION_VAL_120_DA NULL
 #define OPTION_VAL_130_DA NULL
@@ -6731,6 +7397,19 @@ struct retro_core_options_v2 options_cy = {
 #define OPTION_VAL_200_DA NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_DA NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_DA NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_DA NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_DA NULL
+#define OPTION_VAL_LINEAR_DA NULL
+#define OPTION_VAL_LOGARITHMIC_DA NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_DA NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_DA NULL
+#define OPTION_VAL_CUBIC_DA NULL
+#define OPTION_VAL_SQUARE_DA NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_DA NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_DA NULL
+#define OPTION_VAL_35_DA NULL
+#define OPTION_VAL_40_DA NULL
+#define OPTION_VAL_45_DA NULL
 #define XEMU_CHIHIRO_FFB_LABEL_DA NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_DA NULL
 #define OPTION_VAL_75_DA NULL
@@ -6966,6 +7645,21 @@ struct retro_core_option_v2_definition option_defs_da[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_DA,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_DA,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -7098,28 +7792,8 @@ struct retro_core_option_v2_definition option_defs_da[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_DA,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_DA,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_DA },
-            { "80",  OPTION_VAL_80_DA },
-            { "60",  OPTION_VAL_60_DA },
-            { "40",  OPTION_VAL_40_DA },
-            { "20",  OPTION_VAL_20_DA },
-            { "0",   OPTION_VAL_0_DA },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_DA,
@@ -7134,7 +7808,21 @@ struct retro_core_option_v2_definition option_defs_da[] = {
             { "none",     OPTION_VAL_NONE_DA },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_DA,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_DA,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -7175,7 +7863,7 @@ struct retro_core_option_v2_definition option_defs_da[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_DA },
+            { "0",  OPTION_VAL_0_DA },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_DA },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_DA },
             { "15", OPTION_VAL_15_DA },
@@ -7197,7 +7885,7 @@ struct retro_core_option_v2_definition option_defs_da[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_DA },
+            { "0",  OPTION_VAL_0_DA },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_DA },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_DA },
             { "15", OPTION_VAL_15_DA },
@@ -7289,6 +7977,58 @@ struct retro_core_option_v2_definition option_defs_da[] = {
         },
         "enabled"
     },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_DA,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_DA,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_DA },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_DA },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_DA,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_DA,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_DA },
+            { "square", OPTION_VAL_SQUARE_DA },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_DA,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_DA,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_DA },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_DA },
+            { "15", OPTION_VAL_15_DA },
+            { "20", OPTION_VAL_20_DA },
+            { "25", OPTION_VAL_25_DA },
+            { "30", OPTION_VAL_30_DA },
+            { "35", OPTION_VAL_35_DA },
+            { "40", OPTION_VAL_40_DA },
+            { "45", OPTION_VAL_45_DA },
+            { "50", OPTION_VAL_50_DA },
+            { NULL, NULL },
+        },
+        "25"
+    },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
     {
@@ -7367,9 +8107,9 @@ struct retro_core_options_v2 options_da = {
 #define OPTION_VAL_16_9_DE NULL
 #define OPTION_VAL_LETTERBOX_DE NULL
 #define XEMU_ASPECT_RATIO_LABEL_DE "Core-Seitenverhältnis"
-#define XEMU_ASPECT_RATIO_INFO_0_DE "Das Format, in dem das Bild angezeigt wird. Am besten auf „Automatisch“ belassen, wodurch das Spielformat übernommen wird: 16:9, wenn die Konsole auf Breitbild eingestellt ist (Systemseitenverhältnis oder Dashboard) und das Spiel im 16:9-Format rendert; andernfalls 4:3, ebenso bei Sega Chihiro. 16:9 dehnt ein 4:3-Spiel auf das Breitbildformat."
+#define XEMU_ASPECT_RATIO_INFO_0_DE NULL
 #define XEMU_OVERSCAN_CROP_LABEL_DE "Vertikalen Overscan zuschneiden"
-#define XEMU_OVERSCAN_CROP_INFO_0_DE NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_DE "Einige Spiele geben ein 448 Zeilen hohes Bild innerhalb der 480 Zeilen der Xbox aus, mit schwarzen Balken oben und unten. Bei „Automatisch“ werden bei den in der entsprechenden Liste des Cores aufgeführten Spielen oben und unten jeweils 16 der 480 Zeilen abgeschnitten und der verbleibende Bildbereich auf die volle Höhe gestreckt, wobei das Seitenverhältnis erhalten bleibt."
 #define XEMU_SURFACE_SCALE_LABEL_DE "Interne Auflösungsskalierung (Neustart)"
 #define XEMU_SURFACE_SCALE_INFO_0_DE "Skaliert die interne Renderauflösung. Höhere Werte verbessern die Bildqualität, verringern aber die Leistung."
 #define OPTION_VAL_1_DE "1× (640 × 480)"
@@ -7382,6 +8122,8 @@ struct retro_core_options_v2 options_da = {
 #define OPTION_VAL_8_DE "8× (5120 × 3840)"
 #define OPTION_VAL_9_DE "9× (5760 × 4320)"
 #define OPTION_VAL_10_DE "10× (6400 × 4800)"
+#define XEMU_SUBPIXEL_OFFSET_LABEL_DE NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_DE NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_DE "Anisotrope Filterung"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_DE "Der geringste Grad an anisotroper Filterung, mit dem die Texturen des Spiels geglättet werden. Dadurch bleiben schräg dargestellte Texturen scharf. Bei „Nativ“ bleibt die spielinterne Einstellung erhalten, die bei den meisten Xbox-Spielen keiner Filterung entspricht."
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_DE "Nativ"
@@ -7408,30 +8150,25 @@ struct retro_core_options_v2 options_da = {
 #define XEMU_VP_WORKERS_INFO_0_DE "Die Threads, auf denen der Audioprozessor die Stimmen mischt. Bei „Automatisch“ wird ein Thread pro CPU-Kern verwendet."
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_DE "Ruckelfreier erster Start (Neustart)"
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_DE "Kompiliert beim Start die Shader, die ein Spiel bekanntermaßen verwendet, damit es in den ersten Minuten nicht zu Rucklern durch die Shaderkompilierung kommt. Unter OpenGL werden die kompilierten Shader im Shadercache gespeichert, der immer aktiviert ist."
-#define XEMU_AUDIO_VOLUME_LABEL_DE "Maximale Audiolautstärke (%)"
-#define XEMU_AUDIO_VOLUME_INFO_0_DE "Lautstärke der Xbox-Audioausgabe unabhängig von der RetroArch-Gesamtlautstärke begrenzen."
-#define OPTION_VAL_100_DE "100 %"
-#define OPTION_VAL_80_DE "80 %"
-#define OPTION_VAL_60_DE "60 %"
-#define OPTION_VAL_40_DE "40 %"
-#define OPTION_VAL_20_DE "20 %"
-#define OPTION_VAL_0_DE "Stummgeschaltet"
 #define XEMU_VK_FAST_PATHS_LABEL_DE "Vulkan-Schnellpfade (Neustart)"
 #define XEMU_VK_FAST_PATHS_INFO_0_DE "Beeinflusst die Geschwindigkeit der Shaderkompilierung unter Vulkan. „Alle“ ist am schnellsten, kann aber bei einigen Spielen zu Abstürzen führen."
 #define OPTION_VAL_ALL_DE "Alle"
 #define OPTION_VAL_NO_GPL_DE "Keine Pipelinebibliotheken"
 #define OPTION_VAL_NO_DYN_DE "Keine dynamischen Zustände"
 #define OPTION_VAL_NONE_DE "Nein"
+#define XEMU_MSPF_OVERLAY_LABEL_DE "Leistungsanzeige"
+#define XEMU_MSPF_OVERLAY_INFO_0_DE NULL
 #define XEMU_RUMBLE_P1_LABEL_DE "Vibration (Spieler 1)"
 #define XEMU_RUMBLE_P1_INFO_0_DE "Der Controller von Spieler 1 vibriert bei Xbox-Spielen und durch das Force Feedback von Chihiro-Rennspielen. Bei „Aus“ wird keine dieser Funktionen verwendet."
 #define XEMU_RUMBLE_P2_LABEL_DE "Vibration (Spieler 2)"
 #define XEMU_RUMBLE_P2_INFO_0_DE "Der Controller von Spieler 2 vibriert bei Xbox-Spielen und durch das Force Feedback von Chihiro-Rennspielen. Bei „Aus“ wird keine dieser Funktionen verwendet."
 #define XEMU_DEADZONE_P1_LABEL_DE "Analog-Deadzone (Spieler 1)"
 #define XEMU_DEADZONE_P1_INFO_0_DE "Wie weit die Analogsticks von Spieler 1 bewegt werden müssen, bevor dies vom Spiel erkannt wird. Gilt für beide Analogsticks sowohl bei Xbox als auch bei Sega Chihiro. Der verbleibende Bewegungsbereich wird auf den vollen Eingabebereich skaliert."
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_DE "0 %"
+#define OPTION_VAL_0_DE "0 %"
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_DE "5 %"
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_DE "10 %"
 #define OPTION_VAL_15_DE "15 %"
+#define OPTION_VAL_20_DE "20 %"
 #define OPTION_VAL_25_DE "25 %"
 #define OPTION_VAL_30_DE "30 %"
 #define XEMU_DEADZONE_P2_LABEL_DE "Analog-Deadzone (Spieler 2)"
@@ -7445,8 +8182,11 @@ struct retro_core_options_v2 options_da = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_DE "Empfindlichkeit der Stick-Zielsteuerung"
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_DE "Wie schnell der Stick das Fadenkreuz bei „Light Gun Aim on Analog Stick“ bewegt. Die Bewegung erfolgt horizontal und vertikal gleich schnell. Bei 100 % wird die Bildhöhe bei vollständig ausgelenktem Stick in etwa einer Sekunde durchquert. Die Maus zielt auf die Position des Mauszeigers."
 #define OPTION_VAL_50_DE "50 %"
+#define OPTION_VAL_60_DE "60 %"
 #define OPTION_VAL_70_DE "70 %"
+#define OPTION_VAL_80_DE "80 %"
 #define OPTION_VAL_90_DE "90 %"
+#define OPTION_VAL_100_DE "100 %"
 #define OPTION_VAL_110_DE "110 %"
 #define OPTION_VAL_120_DE "120 %"
 #define OPTION_VAL_130_DE "130 %"
@@ -7459,6 +8199,19 @@ struct retro_core_options_v2 options_da = {
 #define OPTION_VAL_200_DE "200 %"
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_DE "Fadenkreuz"
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_DE "Zeigt die Zielposition jedes Spielers als Fadenkreuz über dem Spielbild an, Spieler 1 in Rot, Spieler 2 in Blau."
+#define XEMU_CHIHIRO_STEERING_LABEL_DE NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_DE NULL
+#define OPTION_VAL_LINEAR_DE NULL
+#define OPTION_VAL_LOGARITHMIC_DE NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_DE NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_DE NULL
+#define OPTION_VAL_CUBIC_DE NULL
+#define OPTION_VAL_SQUARE_DE NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_DE NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_DE NULL
+#define OPTION_VAL_35_DE "35 %"
+#define OPTION_VAL_40_DE "40 %"
+#define OPTION_VAL_45_DE "45 %"
 #define XEMU_CHIHIRO_FFB_LABEL_DE "Force-Feedback-Vibration"
 #define XEMU_CHIHIRO_FFB_INFO_0_DE "Gibt das Force Feedback eines Chihiro-Rennspiels (OutRun 2, Maximum Tune) mit dieser Stärke als Vibration auf dem Controller an Port 1 aus."
 #define OPTION_VAL_75_DE "75 %"
@@ -7694,6 +8447,21 @@ struct retro_core_option_v2_definition option_defs_de[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_DE,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_DE,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -7826,28 +8594,8 @@ struct retro_core_option_v2_definition option_defs_de[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_DE,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_DE,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_DE },
-            { "80",  OPTION_VAL_80_DE },
-            { "60",  OPTION_VAL_60_DE },
-            { "40",  OPTION_VAL_40_DE },
-            { "20",  OPTION_VAL_20_DE },
-            { "0",   OPTION_VAL_0_DE },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_DE,
@@ -7862,7 +8610,21 @@ struct retro_core_option_v2_definition option_defs_de[] = {
             { "none",     OPTION_VAL_NONE_DE },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_DE,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_DE,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -7903,7 +8665,7 @@ struct retro_core_option_v2_definition option_defs_de[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_DE },
+            { "0",  OPTION_VAL_0_DE },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_DE },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_DE },
             { "15", OPTION_VAL_15_DE },
@@ -7925,7 +8687,7 @@ struct retro_core_option_v2_definition option_defs_de[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_DE },
+            { "0",  OPTION_VAL_0_DE },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_DE },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_DE },
             { "15", OPTION_VAL_15_DE },
@@ -8016,6 +8778,58 @@ struct retro_core_option_v2_definition option_defs_de[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_DE,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_DE,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_DE },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_DE },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_DE,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_DE,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_DE },
+            { "square", OPTION_VAL_SQUARE_DE },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_DE,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_DE,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_DE },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_DE },
+            { "15", OPTION_VAL_15_DE },
+            { "20", OPTION_VAL_20_DE },
+            { "25", OPTION_VAL_25_DE },
+            { "30", OPTION_VAL_30_DE },
+            { "35", OPTION_VAL_35_DE },
+            { "40", OPTION_VAL_40_DE },
+            { "45", OPTION_VAL_45_DE },
+            { "50", OPTION_VAL_50_DE },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -8110,6 +8924,8 @@ struct retro_core_options_v2 options_de = {
 #define OPTION_VAL_8_EL NULL
 #define OPTION_VAL_9_EL NULL
 #define OPTION_VAL_10_EL NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_EL NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_EL NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_EL NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_EL NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_EL "Ντόπιος"
@@ -8136,30 +8952,25 @@ struct retro_core_options_v2 options_de = {
 #define XEMU_VP_WORKERS_INFO_0_EL NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_EL NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_EL NULL
-#define XEMU_AUDIO_VOLUME_LABEL_EL NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_EL NULL
-#define OPTION_VAL_100_EL NULL
-#define OPTION_VAL_80_EL "το 80%"
-#define OPTION_VAL_60_EL NULL
-#define OPTION_VAL_40_EL NULL
-#define OPTION_VAL_20_EL NULL
-#define OPTION_VAL_0_EL NULL
 #define XEMU_VK_FAST_PATHS_LABEL_EL NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_EL NULL
 #define OPTION_VAL_ALL_EL "Όλα"
 #define OPTION_VAL_NO_GPL_EL NULL
 #define OPTION_VAL_NO_DYN_EL NULL
 #define OPTION_VAL_NONE_EL "Κανείς"
+#define XEMU_MSPF_OVERLAY_LABEL_EL NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_EL NULL
 #define XEMU_RUMBLE_P1_LABEL_EL NULL
 #define XEMU_RUMBLE_P1_INFO_0_EL NULL
 #define XEMU_RUMBLE_P2_LABEL_EL NULL
 #define XEMU_RUMBLE_P2_INFO_0_EL NULL
 #define XEMU_DEADZONE_P1_LABEL_EL NULL
 #define XEMU_DEADZONE_P1_INFO_0_EL NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_EL NULL
+#define OPTION_VAL_0_EL NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_EL NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_EL NULL
 #define OPTION_VAL_15_EL NULL
+#define OPTION_VAL_20_EL NULL
 #define OPTION_VAL_25_EL NULL
 #define OPTION_VAL_30_EL NULL
 #define XEMU_DEADZONE_P2_LABEL_EL NULL
@@ -8173,8 +8984,11 @@ struct retro_core_options_v2 options_de = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_EL NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_EL NULL
 #define OPTION_VAL_50_EL NULL
+#define OPTION_VAL_60_EL NULL
 #define OPTION_VAL_70_EL NULL
+#define OPTION_VAL_80_EL "το 80%"
 #define OPTION_VAL_90_EL NULL
+#define OPTION_VAL_100_EL NULL
 #define OPTION_VAL_110_EL NULL
 #define OPTION_VAL_120_EL NULL
 #define OPTION_VAL_130_EL NULL
@@ -8187,6 +9001,19 @@ struct retro_core_options_v2 options_de = {
 #define OPTION_VAL_200_EL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_EL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_EL NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_EL NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_EL NULL
+#define OPTION_VAL_LINEAR_EL "Γραμμικός"
+#define OPTION_VAL_LOGARITHMIC_EL NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_EL NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_EL NULL
+#define OPTION_VAL_CUBIC_EL NULL
+#define OPTION_VAL_SQUARE_EL NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_EL NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_EL NULL
+#define OPTION_VAL_35_EL NULL
+#define OPTION_VAL_40_EL NULL
+#define OPTION_VAL_45_EL NULL
 #define XEMU_CHIHIRO_FFB_LABEL_EL NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_EL NULL
 #define OPTION_VAL_75_EL NULL
@@ -8422,6 +9249,21 @@ struct retro_core_option_v2_definition option_defs_el[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_EL,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_EL,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -8554,28 +9396,8 @@ struct retro_core_option_v2_definition option_defs_el[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_EL,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_EL,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_EL },
-            { "80",  OPTION_VAL_80_EL },
-            { "60",  OPTION_VAL_60_EL },
-            { "40",  OPTION_VAL_40_EL },
-            { "20",  OPTION_VAL_20_EL },
-            { "0",   OPTION_VAL_0_EL },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_EL,
@@ -8590,7 +9412,21 @@ struct retro_core_option_v2_definition option_defs_el[] = {
             { "none",     OPTION_VAL_NONE_EL },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_EL,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_EL,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -8631,7 +9467,7 @@ struct retro_core_option_v2_definition option_defs_el[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_EL },
+            { "0",  OPTION_VAL_0_EL },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_EL },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_EL },
             { "15", OPTION_VAL_15_EL },
@@ -8653,7 +9489,7 @@ struct retro_core_option_v2_definition option_defs_el[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_EL },
+            { "0",  OPTION_VAL_0_EL },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_EL },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_EL },
             { "15", OPTION_VAL_15_EL },
@@ -8744,6 +9580,58 @@ struct retro_core_option_v2_definition option_defs_el[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_EL,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_EL,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_EL },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_EL },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_EL,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_EL,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_EL },
+            { "square", OPTION_VAL_SQUARE_EL },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_EL,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_EL,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_EL },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_EL },
+            { "15", OPTION_VAL_15_EL },
+            { "20", OPTION_VAL_20_EL },
+            { "25", OPTION_VAL_25_EL },
+            { "30", OPTION_VAL_30_EL },
+            { "35", OPTION_VAL_35_EL },
+            { "40", OPTION_VAL_40_EL },
+            { "45", OPTION_VAL_45_EL },
+            { "50", OPTION_VAL_50_EL },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -8838,6 +9726,8 @@ struct retro_core_options_v2 options_el = {
 #define OPTION_VAL_8_EN NULL
 #define OPTION_VAL_9_EN NULL
 #define OPTION_VAL_10_EN NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_EN NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_EN NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_EN NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_EN NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_EN NULL
@@ -8864,30 +9754,25 @@ struct retro_core_options_v2 options_el = {
 #define XEMU_VP_WORKERS_INFO_0_EN NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_EN NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_EN NULL
-#define XEMU_AUDIO_VOLUME_LABEL_EN NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_EN NULL
-#define OPTION_VAL_100_EN NULL
-#define OPTION_VAL_80_EN NULL
-#define OPTION_VAL_60_EN NULL
-#define OPTION_VAL_40_EN NULL
-#define OPTION_VAL_20_EN NULL
-#define OPTION_VAL_0_EN NULL
 #define XEMU_VK_FAST_PATHS_LABEL_EN NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_EN NULL
 #define OPTION_VAL_ALL_EN NULL
 #define OPTION_VAL_NO_GPL_EN NULL
 #define OPTION_VAL_NO_DYN_EN NULL
 #define OPTION_VAL_NONE_EN NULL
+#define XEMU_MSPF_OVERLAY_LABEL_EN NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_EN NULL
 #define XEMU_RUMBLE_P1_LABEL_EN NULL
 #define XEMU_RUMBLE_P1_INFO_0_EN NULL
 #define XEMU_RUMBLE_P2_LABEL_EN NULL
 #define XEMU_RUMBLE_P2_INFO_0_EN NULL
 #define XEMU_DEADZONE_P1_LABEL_EN NULL
 #define XEMU_DEADZONE_P1_INFO_0_EN NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_EN NULL
+#define OPTION_VAL_0_EN NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_EN NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_EN NULL
 #define OPTION_VAL_15_EN NULL
+#define OPTION_VAL_20_EN NULL
 #define OPTION_VAL_25_EN NULL
 #define OPTION_VAL_30_EN NULL
 #define XEMU_DEADZONE_P2_LABEL_EN NULL
@@ -8901,8 +9786,11 @@ struct retro_core_options_v2 options_el = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_EN NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_EN NULL
 #define OPTION_VAL_50_EN NULL
+#define OPTION_VAL_60_EN NULL
 #define OPTION_VAL_70_EN NULL
+#define OPTION_VAL_80_EN NULL
 #define OPTION_VAL_90_EN NULL
+#define OPTION_VAL_100_EN NULL
 #define OPTION_VAL_110_EN NULL
 #define OPTION_VAL_120_EN NULL
 #define OPTION_VAL_130_EN NULL
@@ -8915,6 +9803,19 @@ struct retro_core_options_v2 options_el = {
 #define OPTION_VAL_200_EN NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_EN NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_EN NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_EN NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_EN NULL
+#define OPTION_VAL_LINEAR_EN NULL
+#define OPTION_VAL_LOGARITHMIC_EN NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_EN NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_EN NULL
+#define OPTION_VAL_CUBIC_EN NULL
+#define OPTION_VAL_SQUARE_EN NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_EN NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_EN NULL
+#define OPTION_VAL_35_EN NULL
+#define OPTION_VAL_40_EN NULL
+#define OPTION_VAL_45_EN NULL
 #define XEMU_CHIHIRO_FFB_LABEL_EN NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_EN NULL
 #define OPTION_VAL_75_EN NULL
@@ -9150,6 +10051,21 @@ struct retro_core_option_v2_definition option_defs_en[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_EN,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_EN,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -9282,28 +10198,8 @@ struct retro_core_option_v2_definition option_defs_en[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_EN,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_EN,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_EN },
-            { "80",  OPTION_VAL_80_EN },
-            { "60",  OPTION_VAL_60_EN },
-            { "40",  OPTION_VAL_40_EN },
-            { "20",  OPTION_VAL_20_EN },
-            { "0",   OPTION_VAL_0_EN },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_EN,
@@ -9318,7 +10214,21 @@ struct retro_core_option_v2_definition option_defs_en[] = {
             { "none",     OPTION_VAL_NONE_EN },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_EN,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_EN,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -9359,7 +10269,7 @@ struct retro_core_option_v2_definition option_defs_en[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_EN },
+            { "0",  OPTION_VAL_0_EN },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_EN },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_EN },
             { "15", OPTION_VAL_15_EN },
@@ -9381,7 +10291,7 @@ struct retro_core_option_v2_definition option_defs_en[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_EN },
+            { "0",  OPTION_VAL_0_EN },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_EN },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_EN },
             { "15", OPTION_VAL_15_EN },
@@ -9472,6 +10382,58 @@ struct retro_core_option_v2_definition option_defs_en[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_EN,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_EN,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_EN },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_EN },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_EN,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_EN,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_EN },
+            { "square", OPTION_VAL_SQUARE_EN },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_EN,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_EN,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_EN },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_EN },
+            { "15", OPTION_VAL_15_EN },
+            { "20", OPTION_VAL_20_EN },
+            { "25", OPTION_VAL_25_EN },
+            { "30", OPTION_VAL_30_EN },
+            { "35", OPTION_VAL_35_EN },
+            { "40", OPTION_VAL_40_EN },
+            { "45", OPTION_VAL_45_EN },
+            { "50", OPTION_VAL_50_EN },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -9566,6 +10528,8 @@ struct retro_core_options_v2 options_en = {
 #define OPTION_VAL_8_EO NULL
 #define OPTION_VAL_9_EO NULL
 #define OPTION_VAL_10_EO NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_EO NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_EO NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_EO "Neizotropeca filtrado"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_EO NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_EO "Indiĝena"
@@ -9592,30 +10556,25 @@ struct retro_core_options_v2 options_en = {
 #define XEMU_VP_WORKERS_INFO_0_EO NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_EO NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_EO NULL
-#define XEMU_AUDIO_VOLUME_LABEL_EO NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_EO NULL
-#define OPTION_VAL_100_EO NULL
-#define OPTION_VAL_80_EO NULL
-#define OPTION_VAL_60_EO NULL
-#define OPTION_VAL_40_EO NULL
-#define OPTION_VAL_20_EO NULL
-#define OPTION_VAL_0_EO NULL
 #define XEMU_VK_FAST_PATHS_LABEL_EO NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_EO NULL
 #define OPTION_VAL_ALL_EO "Ĉiuj"
 #define OPTION_VAL_NO_GPL_EO NULL
 #define OPTION_VAL_NO_DYN_EO NULL
 #define OPTION_VAL_NONE_EO "Neniom"
+#define XEMU_MSPF_OVERLAY_LABEL_EO NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_EO NULL
 #define XEMU_RUMBLE_P1_LABEL_EO NULL
 #define XEMU_RUMBLE_P1_INFO_0_EO NULL
 #define XEMU_RUMBLE_P2_LABEL_EO NULL
 #define XEMU_RUMBLE_P2_INFO_0_EO NULL
 #define XEMU_DEADZONE_P1_LABEL_EO NULL
 #define XEMU_DEADZONE_P1_INFO_0_EO NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_EO NULL
+#define OPTION_VAL_0_EO NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_EO NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_EO NULL
 #define OPTION_VAL_15_EO NULL
+#define OPTION_VAL_20_EO NULL
 #define OPTION_VAL_25_EO NULL
 #define OPTION_VAL_30_EO NULL
 #define XEMU_DEADZONE_P2_LABEL_EO NULL
@@ -9629,8 +10588,11 @@ struct retro_core_options_v2 options_en = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_EO NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_EO NULL
 #define OPTION_VAL_50_EO NULL
+#define OPTION_VAL_60_EO NULL
 #define OPTION_VAL_70_EO NULL
+#define OPTION_VAL_80_EO NULL
 #define OPTION_VAL_90_EO NULL
+#define OPTION_VAL_100_EO NULL
 #define OPTION_VAL_110_EO NULL
 #define OPTION_VAL_120_EO NULL
 #define OPTION_VAL_130_EO NULL
@@ -9643,6 +10605,19 @@ struct retro_core_options_v2 options_en = {
 #define OPTION_VAL_200_EO NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_EO NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_EO NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_EO NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_EO NULL
+#define OPTION_VAL_LINEAR_EO "Lineara"
+#define OPTION_VAL_LOGARITHMIC_EO NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_EO NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_EO NULL
+#define OPTION_VAL_CUBIC_EO NULL
+#define OPTION_VAL_SQUARE_EO NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_EO NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_EO NULL
+#define OPTION_VAL_35_EO NULL
+#define OPTION_VAL_40_EO NULL
+#define OPTION_VAL_45_EO NULL
 #define XEMU_CHIHIRO_FFB_LABEL_EO NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_EO NULL
 #define OPTION_VAL_75_EO NULL
@@ -9878,6 +10853,21 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_EO,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_EO,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -10010,28 +11000,8 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_EO,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_EO,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_EO },
-            { "80",  OPTION_VAL_80_EO },
-            { "60",  OPTION_VAL_60_EO },
-            { "40",  OPTION_VAL_40_EO },
-            { "20",  OPTION_VAL_20_EO },
-            { "0",   OPTION_VAL_0_EO },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_EO,
@@ -10046,7 +11016,21 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
             { "none",     OPTION_VAL_NONE_EO },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_EO,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_EO,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -10087,7 +11071,7 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_EO },
+            { "0",  OPTION_VAL_0_EO },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_EO },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_EO },
             { "15", OPTION_VAL_15_EO },
@@ -10109,7 +11093,7 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_EO },
+            { "0",  OPTION_VAL_0_EO },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_EO },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_EO },
             { "15", OPTION_VAL_15_EO },
@@ -10201,6 +11185,58 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
         },
         "enabled"
     },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_EO,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_EO,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_EO },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_EO },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_EO,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_EO,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_EO },
+            { "square", OPTION_VAL_SQUARE_EO },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_EO,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_EO,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_EO },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_EO },
+            { "15", OPTION_VAL_15_EO },
+            { "20", OPTION_VAL_20_EO },
+            { "25", OPTION_VAL_25_EO },
+            { "30", OPTION_VAL_30_EO },
+            { "35", OPTION_VAL_35_EO },
+            { "40", OPTION_VAL_40_EO },
+            { "45", OPTION_VAL_45_EO },
+            { "50", OPTION_VAL_50_EO },
+            { NULL, NULL },
+        },
+        "25"
+    },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
     {
@@ -10279,9 +11315,9 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_16_9_ES NULL
 #define OPTION_VAL_LETTERBOX_ES "Con bandas"
 #define XEMU_ASPECT_RATIO_LABEL_ES "Relación de aspecto del núcleo"
-#define XEMU_ASPECT_RATIO_INFO_0_ES "La forma con la que se mostrará la imagen. Lo mejor es seleccionar el valor automático, que respetará lo que diga el juego: 16:9 si la consola está configurada en formato panorámico (ya sea con Relación de aspecto del sistema o dentro de la interfaz de la consola) y el juego pueda renderizarse a 16:9, 4:3 en caso contrario y con juegos para Chihiro. 16:9 estirará un juego en 4:3 a una imagen panorámica."
+#define XEMU_ASPECT_RATIO_INFO_0_ES NULL
 #define XEMU_OVERSCAN_CROP_LABEL_ES "Recortar sobrebarrido vertical"
-#define XEMU_OVERSCAN_CROP_INFO_0_ES NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_ES "Algunos juegos muestran una imagen con 448 líneas dentro de las 480 que muestra Xbox, mostrando bandas negras por encima y por debajo. El valor automático recortará 16 líneas por encima y otras tantas por debajo en aquellos juegos que estén en la lista del núcleo y conservará la altura completa del resto para preservar la relación de aspecto."
 #define XEMU_SURFACE_SCALE_LABEL_ES "Escala de resolución interna (es necesario reiniciar)"
 #define XEMU_SURFACE_SCALE_INFO_0_ES "Escala la resolución interna de renderizado. Un valor más alto mejorará la calidad, pero reducirá el rendimiento."
 #define OPTION_VAL_1_ES "× 1 (640 × 480)"
@@ -10294,6 +11330,8 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_8_ES "× 8 (5120 × 3840)"
 #define OPTION_VAL_9_ES "× 9 (5760 × 4320)"
 #define OPTION_VAL_10_ES "× 10 (6400 × 4800)"
+#define XEMU_SUBPIXEL_OFFSET_LABEL_ES "Compensación subpíxel de escalado"
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_ES "Si la escala de resolución interna es superior a × 1, se desplazará la imagen una fracción de píxel para que el resto de píxeles de la resolución original se mantengan alineados con los originales. Corrige el efecto fantasma (\"ghosting\") y los bordes en algunos juegos (Jade Empire, Blinx), pero hace que otros fallen (Splinter Cell). Desactiva esta opción para usar el comportamiento antiguo."
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_ES "Filtrado anisotrópico"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_ES "La cantidad mínima de filtro anisotrópico que se aplicará a las texturas suavizadas de los juegos, manteniéndolas nítidas cuando se muestren inclinadas. Nativo mantendrá el valor de cada juego, que está desactivado en la mayoría de juegos de Xbox."
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_ES "Nativa"
@@ -10320,30 +11358,25 @@ struct retro_core_options_v2 options_eo = {
 #define XEMU_VP_WORKERS_INFO_0_ES "Los hilos usados por el procesador de voces de audio para mezclarlas. El valor automático utilizará un hilo por núcleo de la CPU."
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_ES "Primera ejecución fluida (es necesario reiniciar)"
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_ES "Compila los shaders que se sabe que utiliza un juego concreto durante su arranque para no pasar los primeros minutos con tirones mientras se están compilando. OpenGL guardará lo compilado en la caché de shaders, que siempre estará activada."
-#define XEMU_AUDIO_VOLUME_LABEL_ES "Límite de volumen de audio (%)"
-#define XEMU_AUDIO_VOLUME_INFO_0_ES "Limita el volumen de la salida de audio de Xbox de forma independiente al volumen maestro de RetroArch."
-#define OPTION_VAL_100_ES "100 %"
-#define OPTION_VAL_80_ES "80 %"
-#define OPTION_VAL_60_ES "60 %"
-#define OPTION_VAL_40_ES "40 %"
-#define OPTION_VAL_20_ES "20 %"
-#define OPTION_VAL_0_ES "Silenciado"
 #define XEMU_VK_FAST_PATHS_LABEL_ES "Rutas rápidas de Vulkan (es necesario reiniciar)"
 #define XEMU_VK_FAST_PATHS_INFO_0_ES "Afecta a la velocidad de compilación de shaders en Vulkan. Todo es lo más rápido, pero podría provocar que se cuelguen algunos juegos."
 #define OPTION_VAL_ALL_ES "Todos"
 #define OPTION_VAL_NO_GPL_ES "Sin bibliotecas de canalización"
 #define OPTION_VAL_NO_DYN_ES "Sin estados dinámicos"
 #define OPTION_VAL_NONE_ES "No compartir"
+#define XEMU_MSPF_OVERLAY_LABEL_ES "Superposición de rendimiento"
+#define XEMU_MSPF_OVERLAY_INFO_0_ES NULL
 #define XEMU_RUMBLE_P1_LABEL_ES "Vibración (jugador 1)"
 #define XEMU_RUMBLE_P1_INFO_0_ES "La vibración del mando del jugador 1, ya sea para juegos de Xbox o para el force feedback de un juego de conducción de Chihiro. Desactiva esta opción para que no haya vibración en ninguno de estos casos."
 #define XEMU_RUMBLE_P2_LABEL_ES "Vibración (jugador 2)"
 #define XEMU_RUMBLE_P2_INFO_0_ES "La vibración del mando del jugador 2, ya sea para juegos de Xbox o para el force feedback de un juego de conducción de Chihiro. Desactiva esta opción para que no haya vibración en ninguno de estos casos."
 #define XEMU_DEADZONE_P1_LABEL_ES "Zona muerta del stick analógico (jugador 1)"
 #define XEMU_DEADZONE_P1_INFO_0_ES "Establece el recorrido mínimo que deben tener los sticks analógicos del jugador 1 para que sean detectados por el juego: afecta a ambos sticks y tanto a Xbox como a Chihiro, el resto del recorrido se escalará al rango completo."
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_ES "0 %"
+#define OPTION_VAL_0_ES "0 %"
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_ES "5 %"
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_ES "10 %"
 #define OPTION_VAL_15_ES "15 %"
+#define OPTION_VAL_20_ES "20 %"
 #define OPTION_VAL_25_ES "25 %"
 #define OPTION_VAL_30_ES "30 %"
 #define XEMU_DEADZONE_P2_LABEL_ES "Zona muerta del stick analógico (jugador 2)"
@@ -10357,8 +11390,11 @@ struct retro_core_options_v2 options_eo = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_ES "Sensibilidad de apuntado con sticks"
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_ES "Establece la velocidad con la que el stick moverá el punto de mira al usar sticks analógicos como método de apuntado de lightguns; al 100 %, mover el stick hasta un borde hará que recorra la pantalla de un lado a otro en apenas un segundo. El ratón apuntará a donde esté el cursor."
 #define OPTION_VAL_50_ES "50 %"
+#define OPTION_VAL_60_ES "60 %"
 #define OPTION_VAL_70_ES "70 %"
+#define OPTION_VAL_80_ES "80 %"
 #define OPTION_VAL_90_ES "90 %"
+#define OPTION_VAL_100_ES "100 %"
 #define OPTION_VAL_110_ES "110 %"
 #define OPTION_VAL_120_ES "120 %"
 #define OPTION_VAL_130_ES "130 %"
@@ -10371,6 +11407,19 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_200_ES "200 %"
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_ES "Punto de mira"
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_ES "Dibuja la posición de la lightgun de cada jugador en pantalla: el punto de mira del jugador 1 es rojo y el del jugador 2 es azul."
+#define XEMU_CHIHIRO_STEERING_LABEL_ES NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_ES NULL
+#define OPTION_VAL_LINEAR_ES "Lineal"
+#define OPTION_VAL_LOGARITHMIC_ES NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_ES NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_ES NULL
+#define OPTION_VAL_CUBIC_ES NULL
+#define OPTION_VAL_SQUARE_ES NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_ES NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_ES NULL
+#define OPTION_VAL_35_ES "35 %"
+#define OPTION_VAL_40_ES "40 %"
+#define OPTION_VAL_45_ES "45 %"
 #define XEMU_CHIHIRO_FFB_LABEL_ES "Vibración con force feedback"
 #define XEMU_CHIHIRO_FFB_INFO_0_ES "Transmite la señal de force feedback de los juegos de carreras (OutRun 2, Maximum Tune) de Chihiro a la vibración del mando del puerto 1 con la fuerza indicada."
 #define OPTION_VAL_75_ES "75 %"
@@ -10606,6 +11655,21 @@ struct retro_core_option_v2_definition option_defs_es[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_ES,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_ES,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -10738,28 +11802,8 @@ struct retro_core_option_v2_definition option_defs_es[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_ES,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_ES,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_ES },
-            { "80",  OPTION_VAL_80_ES },
-            { "60",  OPTION_VAL_60_ES },
-            { "40",  OPTION_VAL_40_ES },
-            { "20",  OPTION_VAL_20_ES },
-            { "0",   OPTION_VAL_0_ES },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_ES,
@@ -10774,7 +11818,21 @@ struct retro_core_option_v2_definition option_defs_es[] = {
             { "none",     OPTION_VAL_NONE_ES },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_ES,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_ES,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -10815,7 +11873,7 @@ struct retro_core_option_v2_definition option_defs_es[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_ES },
+            { "0",  OPTION_VAL_0_ES },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_ES },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_ES },
             { "15", OPTION_VAL_15_ES },
@@ -10837,7 +11895,7 @@ struct retro_core_option_v2_definition option_defs_es[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_ES },
+            { "0",  OPTION_VAL_0_ES },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_ES },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_ES },
             { "15", OPTION_VAL_15_ES },
@@ -10928,6 +11986,58 @@ struct retro_core_option_v2_definition option_defs_es[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_ES,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_ES,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_ES },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_ES },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_ES,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_ES,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_ES },
+            { "square", OPTION_VAL_SQUARE_ES },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_ES,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_ES,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_ES },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_ES },
+            { "15", OPTION_VAL_15_ES },
+            { "20", OPTION_VAL_20_ES },
+            { "25", OPTION_VAL_25_ES },
+            { "30", OPTION_VAL_30_ES },
+            { "35", OPTION_VAL_35_ES },
+            { "40", OPTION_VAL_40_ES },
+            { "45", OPTION_VAL_45_ES },
+            { "50", OPTION_VAL_50_ES },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -11022,6 +12132,8 @@ struct retro_core_options_v2 options_es = {
 #define OPTION_VAL_8_FA NULL
 #define OPTION_VAL_9_FA NULL
 #define OPTION_VAL_10_FA NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_FA NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_FA NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_FA NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_FA NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_FA NULL
@@ -11048,30 +12160,25 @@ struct retro_core_options_v2 options_es = {
 #define XEMU_VP_WORKERS_INFO_0_FA NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_FA NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_FA NULL
-#define XEMU_AUDIO_VOLUME_LABEL_FA NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_FA NULL
-#define OPTION_VAL_100_FA NULL
-#define OPTION_VAL_80_FA NULL
-#define OPTION_VAL_60_FA NULL
-#define OPTION_VAL_40_FA NULL
-#define OPTION_VAL_20_FA NULL
-#define OPTION_VAL_0_FA NULL
 #define XEMU_VK_FAST_PATHS_LABEL_FA NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_FA NULL
 #define OPTION_VAL_ALL_FA NULL
 #define OPTION_VAL_NO_GPL_FA NULL
 #define OPTION_VAL_NO_DYN_FA NULL
 #define OPTION_VAL_NONE_FA "هیچکدام"
+#define XEMU_MSPF_OVERLAY_LABEL_FA NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_FA NULL
 #define XEMU_RUMBLE_P1_LABEL_FA NULL
 #define XEMU_RUMBLE_P1_INFO_0_FA NULL
 #define XEMU_RUMBLE_P2_LABEL_FA NULL
 #define XEMU_RUMBLE_P2_INFO_0_FA NULL
 #define XEMU_DEADZONE_P1_LABEL_FA NULL
 #define XEMU_DEADZONE_P1_INFO_0_FA NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_FA NULL
+#define OPTION_VAL_0_FA NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_FA NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_FA NULL
 #define OPTION_VAL_15_FA NULL
+#define OPTION_VAL_20_FA NULL
 #define OPTION_VAL_25_FA NULL
 #define OPTION_VAL_30_FA NULL
 #define XEMU_DEADZONE_P2_LABEL_FA NULL
@@ -11085,8 +12192,11 @@ struct retro_core_options_v2 options_es = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_FA NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_FA NULL
 #define OPTION_VAL_50_FA NULL
+#define OPTION_VAL_60_FA NULL
 #define OPTION_VAL_70_FA NULL
+#define OPTION_VAL_80_FA NULL
 #define OPTION_VAL_90_FA NULL
+#define OPTION_VAL_100_FA NULL
 #define OPTION_VAL_110_FA NULL
 #define OPTION_VAL_120_FA NULL
 #define OPTION_VAL_130_FA NULL
@@ -11099,6 +12209,19 @@ struct retro_core_options_v2 options_es = {
 #define OPTION_VAL_200_FA NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_FA NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_FA NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_FA NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_FA NULL
+#define OPTION_VAL_LINEAR_FA NULL
+#define OPTION_VAL_LOGARITHMIC_FA NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_FA NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_FA NULL
+#define OPTION_VAL_CUBIC_FA NULL
+#define OPTION_VAL_SQUARE_FA NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_FA NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_FA NULL
+#define OPTION_VAL_35_FA NULL
+#define OPTION_VAL_40_FA NULL
+#define OPTION_VAL_45_FA NULL
 #define XEMU_CHIHIRO_FFB_LABEL_FA NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_FA NULL
 #define OPTION_VAL_75_FA NULL
@@ -11334,6 +12457,21 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_FA,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_FA,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -11466,28 +12604,8 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_FA,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_FA,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_FA },
-            { "80",  OPTION_VAL_80_FA },
-            { "60",  OPTION_VAL_60_FA },
-            { "40",  OPTION_VAL_40_FA },
-            { "20",  OPTION_VAL_20_FA },
-            { "0",   OPTION_VAL_0_FA },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_FA,
@@ -11502,7 +12620,21 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
             { "none",     OPTION_VAL_NONE_FA },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_FA,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_FA,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -11543,7 +12675,7 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_FA },
+            { "0",  OPTION_VAL_0_FA },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_FA },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_FA },
             { "15", OPTION_VAL_15_FA },
@@ -11565,7 +12697,7 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_FA },
+            { "0",  OPTION_VAL_0_FA },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_FA },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_FA },
             { "15", OPTION_VAL_15_FA },
@@ -11656,6 +12788,58 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_FA,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_FA,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_FA },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_FA },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_FA,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_FA,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_FA },
+            { "square", OPTION_VAL_SQUARE_FA },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_FA,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_FA,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_FA },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_FA },
+            { "15", OPTION_VAL_15_FA },
+            { "20", OPTION_VAL_20_FA },
+            { "25", OPTION_VAL_25_FA },
+            { "30", OPTION_VAL_30_FA },
+            { "35", OPTION_VAL_35_FA },
+            { "40", OPTION_VAL_40_FA },
+            { "45", OPTION_VAL_45_FA },
+            { "50", OPTION_VAL_50_FA },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -11750,6 +12934,8 @@ struct retro_core_options_v2 options_fa = {
 #define OPTION_VAL_8_FI NULL
 #define OPTION_VAL_9_FI NULL
 #define OPTION_VAL_10_FI NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_FI NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_FI NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_FI "Anisotrooppinen suodatus"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_FI NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_FI "Natiivi"
@@ -11776,30 +12962,25 @@ struct retro_core_options_v2 options_fa = {
 #define XEMU_VP_WORKERS_INFO_0_FI NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_FI NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_FI NULL
-#define XEMU_AUDIO_VOLUME_LABEL_FI NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_FI NULL
-#define OPTION_VAL_100_FI "100 %"
-#define OPTION_VAL_80_FI "80 %"
-#define OPTION_VAL_60_FI "60 %"
-#define OPTION_VAL_40_FI "40 %"
-#define OPTION_VAL_20_FI "20 %"
-#define OPTION_VAL_0_FI NULL
 #define XEMU_VK_FAST_PATHS_LABEL_FI NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_FI NULL
 #define OPTION_VAL_ALL_FI "Kaikki"
 #define OPTION_VAL_NO_GPL_FI NULL
 #define OPTION_VAL_NO_DYN_FI NULL
 #define OPTION_VAL_NONE_FI "Ei mitään"
+#define XEMU_MSPF_OVERLAY_LABEL_FI NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_FI NULL
 #define XEMU_RUMBLE_P1_LABEL_FI NULL
 #define XEMU_RUMBLE_P1_INFO_0_FI NULL
 #define XEMU_RUMBLE_P2_LABEL_FI NULL
 #define XEMU_RUMBLE_P2_INFO_0_FI NULL
 #define XEMU_DEADZONE_P1_LABEL_FI NULL
 #define XEMU_DEADZONE_P1_INFO_0_FI NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_FI NULL
+#define OPTION_VAL_0_FI NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_FI NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_FI NULL
 #define OPTION_VAL_15_FI "15 %"
+#define OPTION_VAL_20_FI "20 %"
 #define OPTION_VAL_25_FI NULL
 #define OPTION_VAL_30_FI "30 %"
 #define XEMU_DEADZONE_P2_LABEL_FI NULL
@@ -11813,8 +12994,11 @@ struct retro_core_options_v2 options_fa = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_FI NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_FI NULL
 #define OPTION_VAL_50_FI "50 %"
+#define OPTION_VAL_60_FI "60 %"
 #define OPTION_VAL_70_FI "70 %"
+#define OPTION_VAL_80_FI "80 %"
 #define OPTION_VAL_90_FI "90 %"
+#define OPTION_VAL_100_FI "100 %"
 #define OPTION_VAL_110_FI "110 %"
 #define OPTION_VAL_120_FI "120 %"
 #define OPTION_VAL_130_FI "130 %"
@@ -11827,6 +13011,19 @@ struct retro_core_options_v2 options_fa = {
 #define OPTION_VAL_200_FI "200 %"
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_FI NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_FI NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_FI NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_FI NULL
+#define OPTION_VAL_LINEAR_FI "Lineaarinen"
+#define OPTION_VAL_LOGARITHMIC_FI NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_FI NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_FI NULL
+#define OPTION_VAL_CUBIC_FI NULL
+#define OPTION_VAL_SQUARE_FI NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_FI NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_FI NULL
+#define OPTION_VAL_35_FI "35 %"
+#define OPTION_VAL_40_FI "40 %"
+#define OPTION_VAL_45_FI NULL
 #define XEMU_CHIHIRO_FFB_LABEL_FI NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_FI NULL
 #define OPTION_VAL_75_FI "75 %"
@@ -12062,6 +13259,21 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_FI,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_FI,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -12194,28 +13406,8 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_FI,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_FI,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_FI },
-            { "80",  OPTION_VAL_80_FI },
-            { "60",  OPTION_VAL_60_FI },
-            { "40",  OPTION_VAL_40_FI },
-            { "20",  OPTION_VAL_20_FI },
-            { "0",   OPTION_VAL_0_FI },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_FI,
@@ -12230,7 +13422,21 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
             { "none",     OPTION_VAL_NONE_FI },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_FI,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_FI,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -12271,7 +13477,7 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_FI },
+            { "0",  OPTION_VAL_0_FI },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_FI },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_FI },
             { "15", OPTION_VAL_15_FI },
@@ -12293,7 +13499,7 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_FI },
+            { "0",  OPTION_VAL_0_FI },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_FI },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_FI },
             { "15", OPTION_VAL_15_FI },
@@ -12384,6 +13590,58 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_FI,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_FI,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_FI },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_FI },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_FI,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_FI,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_FI },
+            { "square", OPTION_VAL_SQUARE_FI },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_FI,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_FI,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_FI },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_FI },
+            { "15", OPTION_VAL_15_FI },
+            { "20", OPTION_VAL_20_FI },
+            { "25", OPTION_VAL_25_FI },
+            { "30", OPTION_VAL_30_FI },
+            { "35", OPTION_VAL_35_FI },
+            { "40", OPTION_VAL_40_FI },
+            { "45", OPTION_VAL_45_FI },
+            { "50", OPTION_VAL_50_FI },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -12478,6 +13736,8 @@ struct retro_core_options_v2 options_fi = {
 #define OPTION_VAL_8_FR "x8 (5120 x 3840)"
 #define OPTION_VAL_9_FR "x9 (5760 x 4320)"
 #define OPTION_VAL_10_FR "x10 (6400 x 4800)"
+#define XEMU_SUBPIXEL_OFFSET_LABEL_FR NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_FR NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_FR "Filtrage anisotrope"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_FR NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_FR NULL
@@ -12504,30 +13764,25 @@ struct retro_core_options_v2 options_fi = {
 #define XEMU_VP_WORKERS_INFO_0_FR NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_FR NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_FR NULL
-#define XEMU_AUDIO_VOLUME_LABEL_FR "Limite de volume audio (%)"
-#define XEMU_AUDIO_VOLUME_INFO_0_FR "Limiter le volume de sortie audio de la Xbox indépendamment du volume principal de RetroArch."
-#define OPTION_VAL_100_FR "100 %"
-#define OPTION_VAL_80_FR "80 %"
-#define OPTION_VAL_60_FR "60 %"
-#define OPTION_VAL_40_FR "40 %"
-#define OPTION_VAL_20_FR "20 %"
-#define OPTION_VAL_0_FR "Muet"
 #define XEMU_VK_FAST_PATHS_LABEL_FR NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_FR NULL
 #define OPTION_VAL_ALL_FR "Tous"
 #define OPTION_VAL_NO_GPL_FR NULL
 #define OPTION_VAL_NO_DYN_FR NULL
 #define OPTION_VAL_NONE_FR "Ne pas partager"
+#define XEMU_MSPF_OVERLAY_LABEL_FR "Surimpression des performances"
+#define XEMU_MSPF_OVERLAY_INFO_0_FR NULL
 #define XEMU_RUMBLE_P1_LABEL_FR NULL
 #define XEMU_RUMBLE_P1_INFO_0_FR NULL
 #define XEMU_RUMBLE_P2_LABEL_FR NULL
 #define XEMU_RUMBLE_P2_INFO_0_FR NULL
 #define XEMU_DEADZONE_P1_LABEL_FR NULL
 #define XEMU_DEADZONE_P1_INFO_0_FR NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_FR NULL
+#define OPTION_VAL_0_FR NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_FR NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_FR NULL
 #define OPTION_VAL_15_FR "15 %"
+#define OPTION_VAL_20_FR "20 %"
 #define OPTION_VAL_25_FR NULL
 #define OPTION_VAL_30_FR "30 %"
 #define XEMU_DEADZONE_P2_LABEL_FR NULL
@@ -12541,8 +13796,11 @@ struct retro_core_options_v2 options_fi = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_FR NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_FR NULL
 #define OPTION_VAL_50_FR "50 %"
+#define OPTION_VAL_60_FR "60 %"
 #define OPTION_VAL_70_FR "70 %"
+#define OPTION_VAL_80_FR "80 %"
 #define OPTION_VAL_90_FR "90 %"
+#define OPTION_VAL_100_FR "100 %"
 #define OPTION_VAL_110_FR "110 %"
 #define OPTION_VAL_120_FR "120 %"
 #define OPTION_VAL_130_FR "130 %"
@@ -12555,6 +13813,19 @@ struct retro_core_options_v2 options_fi = {
 #define OPTION_VAL_200_FR "200 %"
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_FR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_FR NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_FR NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_FR NULL
+#define OPTION_VAL_LINEAR_FR "Linéaire"
+#define OPTION_VAL_LOGARITHMIC_FR NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_FR NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_FR NULL
+#define OPTION_VAL_CUBIC_FR NULL
+#define OPTION_VAL_SQUARE_FR NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_FR NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_FR NULL
+#define OPTION_VAL_35_FR "35 %"
+#define OPTION_VAL_40_FR "40 %"
+#define OPTION_VAL_45_FR NULL
 #define XEMU_CHIHIRO_FFB_LABEL_FR NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_FR NULL
 #define OPTION_VAL_75_FR "75 %"
@@ -12790,6 +14061,21 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_FR,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_FR,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -12922,28 +14208,8 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_FR,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_FR,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_FR },
-            { "80",  OPTION_VAL_80_FR },
-            { "60",  OPTION_VAL_60_FR },
-            { "40",  OPTION_VAL_40_FR },
-            { "20",  OPTION_VAL_20_FR },
-            { "0",   OPTION_VAL_0_FR },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_FR,
@@ -12958,7 +14224,21 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
             { "none",     OPTION_VAL_NONE_FR },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_FR,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_FR,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -12999,7 +14279,7 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_FR },
+            { "0",  OPTION_VAL_0_FR },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_FR },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_FR },
             { "15", OPTION_VAL_15_FR },
@@ -13021,7 +14301,7 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_FR },
+            { "0",  OPTION_VAL_0_FR },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_FR },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_FR },
             { "15", OPTION_VAL_15_FR },
@@ -13113,6 +14393,58 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
         },
         "enabled"
     },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_FR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_FR,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_FR },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_FR },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_FR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_FR,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_FR },
+            { "square", OPTION_VAL_SQUARE_FR },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_FR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_FR,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_FR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_FR },
+            { "15", OPTION_VAL_15_FR },
+            { "20", OPTION_VAL_20_FR },
+            { "25", OPTION_VAL_25_FR },
+            { "30", OPTION_VAL_30_FR },
+            { "35", OPTION_VAL_35_FR },
+            { "40", OPTION_VAL_40_FR },
+            { "45", OPTION_VAL_45_FR },
+            { "50", OPTION_VAL_50_FR },
+            { NULL, NULL },
+        },
+        "25"
+    },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
     {
@@ -13191,9 +14523,9 @@ struct retro_core_options_v2 options_fr = {
 #define OPTION_VAL_16_9_GA NULL
 #define OPTION_VAL_LETTERBOX_GA "Bosca litreacha"
 #define XEMU_ASPECT_RATIO_LABEL_GA "Cóimheas Gné Croí"
-#define XEMU_ASPECT_RATIO_INFO_0_GA "An cruth ina dtaispeántar an pictiúr. Is fearr é a fhágáil ar 'Auto', a leanann an cluiche: 16:9 nuair a bhíonn an consól socraithe ar scáileán leathan (Cóimheas Gné an Chórais nó an deais) agus an cluiche á rindreáil i 16:9; 4:3 ar shlí eile, nó ar chóras Chihiro. Síneann an suíomh 16:9 cluiche 4:3 amach chun an scáileán leathan a líonadh."
+#define XEMU_ASPECT_RATIO_INFO_0_GA "An cruth ina dtaispeántar an íomhá. Is fearr é a fhágáil ar 'Auto', a leanann an cluiche: 16:9 nuair a bhíonn an consól socraithe ar scáileán leathan ('System Aspect Ratio' nó an deais) agus an cluiche á rindreáil i 16:9, nó nuair a bhíonn paiste scáileáin leathan (le 'Widescreen' nó '16-9' ina ainm) i bhfeidhm; 4:3 i gcásanna eile agus ar chóras Chihiro. Síneann an cóimheas 16:9 cluiche 4:3 amach chun a bheith ina scáileán leathan."
 #define XEMU_OVERSCAN_CROP_LABEL_GA "Bearr Ró-scanadh Ingearach"
-#define XEMU_OVERSCAN_CROP_INFO_0_GA NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_GA "Tarraingíonn roinnt cluichí íomhá 448 líne laistigh de na 480 líne atá ag an Xbox, le barraí dubha os a cionn agus faoina bun. Déantar 16 líne as gach 480 líne a bhearradh go huathoibríoch ag barr agus ag bun na gcluichí atá ar liosta an chroí-chórais de chluichí den sórt sin, agus síntear an chuid eile go dtí an airde iomlán, agus an cóimheas gné á chaomhnú."
 #define XEMU_SURFACE_SCALE_LABEL_GA "Scála Réitigh Inmheánaigh (Atosaigh)"
 #define XEMU_SURFACE_SCALE_INFO_0_GA "Déanann sé scálú ar an réiteach inmheánach rindreála. Feabhsaíonn luachanna níos airde an caighdeán ach laghdaíonn siad an fheidhmíocht."
 #define OPTION_VAL_1_GA NULL
@@ -13206,6 +14538,8 @@ struct retro_core_options_v2 options_fr = {
 #define OPTION_VAL_8_GA NULL
 #define OPTION_VAL_9_GA NULL
 #define OPTION_VAL_10_GA NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_GA "Scálú Fritháirimh Fho-phicteilín"
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_GA "Má shocraítear an Scála Taifigh Inmheánaigh (Internal Resolution Scale) os cionn 1x, bogfar an íomhá méid beag bídeach — codán de phicteilín — ionas go mbeidh picteilíní an taifigh níos airde ailínithe leis na cinn bhunaidh. Réitíonn sé seo fadhbanna ar nós íomhánna taibhseacha (ghosting) agus línte scoite i gcluichí áirithe (Jade Empire, Blinx), ach cruthaíonn sé fadhbanna i gcluichí eile (Splinter Cell). Má bhíonn an ghné múchta, fanann gach rud mar a bhí roimhe seo."
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_GA "Scagadh Ainiseatrópach"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_GA "An scagadh is lú ainisotrópach a fhaigheann uigeachtaí réidh scagtha an chluiche, rud a choinníonn uigeachtaí ag claonadh géar. Fágann dúchasach féin an chluiche, rud nach bhfuil ann i gcás fhormhór na gcluichí Xbox."
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_GA "Dúchasach"
@@ -13232,30 +14566,25 @@ struct retro_core_options_v2 options_fr = {
 #define XEMU_VP_WORKERS_INFO_0_GA "Snáitheanna a mheascann an próiseálaí gutha fuaime na guthanna orthu. Úsáideann an socrú uathoibríoch ceann amháin in aghaidh an chroíleacáin LAP."
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_GA "An Chéad Seinm Réidh (Atosaigh)"
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_GA "Tiomponn sé na *shaders* a úsáideann cluiche le linn an phróisis tosaithe, ionas nach mbeidh aon bhac ná preabadh sna chéad nóiméid agus iad á dtiomsú. Ar OpenGL coinníonn sé a bhfuil á thiomsú aige sa taisce scáthaithe, atá ar siúl i gcónaí."
-#define XEMU_AUDIO_VOLUME_LABEL_GA "Teorainn Airde Fuaime (%)"
-#define XEMU_AUDIO_VOLUME_INFO_0_GA "Cuir teorainn le leibhéal toirte aschuir fuaime an Xbox go neamhspleách ar phríomh-toirt RetroArch."
-#define OPTION_VAL_100_GA NULL
-#define OPTION_VAL_80_GA NULL
-#define OPTION_VAL_60_GA NULL
-#define OPTION_VAL_40_GA NULL
-#define OPTION_VAL_20_GA NULL
-#define OPTION_VAL_0_GA "Balbhaithe"
 #define XEMU_VK_FAST_PATHS_LABEL_GA "Conairí Tapa Vulkan (Atosaigh)"
 #define XEMU_VK_FAST_PATHS_INFO_0_GA "Bíonn tionchar aige ar luas tiomsaithe scáthaithe ar Vulkan. Is é \"All\" an rogha is tapúla, ach d'fhéadfadh sé a chur faoi deara go dteipfeadh ar chluichí áirithe."
 #define OPTION_VAL_ALL_GA "Gach"
 #define OPTION_VAL_NO_GPL_GA "Gan Leabharlanna Píblíne"
 #define OPTION_VAL_NO_DYN_GA "Gan Stáit Dhinimiciúla"
 #define OPTION_VAL_NONE_GA "Dada"
+#define XEMU_MSPF_OVERLAY_LABEL_GA "Forleagan Feidhmíochta"
+#define XEMU_MSPF_OVERLAY_INFO_0_GA "Taispeánann sé dhá líne sa chúinne uachtarach ar chlé. FPS: na frámaí in aghaidh an tsoicind a thaispeánann an cluiche, mar atá i bhforleagan dífhabhtaithe físe xemu neamhspleách, thar a 60 fráma deireanacha. GPU: an ráta fráma a d'fhéadfadh an cluiche a bhaint amach ón am a thógann sé fráma a tharraingt (MSPF an chluiche neamhspleách), meánaithe thar a 60 fráma deireanacha agus nuashonraithe gach 20 fráma; bailí ach amháin nuair is é an GPU a chuireann teorainn leis an gcluiche. Agus é ar siúl, scríobhann an croílár chuig log RetroArch gach 300 rith conas a ailíníodh frámaí an aoi agus ritheanna an tosaigh. Tagann sé i bhfeidhm láithreach."
 #define XEMU_RUMBLE_P1_LABEL_GA "Rumble (Imreoir 1)"
 #define XEMU_RUMBLE_P1_INFO_0_GA "Crithfidh rialtán Imreoir 1 — de bharr cluichí Xbox agus aiseolas fórsa ó chluiche rásaíochta Chihiro. Má bhíonn sé múchta, ní bheidh ceachtar acu i gceist."
 #define XEMU_RUMBLE_P2_LABEL_GA "Creathadh (Imreoir 2)"
 #define XEMU_RUMBLE_P2_INFO_0_GA "Tá ceap Imreoir 2 ag torann, ó na cluichí Xbox agus ó aiseolas fórsa i gcluiche rásaíochta Chihiro. Mura bhfuil sé ar siúl, ní bhíonn ceachtar acu i gceist."
 #define XEMU_DEADZONE_P1_LABEL_GA "Crios Marbh Analógach (Imreoir 1)"
 #define XEMU_DEADZONE_P1_INFO_0_GA "Cé chomh fada is féidir bataí imreora 1 a bhrú sula bhfeiceann an cluiche é, an dá bhata, ar an Xbox agus an Chihiro araon; déantar an chuid eile den ghluaiseacht a scálú suas go dtí an t-uasmhéid."
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_GA NULL
+#define OPTION_VAL_0_GA NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_GA NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_GA NULL
 #define OPTION_VAL_15_GA NULL
+#define OPTION_VAL_20_GA NULL
 #define OPTION_VAL_25_GA NULL
 #define OPTION_VAL_30_GA NULL
 #define XEMU_DEADZONE_P2_LABEL_GA "Crios Marbh Analógach (Imreoir 2)"
@@ -13269,8 +14598,11 @@ struct retro_core_options_v2 options_fr = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_GA "Íogaireacht Aimithe an Luamháin"
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_GA "An luas a ghluaiseann an luamhán an spriocphointe nuair a úsáidtear an luamhán analógach chun díriú – tá an luas céanna ann, bíodh sé ag gluaiseacht trasna nó suas is síos; ag 100%, má bhrúitear an luamhán go dtí an t-uasmhéid, trasnóidh an pointe airde an scáileáin i gceann soicind amháin, a bheag nó a mhór. Díríonn an luch ar an áit a bhfuil sí dírithe."
 #define OPTION_VAL_50_GA NULL
+#define OPTION_VAL_60_GA NULL
 #define OPTION_VAL_70_GA NULL
+#define OPTION_VAL_80_GA NULL
 #define OPTION_VAL_90_GA NULL
+#define OPTION_VAL_100_GA NULL
 #define OPTION_VAL_110_GA NULL
 #define OPTION_VAL_120_GA NULL
 #define OPTION_VAL_130_GA NULL
@@ -13283,6 +14615,19 @@ struct retro_core_options_v2 options_fr = {
 #define OPTION_VAL_200_GA NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_GA "Croisghléas"
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_GA "Tarraingíonn sé sprioc gach imreora thar an bpictiúr; dearg d'Imreoir 1, gorm d'Imreoir 2."
+#define XEMU_CHIHIRO_STEERING_LABEL_GA "Freagairt an Stiúrtha"
+#define XEMU_CHIHIRO_STEERING_INFO_0_GA "An chaoi a stiúrann an luamhán clé in OutRun 2, OutRun 2 SP, Maximum Tune 1 agus 2, Crazy Taxi 3 agus Ollie King. Líneach: de réir mar a bhrúitear an luamhán. Logartamach: ar chuar ina mbíonn an casadh níos lú timpeall an láir agus níos géire i dtreo na gceann, rud a fhágann nach mbíonn an stiúradh chomh corraitheach sin; Socraítear a chruth ag Éifeacht Stiúrtha agus Crios Stiúrtha Istigh. Ní bhíonn tionchar ar an bpad treo."
+#define OPTION_VAL_LINEAR_GA "Líneach"
+#define OPTION_VAL_LOGARITHMIC_GA "Logartamach"
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_GA "Éifeacht Stiúrtha"
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_GA "Le freagairt stiúrtha logartamach: an chaoi a méadaíonn an chuid eile den chasadh i dtreo an ghlais iomláin. Tá an leagan ciúbach láidir, agus an leagan cearnach lag."
+#define OPTION_VAL_CUBIC_GA "Ciúbach (Láidir)"
+#define OPTION_VAL_SQUARE_GA "Cearnóg (Lag)"
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_GA "Crios Istigh an Stiúrtha"
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_GA "Le freagairt stiúrtha logartamach: an chuid den chasadh a mhéadaíonn go cothrom ón lár. Dá ísle é, is ea is ciúine a bhíonn an stiúradh timpeall an láir."
+#define OPTION_VAL_35_GA NULL
+#define OPTION_VAL_40_GA NULL
+#define OPTION_VAL_45_GA NULL
 #define XEMU_CHIHIRO_FFB_LABEL_GA "Creathadh le haiseolas fórsa"
 #define XEMU_CHIHIRO_FFB_INFO_0_GA "Cuireann sé aiseolas fórsa ó chluiche rásaíochta Chihiro (OutRun 2, Maximum Tune) ar fáil mar chreathadh ar an rialtóir i bport 1, ag an déine seo."
 #define OPTION_VAL_75_GA NULL
@@ -13518,6 +14863,21 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_GA,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_GA,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -13650,28 +15010,8 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_GA,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_GA,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_GA },
-            { "80",  OPTION_VAL_80_GA },
-            { "60",  OPTION_VAL_60_GA },
-            { "40",  OPTION_VAL_40_GA },
-            { "20",  OPTION_VAL_20_GA },
-            { "0",   OPTION_VAL_0_GA },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_GA,
@@ -13686,7 +15026,21 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
             { "none",     OPTION_VAL_NONE_GA },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_GA,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_GA,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -13727,7 +15081,7 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_GA },
+            { "0",  OPTION_VAL_0_GA },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_GA },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_GA },
             { "15", OPTION_VAL_15_GA },
@@ -13749,7 +15103,7 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_GA },
+            { "0",  OPTION_VAL_0_GA },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_GA },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_GA },
             { "15", OPTION_VAL_15_GA },
@@ -13840,6 +15194,58 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_GA,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_GA,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_GA },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_GA },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_GA,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_GA,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_GA },
+            { "square", OPTION_VAL_SQUARE_GA },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_GA,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_GA,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_GA },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_GA },
+            { "15", OPTION_VAL_15_GA },
+            { "20", OPTION_VAL_20_GA },
+            { "25", OPTION_VAL_25_GA },
+            { "30", OPTION_VAL_30_GA },
+            { "35", OPTION_VAL_35_GA },
+            { "40", OPTION_VAL_40_GA },
+            { "45", OPTION_VAL_45_GA },
+            { "50", OPTION_VAL_50_GA },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -13934,6 +15340,8 @@ struct retro_core_options_v2 options_ga = {
 #define OPTION_VAL_8_GL NULL
 #define OPTION_VAL_9_GL NULL
 #define OPTION_VAL_10_GL NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_GL NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_GL NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_GL "Filtrado anisotrópico"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_GL NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_GL "Nativo"
@@ -13960,30 +15368,25 @@ struct retro_core_options_v2 options_ga = {
 #define XEMU_VP_WORKERS_INFO_0_GL NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_GL NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_GL NULL
-#define XEMU_AUDIO_VOLUME_LABEL_GL NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_GL NULL
-#define OPTION_VAL_100_GL NULL
-#define OPTION_VAL_80_GL NULL
-#define OPTION_VAL_60_GL NULL
-#define OPTION_VAL_40_GL NULL
-#define OPTION_VAL_20_GL NULL
-#define OPTION_VAL_0_GL NULL
 #define XEMU_VK_FAST_PATHS_LABEL_GL NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_GL NULL
 #define OPTION_VAL_ALL_GL "Todo"
 #define OPTION_VAL_NO_GPL_GL NULL
 #define OPTION_VAL_NO_DYN_GL NULL
 #define OPTION_VAL_NONE_GL "Ningún"
+#define XEMU_MSPF_OVERLAY_LABEL_GL NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_GL NULL
 #define XEMU_RUMBLE_P1_LABEL_GL NULL
 #define XEMU_RUMBLE_P1_INFO_0_GL NULL
 #define XEMU_RUMBLE_P2_LABEL_GL NULL
 #define XEMU_RUMBLE_P2_INFO_0_GL NULL
 #define XEMU_DEADZONE_P1_LABEL_GL NULL
 #define XEMU_DEADZONE_P1_INFO_0_GL NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_GL NULL
+#define OPTION_VAL_0_GL NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_GL NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_GL NULL
 #define OPTION_VAL_15_GL NULL
+#define OPTION_VAL_20_GL NULL
 #define OPTION_VAL_25_GL NULL
 #define OPTION_VAL_30_GL NULL
 #define XEMU_DEADZONE_P2_LABEL_GL NULL
@@ -13997,8 +15400,11 @@ struct retro_core_options_v2 options_ga = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_GL NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_GL NULL
 #define OPTION_VAL_50_GL NULL
+#define OPTION_VAL_60_GL NULL
 #define OPTION_VAL_70_GL NULL
+#define OPTION_VAL_80_GL NULL
 #define OPTION_VAL_90_GL NULL
+#define OPTION_VAL_100_GL NULL
 #define OPTION_VAL_110_GL NULL
 #define OPTION_VAL_120_GL NULL
 #define OPTION_VAL_130_GL NULL
@@ -14011,6 +15417,19 @@ struct retro_core_options_v2 options_ga = {
 #define OPTION_VAL_200_GL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_GL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_GL NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_GL NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_GL NULL
+#define OPTION_VAL_LINEAR_GL "Lineal"
+#define OPTION_VAL_LOGARITHMIC_GL NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_GL NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_GL NULL
+#define OPTION_VAL_CUBIC_GL NULL
+#define OPTION_VAL_SQUARE_GL NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_GL NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_GL NULL
+#define OPTION_VAL_35_GL NULL
+#define OPTION_VAL_40_GL NULL
+#define OPTION_VAL_45_GL NULL
 #define XEMU_CHIHIRO_FFB_LABEL_GL NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_GL NULL
 #define OPTION_VAL_75_GL NULL
@@ -14246,6 +15665,21 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_GL,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_GL,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -14378,28 +15812,8 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_GL,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_GL,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_GL },
-            { "80",  OPTION_VAL_80_GL },
-            { "60",  OPTION_VAL_60_GL },
-            { "40",  OPTION_VAL_40_GL },
-            { "20",  OPTION_VAL_20_GL },
-            { "0",   OPTION_VAL_0_GL },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_GL,
@@ -14414,7 +15828,21 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
             { "none",     OPTION_VAL_NONE_GL },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_GL,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_GL,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -14455,7 +15883,7 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_GL },
+            { "0",  OPTION_VAL_0_GL },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_GL },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_GL },
             { "15", OPTION_VAL_15_GL },
@@ -14477,7 +15905,7 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_GL },
+            { "0",  OPTION_VAL_0_GL },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_GL },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_GL },
             { "15", OPTION_VAL_15_GL },
@@ -14568,6 +15996,58 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_GL,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_GL,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_GL },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_GL },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_GL,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_GL,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_GL },
+            { "square", OPTION_VAL_SQUARE_GL },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_GL,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_GL,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_GL },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_GL },
+            { "15", OPTION_VAL_15_GL },
+            { "20", OPTION_VAL_20_GL },
+            { "25", OPTION_VAL_25_GL },
+            { "30", OPTION_VAL_30_GL },
+            { "35", OPTION_VAL_35_GL },
+            { "40", OPTION_VAL_40_GL },
+            { "45", OPTION_VAL_45_GL },
+            { "50", OPTION_VAL_50_GL },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -14662,6 +16142,8 @@ struct retro_core_options_v2 options_gl = {
 #define OPTION_VAL_8_HE NULL
 #define OPTION_VAL_9_HE NULL
 #define OPTION_VAL_10_HE NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_HE NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_HE NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_HE NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_HE NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_HE NULL
@@ -14688,30 +16170,25 @@ struct retro_core_options_v2 options_gl = {
 #define XEMU_VP_WORKERS_INFO_0_HE NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_HE NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_HE NULL
-#define XEMU_AUDIO_VOLUME_LABEL_HE NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_HE NULL
-#define OPTION_VAL_100_HE NULL
-#define OPTION_VAL_80_HE NULL
-#define OPTION_VAL_60_HE NULL
-#define OPTION_VAL_40_HE NULL
-#define OPTION_VAL_20_HE NULL
-#define OPTION_VAL_0_HE NULL
 #define XEMU_VK_FAST_PATHS_LABEL_HE NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_HE NULL
 #define OPTION_VAL_ALL_HE NULL
 #define OPTION_VAL_NO_GPL_HE NULL
 #define OPTION_VAL_NO_DYN_HE NULL
 #define OPTION_VAL_NONE_HE NULL
+#define XEMU_MSPF_OVERLAY_LABEL_HE NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_HE NULL
 #define XEMU_RUMBLE_P1_LABEL_HE NULL
 #define XEMU_RUMBLE_P1_INFO_0_HE NULL
 #define XEMU_RUMBLE_P2_LABEL_HE NULL
 #define XEMU_RUMBLE_P2_INFO_0_HE NULL
 #define XEMU_DEADZONE_P1_LABEL_HE NULL
 #define XEMU_DEADZONE_P1_INFO_0_HE NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_HE NULL
+#define OPTION_VAL_0_HE NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_HE NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_HE NULL
 #define OPTION_VAL_15_HE NULL
+#define OPTION_VAL_20_HE NULL
 #define OPTION_VAL_25_HE NULL
 #define OPTION_VAL_30_HE NULL
 #define XEMU_DEADZONE_P2_LABEL_HE NULL
@@ -14725,8 +16202,11 @@ struct retro_core_options_v2 options_gl = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_HE NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_HE NULL
 #define OPTION_VAL_50_HE NULL
+#define OPTION_VAL_60_HE NULL
 #define OPTION_VAL_70_HE NULL
+#define OPTION_VAL_80_HE NULL
 #define OPTION_VAL_90_HE NULL
+#define OPTION_VAL_100_HE NULL
 #define OPTION_VAL_110_HE NULL
 #define OPTION_VAL_120_HE NULL
 #define OPTION_VAL_130_HE NULL
@@ -14739,6 +16219,19 @@ struct retro_core_options_v2 options_gl = {
 #define OPTION_VAL_200_HE NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_HE NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_HE NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_HE NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_HE NULL
+#define OPTION_VAL_LINEAR_HE NULL
+#define OPTION_VAL_LOGARITHMIC_HE NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_HE NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_HE NULL
+#define OPTION_VAL_CUBIC_HE NULL
+#define OPTION_VAL_SQUARE_HE NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_HE NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_HE NULL
+#define OPTION_VAL_35_HE NULL
+#define OPTION_VAL_40_HE NULL
+#define OPTION_VAL_45_HE NULL
 #define XEMU_CHIHIRO_FFB_LABEL_HE NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_HE NULL
 #define OPTION_VAL_75_HE NULL
@@ -14974,6 +16467,21 @@ struct retro_core_option_v2_definition option_defs_he[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_HE,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_HE,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -15106,28 +16614,8 @@ struct retro_core_option_v2_definition option_defs_he[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_HE,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_HE,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_HE },
-            { "80",  OPTION_VAL_80_HE },
-            { "60",  OPTION_VAL_60_HE },
-            { "40",  OPTION_VAL_40_HE },
-            { "20",  OPTION_VAL_20_HE },
-            { "0",   OPTION_VAL_0_HE },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_HE,
@@ -15142,7 +16630,21 @@ struct retro_core_option_v2_definition option_defs_he[] = {
             { "none",     OPTION_VAL_NONE_HE },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_HE,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_HE,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -15183,7 +16685,7 @@ struct retro_core_option_v2_definition option_defs_he[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_HE },
+            { "0",  OPTION_VAL_0_HE },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_HE },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_HE },
             { "15", OPTION_VAL_15_HE },
@@ -15205,7 +16707,7 @@ struct retro_core_option_v2_definition option_defs_he[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_HE },
+            { "0",  OPTION_VAL_0_HE },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_HE },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_HE },
             { "15", OPTION_VAL_15_HE },
@@ -15296,6 +16798,58 @@ struct retro_core_option_v2_definition option_defs_he[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_HE,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_HE,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_HE },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_HE },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_HE,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_HE,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_HE },
+            { "square", OPTION_VAL_SQUARE_HE },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_HE,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_HE,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_HE },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_HE },
+            { "15", OPTION_VAL_15_HE },
+            { "20", OPTION_VAL_20_HE },
+            { "25", OPTION_VAL_25_HE },
+            { "30", OPTION_VAL_30_HE },
+            { "35", OPTION_VAL_35_HE },
+            { "40", OPTION_VAL_40_HE },
+            { "45", OPTION_VAL_45_HE },
+            { "50", OPTION_VAL_50_HE },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -15390,6 +16944,8 @@ struct retro_core_options_v2 options_he = {
 #define OPTION_VAL_8_HR NULL
 #define OPTION_VAL_9_HR NULL
 #define OPTION_VAL_10_HR NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_HR NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_HR NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_HR "Anizotropno filtriranje"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_HR NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_HR NULL
@@ -15416,30 +16972,25 @@ struct retro_core_options_v2 options_he = {
 #define XEMU_VP_WORKERS_INFO_0_HR NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_HR NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_HR NULL
-#define XEMU_AUDIO_VOLUME_LABEL_HR NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_HR NULL
-#define OPTION_VAL_100_HR NULL
-#define OPTION_VAL_80_HR NULL
-#define OPTION_VAL_60_HR NULL
-#define OPTION_VAL_40_HR NULL
-#define OPTION_VAL_20_HR NULL
-#define OPTION_VAL_0_HR NULL
 #define XEMU_VK_FAST_PATHS_LABEL_HR NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_HR NULL
 #define OPTION_VAL_ALL_HR NULL
 #define OPTION_VAL_NO_GPL_HR NULL
 #define OPTION_VAL_NO_DYN_HR NULL
 #define OPTION_VAL_NONE_HR "Ništa"
+#define XEMU_MSPF_OVERLAY_LABEL_HR NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_HR NULL
 #define XEMU_RUMBLE_P1_LABEL_HR NULL
 #define XEMU_RUMBLE_P1_INFO_0_HR NULL
 #define XEMU_RUMBLE_P2_LABEL_HR NULL
 #define XEMU_RUMBLE_P2_INFO_0_HR NULL
 #define XEMU_DEADZONE_P1_LABEL_HR NULL
 #define XEMU_DEADZONE_P1_INFO_0_HR NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_HR NULL
+#define OPTION_VAL_0_HR NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_HR NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_HR NULL
 #define OPTION_VAL_15_HR NULL
+#define OPTION_VAL_20_HR NULL
 #define OPTION_VAL_25_HR NULL
 #define OPTION_VAL_30_HR NULL
 #define XEMU_DEADZONE_P2_LABEL_HR NULL
@@ -15453,8 +17004,11 @@ struct retro_core_options_v2 options_he = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_HR NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_HR NULL
 #define OPTION_VAL_50_HR NULL
+#define OPTION_VAL_60_HR NULL
 #define OPTION_VAL_70_HR NULL
+#define OPTION_VAL_80_HR NULL
 #define OPTION_VAL_90_HR NULL
+#define OPTION_VAL_100_HR NULL
 #define OPTION_VAL_110_HR NULL
 #define OPTION_VAL_120_HR NULL
 #define OPTION_VAL_130_HR NULL
@@ -15467,6 +17021,19 @@ struct retro_core_options_v2 options_he = {
 #define OPTION_VAL_200_HR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_HR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_HR NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_HR NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_HR NULL
+#define OPTION_VAL_LINEAR_HR NULL
+#define OPTION_VAL_LOGARITHMIC_HR NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_HR NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_HR NULL
+#define OPTION_VAL_CUBIC_HR NULL
+#define OPTION_VAL_SQUARE_HR NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_HR NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_HR NULL
+#define OPTION_VAL_35_HR NULL
+#define OPTION_VAL_40_HR NULL
+#define OPTION_VAL_45_HR NULL
 #define XEMU_CHIHIRO_FFB_LABEL_HR NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_HR NULL
 #define OPTION_VAL_75_HR NULL
@@ -15702,6 +17269,21 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_HR,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_HR,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -15834,28 +17416,8 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_HR,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_HR,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_HR },
-            { "80",  OPTION_VAL_80_HR },
-            { "60",  OPTION_VAL_60_HR },
-            { "40",  OPTION_VAL_40_HR },
-            { "20",  OPTION_VAL_20_HR },
-            { "0",   OPTION_VAL_0_HR },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_HR,
@@ -15870,7 +17432,21 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
             { "none",     OPTION_VAL_NONE_HR },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_HR,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_HR,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -15911,7 +17487,7 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_HR },
+            { "0",  OPTION_VAL_0_HR },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_HR },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_HR },
             { "15", OPTION_VAL_15_HR },
@@ -15933,7 +17509,7 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_HR },
+            { "0",  OPTION_VAL_0_HR },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_HR },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_HR },
             { "15", OPTION_VAL_15_HR },
@@ -16024,6 +17600,58 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_HR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_HR,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_HR },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_HR },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_HR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_HR,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_HR },
+            { "square", OPTION_VAL_SQUARE_HR },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_HR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_HR,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_HR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_HR },
+            { "15", OPTION_VAL_15_HR },
+            { "20", OPTION_VAL_20_HR },
+            { "25", OPTION_VAL_25_HR },
+            { "30", OPTION_VAL_30_HR },
+            { "35", OPTION_VAL_35_HR },
+            { "40", OPTION_VAL_40_HR },
+            { "45", OPTION_VAL_45_HR },
+            { "50", OPTION_VAL_50_HR },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -16118,6 +17746,8 @@ struct retro_core_options_v2 options_hr = {
 #define OPTION_VAL_8_HU NULL
 #define OPTION_VAL_9_HU NULL
 #define OPTION_VAL_10_HU NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_HU NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_HU NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_HU "Anizotróp szûrés"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_HU NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_HU "Eredeti"
@@ -16144,30 +17774,25 @@ struct retro_core_options_v2 options_hr = {
 #define XEMU_VP_WORKERS_INFO_0_HU NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_HU NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_HU NULL
-#define XEMU_AUDIO_VOLUME_LABEL_HU NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_HU NULL
-#define OPTION_VAL_100_HU NULL
-#define OPTION_VAL_80_HU NULL
-#define OPTION_VAL_60_HU NULL
-#define OPTION_VAL_40_HU NULL
-#define OPTION_VAL_20_HU NULL
-#define OPTION_VAL_0_HU NULL
 #define XEMU_VK_FAST_PATHS_LABEL_HU NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_HU NULL
 #define OPTION_VAL_ALL_HU "Összes"
 #define OPTION_VAL_NO_GPL_HU NULL
 #define OPTION_VAL_NO_DYN_HU NULL
 #define OPTION_VAL_NONE_HU "Nincs"
+#define XEMU_MSPF_OVERLAY_LABEL_HU NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_HU NULL
 #define XEMU_RUMBLE_P1_LABEL_HU NULL
 #define XEMU_RUMBLE_P1_INFO_0_HU NULL
 #define XEMU_RUMBLE_P2_LABEL_HU NULL
 #define XEMU_RUMBLE_P2_INFO_0_HU NULL
 #define XEMU_DEADZONE_P1_LABEL_HU NULL
 #define XEMU_DEADZONE_P1_INFO_0_HU NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_HU NULL
+#define OPTION_VAL_0_HU NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_HU NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_HU NULL
 #define OPTION_VAL_15_HU NULL
+#define OPTION_VAL_20_HU NULL
 #define OPTION_VAL_25_HU NULL
 #define OPTION_VAL_30_HU NULL
 #define XEMU_DEADZONE_P2_LABEL_HU NULL
@@ -16181,8 +17806,11 @@ struct retro_core_options_v2 options_hr = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_HU NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_HU NULL
 #define OPTION_VAL_50_HU NULL
+#define OPTION_VAL_60_HU NULL
 #define OPTION_VAL_70_HU NULL
+#define OPTION_VAL_80_HU NULL
 #define OPTION_VAL_90_HU NULL
+#define OPTION_VAL_100_HU NULL
 #define OPTION_VAL_110_HU NULL
 #define OPTION_VAL_120_HU NULL
 #define OPTION_VAL_130_HU NULL
@@ -16195,6 +17823,19 @@ struct retro_core_options_v2 options_hr = {
 #define OPTION_VAL_200_HU NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_HU NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_HU NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_HU NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_HU NULL
+#define OPTION_VAL_LINEAR_HU "Lineáris"
+#define OPTION_VAL_LOGARITHMIC_HU NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_HU NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_HU NULL
+#define OPTION_VAL_CUBIC_HU NULL
+#define OPTION_VAL_SQUARE_HU NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_HU NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_HU NULL
+#define OPTION_VAL_35_HU NULL
+#define OPTION_VAL_40_HU NULL
+#define OPTION_VAL_45_HU NULL
 #define XEMU_CHIHIRO_FFB_LABEL_HU NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_HU NULL
 #define OPTION_VAL_75_HU NULL
@@ -16430,6 +18071,21 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_HU,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_HU,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -16562,28 +18218,8 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_HU,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_HU,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_HU },
-            { "80",  OPTION_VAL_80_HU },
-            { "60",  OPTION_VAL_60_HU },
-            { "40",  OPTION_VAL_40_HU },
-            { "20",  OPTION_VAL_20_HU },
-            { "0",   OPTION_VAL_0_HU },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_HU,
@@ -16598,7 +18234,21 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
             { "none",     OPTION_VAL_NONE_HU },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_HU,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_HU,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -16639,7 +18289,7 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_HU },
+            { "0",  OPTION_VAL_0_HU },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_HU },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_HU },
             { "15", OPTION_VAL_15_HU },
@@ -16661,7 +18311,7 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_HU },
+            { "0",  OPTION_VAL_0_HU },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_HU },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_HU },
             { "15", OPTION_VAL_15_HU },
@@ -16752,6 +18402,58 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_HU,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_HU,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_HU },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_HU },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_HU,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_HU,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_HU },
+            { "square", OPTION_VAL_SQUARE_HU },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_HU,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_HU,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_HU },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_HU },
+            { "15", OPTION_VAL_15_HU },
+            { "20", OPTION_VAL_20_HU },
+            { "25", OPTION_VAL_25_HU },
+            { "30", OPTION_VAL_30_HU },
+            { "35", OPTION_VAL_35_HU },
+            { "40", OPTION_VAL_40_HU },
+            { "45", OPTION_VAL_45_HU },
+            { "50", OPTION_VAL_50_HU },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -16846,6 +18548,8 @@ struct retro_core_options_v2 options_hu = {
 #define OPTION_VAL_8_ID NULL
 #define OPTION_VAL_9_ID NULL
 #define OPTION_VAL_10_ID NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_ID NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_ID NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_ID "Penyaringan Anisotropic"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_ID NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_ID "Lokal"
@@ -16872,30 +18576,25 @@ struct retro_core_options_v2 options_hu = {
 #define XEMU_VP_WORKERS_INFO_0_ID NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_ID NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_ID NULL
-#define XEMU_AUDIO_VOLUME_LABEL_ID NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_ID NULL
-#define OPTION_VAL_100_ID NULL
-#define OPTION_VAL_80_ID NULL
-#define OPTION_VAL_60_ID NULL
-#define OPTION_VAL_40_ID NULL
-#define OPTION_VAL_20_ID NULL
-#define OPTION_VAL_0_ID NULL
 #define XEMU_VK_FAST_PATHS_LABEL_ID NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_ID NULL
 #define OPTION_VAL_ALL_ID NULL
 #define OPTION_VAL_NO_GPL_ID NULL
 #define OPTION_VAL_NO_DYN_ID NULL
 #define OPTION_VAL_NONE_ID "Tak ada"
+#define XEMU_MSPF_OVERLAY_LABEL_ID NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_ID NULL
 #define XEMU_RUMBLE_P1_LABEL_ID NULL
 #define XEMU_RUMBLE_P1_INFO_0_ID NULL
 #define XEMU_RUMBLE_P2_LABEL_ID NULL
 #define XEMU_RUMBLE_P2_INFO_0_ID NULL
 #define XEMU_DEADZONE_P1_LABEL_ID NULL
 #define XEMU_DEADZONE_P1_INFO_0_ID NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_ID NULL
+#define OPTION_VAL_0_ID NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_ID NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_ID NULL
 #define OPTION_VAL_15_ID NULL
+#define OPTION_VAL_20_ID NULL
 #define OPTION_VAL_25_ID NULL
 #define OPTION_VAL_30_ID NULL
 #define XEMU_DEADZONE_P2_LABEL_ID NULL
@@ -16909,8 +18608,11 @@ struct retro_core_options_v2 options_hu = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_ID NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_ID NULL
 #define OPTION_VAL_50_ID NULL
+#define OPTION_VAL_60_ID NULL
 #define OPTION_VAL_70_ID NULL
+#define OPTION_VAL_80_ID NULL
 #define OPTION_VAL_90_ID NULL
+#define OPTION_VAL_100_ID NULL
 #define OPTION_VAL_110_ID NULL
 #define OPTION_VAL_120_ID NULL
 #define OPTION_VAL_130_ID NULL
@@ -16923,6 +18625,19 @@ struct retro_core_options_v2 options_hu = {
 #define OPTION_VAL_200_ID NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_ID NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_ID NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_ID NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_ID NULL
+#define OPTION_VAL_LINEAR_ID NULL
+#define OPTION_VAL_LOGARITHMIC_ID NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_ID NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_ID NULL
+#define OPTION_VAL_CUBIC_ID NULL
+#define OPTION_VAL_SQUARE_ID NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_ID NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_ID NULL
+#define OPTION_VAL_35_ID NULL
+#define OPTION_VAL_40_ID NULL
+#define OPTION_VAL_45_ID NULL
 #define XEMU_CHIHIRO_FFB_LABEL_ID NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_ID NULL
 #define OPTION_VAL_75_ID NULL
@@ -17158,6 +18873,21 @@ struct retro_core_option_v2_definition option_defs_id[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_ID,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_ID,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -17290,28 +19020,8 @@ struct retro_core_option_v2_definition option_defs_id[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_ID,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_ID,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_ID },
-            { "80",  OPTION_VAL_80_ID },
-            { "60",  OPTION_VAL_60_ID },
-            { "40",  OPTION_VAL_40_ID },
-            { "20",  OPTION_VAL_20_ID },
-            { "0",   OPTION_VAL_0_ID },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_ID,
@@ -17326,7 +19036,21 @@ struct retro_core_option_v2_definition option_defs_id[] = {
             { "none",     OPTION_VAL_NONE_ID },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_ID,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_ID,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -17367,7 +19091,7 @@ struct retro_core_option_v2_definition option_defs_id[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_ID },
+            { "0",  OPTION_VAL_0_ID },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_ID },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_ID },
             { "15", OPTION_VAL_15_ID },
@@ -17389,7 +19113,7 @@ struct retro_core_option_v2_definition option_defs_id[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_ID },
+            { "0",  OPTION_VAL_0_ID },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_ID },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_ID },
             { "15", OPTION_VAL_15_ID },
@@ -17480,6 +19204,58 @@ struct retro_core_option_v2_definition option_defs_id[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_ID,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_ID,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_ID },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_ID },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_ID,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_ID,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_ID },
+            { "square", OPTION_VAL_SQUARE_ID },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_ID,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_ID,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_ID },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_ID },
+            { "15", OPTION_VAL_15_ID },
+            { "20", OPTION_VAL_20_ID },
+            { "25", OPTION_VAL_25_ID },
+            { "30", OPTION_VAL_30_ID },
+            { "35", OPTION_VAL_35_ID },
+            { "40", OPTION_VAL_40_ID },
+            { "45", OPTION_VAL_45_ID },
+            { "50", OPTION_VAL_50_ID },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -17574,6 +19350,8 @@ struct retro_core_options_v2 options_id = {
 #define OPTION_VAL_8_IT NULL
 #define OPTION_VAL_9_IT NULL
 #define OPTION_VAL_10_IT NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_IT NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_IT NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_IT "Filtro Anisotropico"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_IT NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_IT "Nativo"
@@ -17600,30 +19378,25 @@ struct retro_core_options_v2 options_id = {
 #define XEMU_VP_WORKERS_INFO_0_IT NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_IT NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_IT NULL
-#define XEMU_AUDIO_VOLUME_LABEL_IT NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_IT NULL
-#define OPTION_VAL_100_IT NULL
-#define OPTION_VAL_80_IT NULL
-#define OPTION_VAL_60_IT NULL
-#define OPTION_VAL_40_IT NULL
-#define OPTION_VAL_20_IT NULL
-#define OPTION_VAL_0_IT NULL
 #define XEMU_VK_FAST_PATHS_LABEL_IT NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_IT NULL
 #define OPTION_VAL_ALL_IT "Tutti"
 #define OPTION_VAL_NO_GPL_IT NULL
 #define OPTION_VAL_NO_DYN_IT NULL
 #define OPTION_VAL_NONE_IT "Nessuno"
+#define XEMU_MSPF_OVERLAY_LABEL_IT NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_IT NULL
 #define XEMU_RUMBLE_P1_LABEL_IT NULL
 #define XEMU_RUMBLE_P1_INFO_0_IT NULL
 #define XEMU_RUMBLE_P2_LABEL_IT NULL
 #define XEMU_RUMBLE_P2_INFO_0_IT NULL
 #define XEMU_DEADZONE_P1_LABEL_IT NULL
 #define XEMU_DEADZONE_P1_INFO_0_IT NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_IT NULL
+#define OPTION_VAL_0_IT NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_IT NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_IT NULL
 #define OPTION_VAL_15_IT NULL
+#define OPTION_VAL_20_IT NULL
 #define OPTION_VAL_25_IT NULL
 #define OPTION_VAL_30_IT NULL
 #define XEMU_DEADZONE_P2_LABEL_IT NULL
@@ -17637,8 +19410,11 @@ struct retro_core_options_v2 options_id = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_IT NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_IT NULL
 #define OPTION_VAL_50_IT NULL
+#define OPTION_VAL_60_IT NULL
 #define OPTION_VAL_70_IT NULL
+#define OPTION_VAL_80_IT NULL
 #define OPTION_VAL_90_IT NULL
+#define OPTION_VAL_100_IT NULL
 #define OPTION_VAL_110_IT NULL
 #define OPTION_VAL_120_IT NULL
 #define OPTION_VAL_130_IT NULL
@@ -17651,6 +19427,19 @@ struct retro_core_options_v2 options_id = {
 #define OPTION_VAL_200_IT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_IT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_IT NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_IT NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_IT NULL
+#define OPTION_VAL_LINEAR_IT "Lineare"
+#define OPTION_VAL_LOGARITHMIC_IT NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_IT NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_IT NULL
+#define OPTION_VAL_CUBIC_IT NULL
+#define OPTION_VAL_SQUARE_IT NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_IT NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_IT NULL
+#define OPTION_VAL_35_IT NULL
+#define OPTION_VAL_40_IT NULL
+#define OPTION_VAL_45_IT NULL
 #define XEMU_CHIHIRO_FFB_LABEL_IT NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_IT NULL
 #define OPTION_VAL_75_IT NULL
@@ -17886,6 +19675,21 @@ struct retro_core_option_v2_definition option_defs_it[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_IT,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_IT,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -18018,28 +19822,8 @@ struct retro_core_option_v2_definition option_defs_it[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_IT,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_IT,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_IT },
-            { "80",  OPTION_VAL_80_IT },
-            { "60",  OPTION_VAL_60_IT },
-            { "40",  OPTION_VAL_40_IT },
-            { "20",  OPTION_VAL_20_IT },
-            { "0",   OPTION_VAL_0_IT },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_IT,
@@ -18054,7 +19838,21 @@ struct retro_core_option_v2_definition option_defs_it[] = {
             { "none",     OPTION_VAL_NONE_IT },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_IT,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_IT,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -18095,7 +19893,7 @@ struct retro_core_option_v2_definition option_defs_it[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_IT },
+            { "0",  OPTION_VAL_0_IT },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_IT },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_IT },
             { "15", OPTION_VAL_15_IT },
@@ -18117,7 +19915,7 @@ struct retro_core_option_v2_definition option_defs_it[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_IT },
+            { "0",  OPTION_VAL_0_IT },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_IT },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_IT },
             { "15", OPTION_VAL_15_IT },
@@ -18208,6 +20006,58 @@ struct retro_core_option_v2_definition option_defs_it[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_IT,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_IT,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_IT },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_IT },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_IT,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_IT,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_IT },
+            { "square", OPTION_VAL_SQUARE_IT },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_IT,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_IT,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_IT },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_IT },
+            { "15", OPTION_VAL_15_IT },
+            { "20", OPTION_VAL_20_IT },
+            { "25", OPTION_VAL_25_IT },
+            { "30", OPTION_VAL_30_IT },
+            { "35", OPTION_VAL_35_IT },
+            { "40", OPTION_VAL_40_IT },
+            { "45", OPTION_VAL_45_IT },
+            { "50", OPTION_VAL_50_IT },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -18302,6 +20152,8 @@ struct retro_core_options_v2 options_it = {
 #define OPTION_VAL_8_JA NULL
 #define OPTION_VAL_9_JA NULL
 #define OPTION_VAL_10_JA NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_JA NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_JA NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_JA "異方性フィルタリング"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_JA NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_JA "ネイティブ"
@@ -18328,30 +20180,25 @@ struct retro_core_options_v2 options_it = {
 #define XEMU_VP_WORKERS_INFO_0_JA NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_JA NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_JA NULL
-#define XEMU_AUDIO_VOLUME_LABEL_JA NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_JA NULL
-#define OPTION_VAL_100_JA NULL
-#define OPTION_VAL_80_JA NULL
-#define OPTION_VAL_60_JA NULL
-#define OPTION_VAL_40_JA NULL
-#define OPTION_VAL_20_JA NULL
-#define OPTION_VAL_0_JA NULL
 #define XEMU_VK_FAST_PATHS_LABEL_JA NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_JA NULL
 #define OPTION_VAL_ALL_JA "すべて"
 #define OPTION_VAL_NO_GPL_JA NULL
 #define OPTION_VAL_NO_DYN_JA NULL
 #define OPTION_VAL_NONE_JA "なし"
+#define XEMU_MSPF_OVERLAY_LABEL_JA NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_JA NULL
 #define XEMU_RUMBLE_P1_LABEL_JA NULL
 #define XEMU_RUMBLE_P1_INFO_0_JA NULL
 #define XEMU_RUMBLE_P2_LABEL_JA NULL
 #define XEMU_RUMBLE_P2_INFO_0_JA NULL
 #define XEMU_DEADZONE_P1_LABEL_JA NULL
 #define XEMU_DEADZONE_P1_INFO_0_JA NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_JA NULL
+#define OPTION_VAL_0_JA NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_JA NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_JA NULL
 #define OPTION_VAL_15_JA NULL
+#define OPTION_VAL_20_JA NULL
 #define OPTION_VAL_25_JA NULL
 #define OPTION_VAL_30_JA NULL
 #define XEMU_DEADZONE_P2_LABEL_JA NULL
@@ -18365,8 +20212,11 @@ struct retro_core_options_v2 options_it = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_JA NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_JA NULL
 #define OPTION_VAL_50_JA NULL
+#define OPTION_VAL_60_JA NULL
 #define OPTION_VAL_70_JA NULL
+#define OPTION_VAL_80_JA NULL
 #define OPTION_VAL_90_JA NULL
+#define OPTION_VAL_100_JA NULL
 #define OPTION_VAL_110_JA NULL
 #define OPTION_VAL_120_JA NULL
 #define OPTION_VAL_130_JA NULL
@@ -18379,6 +20229,19 @@ struct retro_core_options_v2 options_it = {
 #define OPTION_VAL_200_JA NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_JA NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_JA NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_JA NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_JA NULL
+#define OPTION_VAL_LINEAR_JA "リニア"
+#define OPTION_VAL_LOGARITHMIC_JA NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_JA NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_JA NULL
+#define OPTION_VAL_CUBIC_JA NULL
+#define OPTION_VAL_SQUARE_JA NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_JA NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_JA NULL
+#define OPTION_VAL_35_JA NULL
+#define OPTION_VAL_40_JA NULL
+#define OPTION_VAL_45_JA NULL
 #define XEMU_CHIHIRO_FFB_LABEL_JA NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_JA NULL
 #define OPTION_VAL_75_JA NULL
@@ -18614,6 +20477,21 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_JA,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_JA,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -18746,28 +20624,8 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_JA,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_JA,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_JA },
-            { "80",  OPTION_VAL_80_JA },
-            { "60",  OPTION_VAL_60_JA },
-            { "40",  OPTION_VAL_40_JA },
-            { "20",  OPTION_VAL_20_JA },
-            { "0",   OPTION_VAL_0_JA },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_JA,
@@ -18782,7 +20640,21 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
             { "none",     OPTION_VAL_NONE_JA },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_JA,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_JA,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -18823,7 +20695,7 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_JA },
+            { "0",  OPTION_VAL_0_JA },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_JA },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_JA },
             { "15", OPTION_VAL_15_JA },
@@ -18845,7 +20717,7 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_JA },
+            { "0",  OPTION_VAL_0_JA },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_JA },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_JA },
             { "15", OPTION_VAL_15_JA },
@@ -18936,6 +20808,58 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_JA,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_JA,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_JA },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_JA },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_JA,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_JA,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_JA },
+            { "square", OPTION_VAL_SQUARE_JA },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_JA,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_JA,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_JA },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_JA },
+            { "15", OPTION_VAL_15_JA },
+            { "20", OPTION_VAL_20_JA },
+            { "25", OPTION_VAL_25_JA },
+            { "30", OPTION_VAL_30_JA },
+            { "35", OPTION_VAL_35_JA },
+            { "40", OPTION_VAL_40_JA },
+            { "45", OPTION_VAL_45_JA },
+            { "50", OPTION_VAL_50_JA },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -19030,6 +20954,8 @@ struct retro_core_options_v2 options_ja = {
 #define OPTION_VAL_8_KO NULL
 #define OPTION_VAL_9_KO NULL
 #define OPTION_VAL_10_KO NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_KO NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_KO NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_KO "비등방성 필터링"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_KO NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_KO "기본"
@@ -19056,30 +20982,25 @@ struct retro_core_options_v2 options_ja = {
 #define XEMU_VP_WORKERS_INFO_0_KO NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_KO NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_KO NULL
-#define XEMU_AUDIO_VOLUME_LABEL_KO NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_KO NULL
-#define OPTION_VAL_100_KO NULL
-#define OPTION_VAL_80_KO NULL
-#define OPTION_VAL_60_KO NULL
-#define OPTION_VAL_40_KO NULL
-#define OPTION_VAL_20_KO NULL
-#define OPTION_VAL_0_KO NULL
 #define XEMU_VK_FAST_PATHS_LABEL_KO NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_KO NULL
 #define OPTION_VAL_ALL_KO "전체"
 #define OPTION_VAL_NO_GPL_KO NULL
 #define OPTION_VAL_NO_DYN_KO NULL
 #define OPTION_VAL_NONE_KO "없음"
+#define XEMU_MSPF_OVERLAY_LABEL_KO NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_KO NULL
 #define XEMU_RUMBLE_P1_LABEL_KO NULL
 #define XEMU_RUMBLE_P1_INFO_0_KO NULL
 #define XEMU_RUMBLE_P2_LABEL_KO NULL
 #define XEMU_RUMBLE_P2_INFO_0_KO NULL
 #define XEMU_DEADZONE_P1_LABEL_KO NULL
 #define XEMU_DEADZONE_P1_INFO_0_KO NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_KO NULL
+#define OPTION_VAL_0_KO NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_KO NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_KO NULL
 #define OPTION_VAL_15_KO NULL
+#define OPTION_VAL_20_KO NULL
 #define OPTION_VAL_25_KO NULL
 #define OPTION_VAL_30_KO NULL
 #define XEMU_DEADZONE_P2_LABEL_KO NULL
@@ -19093,8 +21014,11 @@ struct retro_core_options_v2 options_ja = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_KO NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_KO NULL
 #define OPTION_VAL_50_KO NULL
+#define OPTION_VAL_60_KO NULL
 #define OPTION_VAL_70_KO NULL
+#define OPTION_VAL_80_KO NULL
 #define OPTION_VAL_90_KO NULL
+#define OPTION_VAL_100_KO NULL
 #define OPTION_VAL_110_KO NULL
 #define OPTION_VAL_120_KO NULL
 #define OPTION_VAL_130_KO NULL
@@ -19107,6 +21031,19 @@ struct retro_core_options_v2 options_ja = {
 #define OPTION_VAL_200_KO NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_KO NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_KO NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_KO NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_KO NULL
+#define OPTION_VAL_LINEAR_KO "선형"
+#define OPTION_VAL_LOGARITHMIC_KO NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_KO NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_KO NULL
+#define OPTION_VAL_CUBIC_KO NULL
+#define OPTION_VAL_SQUARE_KO NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_KO NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_KO NULL
+#define OPTION_VAL_35_KO NULL
+#define OPTION_VAL_40_KO NULL
+#define OPTION_VAL_45_KO NULL
 #define XEMU_CHIHIRO_FFB_LABEL_KO NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_KO NULL
 #define OPTION_VAL_75_KO NULL
@@ -19342,6 +21279,21 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_KO,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_KO,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -19474,28 +21426,8 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_KO,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_KO,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_KO },
-            { "80",  OPTION_VAL_80_KO },
-            { "60",  OPTION_VAL_60_KO },
-            { "40",  OPTION_VAL_40_KO },
-            { "20",  OPTION_VAL_20_KO },
-            { "0",   OPTION_VAL_0_KO },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_KO,
@@ -19510,7 +21442,21 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
             { "none",     OPTION_VAL_NONE_KO },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_KO,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_KO,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -19551,7 +21497,7 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_KO },
+            { "0",  OPTION_VAL_0_KO },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_KO },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_KO },
             { "15", OPTION_VAL_15_KO },
@@ -19573,7 +21519,7 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_KO },
+            { "0",  OPTION_VAL_0_KO },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_KO },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_KO },
             { "15", OPTION_VAL_15_KO },
@@ -19664,6 +21610,58 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_KO,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_KO,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_KO },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_KO },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_KO,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_KO,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_KO },
+            { "square", OPTION_VAL_SQUARE_KO },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_KO,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_KO,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_KO },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_KO },
+            { "15", OPTION_VAL_15_KO },
+            { "20", OPTION_VAL_20_KO },
+            { "25", OPTION_VAL_25_KO },
+            { "30", OPTION_VAL_30_KO },
+            { "35", OPTION_VAL_35_KO },
+            { "40", OPTION_VAL_40_KO },
+            { "45", OPTION_VAL_45_KO },
+            { "50", OPTION_VAL_50_KO },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -19758,6 +21756,8 @@ struct retro_core_options_v2 options_ko = {
 #define OPTION_VAL_8_NL NULL
 #define OPTION_VAL_9_NL NULL
 #define OPTION_VAL_10_NL NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_NL NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_NL NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_NL NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_NL NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_NL "Standaard"
@@ -19784,30 +21784,25 @@ struct retro_core_options_v2 options_ko = {
 #define XEMU_VP_WORKERS_INFO_0_NL NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_NL NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_NL NULL
-#define XEMU_AUDIO_VOLUME_LABEL_NL NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_NL NULL
-#define OPTION_VAL_100_NL NULL
-#define OPTION_VAL_80_NL NULL
-#define OPTION_VAL_60_NL NULL
-#define OPTION_VAL_40_NL NULL
-#define OPTION_VAL_20_NL NULL
-#define OPTION_VAL_0_NL NULL
 #define XEMU_VK_FAST_PATHS_LABEL_NL NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_NL NULL
 #define OPTION_VAL_ALL_NL "Alle"
 #define OPTION_VAL_NO_GPL_NL NULL
 #define OPTION_VAL_NO_DYN_NL NULL
 #define OPTION_VAL_NONE_NL "Geen"
+#define XEMU_MSPF_OVERLAY_LABEL_NL NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_NL NULL
 #define XEMU_RUMBLE_P1_LABEL_NL NULL
 #define XEMU_RUMBLE_P1_INFO_0_NL NULL
 #define XEMU_RUMBLE_P2_LABEL_NL NULL
 #define XEMU_RUMBLE_P2_INFO_0_NL NULL
 #define XEMU_DEADZONE_P1_LABEL_NL NULL
 #define XEMU_DEADZONE_P1_INFO_0_NL NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_NL NULL
+#define OPTION_VAL_0_NL NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_NL NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_NL NULL
 #define OPTION_VAL_15_NL NULL
+#define OPTION_VAL_20_NL NULL
 #define OPTION_VAL_25_NL NULL
 #define OPTION_VAL_30_NL NULL
 #define XEMU_DEADZONE_P2_LABEL_NL NULL
@@ -19821,8 +21816,11 @@ struct retro_core_options_v2 options_ko = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_NL NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_NL NULL
 #define OPTION_VAL_50_NL NULL
+#define OPTION_VAL_60_NL NULL
 #define OPTION_VAL_70_NL NULL
+#define OPTION_VAL_80_NL NULL
 #define OPTION_VAL_90_NL NULL
+#define OPTION_VAL_100_NL NULL
 #define OPTION_VAL_110_NL NULL
 #define OPTION_VAL_120_NL NULL
 #define OPTION_VAL_130_NL NULL
@@ -19835,6 +21833,19 @@ struct retro_core_options_v2 options_ko = {
 #define OPTION_VAL_200_NL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_NL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_NL NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_NL NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_NL NULL
+#define OPTION_VAL_LINEAR_NL "Lineair"
+#define OPTION_VAL_LOGARITHMIC_NL NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_NL NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_NL NULL
+#define OPTION_VAL_CUBIC_NL NULL
+#define OPTION_VAL_SQUARE_NL NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_NL NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_NL NULL
+#define OPTION_VAL_35_NL NULL
+#define OPTION_VAL_40_NL NULL
+#define OPTION_VAL_45_NL NULL
 #define XEMU_CHIHIRO_FFB_LABEL_NL NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_NL NULL
 #define OPTION_VAL_75_NL NULL
@@ -20070,6 +22081,21 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_NL,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_NL,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -20202,28 +22228,8 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_NL,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_NL,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_NL },
-            { "80",  OPTION_VAL_80_NL },
-            { "60",  OPTION_VAL_60_NL },
-            { "40",  OPTION_VAL_40_NL },
-            { "20",  OPTION_VAL_20_NL },
-            { "0",   OPTION_VAL_0_NL },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_NL,
@@ -20238,7 +22244,21 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
             { "none",     OPTION_VAL_NONE_NL },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_NL,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_NL,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -20279,7 +22299,7 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_NL },
+            { "0",  OPTION_VAL_0_NL },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_NL },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_NL },
             { "15", OPTION_VAL_15_NL },
@@ -20301,7 +22321,7 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_NL },
+            { "0",  OPTION_VAL_0_NL },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_NL },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_NL },
             { "15", OPTION_VAL_15_NL },
@@ -20392,6 +22412,58 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_NL,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_NL,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_NL },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_NL },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_NL,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_NL,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_NL },
+            { "square", OPTION_VAL_SQUARE_NL },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_NL,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_NL,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_NL },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_NL },
+            { "15", OPTION_VAL_15_NL },
+            { "20", OPTION_VAL_20_NL },
+            { "25", OPTION_VAL_25_NL },
+            { "30", OPTION_VAL_30_NL },
+            { "35", OPTION_VAL_35_NL },
+            { "40", OPTION_VAL_40_NL },
+            { "45", OPTION_VAL_45_NL },
+            { "50", OPTION_VAL_50_NL },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -20486,6 +22558,8 @@ struct retro_core_options_v2 options_nl = {
 #define OPTION_VAL_8_NO NULL
 #define OPTION_VAL_9_NO NULL
 #define OPTION_VAL_10_NO NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_NO NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_NO NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_NO NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_NO NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_NO NULL
@@ -20512,30 +22586,25 @@ struct retro_core_options_v2 options_nl = {
 #define XEMU_VP_WORKERS_INFO_0_NO NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_NO NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_NO NULL
-#define XEMU_AUDIO_VOLUME_LABEL_NO NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_NO NULL
-#define OPTION_VAL_100_NO NULL
-#define OPTION_VAL_80_NO NULL
-#define OPTION_VAL_60_NO NULL
-#define OPTION_VAL_40_NO NULL
-#define OPTION_VAL_20_NO NULL
-#define OPTION_VAL_0_NO NULL
 #define XEMU_VK_FAST_PATHS_LABEL_NO NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_NO NULL
 #define OPTION_VAL_ALL_NO "Alle"
 #define OPTION_VAL_NO_GPL_NO NULL
 #define OPTION_VAL_NO_DYN_NO NULL
 #define OPTION_VAL_NONE_NO "Ingen"
+#define XEMU_MSPF_OVERLAY_LABEL_NO NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_NO NULL
 #define XEMU_RUMBLE_P1_LABEL_NO NULL
 #define XEMU_RUMBLE_P1_INFO_0_NO NULL
 #define XEMU_RUMBLE_P2_LABEL_NO NULL
 #define XEMU_RUMBLE_P2_INFO_0_NO NULL
 #define XEMU_DEADZONE_P1_LABEL_NO NULL
 #define XEMU_DEADZONE_P1_INFO_0_NO NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_NO NULL
+#define OPTION_VAL_0_NO NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_NO NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_NO NULL
 #define OPTION_VAL_15_NO NULL
+#define OPTION_VAL_20_NO NULL
 #define OPTION_VAL_25_NO NULL
 #define OPTION_VAL_30_NO NULL
 #define XEMU_DEADZONE_P2_LABEL_NO NULL
@@ -20549,8 +22618,11 @@ struct retro_core_options_v2 options_nl = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_NO NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_NO NULL
 #define OPTION_VAL_50_NO NULL
+#define OPTION_VAL_60_NO NULL
 #define OPTION_VAL_70_NO NULL
+#define OPTION_VAL_80_NO NULL
 #define OPTION_VAL_90_NO NULL
+#define OPTION_VAL_100_NO NULL
 #define OPTION_VAL_110_NO NULL
 #define OPTION_VAL_120_NO NULL
 #define OPTION_VAL_130_NO NULL
@@ -20563,6 +22635,19 @@ struct retro_core_options_v2 options_nl = {
 #define OPTION_VAL_200_NO NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_NO NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_NO NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_NO NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_NO NULL
+#define OPTION_VAL_LINEAR_NO NULL
+#define OPTION_VAL_LOGARITHMIC_NO NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_NO NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_NO NULL
+#define OPTION_VAL_CUBIC_NO NULL
+#define OPTION_VAL_SQUARE_NO NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_NO NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_NO NULL
+#define OPTION_VAL_35_NO NULL
+#define OPTION_VAL_40_NO NULL
+#define OPTION_VAL_45_NO NULL
 #define XEMU_CHIHIRO_FFB_LABEL_NO NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_NO NULL
 #define OPTION_VAL_75_NO NULL
@@ -20798,6 +22883,21 @@ struct retro_core_option_v2_definition option_defs_no[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_NO,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_NO,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -20930,28 +23030,8 @@ struct retro_core_option_v2_definition option_defs_no[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_NO,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_NO,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_NO },
-            { "80",  OPTION_VAL_80_NO },
-            { "60",  OPTION_VAL_60_NO },
-            { "40",  OPTION_VAL_40_NO },
-            { "20",  OPTION_VAL_20_NO },
-            { "0",   OPTION_VAL_0_NO },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_NO,
@@ -20966,7 +23046,21 @@ struct retro_core_option_v2_definition option_defs_no[] = {
             { "none",     OPTION_VAL_NONE_NO },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_NO,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_NO,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -21007,7 +23101,7 @@ struct retro_core_option_v2_definition option_defs_no[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_NO },
+            { "0",  OPTION_VAL_0_NO },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_NO },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_NO },
             { "15", OPTION_VAL_15_NO },
@@ -21029,7 +23123,7 @@ struct retro_core_option_v2_definition option_defs_no[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_NO },
+            { "0",  OPTION_VAL_0_NO },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_NO },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_NO },
             { "15", OPTION_VAL_15_NO },
@@ -21120,6 +23214,58 @@ struct retro_core_option_v2_definition option_defs_no[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_NO,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_NO,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_NO },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_NO },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_NO,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_NO,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_NO },
+            { "square", OPTION_VAL_SQUARE_NO },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_NO,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_NO,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_NO },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_NO },
+            { "15", OPTION_VAL_15_NO },
+            { "20", OPTION_VAL_20_NO },
+            { "25", OPTION_VAL_25_NO },
+            { "30", OPTION_VAL_30_NO },
+            { "35", OPTION_VAL_35_NO },
+            { "40", OPTION_VAL_40_NO },
+            { "45", OPTION_VAL_45_NO },
+            { "50", OPTION_VAL_50_NO },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -21214,6 +23360,8 @@ struct retro_core_options_v2 options_no = {
 #define OPTION_VAL_8_OR NULL
 #define OPTION_VAL_9_OR NULL
 #define OPTION_VAL_10_OR NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_OR NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_OR NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_OR NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_OR NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_OR NULL
@@ -21240,30 +23388,25 @@ struct retro_core_options_v2 options_no = {
 #define XEMU_VP_WORKERS_INFO_0_OR NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_OR NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_OR NULL
-#define XEMU_AUDIO_VOLUME_LABEL_OR NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_OR NULL
-#define OPTION_VAL_100_OR NULL
-#define OPTION_VAL_80_OR NULL
-#define OPTION_VAL_60_OR NULL
-#define OPTION_VAL_40_OR NULL
-#define OPTION_VAL_20_OR NULL
-#define OPTION_VAL_0_OR NULL
 #define XEMU_VK_FAST_PATHS_LABEL_OR NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_OR NULL
 #define OPTION_VAL_ALL_OR NULL
 #define OPTION_VAL_NO_GPL_OR NULL
 #define OPTION_VAL_NO_DYN_OR NULL
 #define OPTION_VAL_NONE_OR NULL
+#define XEMU_MSPF_OVERLAY_LABEL_OR NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_OR NULL
 #define XEMU_RUMBLE_P1_LABEL_OR NULL
 #define XEMU_RUMBLE_P1_INFO_0_OR NULL
 #define XEMU_RUMBLE_P2_LABEL_OR NULL
 #define XEMU_RUMBLE_P2_INFO_0_OR NULL
 #define XEMU_DEADZONE_P1_LABEL_OR NULL
 #define XEMU_DEADZONE_P1_INFO_0_OR NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_OR NULL
+#define OPTION_VAL_0_OR NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_OR NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_OR NULL
 #define OPTION_VAL_15_OR NULL
+#define OPTION_VAL_20_OR NULL
 #define OPTION_VAL_25_OR NULL
 #define OPTION_VAL_30_OR NULL
 #define XEMU_DEADZONE_P2_LABEL_OR NULL
@@ -21277,8 +23420,11 @@ struct retro_core_options_v2 options_no = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_OR NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_OR NULL
 #define OPTION_VAL_50_OR NULL
+#define OPTION_VAL_60_OR NULL
 #define OPTION_VAL_70_OR NULL
+#define OPTION_VAL_80_OR NULL
 #define OPTION_VAL_90_OR NULL
+#define OPTION_VAL_100_OR NULL
 #define OPTION_VAL_110_OR NULL
 #define OPTION_VAL_120_OR NULL
 #define OPTION_VAL_130_OR NULL
@@ -21291,6 +23437,19 @@ struct retro_core_options_v2 options_no = {
 #define OPTION_VAL_200_OR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_OR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_OR NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_OR NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_OR NULL
+#define OPTION_VAL_LINEAR_OR NULL
+#define OPTION_VAL_LOGARITHMIC_OR NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_OR NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_OR NULL
+#define OPTION_VAL_CUBIC_OR NULL
+#define OPTION_VAL_SQUARE_OR NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_OR NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_OR NULL
+#define OPTION_VAL_35_OR NULL
+#define OPTION_VAL_40_OR NULL
+#define OPTION_VAL_45_OR NULL
 #define XEMU_CHIHIRO_FFB_LABEL_OR NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_OR NULL
 #define OPTION_VAL_75_OR NULL
@@ -21526,6 +23685,21 @@ struct retro_core_option_v2_definition option_defs_or[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_OR,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_OR,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -21658,28 +23832,8 @@ struct retro_core_option_v2_definition option_defs_or[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_OR,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_OR,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_OR },
-            { "80",  OPTION_VAL_80_OR },
-            { "60",  OPTION_VAL_60_OR },
-            { "40",  OPTION_VAL_40_OR },
-            { "20",  OPTION_VAL_20_OR },
-            { "0",   OPTION_VAL_0_OR },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_OR,
@@ -21694,7 +23848,21 @@ struct retro_core_option_v2_definition option_defs_or[] = {
             { "none",     OPTION_VAL_NONE_OR },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_OR,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_OR,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -21735,7 +23903,7 @@ struct retro_core_option_v2_definition option_defs_or[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_OR },
+            { "0",  OPTION_VAL_0_OR },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_OR },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_OR },
             { "15", OPTION_VAL_15_OR },
@@ -21757,7 +23925,7 @@ struct retro_core_option_v2_definition option_defs_or[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_OR },
+            { "0",  OPTION_VAL_0_OR },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_OR },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_OR },
             { "15", OPTION_VAL_15_OR },
@@ -21848,6 +24016,58 @@ struct retro_core_option_v2_definition option_defs_or[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_OR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_OR,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_OR },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_OR },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_OR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_OR,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_OR },
+            { "square", OPTION_VAL_SQUARE_OR },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_OR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_OR,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_OR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_OR },
+            { "15", OPTION_VAL_15_OR },
+            { "20", OPTION_VAL_20_OR },
+            { "25", OPTION_VAL_25_OR },
+            { "30", OPTION_VAL_30_OR },
+            { "35", OPTION_VAL_35_OR },
+            { "40", OPTION_VAL_40_OR },
+            { "45", OPTION_VAL_45_OR },
+            { "50", OPTION_VAL_50_OR },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -21942,6 +24162,8 @@ struct retro_core_options_v2 options_or = {
 #define OPTION_VAL_8_PL NULL
 #define OPTION_VAL_9_PL NULL
 #define OPTION_VAL_10_PL NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_PL NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_PL NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_PL "Filtrowanie anizotropowe"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_PL NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_PL "Natywny"
@@ -21968,30 +24190,25 @@ struct retro_core_options_v2 options_or = {
 #define XEMU_VP_WORKERS_INFO_0_PL NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_PL NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_PL NULL
-#define XEMU_AUDIO_VOLUME_LABEL_PL NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_PL NULL
-#define OPTION_VAL_100_PL NULL
-#define OPTION_VAL_80_PL "80 %"
-#define OPTION_VAL_60_PL "60 %"
-#define OPTION_VAL_40_PL NULL
-#define OPTION_VAL_20_PL NULL
-#define OPTION_VAL_0_PL NULL
 #define XEMU_VK_FAST_PATHS_LABEL_PL NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_PL NULL
 #define OPTION_VAL_ALL_PL "Wszystkie"
 #define OPTION_VAL_NO_GPL_PL NULL
 #define OPTION_VAL_NO_DYN_PL NULL
 #define OPTION_VAL_NONE_PL "Brak"
+#define XEMU_MSPF_OVERLAY_LABEL_PL NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_PL NULL
 #define XEMU_RUMBLE_P1_LABEL_PL NULL
 #define XEMU_RUMBLE_P1_INFO_0_PL NULL
 #define XEMU_RUMBLE_P2_LABEL_PL NULL
 #define XEMU_RUMBLE_P2_INFO_0_PL NULL
 #define XEMU_DEADZONE_P1_LABEL_PL NULL
 #define XEMU_DEADZONE_P1_INFO_0_PL NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_PL NULL
+#define OPTION_VAL_0_PL NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_PL NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_PL NULL
 #define OPTION_VAL_15_PL NULL
+#define OPTION_VAL_20_PL NULL
 #define OPTION_VAL_25_PL NULL
 #define OPTION_VAL_30_PL "30 %"
 #define XEMU_DEADZONE_P2_LABEL_PL NULL
@@ -22005,8 +24222,11 @@ struct retro_core_options_v2 options_or = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_PL NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_PL NULL
 #define OPTION_VAL_50_PL "50 %"
+#define OPTION_VAL_60_PL "60 %"
 #define OPTION_VAL_70_PL NULL
+#define OPTION_VAL_80_PL "80 %"
 #define OPTION_VAL_90_PL NULL
+#define OPTION_VAL_100_PL NULL
 #define OPTION_VAL_110_PL NULL
 #define OPTION_VAL_120_PL NULL
 #define OPTION_VAL_130_PL NULL
@@ -22019,6 +24239,19 @@ struct retro_core_options_v2 options_or = {
 #define OPTION_VAL_200_PL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_PL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_PL NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_PL NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_PL NULL
+#define OPTION_VAL_LINEAR_PL "Liniowy"
+#define OPTION_VAL_LOGARITHMIC_PL NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_PL NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_PL NULL
+#define OPTION_VAL_CUBIC_PL NULL
+#define OPTION_VAL_SQUARE_PL NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_PL NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_PL NULL
+#define OPTION_VAL_35_PL NULL
+#define OPTION_VAL_40_PL NULL
+#define OPTION_VAL_45_PL NULL
 #define XEMU_CHIHIRO_FFB_LABEL_PL NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_PL NULL
 #define OPTION_VAL_75_PL NULL
@@ -22254,6 +24487,21 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_PL,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_PL,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -22386,28 +24634,8 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_PL,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_PL,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_PL },
-            { "80",  OPTION_VAL_80_PL },
-            { "60",  OPTION_VAL_60_PL },
-            { "40",  OPTION_VAL_40_PL },
-            { "20",  OPTION_VAL_20_PL },
-            { "0",   OPTION_VAL_0_PL },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_PL,
@@ -22422,7 +24650,21 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
             { "none",     OPTION_VAL_NONE_PL },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_PL,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_PL,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -22463,7 +24705,7 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_PL },
+            { "0",  OPTION_VAL_0_PL },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_PL },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_PL },
             { "15", OPTION_VAL_15_PL },
@@ -22485,7 +24727,7 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_PL },
+            { "0",  OPTION_VAL_0_PL },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_PL },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_PL },
             { "15", OPTION_VAL_15_PL },
@@ -22576,6 +24818,58 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_PL,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_PL,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_PL },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_PL },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_PL,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_PL,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_PL },
+            { "square", OPTION_VAL_SQUARE_PL },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_PL,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_PL,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_PL },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_PL },
+            { "15", OPTION_VAL_15_PL },
+            { "20", OPTION_VAL_20_PL },
+            { "25", OPTION_VAL_25_PL },
+            { "30", OPTION_VAL_30_PL },
+            { "35", OPTION_VAL_35_PL },
+            { "40", OPTION_VAL_40_PL },
+            { "45", OPTION_VAL_45_PL },
+            { "50", OPTION_VAL_50_PL },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -22670,6 +24964,8 @@ struct retro_core_options_v2 options_pl = {
 #define OPTION_VAL_8_PT_BR NULL
 #define OPTION_VAL_9_PT_BR NULL
 #define OPTION_VAL_10_PT_BR NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_PT_BR NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_PT_BR NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_PT_BR "Filtro anisotrópico"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_PT_BR NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_PT_BR "Nativo"
@@ -22696,30 +24992,25 @@ struct retro_core_options_v2 options_pl = {
 #define XEMU_VP_WORKERS_INFO_0_PT_BR NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_PT_BR NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_PT_BR NULL
-#define XEMU_AUDIO_VOLUME_LABEL_PT_BR NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_PT_BR NULL
-#define OPTION_VAL_100_PT_BR NULL
-#define OPTION_VAL_80_PT_BR NULL
-#define OPTION_VAL_60_PT_BR NULL
-#define OPTION_VAL_40_PT_BR NULL
-#define OPTION_VAL_20_PT_BR NULL
-#define OPTION_VAL_0_PT_BR NULL
 #define XEMU_VK_FAST_PATHS_LABEL_PT_BR NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_PT_BR NULL
 #define OPTION_VAL_ALL_PT_BR "Todas"
 #define OPTION_VAL_NO_GPL_PT_BR NULL
 #define OPTION_VAL_NO_DYN_PT_BR NULL
 #define OPTION_VAL_NONE_PT_BR "Nenhum"
+#define XEMU_MSPF_OVERLAY_LABEL_PT_BR NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_PT_BR NULL
 #define XEMU_RUMBLE_P1_LABEL_PT_BR NULL
 #define XEMU_RUMBLE_P1_INFO_0_PT_BR NULL
 #define XEMU_RUMBLE_P2_LABEL_PT_BR NULL
 #define XEMU_RUMBLE_P2_INFO_0_PT_BR NULL
 #define XEMU_DEADZONE_P1_LABEL_PT_BR NULL
 #define XEMU_DEADZONE_P1_INFO_0_PT_BR NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_PT_BR NULL
+#define OPTION_VAL_0_PT_BR NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_PT_BR NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_PT_BR NULL
 #define OPTION_VAL_15_PT_BR NULL
+#define OPTION_VAL_20_PT_BR NULL
 #define OPTION_VAL_25_PT_BR NULL
 #define OPTION_VAL_30_PT_BR NULL
 #define XEMU_DEADZONE_P2_LABEL_PT_BR NULL
@@ -22733,8 +25024,11 @@ struct retro_core_options_v2 options_pl = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_PT_BR NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_PT_BR NULL
 #define OPTION_VAL_50_PT_BR NULL
+#define OPTION_VAL_60_PT_BR NULL
 #define OPTION_VAL_70_PT_BR NULL
+#define OPTION_VAL_80_PT_BR NULL
 #define OPTION_VAL_90_PT_BR NULL
+#define OPTION_VAL_100_PT_BR NULL
 #define OPTION_VAL_110_PT_BR NULL
 #define OPTION_VAL_120_PT_BR NULL
 #define OPTION_VAL_130_PT_BR NULL
@@ -22747,6 +25041,19 @@ struct retro_core_options_v2 options_pl = {
 #define OPTION_VAL_200_PT_BR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_PT_BR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_PT_BR NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_PT_BR NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_PT_BR NULL
+#define OPTION_VAL_LINEAR_PT_BR NULL
+#define OPTION_VAL_LOGARITHMIC_PT_BR NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_PT_BR NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_PT_BR NULL
+#define OPTION_VAL_CUBIC_PT_BR NULL
+#define OPTION_VAL_SQUARE_PT_BR NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_PT_BR NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_PT_BR NULL
+#define OPTION_VAL_35_PT_BR NULL
+#define OPTION_VAL_40_PT_BR NULL
+#define OPTION_VAL_45_PT_BR NULL
 #define XEMU_CHIHIRO_FFB_LABEL_PT_BR NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_PT_BR NULL
 #define OPTION_VAL_75_PT_BR NULL
@@ -22982,6 +25289,21 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_PT_BR,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_PT_BR,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -23114,28 +25436,8 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_PT_BR,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_PT_BR,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_PT_BR },
-            { "80",  OPTION_VAL_80_PT_BR },
-            { "60",  OPTION_VAL_60_PT_BR },
-            { "40",  OPTION_VAL_40_PT_BR },
-            { "20",  OPTION_VAL_20_PT_BR },
-            { "0",   OPTION_VAL_0_PT_BR },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_PT_BR,
@@ -23150,7 +25452,21 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
             { "none",     OPTION_VAL_NONE_PT_BR },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_PT_BR,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_PT_BR,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -23191,7 +25507,7 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_PT_BR },
+            { "0",  OPTION_VAL_0_PT_BR },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_PT_BR },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_PT_BR },
             { "15", OPTION_VAL_15_PT_BR },
@@ -23213,7 +25529,7 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_PT_BR },
+            { "0",  OPTION_VAL_0_PT_BR },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_PT_BR },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_PT_BR },
             { "15", OPTION_VAL_15_PT_BR },
@@ -23304,6 +25620,58 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_PT_BR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_PT_BR,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_PT_BR },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_PT_BR },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_PT_BR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_PT_BR,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_PT_BR },
+            { "square", OPTION_VAL_SQUARE_PT_BR },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_PT_BR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_PT_BR,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_PT_BR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_PT_BR },
+            { "15", OPTION_VAL_15_PT_BR },
+            { "20", OPTION_VAL_20_PT_BR },
+            { "25", OPTION_VAL_25_PT_BR },
+            { "30", OPTION_VAL_30_PT_BR },
+            { "35", OPTION_VAL_35_PT_BR },
+            { "40", OPTION_VAL_40_PT_BR },
+            { "45", OPTION_VAL_45_PT_BR },
+            { "50", OPTION_VAL_50_PT_BR },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -23398,6 +25766,8 @@ struct retro_core_options_v2 options_pt_br = {
 #define OPTION_VAL_8_PT_PT NULL
 #define OPTION_VAL_9_PT_PT NULL
 #define OPTION_VAL_10_PT_PT NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_PT_PT NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_PT_PT NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_PT_PT NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_PT_PT NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_PT_PT NULL
@@ -23424,30 +25794,25 @@ struct retro_core_options_v2 options_pt_br = {
 #define XEMU_VP_WORKERS_INFO_0_PT_PT NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_PT_PT NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_PT_PT NULL
-#define XEMU_AUDIO_VOLUME_LABEL_PT_PT NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_PT_PT NULL
-#define OPTION_VAL_100_PT_PT NULL
-#define OPTION_VAL_80_PT_PT NULL
-#define OPTION_VAL_60_PT_PT NULL
-#define OPTION_VAL_40_PT_PT NULL
-#define OPTION_VAL_20_PT_PT NULL
-#define OPTION_VAL_0_PT_PT NULL
 #define XEMU_VK_FAST_PATHS_LABEL_PT_PT NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_PT_PT NULL
 #define OPTION_VAL_ALL_PT_PT NULL
 #define OPTION_VAL_NO_GPL_PT_PT NULL
 #define OPTION_VAL_NO_DYN_PT_PT NULL
 #define OPTION_VAL_NONE_PT_PT "Não partilhar"
+#define XEMU_MSPF_OVERLAY_LABEL_PT_PT NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_PT_PT NULL
 #define XEMU_RUMBLE_P1_LABEL_PT_PT NULL
 #define XEMU_RUMBLE_P1_INFO_0_PT_PT NULL
 #define XEMU_RUMBLE_P2_LABEL_PT_PT NULL
 #define XEMU_RUMBLE_P2_INFO_0_PT_PT NULL
 #define XEMU_DEADZONE_P1_LABEL_PT_PT NULL
 #define XEMU_DEADZONE_P1_INFO_0_PT_PT NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_PT_PT NULL
+#define OPTION_VAL_0_PT_PT NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_PT_PT NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_PT_PT NULL
 #define OPTION_VAL_15_PT_PT NULL
+#define OPTION_VAL_20_PT_PT NULL
 #define OPTION_VAL_25_PT_PT NULL
 #define OPTION_VAL_30_PT_PT NULL
 #define XEMU_DEADZONE_P2_LABEL_PT_PT NULL
@@ -23461,8 +25826,11 @@ struct retro_core_options_v2 options_pt_br = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_PT_PT NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_PT_PT NULL
 #define OPTION_VAL_50_PT_PT NULL
+#define OPTION_VAL_60_PT_PT NULL
 #define OPTION_VAL_70_PT_PT NULL
+#define OPTION_VAL_80_PT_PT NULL
 #define OPTION_VAL_90_PT_PT NULL
+#define OPTION_VAL_100_PT_PT NULL
 #define OPTION_VAL_110_PT_PT NULL
 #define OPTION_VAL_120_PT_PT NULL
 #define OPTION_VAL_130_PT_PT NULL
@@ -23475,6 +25843,19 @@ struct retro_core_options_v2 options_pt_br = {
 #define OPTION_VAL_200_PT_PT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_PT_PT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_PT_PT NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_PT_PT NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_PT_PT NULL
+#define OPTION_VAL_LINEAR_PT_PT NULL
+#define OPTION_VAL_LOGARITHMIC_PT_PT NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_PT_PT NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_PT_PT NULL
+#define OPTION_VAL_CUBIC_PT_PT NULL
+#define OPTION_VAL_SQUARE_PT_PT NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_PT_PT NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_PT_PT NULL
+#define OPTION_VAL_35_PT_PT NULL
+#define OPTION_VAL_40_PT_PT NULL
+#define OPTION_VAL_45_PT_PT NULL
 #define XEMU_CHIHIRO_FFB_LABEL_PT_PT NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_PT_PT NULL
 #define OPTION_VAL_75_PT_PT NULL
@@ -23710,6 +26091,21 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_PT_PT,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_PT_PT,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -23842,28 +26238,8 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_PT_PT,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_PT_PT,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_PT_PT },
-            { "80",  OPTION_VAL_80_PT_PT },
-            { "60",  OPTION_VAL_60_PT_PT },
-            { "40",  OPTION_VAL_40_PT_PT },
-            { "20",  OPTION_VAL_20_PT_PT },
-            { "0",   OPTION_VAL_0_PT_PT },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_PT_PT,
@@ -23878,7 +26254,21 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
             { "none",     OPTION_VAL_NONE_PT_PT },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_PT_PT,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_PT_PT,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -23919,7 +26309,7 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_PT_PT },
+            { "0",  OPTION_VAL_0_PT_PT },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_PT_PT },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_PT_PT },
             { "15", OPTION_VAL_15_PT_PT },
@@ -23941,7 +26331,7 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_PT_PT },
+            { "0",  OPTION_VAL_0_PT_PT },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_PT_PT },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_PT_PT },
             { "15", OPTION_VAL_15_PT_PT },
@@ -24032,6 +26422,58 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_PT_PT,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_PT_PT,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_PT_PT },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_PT_PT },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_PT_PT,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_PT_PT,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_PT_PT },
+            { "square", OPTION_VAL_SQUARE_PT_PT },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_PT_PT,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_PT_PT,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_PT_PT },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_PT_PT },
+            { "15", OPTION_VAL_15_PT_PT },
+            { "20", OPTION_VAL_20_PT_PT },
+            { "25", OPTION_VAL_25_PT_PT },
+            { "30", OPTION_VAL_30_PT_PT },
+            { "35", OPTION_VAL_35_PT_PT },
+            { "40", OPTION_VAL_40_PT_PT },
+            { "45", OPTION_VAL_45_PT_PT },
+            { "50", OPTION_VAL_50_PT_PT },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -24126,6 +26568,8 @@ struct retro_core_options_v2 options_pt_pt = {
 #define OPTION_VAL_8_RU NULL
 #define OPTION_VAL_9_RU NULL
 #define OPTION_VAL_10_RU NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_RU NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_RU NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_RU "Анизотропная фильтрация"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_RU NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_RU "Исходное"
@@ -24152,30 +26596,25 @@ struct retro_core_options_v2 options_pt_pt = {
 #define XEMU_VP_WORKERS_INFO_0_RU NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_RU NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_RU NULL
-#define XEMU_AUDIO_VOLUME_LABEL_RU NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_RU NULL
-#define OPTION_VAL_100_RU NULL
-#define OPTION_VAL_80_RU NULL
-#define OPTION_VAL_60_RU NULL
-#define OPTION_VAL_40_RU NULL
-#define OPTION_VAL_20_RU NULL
-#define OPTION_VAL_0_RU NULL
 #define XEMU_VK_FAST_PATHS_LABEL_RU NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_RU NULL
 #define OPTION_VAL_ALL_RU "Все"
 #define OPTION_VAL_NO_GPL_RU NULL
 #define OPTION_VAL_NO_DYN_RU NULL
 #define OPTION_VAL_NONE_RU "Нет"
+#define XEMU_MSPF_OVERLAY_LABEL_RU NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_RU NULL
 #define XEMU_RUMBLE_P1_LABEL_RU NULL
 #define XEMU_RUMBLE_P1_INFO_0_RU NULL
 #define XEMU_RUMBLE_P2_LABEL_RU NULL
 #define XEMU_RUMBLE_P2_INFO_0_RU NULL
 #define XEMU_DEADZONE_P1_LABEL_RU NULL
 #define XEMU_DEADZONE_P1_INFO_0_RU NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_RU NULL
+#define OPTION_VAL_0_RU NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_RU NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_RU NULL
 #define OPTION_VAL_15_RU NULL
+#define OPTION_VAL_20_RU NULL
 #define OPTION_VAL_25_RU NULL
 #define OPTION_VAL_30_RU NULL
 #define XEMU_DEADZONE_P2_LABEL_RU NULL
@@ -24189,8 +26628,11 @@ struct retro_core_options_v2 options_pt_pt = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_RU NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_RU NULL
 #define OPTION_VAL_50_RU NULL
+#define OPTION_VAL_60_RU NULL
 #define OPTION_VAL_70_RU NULL
+#define OPTION_VAL_80_RU NULL
 #define OPTION_VAL_90_RU NULL
+#define OPTION_VAL_100_RU NULL
 #define OPTION_VAL_110_RU NULL
 #define OPTION_VAL_120_RU NULL
 #define OPTION_VAL_130_RU NULL
@@ -24203,6 +26645,19 @@ struct retro_core_options_v2 options_pt_pt = {
 #define OPTION_VAL_200_RU NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_RU NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_RU NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_RU NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_RU NULL
+#define OPTION_VAL_LINEAR_RU "Линейный"
+#define OPTION_VAL_LOGARITHMIC_RU NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_RU NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_RU NULL
+#define OPTION_VAL_CUBIC_RU NULL
+#define OPTION_VAL_SQUARE_RU NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_RU NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_RU NULL
+#define OPTION_VAL_35_RU NULL
+#define OPTION_VAL_40_RU NULL
+#define OPTION_VAL_45_RU NULL
 #define XEMU_CHIHIRO_FFB_LABEL_RU NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_RU NULL
 #define OPTION_VAL_75_RU NULL
@@ -24438,6 +26893,21 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_RU,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_RU,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -24570,28 +27040,8 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_RU,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_RU,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_RU },
-            { "80",  OPTION_VAL_80_RU },
-            { "60",  OPTION_VAL_60_RU },
-            { "40",  OPTION_VAL_40_RU },
-            { "20",  OPTION_VAL_20_RU },
-            { "0",   OPTION_VAL_0_RU },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_RU,
@@ -24606,7 +27056,21 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
             { "none",     OPTION_VAL_NONE_RU },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_RU,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_RU,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -24647,7 +27111,7 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_RU },
+            { "0",  OPTION_VAL_0_RU },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_RU },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_RU },
             { "15", OPTION_VAL_15_RU },
@@ -24669,7 +27133,7 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_RU },
+            { "0",  OPTION_VAL_0_RU },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_RU },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_RU },
             { "15", OPTION_VAL_15_RU },
@@ -24761,6 +27225,58 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
         },
         "enabled"
     },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_RU,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_RU,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_RU },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_RU },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_RU,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_RU,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_RU },
+            { "square", OPTION_VAL_SQUARE_RU },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_RU,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_RU,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_RU },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_RU },
+            { "15", OPTION_VAL_15_RU },
+            { "20", OPTION_VAL_20_RU },
+            { "25", OPTION_VAL_25_RU },
+            { "30", OPTION_VAL_30_RU },
+            { "35", OPTION_VAL_35_RU },
+            { "40", OPTION_VAL_40_RU },
+            { "45", OPTION_VAL_45_RU },
+            { "50", OPTION_VAL_50_RU },
+            { NULL, NULL },
+        },
+        "25"
+    },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
     {
@@ -24802,7 +27318,7 @@ struct retro_core_options_v2 options_ru = {
 #define CATEGORY_CHIHIRO_LABEL_SK NULL
 #define CATEGORY_CHIHIRO_INFO_0_SK "Arkádové hry Sega Chihiro: hra zadarmo, mierenie v strieľačkách a spätná väzba v pretekárskych hrách."
 #define XEMU_MEMORY_LABEL_SK "Systémová pamäť (MB)"
-#define XEMU_MEMORY_INFO_0_SK NULL
+#define XEMU_MEMORY_INFO_0_SK "Veľkosť systémovej RAM Xboxu. 64 MB je štandard; 128 MB majú vývojárske kity. Sega Chihiro má vždy 128 MB, bez ohľadu na toto nastavenie."
 #define OPTION_VAL_64_SK NULL
 #define OPTION_VAL_128_SK NULL
 #define XEMU_NETWORK_BACKEND_LABEL_SK "Sieťový backend"
@@ -24815,7 +27331,7 @@ struct retro_core_options_v2 options_ru = {
 #define XEMU_CPU_BOOST_LABEL_SK "Zrýchlenie CPU"
 #define XEMU_CPU_BOOST_INFO_0_SK "Rýchlejšie cesty pre emulovaný procesor a zvukový procesor: natívne SSE a väčšia vyrovnávacia pamäť skokov. Vypnite, ak sa hra správa nesprávne."
 #define XEMU_LANGUAGE_LABEL_SK "Jazyk systému"
-#define XEMU_LANGUAGE_INFO_0_SK NULL
+#define XEMU_LANGUAGE_INFO_0_SK "Jazyk, ktorý nastavenia konzoly dávajú hrám, namiesto nastavenia dashboardu. Dashboard ponechá jazyk uložený v EEPROM. Auto je jazyk RetroArchu, ak ho Xbox má, inak angličtina."
 #define OPTION_VAL_AUTO_SK NULL
 #define OPTION_VAL_DASHBOARD_SK NULL
 #define OPTION_VAL_ENGLISH_SK "Angličtina"
@@ -24839,9 +27355,9 @@ struct retro_core_options_v2 options_ru = {
 #define OPTION_VAL_16_9_SK NULL
 #define OPTION_VAL_LETTERBOX_SK NULL
 #define XEMU_ASPECT_RATIO_LABEL_SK "Pomer strán jadra"
-#define XEMU_ASPECT_RATIO_INFO_0_SK "Tvar, v ktorom sa obraz zobrazuje. Najlepšie je nechať Auto, ktoré sa riadi hrou: 16:9, keď je konzola nastavená na široký obraz (Systémový pomer strán alebo dashboard) a hra vykresľuje 16:9, inak 4:3, a na Chihiro tiež 4:3. 16:9 roztiahne hru v 4:3 na široký obraz."
+#define XEMU_ASPECT_RATIO_INFO_0_SK NULL
 #define XEMU_OVERSCAN_CROP_LABEL_SK "Orezať vertikálny overscan"
-#define XEMU_OVERSCAN_CROP_INFO_0_SK NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_SK "Niektoré hry kreslia 448-riadkový obraz vnútri 480 riadkov Xboxu, s čiernymi pruhmi hore a dole. Auto oreže 16 zo 480 riadkov hore aj dole v hrách zo zoznamu takých hier v jadre a zvyšok roztiahne na celú výšku so zachovaním pomeru strán."
 #define XEMU_SURFACE_SCALE_LABEL_SK "Mierka interného rozlíšenia (reštart)"
 #define XEMU_SURFACE_SCALE_INFO_0_SK "Škáluje interné rozlíšenie vykresľovania. Vyššie hodnoty zlepšujú kvalitu, ale znižujú výkon."
 #define OPTION_VAL_1_SK NULL
@@ -24854,8 +27370,10 @@ struct retro_core_options_v2 options_ru = {
 #define OPTION_VAL_8_SK NULL
 #define OPTION_VAL_9_SK NULL
 #define OPTION_VAL_10_SK NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_SK "Škálovanie subpixelového posunu"
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_SK "Pri Mierke interného rozlíšenia nad 1x posunie obraz o zlomok pixelu, aby sa pixely vyššieho rozlíšenia zarovnali s pôvodnými. V niektorých hrách odstráni duchov a švy (Jade Empire, Blinx), iné pokazí (Splinter Cell). Vypnuté je ako predtým."
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_SK "Anizotropné filtrovanie"
-#define XEMU_ANISOTROPIC_FILTERING_INFO_0_SK NULL
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_SK "Najmenšie anizotropné filtrovanie, aké dostanú plynulo filtrované textúry hry; udrží ostré textúry pod uhlom. Natívne ponechá filtrovanie hry, ktoré je vo väčšine hier pre Xbox žiadne."
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_SK "Natívne"
 #define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_SK NULL
 #define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_SK NULL
@@ -24869,41 +27387,36 @@ struct retro_core_options_v2 options_ru = {
 #define OPTION_VAL_SCART_SK NULL
 #define OPTION_VAL_VGA_SK NULL
 #define XEMU_AUDIO_THREAD_LABEL_SK "Zvukové vlákno (reštart)"
-#define XEMU_AUDIO_THREAD_INFO_0_SK NULL
-#define XEMU_USE_DSP_LABEL_SK NULL
-#define XEMU_USE_DSP_INFO_0_SK NULL
-#define XEMU_DSP_JIT_LABEL_SK NULL
-#define XEMU_DSP_JIT_INFO_0_SK NULL
+#define XEMU_AUDIO_THREAD_INFO_0_SK "Odovzdáva zvuk zvukovému vláknu RetroArchu tak, ako ho APU mixuje, ako ho prehráva samostatný xemu, namiesto dávky na každú snímku: zvuk pokračuje, aj keď sa snímky zastavia, napríklad počas kompilácie shaderov. Verzie RetroArchu spred novembra 2026 s ním spomaľujú menu, keď je Snímková frekvencia ponuky (Frame Throttle) nastavená na Frekvencia displeja; tam ju nastavte na Frekvencia obsahu."
+#define XEMU_USE_DSP_LABEL_SK "Emulácia DSP v APU (reštart)"
+#define XEMU_USE_DSP_INFO_0_SK "Emuluje DSP v APU, ktorý prehráva efekty hier, dozvuk a veľkú časť ich hudby: bez neho je zvuk plochý. Použije sa pri spustení obsahu; prepínanie počas hry zvuk skresľovalo."
+#define XEMU_DSP_JIT_LABEL_SK "DSP JIT (reštart)"
+#define XEMU_DSP_JIT_INFO_0_SK "Spúšťa programy Emulácie DSP v APU ako skompilovaný kód namiesto ich interpretovania: rýchlejšie, ako DSP JIT v samostatnom xemu. Funguje iba so zapnutou Emuláciou DSP v APU. Použije sa pri spustení obsahu."
 #define XEMU_HRTF_LABEL_SK NULL
 #define XEMU_HRTF_INFO_0_SK "Umiestňuje 3D hlasy hier, ktoré ich používajú, pomocou funkcií prenosu vzhľadom na hlavu, ako na konzole, pre slúchadlá a stereo reproduktory."
 #define XEMU_VP_WORKERS_LABEL_SK "Vlákna hlasového procesora (reštart)"
 #define XEMU_VP_WORKERS_INFO_0_SK "Vlákna, na ktorých zvukový hlasový procesor mixuje hlasy. Auto použije jedno na každé jadro procesora."
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_SK "Plynulé prvé hranie (reštart)"
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_SK "Počas štartu hry skompiluje shadery, o ktorých je známe, že ich hra používa, aby sa prvé minúty nesekali pri ich kompilácii. Na OpenGL uchová to, čo skompiluje, vo vyrovnávacej pamäti shaderov, ktorá je vždy zapnutá."
-#define XEMU_AUDIO_VOLUME_LABEL_SK "Limit hlasitosti zvuku (%)"
-#define XEMU_AUDIO_VOLUME_INFO_0_SK "Obmedzí hlasitosť zvukového výstupu Xboxu nezávisle od hlavnej hlasitosti RetroArchu."
-#define OPTION_VAL_100_SK NULL
-#define OPTION_VAL_80_SK NULL
-#define OPTION_VAL_60_SK NULL
-#define OPTION_VAL_40_SK NULL
-#define OPTION_VAL_20_SK NULL
-#define OPTION_VAL_0_SK "Stlmené"
 #define XEMU_VK_FAST_PATHS_LABEL_SK "Rýchle cesty Vulkanu (reštart)"
 #define XEMU_VK_FAST_PATHS_INFO_0_SK "Ovplyvňuje rýchlosť kompilácie shaderov na Vulkane. „Všetko“ je najrýchlejšie, ale niektoré hry môže zhodiť."
 #define OPTION_VAL_ALL_SK "Všetko"
 #define OPTION_VAL_NO_GPL_SK "Bez knižníc pipeline"
 #define OPTION_VAL_NO_DYN_SK "Bez dynamických stavov"
 #define OPTION_VAL_NONE_SK "Žiadne"
+#define XEMU_MSPF_OVERLAY_LABEL_SK "Prekrytie výkonu"
+#define XEMU_MSPF_OVERLAY_INFO_0_SK NULL
 #define XEMU_RUMBLE_P1_LABEL_SK "Vibrácie (hráč 1)"
 #define XEMU_RUMBLE_P1_INFO_0_SK "Gamepad hráča 1 vibruje z hier pre Xbox aj zo spätnej väzby pretekárskych hier Chihiro. Vypnuté: ani jedno."
 #define XEMU_RUMBLE_P2_LABEL_SK "Vibrácie (hráč 2)"
 #define XEMU_RUMBLE_P2_INFO_0_SK "Gamepad hráča 2 vibruje z hier pre Xbox aj zo spätnej väzby pretekárskych hier Chihiro. Vypnuté: ani jedno."
 #define XEMU_DEADZONE_P1_LABEL_SK "Mŕtva zóna analógu (hráč 1)"
 #define XEMU_DEADZONE_P1_INFO_0_SK "Ako ďaleko sa dajú páčky hráča 1 vychýliť, kým to hra zaregistruje, obe páčky, na Xboxe aj na Chihiro; zvyšok pohybu sa roztiahne na celý rozsah."
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_SK NULL
+#define OPTION_VAL_0_SK NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_SK NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_SK NULL
 #define OPTION_VAL_15_SK NULL
+#define OPTION_VAL_20_SK NULL
 #define OPTION_VAL_25_SK NULL
 #define OPTION_VAL_30_SK NULL
 #define XEMU_DEADZONE_P2_LABEL_SK "Mŕtva zóna analógu (hráč 2)"
@@ -24914,11 +27427,14 @@ struct retro_core_options_v2 options_ru = {
 #define XEMU_CHIHIRO_GUN_AIM_INFO_0_SK "Čím sa mieri v House of the Dead III, Virtua Cop 3 a Ghost Squad. Myš: mieri myš (alebo svetelná pištoľ RetroArchu), ľavé tlačidlo strieľa, pravé je tlačidlo pištole (prebitie, zmena zbrane), stredné pedál alebo rýchlosť streľby. Analógová páčka: mieri ľavá páčka alebo D-pad, R2 strieľa, L2 je tlačidlo pištole, L pedál alebo rýchlosť streľby, R strieľa mimo obrazovky."
 #define OPTION_VAL_MOUSE_SK "Myš"
 #define OPTION_VAL_STICK_SK "Analógová páčka"
-#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_SK NULL
-#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_SK NULL
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_SK "Citlivosť mierenia páčkou"
+#define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_SK "Ako rýchlo páčka posúva zameriavač pri mierení analógovou páčkou, vodorovne rovnako rýchlo ako zvislo; pri 100 % prejde plné vychýlenie výšku obrazu asi za sekundu. Myš mieri tam, kam ukazuje."
 #define OPTION_VAL_50_SK NULL
+#define OPTION_VAL_60_SK NULL
 #define OPTION_VAL_70_SK NULL
+#define OPTION_VAL_80_SK NULL
 #define OPTION_VAL_90_SK NULL
+#define OPTION_VAL_100_SK NULL
 #define OPTION_VAL_110_SK NULL
 #define OPTION_VAL_120_SK NULL
 #define OPTION_VAL_130_SK NULL
@@ -24931,6 +27447,19 @@ struct retro_core_options_v2 options_ru = {
 #define OPTION_VAL_200_SK NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_SK "Zameriavač"
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_SK "Vykreslí mierenie každého hráča cez obraz, hráč 1 červený, hráč 2 modrý."
+#define XEMU_CHIHIRO_STEERING_LABEL_SK NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_SK NULL
+#define OPTION_VAL_LINEAR_SK "Lineárny"
+#define OPTION_VAL_LOGARITHMIC_SK NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_SK NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_SK NULL
+#define OPTION_VAL_CUBIC_SK NULL
+#define OPTION_VAL_SQUARE_SK NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_SK NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_SK NULL
+#define OPTION_VAL_35_SK NULL
+#define OPTION_VAL_40_SK NULL
+#define OPTION_VAL_45_SK NULL
 #define XEMU_CHIHIRO_FFB_LABEL_SK "Spätná väzba ako vibrácie"
 #define XEMU_CHIHIRO_FFB_INFO_0_SK "Spätnú väzbu pretekárskych hier Chihiro (OutRun 2, Maximum Tune) dáva ako vibrácie na gamepad portu 1, s touto silou."
 #define OPTION_VAL_75_SK NULL
@@ -25166,6 +27695,21 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_SK,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_SK,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -25298,28 +27842,8 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_SK,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_SK,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_SK },
-            { "80",  OPTION_VAL_80_SK },
-            { "60",  OPTION_VAL_60_SK },
-            { "40",  OPTION_VAL_40_SK },
-            { "20",  OPTION_VAL_20_SK },
-            { "0",   OPTION_VAL_0_SK },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_SK,
@@ -25334,7 +27858,21 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
             { "none",     OPTION_VAL_NONE_SK },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_SK,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_SK,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -25375,7 +27913,7 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_SK },
+            { "0",  OPTION_VAL_0_SK },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_SK },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_SK },
             { "15", OPTION_VAL_15_SK },
@@ -25397,7 +27935,7 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_SK },
+            { "0",  OPTION_VAL_0_SK },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_SK },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_SK },
             { "15", OPTION_VAL_15_SK },
@@ -25488,6 +28026,58 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_SK,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_SK,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_SK },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_SK },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_SK,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_SK,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_SK },
+            { "square", OPTION_VAL_SQUARE_SK },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_SK,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_SK,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_SK },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_SK },
+            { "15", OPTION_VAL_15_SK },
+            { "20", OPTION_VAL_20_SK },
+            { "25", OPTION_VAL_25_SK },
+            { "30", OPTION_VAL_30_SK },
+            { "35", OPTION_VAL_35_SK },
+            { "40", OPTION_VAL_40_SK },
+            { "45", OPTION_VAL_45_SK },
+            { "50", OPTION_VAL_50_SK },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -25582,6 +28172,8 @@ struct retro_core_options_v2 options_sk = {
 #define OPTION_VAL_8_SR NULL
 #define OPTION_VAL_9_SR NULL
 #define OPTION_VAL_10_SR NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_SR NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_SR NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_SR NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_SR NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_SR NULL
@@ -25608,30 +28200,25 @@ struct retro_core_options_v2 options_sk = {
 #define XEMU_VP_WORKERS_INFO_0_SR NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_SR NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_SR NULL
-#define XEMU_AUDIO_VOLUME_LABEL_SR NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_SR NULL
-#define OPTION_VAL_100_SR NULL
-#define OPTION_VAL_80_SR NULL
-#define OPTION_VAL_60_SR NULL
-#define OPTION_VAL_40_SR NULL
-#define OPTION_VAL_20_SR NULL
-#define OPTION_VAL_0_SR NULL
 #define XEMU_VK_FAST_PATHS_LABEL_SR NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_SR NULL
 #define OPTION_VAL_ALL_SR NULL
 #define OPTION_VAL_NO_GPL_SR NULL
 #define OPTION_VAL_NO_DYN_SR NULL
 #define OPTION_VAL_NONE_SR NULL
+#define XEMU_MSPF_OVERLAY_LABEL_SR NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_SR NULL
 #define XEMU_RUMBLE_P1_LABEL_SR NULL
 #define XEMU_RUMBLE_P1_INFO_0_SR NULL
 #define XEMU_RUMBLE_P2_LABEL_SR NULL
 #define XEMU_RUMBLE_P2_INFO_0_SR NULL
 #define XEMU_DEADZONE_P1_LABEL_SR NULL
 #define XEMU_DEADZONE_P1_INFO_0_SR NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_SR NULL
+#define OPTION_VAL_0_SR NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_SR NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_SR NULL
 #define OPTION_VAL_15_SR NULL
+#define OPTION_VAL_20_SR NULL
 #define OPTION_VAL_25_SR NULL
 #define OPTION_VAL_30_SR NULL
 #define XEMU_DEADZONE_P2_LABEL_SR NULL
@@ -25645,8 +28232,11 @@ struct retro_core_options_v2 options_sk = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_SR NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_SR NULL
 #define OPTION_VAL_50_SR NULL
+#define OPTION_VAL_60_SR NULL
 #define OPTION_VAL_70_SR NULL
+#define OPTION_VAL_80_SR NULL
 #define OPTION_VAL_90_SR NULL
+#define OPTION_VAL_100_SR NULL
 #define OPTION_VAL_110_SR NULL
 #define OPTION_VAL_120_SR NULL
 #define OPTION_VAL_130_SR NULL
@@ -25659,6 +28249,19 @@ struct retro_core_options_v2 options_sk = {
 #define OPTION_VAL_200_SR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_SR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_SR NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_SR NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_SR NULL
+#define OPTION_VAL_LINEAR_SR NULL
+#define OPTION_VAL_LOGARITHMIC_SR NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_SR NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_SR NULL
+#define OPTION_VAL_CUBIC_SR NULL
+#define OPTION_VAL_SQUARE_SR NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_SR NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_SR NULL
+#define OPTION_VAL_35_SR NULL
+#define OPTION_VAL_40_SR NULL
+#define OPTION_VAL_45_SR NULL
 #define XEMU_CHIHIRO_FFB_LABEL_SR NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_SR NULL
 #define OPTION_VAL_75_SR NULL
@@ -25894,6 +28497,21 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_SR,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_SR,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -26026,28 +28644,8 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_SR,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_SR,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_SR },
-            { "80",  OPTION_VAL_80_SR },
-            { "60",  OPTION_VAL_60_SR },
-            { "40",  OPTION_VAL_40_SR },
-            { "20",  OPTION_VAL_20_SR },
-            { "0",   OPTION_VAL_0_SR },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_SR,
@@ -26062,7 +28660,21 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
             { "none",     OPTION_VAL_NONE_SR },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_SR,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_SR,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -26103,7 +28715,7 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_SR },
+            { "0",  OPTION_VAL_0_SR },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_SR },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_SR },
             { "15", OPTION_VAL_15_SR },
@@ -26125,7 +28737,7 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_SR },
+            { "0",  OPTION_VAL_0_SR },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_SR },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_SR },
             { "15", OPTION_VAL_15_SR },
@@ -26217,6 +28829,58 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
         },
         "enabled"
     },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_SR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_SR,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_SR },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_SR },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_SR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_SR,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_SR },
+            { "square", OPTION_VAL_SQUARE_SR },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_SR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_SR,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_SR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_SR },
+            { "15", OPTION_VAL_15_SR },
+            { "20", OPTION_VAL_20_SR },
+            { "25", OPTION_VAL_25_SR },
+            { "30", OPTION_VAL_30_SR },
+            { "35", OPTION_VAL_35_SR },
+            { "40", OPTION_VAL_40_SR },
+            { "45", OPTION_VAL_45_SR },
+            { "50", OPTION_VAL_50_SR },
+            { NULL, NULL },
+        },
+        "25"
+    },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
     {
@@ -26295,7 +28959,7 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_16_9_SV NULL
 #define OPTION_VAL_LETTERBOX_SV "Brevlådeformat"
 #define XEMU_ASPECT_RATIO_LABEL_SV "Kärnspecifikt bildformat"
-#define XEMU_ASPECT_RATIO_INFO_0_SV "Formatet som bilden visas i. Behåll helst Auto, som följer spelet: 16:9 när konsolen är inställd på bredbild (Systemets bildförhållande eller dashboarden) och spelet återger 16:9, annars 4:3 och även på Chihiro. 16:9 sträcker ut ett 4:3-spel till bredbild."
+#define XEMU_ASPECT_RATIO_INFO_0_SV "Bildformatet. Låt helst Automatiskt vara valt. Då följer inställningen spelet. 16:9 används om konsolen är inställd på bredbild (Systemets bildförhållande eller instrumentpanelen) och spelet renderas i 16:9. Detsamma gäller när en bredbildskorrigering (Widescreen eller 16-9 i namnet) är aktiverad. Annars används 4:3, även på Chihiro. 16:9 sträcker ut ett 4:3-spel till bredbild."
 #define XEMU_OVERSCAN_CROP_LABEL_SV "Beskär vertikal överskanning"
 #define XEMU_OVERSCAN_CROP_INFO_0_SV "Vissa spel renderar en bild på 448 linjer inom Xboxens 480 linjer, med svarta fält upptill och nedtill. Funktionen beskär automatiskt 16 av de 480 linjerna – både upptill och nedtill – för spel som finns med på kärnans lista över sådana titlar, och sträcker sedan ut resten till full höjd samtidigt som bildförhållandet bevaras."
 #define XEMU_SURFACE_SCALE_LABEL_SV "Intern upplösningsskala (starta om)"
@@ -26310,6 +28974,8 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_8_SV NULL
 #define OPTION_VAL_9_SV NULL
 #define OPTION_VAL_10_SV NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_SV "Skalning med subpixelförskjutning"
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_SV "Med en intern upplösningsskala över 1× flyttas bilden en bråkdel av en bildpunkt så att den högre upplösningens bildpunkter linjerar med de ursprungliga. Åtgärdar spökbilder och skarvar i vissa spel (Jade Empire, Blinx) men orsakar problem i andra (Splinter Cell). Av är som tidigare."
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_SV "Anisotropisk filtrering"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_SV "Den lägsta anisotropiska filtrering som spelets mjukt filtrerade texturer får, vilket håller snedställda texturer skarpa. Ursprungligt läge behåller spelets egen inställning, som saknas i de flesta Xbox-spel."
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_SV "Inbyggd"
@@ -26336,30 +29002,25 @@ struct retro_core_options_v2 options_sr = {
 #define XEMU_VP_WORKERS_INFO_0_SV "Antal trådar som ljudets röstprocessor mixar rösterna på. Auto använder en per processorkärna."
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_SV "Jämn första spelstart (omstart)"
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_SV "Kompilerar shaderprogram som ett spel är känt för att använda medan det startar, så att de första minuterna inte hackar medan de kompileras. På OpenGL sparas det som kompileras i shadercachen, som alltid är aktiverad."
-#define XEMU_AUDIO_VOLUME_LABEL_SV "Ljudvolymgräns (%)"
-#define XEMU_AUDIO_VOLUME_INFO_0_SV "Begränsa Xbox-ljudutgångens volym oberoende av RetroArchs huvudvolym."
-#define OPTION_VAL_100_SV NULL
-#define OPTION_VAL_80_SV NULL
-#define OPTION_VAL_60_SV NULL
-#define OPTION_VAL_40_SV NULL
-#define OPTION_VAL_20_SV NULL
-#define OPTION_VAL_0_SV "Avstängd"
 #define XEMU_VK_FAST_PATHS_LABEL_SV "Snabba Vulkan-kodvägar (omstart)"
 #define XEMU_VK_FAST_PATHS_INFO_0_SV "Påverkar shaderkompileringshastigheten på Vulkan. ”Alla” är snabbast men kan få vissa spel att krascha."
 #define OPTION_VAL_ALL_SV "Alla"
 #define OPTION_VAL_NO_GPL_SV "Inga pipelinebibliotek"
 #define OPTION_VAL_NO_DYN_SV "Inga dynamiska tillstånd"
 #define OPTION_VAL_NONE_SV "Ingen"
+#define XEMU_MSPF_OVERLAY_LABEL_SV "Prestandaöverlägg"
+#define XEMU_MSPF_OVERLAY_INFO_0_SV "Visar två rader uppe till vänster. FPS: antalet bildrutor per sekund som spelet visar, som i xemu-emulatorns fristående videofelsökningsöverlägg, beräknat över de senaste 60 bildrutorna. GPU: den bildfrekvens som spelet kan nå utifrån tiden det tar att rita en bildruta (xemu-emulatorns MSPF), beräknad som ett medelvärde över de senaste 60 bildrutorna och uppdaterad var 20:e bildruta. Gäller endast när GPU:n begränsar spelet. När funktionen är på skriver kärnan även var 300:e körning till RetroArchs logg hur gästens bildrutor och gränssnittets körningar stämde överens. Träder i kraft direkt."
 #define XEMU_RUMBLE_P1_LABEL_SV "Vibration (spelare 1)"
 #define XEMU_RUMBLE_P1_INFO_0_SV "Spelare 1:s handkontroll vibrerar både från Xbox-spelen och från force feedback i Chihiro-racingspel. Av stänger av båda."
 #define XEMU_RUMBLE_P2_LABEL_SV "Vibration (spelare 2)"
 #define XEMU_RUMBLE_P2_INFO_0_SV "Spelare 2:s handkontroll vibrerar både från Xbox-spelen och från force feedback i Chihiro-racingspel. Av stänger av båda."
 #define XEMU_DEADZONE_P1_LABEL_SV "Analog dödzon (spelare 1)"
 #define XEMU_DEADZONE_P1_INFO_0_SV "Hur långt spelare 1:s spakar kan tryckas innan spelet märker det, för båda spakarna på både Xbox och Chihiro. Resterande rörelse skalas upp till fullt utslag."
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_SV "0 %"
+#define OPTION_VAL_0_SV "0 %"
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_SV "5 %"
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_SV "10 %"
 #define OPTION_VAL_15_SV NULL
+#define OPTION_VAL_20_SV NULL
 #define OPTION_VAL_25_SV "25 %"
 #define OPTION_VAL_30_SV NULL
 #define XEMU_DEADZONE_P2_LABEL_SV "Analog dödzon (spelare 2)"
@@ -26373,8 +29034,11 @@ struct retro_core_options_v2 options_sr = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_SV "Spakens siktkänslighet"
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_SV "Hur snabbt spaken flyttar siktet när ”Sikta med ljuspistol” använder analog spak, lika snabbt i sidled som uppåt och nedåt. Vid 100 % passerar en fullt utslagen spak bildens höjd på ungefär en sekund. Musen siktar där den pekar."
 #define OPTION_VAL_50_SV NULL
+#define OPTION_VAL_60_SV NULL
 #define OPTION_VAL_70_SV NULL
+#define OPTION_VAL_80_SV NULL
 #define OPTION_VAL_90_SV NULL
+#define OPTION_VAL_100_SV NULL
 #define OPTION_VAL_110_SV NULL
 #define OPTION_VAL_120_SV NULL
 #define OPTION_VAL_130_SV NULL
@@ -26387,6 +29051,19 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_200_SV NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_SV "Sikte"
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_SV "Visar spelarnas sikten över bilden: spelare 1 i rött och spelare 2 i blått."
+#define XEMU_CHIHIRO_STEERING_LABEL_SV "Styrrespons"
+#define XEMU_CHIHIRO_STEERING_INFO_0_SV "Hur vänsterspaken styr i OutRun 2, OutRun 2 SP, Maximum Tune 1 och 2, Crazy Taxi 3 samt Ollie King. Vid linjär styrrespons följer styrningen spakens rörelse. Vid logaritmisk styrrespons följer den en kurva med mindre styrutslag kring mittläget och större mot ändlägena, så att styrningen blir mindre ryckig. Dess form bestäms av styreffekt och styrningens innerzon. Styrkorset påverkas inte."
+#define OPTION_VAL_LINEAR_SV "Linjär"
+#define OPTION_VAL_LOGARITHMIC_SV "Logaritmisk"
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_SV "Styreffekt"
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_SV "Vid logaritmisk styrrespons ökar återstående styrutslag mot fullt styrutslag. Kubisk är kraftig, kvadratisk svag."
+#define OPTION_VAL_CUBIC_SV "Kubisk (kraftig)"
+#define OPTION_VAL_SQUARE_SV "Kvadratisk (svag)"
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_SV "Styrningens innerzon"
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_SV "Med logaritmisk styrrespons: den andel av styrutslaget som ökar jämnt från mittläget. Lägre värde ger lugnare styrning kring mittläget."
+#define OPTION_VAL_35_SV NULL
+#define OPTION_VAL_40_SV NULL
+#define OPTION_VAL_45_SV "45 %"
 #define XEMU_CHIHIRO_FFB_LABEL_SV "Vibration från kraftåterkoppling"
 #define XEMU_CHIHIRO_FFB_INFO_0_SV "Återger kraftåterkoppling från ett Chihiro-racingspel (OutRun 2, Maximum Tune) som vibration med denna styrka på handkontrollen i port 1."
 #define OPTION_VAL_75_SV NULL
@@ -26622,6 +29299,21 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_SV,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_SV,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -26754,28 +29446,8 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_SV,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_SV,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_SV },
-            { "80",  OPTION_VAL_80_SV },
-            { "60",  OPTION_VAL_60_SV },
-            { "40",  OPTION_VAL_40_SV },
-            { "20",  OPTION_VAL_20_SV },
-            { "0",   OPTION_VAL_0_SV },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_SV,
@@ -26790,7 +29462,21 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
             { "none",     OPTION_VAL_NONE_SV },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_SV,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_SV,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -26831,7 +29517,7 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_SV },
+            { "0",  OPTION_VAL_0_SV },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_SV },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_SV },
             { "15", OPTION_VAL_15_SV },
@@ -26853,7 +29539,7 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_SV },
+            { "0",  OPTION_VAL_0_SV },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_SV },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_SV },
             { "15", OPTION_VAL_15_SV },
@@ -26944,6 +29630,58 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_SV,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_SV,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_SV },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_SV },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_SV,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_SV,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_SV },
+            { "square", OPTION_VAL_SQUARE_SV },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_SV,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_SV,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_SV },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_SV },
+            { "15", OPTION_VAL_15_SV },
+            { "20", OPTION_VAL_20_SV },
+            { "25", OPTION_VAL_25_SV },
+            { "30", OPTION_VAL_30_SV },
+            { "35", OPTION_VAL_35_SV },
+            { "40", OPTION_VAL_40_SV },
+            { "45", OPTION_VAL_45_SV },
+            { "50", OPTION_VAL_50_SV },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -27038,6 +29776,8 @@ struct retro_core_options_v2 options_sv = {
 #define OPTION_VAL_8_TH NULL
 #define OPTION_VAL_9_TH NULL
 #define OPTION_VAL_10_TH NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_TH NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_TH NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_TH "การกรองพื้นผิวแบบAnisotropic"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_TH NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_TH "ดั้งเดิม"
@@ -27064,30 +29804,25 @@ struct retro_core_options_v2 options_sv = {
 #define XEMU_VP_WORKERS_INFO_0_TH NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_TH NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_TH NULL
-#define XEMU_AUDIO_VOLUME_LABEL_TH NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_TH NULL
-#define OPTION_VAL_100_TH NULL
-#define OPTION_VAL_80_TH NULL
-#define OPTION_VAL_60_TH NULL
-#define OPTION_VAL_40_TH NULL
-#define OPTION_VAL_20_TH NULL
-#define OPTION_VAL_0_TH NULL
 #define XEMU_VK_FAST_PATHS_LABEL_TH NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_TH NULL
 #define OPTION_VAL_ALL_TH "ทั้งหมด"
 #define OPTION_VAL_NO_GPL_TH NULL
 #define OPTION_VAL_NO_DYN_TH NULL
 #define OPTION_VAL_NONE_TH "ไม่แชร์อินพุต"
+#define XEMU_MSPF_OVERLAY_LABEL_TH NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_TH NULL
 #define XEMU_RUMBLE_P1_LABEL_TH NULL
 #define XEMU_RUMBLE_P1_INFO_0_TH NULL
 #define XEMU_RUMBLE_P2_LABEL_TH NULL
 #define XEMU_RUMBLE_P2_INFO_0_TH NULL
 #define XEMU_DEADZONE_P1_LABEL_TH NULL
 #define XEMU_DEADZONE_P1_INFO_0_TH NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_TH NULL
+#define OPTION_VAL_0_TH NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_TH NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_TH NULL
 #define OPTION_VAL_15_TH NULL
+#define OPTION_VAL_20_TH NULL
 #define OPTION_VAL_25_TH NULL
 #define OPTION_VAL_30_TH NULL
 #define XEMU_DEADZONE_P2_LABEL_TH NULL
@@ -27101,8 +29836,11 @@ struct retro_core_options_v2 options_sv = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_TH NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_TH NULL
 #define OPTION_VAL_50_TH NULL
+#define OPTION_VAL_60_TH NULL
 #define OPTION_VAL_70_TH NULL
+#define OPTION_VAL_80_TH NULL
 #define OPTION_VAL_90_TH NULL
+#define OPTION_VAL_100_TH NULL
 #define OPTION_VAL_110_TH NULL
 #define OPTION_VAL_120_TH NULL
 #define OPTION_VAL_130_TH NULL
@@ -27115,6 +29853,19 @@ struct retro_core_options_v2 options_sv = {
 #define OPTION_VAL_200_TH NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_TH NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_TH NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_TH NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_TH NULL
+#define OPTION_VAL_LINEAR_TH "เส้นตรง"
+#define OPTION_VAL_LOGARITHMIC_TH NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_TH NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_TH NULL
+#define OPTION_VAL_CUBIC_TH NULL
+#define OPTION_VAL_SQUARE_TH NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_TH NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_TH NULL
+#define OPTION_VAL_35_TH NULL
+#define OPTION_VAL_40_TH NULL
+#define OPTION_VAL_45_TH NULL
 #define XEMU_CHIHIRO_FFB_LABEL_TH NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_TH NULL
 #define OPTION_VAL_75_TH NULL
@@ -27350,6 +30101,21 @@ struct retro_core_option_v2_definition option_defs_th[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_TH,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_TH,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -27482,28 +30248,8 @@ struct retro_core_option_v2_definition option_defs_th[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_TH,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_TH,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_TH },
-            { "80",  OPTION_VAL_80_TH },
-            { "60",  OPTION_VAL_60_TH },
-            { "40",  OPTION_VAL_40_TH },
-            { "20",  OPTION_VAL_20_TH },
-            { "0",   OPTION_VAL_0_TH },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_TH,
@@ -27518,7 +30264,21 @@ struct retro_core_option_v2_definition option_defs_th[] = {
             { "none",     OPTION_VAL_NONE_TH },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_TH,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_TH,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -27559,7 +30319,7 @@ struct retro_core_option_v2_definition option_defs_th[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_TH },
+            { "0",  OPTION_VAL_0_TH },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_TH },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_TH },
             { "15", OPTION_VAL_15_TH },
@@ -27581,7 +30341,7 @@ struct retro_core_option_v2_definition option_defs_th[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_TH },
+            { "0",  OPTION_VAL_0_TH },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_TH },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_TH },
             { "15", OPTION_VAL_15_TH },
@@ -27672,6 +30432,58 @@ struct retro_core_option_v2_definition option_defs_th[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_TH,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_TH,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_TH },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_TH },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_TH,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_TH,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_TH },
+            { "square", OPTION_VAL_SQUARE_TH },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_TH,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_TH,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_TH },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_TH },
+            { "15", OPTION_VAL_15_TH },
+            { "20", OPTION_VAL_20_TH },
+            { "25", OPTION_VAL_25_TH },
+            { "30", OPTION_VAL_30_TH },
+            { "35", OPTION_VAL_35_TH },
+            { "40", OPTION_VAL_40_TH },
+            { "45", OPTION_VAL_45_TH },
+            { "50", OPTION_VAL_50_TH },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -27766,6 +30578,8 @@ struct retro_core_options_v2 options_th = {
 #define OPTION_VAL_8_TR NULL
 #define OPTION_VAL_9_TR NULL
 #define OPTION_VAL_10_TR NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_TR NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_TR NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_TR "Eşyönsüz Filtreleme"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_TR NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_TR "Özgün"
@@ -27792,30 +30606,25 @@ struct retro_core_options_v2 options_th = {
 #define XEMU_VP_WORKERS_INFO_0_TR NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_TR NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_TR NULL
-#define XEMU_AUDIO_VOLUME_LABEL_TR NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_TR NULL
-#define OPTION_VAL_100_TR "%100"
-#define OPTION_VAL_80_TR "%80"
-#define OPTION_VAL_60_TR "%60"
-#define OPTION_VAL_40_TR "%40"
-#define OPTION_VAL_20_TR "%20"
-#define OPTION_VAL_0_TR NULL
 #define XEMU_VK_FAST_PATHS_LABEL_TR NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_TR NULL
 #define OPTION_VAL_ALL_TR "Tümü"
 #define OPTION_VAL_NO_GPL_TR NULL
 #define OPTION_VAL_NO_DYN_TR NULL
 #define OPTION_VAL_NONE_TR "Yok"
+#define XEMU_MSPF_OVERLAY_LABEL_TR NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_TR NULL
 #define XEMU_RUMBLE_P1_LABEL_TR NULL
 #define XEMU_RUMBLE_P1_INFO_0_TR NULL
 #define XEMU_RUMBLE_P2_LABEL_TR NULL
 #define XEMU_RUMBLE_P2_INFO_0_TR NULL
 #define XEMU_DEADZONE_P1_LABEL_TR NULL
 #define XEMU_DEADZONE_P1_INFO_0_TR NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_TR NULL
+#define OPTION_VAL_0_TR NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_TR NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_TR NULL
 #define OPTION_VAL_15_TR "%15"
+#define OPTION_VAL_20_TR "%20"
 #define OPTION_VAL_25_TR NULL
 #define OPTION_VAL_30_TR "%30"
 #define XEMU_DEADZONE_P2_LABEL_TR NULL
@@ -27829,8 +30638,11 @@ struct retro_core_options_v2 options_th = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_TR NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_TR NULL
 #define OPTION_VAL_50_TR "%50"
+#define OPTION_VAL_60_TR "%60"
 #define OPTION_VAL_70_TR "%70"
+#define OPTION_VAL_80_TR "%80"
 #define OPTION_VAL_90_TR "%90"
+#define OPTION_VAL_100_TR "%100"
 #define OPTION_VAL_110_TR "%110"
 #define OPTION_VAL_120_TR "%120"
 #define OPTION_VAL_130_TR "%130"
@@ -27843,6 +30655,19 @@ struct retro_core_options_v2 options_th = {
 #define OPTION_VAL_200_TR "%200"
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_TR NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_TR NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_TR NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_TR NULL
+#define OPTION_VAL_LINEAR_TR "Doğrusal"
+#define OPTION_VAL_LOGARITHMIC_TR NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_TR NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_TR NULL
+#define OPTION_VAL_CUBIC_TR NULL
+#define OPTION_VAL_SQUARE_TR NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_TR NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_TR NULL
+#define OPTION_VAL_35_TR "%35"
+#define OPTION_VAL_40_TR "%40"
+#define OPTION_VAL_45_TR NULL
 #define XEMU_CHIHIRO_FFB_LABEL_TR NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_TR NULL
 #define OPTION_VAL_75_TR "%75"
@@ -28078,6 +30903,21 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_TR,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_TR,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -28210,28 +31050,8 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_TR,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_TR,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_TR },
-            { "80",  OPTION_VAL_80_TR },
-            { "60",  OPTION_VAL_60_TR },
-            { "40",  OPTION_VAL_40_TR },
-            { "20",  OPTION_VAL_20_TR },
-            { "0",   OPTION_VAL_0_TR },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_TR,
@@ -28246,7 +31066,21 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
             { "none",     OPTION_VAL_NONE_TR },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_TR,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_TR,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -28287,7 +31121,7 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_TR },
+            { "0",  OPTION_VAL_0_TR },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_TR },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_TR },
             { "15", OPTION_VAL_15_TR },
@@ -28309,7 +31143,7 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_TR },
+            { "0",  OPTION_VAL_0_TR },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_TR },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_TR },
             { "15", OPTION_VAL_15_TR },
@@ -28400,6 +31234,58 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_TR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_TR,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_TR },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_TR },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_TR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_TR,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_TR },
+            { "square", OPTION_VAL_SQUARE_TR },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_TR,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_TR,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_TR },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_TR },
+            { "15", OPTION_VAL_15_TR },
+            { "20", OPTION_VAL_20_TR },
+            { "25", OPTION_VAL_25_TR },
+            { "30", OPTION_VAL_30_TR },
+            { "35", OPTION_VAL_35_TR },
+            { "40", OPTION_VAL_40_TR },
+            { "45", OPTION_VAL_45_TR },
+            { "50", OPTION_VAL_50_TR },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -28494,6 +31380,8 @@ struct retro_core_options_v2 options_tr = {
 #define OPTION_VAL_8_TT NULL
 #define OPTION_VAL_9_TT NULL
 #define OPTION_VAL_10_TT NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_TT NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_TT NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_TT NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_TT NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_TT NULL
@@ -28520,30 +31408,25 @@ struct retro_core_options_v2 options_tr = {
 #define XEMU_VP_WORKERS_INFO_0_TT NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_TT NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_TT NULL
-#define XEMU_AUDIO_VOLUME_LABEL_TT NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_TT NULL
-#define OPTION_VAL_100_TT NULL
-#define OPTION_VAL_80_TT NULL
-#define OPTION_VAL_60_TT NULL
-#define OPTION_VAL_40_TT NULL
-#define OPTION_VAL_20_TT NULL
-#define OPTION_VAL_0_TT NULL
 #define XEMU_VK_FAST_PATHS_LABEL_TT NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_TT NULL
 #define OPTION_VAL_ALL_TT "Барлык"
 #define OPTION_VAL_NO_GPL_TT NULL
 #define OPTION_VAL_NO_DYN_TT NULL
 #define OPTION_VAL_NONE_TT NULL
+#define XEMU_MSPF_OVERLAY_LABEL_TT NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_TT NULL
 #define XEMU_RUMBLE_P1_LABEL_TT NULL
 #define XEMU_RUMBLE_P1_INFO_0_TT NULL
 #define XEMU_RUMBLE_P2_LABEL_TT NULL
 #define XEMU_RUMBLE_P2_INFO_0_TT NULL
 #define XEMU_DEADZONE_P1_LABEL_TT NULL
 #define XEMU_DEADZONE_P1_INFO_0_TT NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_TT NULL
+#define OPTION_VAL_0_TT NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_TT NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_TT NULL
 #define OPTION_VAL_15_TT NULL
+#define OPTION_VAL_20_TT NULL
 #define OPTION_VAL_25_TT NULL
 #define OPTION_VAL_30_TT NULL
 #define XEMU_DEADZONE_P2_LABEL_TT NULL
@@ -28557,8 +31440,11 @@ struct retro_core_options_v2 options_tr = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_TT NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_TT NULL
 #define OPTION_VAL_50_TT NULL
+#define OPTION_VAL_60_TT NULL
 #define OPTION_VAL_70_TT NULL
+#define OPTION_VAL_80_TT NULL
 #define OPTION_VAL_90_TT NULL
+#define OPTION_VAL_100_TT NULL
 #define OPTION_VAL_110_TT NULL
 #define OPTION_VAL_120_TT NULL
 #define OPTION_VAL_130_TT NULL
@@ -28571,6 +31457,19 @@ struct retro_core_options_v2 options_tr = {
 #define OPTION_VAL_200_TT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_TT NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_TT NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_TT NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_TT NULL
+#define OPTION_VAL_LINEAR_TT NULL
+#define OPTION_VAL_LOGARITHMIC_TT NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_TT NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_TT NULL
+#define OPTION_VAL_CUBIC_TT NULL
+#define OPTION_VAL_SQUARE_TT NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_TT NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_TT NULL
+#define OPTION_VAL_35_TT NULL
+#define OPTION_VAL_40_TT NULL
+#define OPTION_VAL_45_TT NULL
 #define XEMU_CHIHIRO_FFB_LABEL_TT NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_TT NULL
 #define OPTION_VAL_75_TT NULL
@@ -28806,6 +31705,21 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_TT,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_TT,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -28938,28 +31852,8 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_TT,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_TT,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_TT },
-            { "80",  OPTION_VAL_80_TT },
-            { "60",  OPTION_VAL_60_TT },
-            { "40",  OPTION_VAL_40_TT },
-            { "20",  OPTION_VAL_20_TT },
-            { "0",   OPTION_VAL_0_TT },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_TT,
@@ -28974,7 +31868,21 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
             { "none",     OPTION_VAL_NONE_TT },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_TT,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_TT,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -29015,7 +31923,7 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_TT },
+            { "0",  OPTION_VAL_0_TT },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_TT },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_TT },
             { "15", OPTION_VAL_15_TT },
@@ -29037,7 +31945,7 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_TT },
+            { "0",  OPTION_VAL_0_TT },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_TT },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_TT },
             { "15", OPTION_VAL_15_TT },
@@ -29128,6 +32036,58 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_TT,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_TT,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_TT },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_TT },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_TT,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_TT,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_TT },
+            { "square", OPTION_VAL_SQUARE_TT },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_TT,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_TT,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_TT },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_TT },
+            { "15", OPTION_VAL_15_TT },
+            { "20", OPTION_VAL_20_TT },
+            { "25", OPTION_VAL_25_TT },
+            { "30", OPTION_VAL_30_TT },
+            { "35", OPTION_VAL_35_TT },
+            { "40", OPTION_VAL_40_TT },
+            { "45", OPTION_VAL_45_TT },
+            { "50", OPTION_VAL_50_TT },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -29222,6 +32182,8 @@ struct retro_core_options_v2 options_tt = {
 #define OPTION_VAL_8_UK NULL
 #define OPTION_VAL_9_UK NULL
 #define OPTION_VAL_10_UK NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_UK NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_UK NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_UK "Анізотропна фільтрація"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_UK NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_UK "Рідний"
@@ -29248,30 +32210,25 @@ struct retro_core_options_v2 options_tt = {
 #define XEMU_VP_WORKERS_INFO_0_UK NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_UK NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_UK NULL
-#define XEMU_AUDIO_VOLUME_LABEL_UK NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_UK NULL
-#define OPTION_VAL_100_UK NULL
-#define OPTION_VAL_80_UK NULL
-#define OPTION_VAL_60_UK NULL
-#define OPTION_VAL_40_UK NULL
-#define OPTION_VAL_20_UK NULL
-#define OPTION_VAL_0_UK NULL
 #define XEMU_VK_FAST_PATHS_LABEL_UK NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_UK NULL
 #define OPTION_VAL_ALL_UK "Усі"
 #define OPTION_VAL_NO_GPL_UK NULL
 #define OPTION_VAL_NO_DYN_UK NULL
 #define OPTION_VAL_NONE_UK "Немає"
+#define XEMU_MSPF_OVERLAY_LABEL_UK NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_UK NULL
 #define XEMU_RUMBLE_P1_LABEL_UK NULL
 #define XEMU_RUMBLE_P1_INFO_0_UK NULL
 #define XEMU_RUMBLE_P2_LABEL_UK NULL
 #define XEMU_RUMBLE_P2_INFO_0_UK NULL
 #define XEMU_DEADZONE_P1_LABEL_UK NULL
 #define XEMU_DEADZONE_P1_INFO_0_UK NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_UK NULL
+#define OPTION_VAL_0_UK NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_UK NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_UK NULL
 #define OPTION_VAL_15_UK NULL
+#define OPTION_VAL_20_UK NULL
 #define OPTION_VAL_25_UK NULL
 #define OPTION_VAL_30_UK NULL
 #define XEMU_DEADZONE_P2_LABEL_UK NULL
@@ -29285,8 +32242,11 @@ struct retro_core_options_v2 options_tt = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_UK NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_UK NULL
 #define OPTION_VAL_50_UK NULL
+#define OPTION_VAL_60_UK NULL
 #define OPTION_VAL_70_UK NULL
+#define OPTION_VAL_80_UK NULL
 #define OPTION_VAL_90_UK NULL
+#define OPTION_VAL_100_UK NULL
 #define OPTION_VAL_110_UK NULL
 #define OPTION_VAL_120_UK NULL
 #define OPTION_VAL_130_UK NULL
@@ -29299,6 +32259,19 @@ struct retro_core_options_v2 options_tt = {
 #define OPTION_VAL_200_UK NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_UK NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_UK NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_UK NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_UK NULL
+#define OPTION_VAL_LINEAR_UK "Лінійна"
+#define OPTION_VAL_LOGARITHMIC_UK NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_UK NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_UK NULL
+#define OPTION_VAL_CUBIC_UK NULL
+#define OPTION_VAL_SQUARE_UK NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_UK NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_UK NULL
+#define OPTION_VAL_35_UK NULL
+#define OPTION_VAL_40_UK NULL
+#define OPTION_VAL_45_UK NULL
 #define XEMU_CHIHIRO_FFB_LABEL_UK NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_UK NULL
 #define OPTION_VAL_75_UK NULL
@@ -29534,6 +32507,21 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_UK,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_UK,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -29666,28 +32654,8 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_UK,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_UK,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_UK },
-            { "80",  OPTION_VAL_80_UK },
-            { "60",  OPTION_VAL_60_UK },
-            { "40",  OPTION_VAL_40_UK },
-            { "20",  OPTION_VAL_20_UK },
-            { "0",   OPTION_VAL_0_UK },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_UK,
@@ -29702,7 +32670,21 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
             { "none",     OPTION_VAL_NONE_UK },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_UK,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_UK,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -29743,7 +32725,7 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_UK },
+            { "0",  OPTION_VAL_0_UK },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_UK },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_UK },
             { "15", OPTION_VAL_15_UK },
@@ -29765,7 +32747,7 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_UK },
+            { "0",  OPTION_VAL_0_UK },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_UK },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_UK },
             { "15", OPTION_VAL_15_UK },
@@ -29856,6 +32838,58 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_UK,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_UK,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_UK },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_UK },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_UK,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_UK,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_UK },
+            { "square", OPTION_VAL_SQUARE_UK },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_UK,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_UK,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_UK },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_UK },
+            { "15", OPTION_VAL_15_UK },
+            { "20", OPTION_VAL_20_UK },
+            { "25", OPTION_VAL_25_UK },
+            { "30", OPTION_VAL_30_UK },
+            { "35", OPTION_VAL_35_UK },
+            { "40", OPTION_VAL_40_UK },
+            { "45", OPTION_VAL_45_UK },
+            { "50", OPTION_VAL_50_UK },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
@@ -29950,6 +32984,8 @@ struct retro_core_options_v2 options_uk = {
 #define OPTION_VAL_8_VAL NULL
 #define OPTION_VAL_9_VAL NULL
 #define OPTION_VAL_10_VAL NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_VAL NULL
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_VAL NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_VAL NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_VAL NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_VAL NULL
@@ -29976,30 +33012,25 @@ struct retro_core_options_v2 options_uk = {
 #define XEMU_VP_WORKERS_INFO_0_VAL NULL
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_VAL NULL
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_VAL NULL
-#define XEMU_AUDIO_VOLUME_LABEL_VAL NULL
-#define XEMU_AUDIO_VOLUME_INFO_0_VAL NULL
-#define OPTION_VAL_100_VAL NULL
-#define OPTION_VAL_80_VAL NULL
-#define OPTION_VAL_60_VAL NULL
-#define OPTION_VAL_40_VAL NULL
-#define OPTION_VAL_20_VAL NULL
-#define OPTION_VAL_0_VAL NULL
 #define XEMU_VK_FAST_PATHS_LABEL_VAL NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_VAL NULL
 #define OPTION_VAL_ALL_VAL NULL
 #define OPTION_VAL_NO_GPL_VAL NULL
 #define OPTION_VAL_NO_DYN_VAL NULL
 #define OPTION_VAL_NONE_VAL "Cap"
+#define XEMU_MSPF_OVERLAY_LABEL_VAL NULL
+#define XEMU_MSPF_OVERLAY_INFO_0_VAL NULL
 #define XEMU_RUMBLE_P1_LABEL_VAL NULL
 #define XEMU_RUMBLE_P1_INFO_0_VAL NULL
 #define XEMU_RUMBLE_P2_LABEL_VAL NULL
 #define XEMU_RUMBLE_P2_INFO_0_VAL NULL
 #define XEMU_DEADZONE_P1_LABEL_VAL NULL
 #define XEMU_DEADZONE_P1_INFO_0_VAL NULL
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_VAL NULL
+#define OPTION_VAL_0_VAL NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_VAL NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_VAL NULL
 #define OPTION_VAL_15_VAL NULL
+#define OPTION_VAL_20_VAL NULL
 #define OPTION_VAL_25_VAL NULL
 #define OPTION_VAL_30_VAL NULL
 #define XEMU_DEADZONE_P2_LABEL_VAL NULL
@@ -30013,8 +33044,11 @@ struct retro_core_options_v2 options_uk = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_VAL NULL
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_VAL NULL
 #define OPTION_VAL_50_VAL NULL
+#define OPTION_VAL_60_VAL NULL
 #define OPTION_VAL_70_VAL NULL
+#define OPTION_VAL_80_VAL NULL
 #define OPTION_VAL_90_VAL NULL
+#define OPTION_VAL_100_VAL NULL
 #define OPTION_VAL_110_VAL NULL
 #define OPTION_VAL_120_VAL NULL
 #define OPTION_VAL_130_VAL NULL
@@ -30027,6 +33061,19 @@ struct retro_core_options_v2 options_uk = {
 #define OPTION_VAL_200_VAL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_VAL NULL
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_VAL NULL
+#define XEMU_CHIHIRO_STEERING_LABEL_VAL NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_VAL NULL
+#define OPTION_VAL_LINEAR_VAL NULL
+#define OPTION_VAL_LOGARITHMIC_VAL NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_VAL NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_VAL NULL
+#define OPTION_VAL_CUBIC_VAL NULL
+#define OPTION_VAL_SQUARE_VAL NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_VAL NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_VAL NULL
+#define OPTION_VAL_35_VAL NULL
+#define OPTION_VAL_40_VAL NULL
+#define OPTION_VAL_45_VAL NULL
 #define XEMU_CHIHIRO_FFB_LABEL_VAL NULL
 #define XEMU_CHIHIRO_FFB_INFO_0_VAL NULL
 #define OPTION_VAL_75_VAL NULL
@@ -30262,6 +33309,21 @@ struct retro_core_option_v2_definition option_defs_val[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_VAL,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_VAL,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -30394,28 +33456,8 @@ struct retro_core_option_v2_definition option_defs_val[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_VAL,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_VAL,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_VAL },
-            { "80",  OPTION_VAL_80_VAL },
-            { "60",  OPTION_VAL_60_VAL },
-            { "40",  OPTION_VAL_40_VAL },
-            { "20",  OPTION_VAL_20_VAL },
-            { "0",   OPTION_VAL_0_VAL },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_VAL,
@@ -30430,7 +33472,21 @@ struct retro_core_option_v2_definition option_defs_val[] = {
             { "none",     OPTION_VAL_NONE_VAL },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_VAL,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_VAL,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -30471,7 +33527,7 @@ struct retro_core_option_v2_definition option_defs_val[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_VAL },
+            { "0",  OPTION_VAL_0_VAL },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_VAL },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_VAL },
             { "15", OPTION_VAL_15_VAL },
@@ -30493,7 +33549,7 @@ struct retro_core_option_v2_definition option_defs_val[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_VAL },
+            { "0",  OPTION_VAL_0_VAL },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_VAL },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_VAL },
             { "15", OPTION_VAL_15_VAL },
@@ -30585,6 +33641,58 @@ struct retro_core_option_v2_definition option_defs_val[] = {
         },
         "enabled"
     },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_VAL,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_VAL,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_VAL },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_VAL },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_VAL,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_VAL,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_VAL },
+            { "square", OPTION_VAL_SQUARE_VAL },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_VAL,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_VAL,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_VAL },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_VAL },
+            { "15", OPTION_VAL_15_VAL },
+            { "20", OPTION_VAL_20_VAL },
+            { "25", OPTION_VAL_25_VAL },
+            { "30", OPTION_VAL_30_VAL },
+            { "35", OPTION_VAL_35_VAL },
+            { "40", OPTION_VAL_40_VAL },
+            { "45", OPTION_VAL_45_VAL },
+            { "50", OPTION_VAL_50_VAL },
+            { NULL, NULL },
+        },
+        "25"
+    },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
     {
@@ -30639,7 +33747,7 @@ struct retro_core_options_v2 options_val = {
 #define XEMU_CPU_BOOST_LABEL_VN "Tăng tốc bộ xử lý"
 #define XEMU_CPU_BOOST_INFO_0_VN "Các phương thức xử lý nhanh hơn cho bộ xử lý của máy được mô phỏng và bộ xử lý âm thanh: sử dụng trực tiếp tập lệnh SSE và bộ nhớ đệm lệnh nhảy lớn hơn. Tắt nếu trò chơi hoạt động bất thường."
 #define XEMU_LANGUAGE_LABEL_VN "Ngôn ngữ hệ thống"
-#define XEMU_LANGUAGE_INFO_0_VN NULL
+#define XEMU_LANGUAGE_INFO_0_VN "Ngôn ngữ mà thiết lập của máy chơi game cung cấp cho các trò chơi, thay cho thiết lập của bảng điều khiển chính. Bảng điều khiển chính giữ nguyên ngôn ngữ được lưu trong EEPROM. Tự động sử dụng ngôn ngữ của RetroArch nếu Xbox hỗ trợ ngôn ngữ đó, nếu không sẽ sử dụng tiếng Anh."
 #define OPTION_VAL_AUTO_VN "Tự động"
 #define OPTION_VAL_DASHBOARD_VN "Bảng điều khiển chính"
 #define OPTION_VAL_ENGLISH_VN "Tiếng Anh"
@@ -30663,9 +33771,9 @@ struct retro_core_options_v2 options_val = {
 #define OPTION_VAL_16_9_VN NULL
 #define OPTION_VAL_LETTERBOX_VN "Viền đen"
 #define XEMU_ASPECT_RATIO_LABEL_VN "Tỷ lệ khung hình của trình giả lập"
-#define XEMU_ASPECT_RATIO_INFO_0_VN "Tỷ lệ khung hình khi hình ảnh được hiển thị. Tốt nhất nên để ở chế độ Tự động, chế độ này sẽ làm theo trò chơi: 16:9 khi máy chơi game được đặt ở chế độ màn hình rộng (Tỷ lệ khung hình của hệ máy hoặc bảng điều khiển chính) và trò chơi xuất hình ảnh ở tỷ lệ 16:9; nếu không thì là 4:3, đồng thời luôn là 4:3 trên Chihiro. Tỷ lệ 16:9 kéo giãn trò chơi 4:3 thành màn hình rộng."
+#define XEMU_ASPECT_RATIO_INFO_0_VN "Tỷ lệ khung hình hiển thị của hình ảnh. Tốt nhất nên để Tự động để tự điều chỉnh theo trò chơi: 16:9 khi máy chơi game được thiết lập ở chế độ màn hình rộng (Tỷ lệ khung hình hệ thống hoặc trong bảng điều khiển) và trò chơi xuất hình ảnh theo tỷ lệ 16:9, hoặc khi bản vá màn hình rộng (có tên chứa Widescreen hoặc 16-9) được bật; nếu không sẽ là 4:3, kể cả trên máy Chihiro. Tỷ lệ 16:9 sẽ kéo giãn hình ảnh trò chơi 4:3 để hiển thị trên màn hình rộng."
 #define XEMU_OVERSCAN_CROP_LABEL_VN "Cắt phần Dư Khung hình Dọc"
-#define XEMU_OVERSCAN_CROP_INFO_0_VN NULL
+#define XEMU_OVERSCAN_CROP_INFO_0_VN "Một số trò chơi hiển thị hình ảnh cao 448 dòng bên trong 480 dòng của Xbox, với các dải đen ở phía trên và phía dưới. Tự động cắt bỏ 16 dòng trong mỗi 480 dòng ở phía trên và phía dưới của các trò chơi nằm trong danh sách trò chơi có đặc điểm này của lõi giả lập, sau đó kéo giãn phần còn lại để lấp đầy toàn bộ chiều cao, đồng thời giữ nguyên tỷ lệ khung hình."
 #define XEMU_SURFACE_SCALE_LABEL_VN "Tỷ lệ độ phân giải nội bộ (cần khởi động lại)"
 #define XEMU_SURFACE_SCALE_INFO_0_VN "Điều chỉnh độ phân giải Dựng hình nội bộ. Giá trị cao hơn cải thiện chất lượng hình ảnh nhưng làm giảm hiệu năng."
 #define OPTION_VAL_1_VN NULL
@@ -30678,6 +33786,8 @@ struct retro_core_options_v2 options_val = {
 #define OPTION_VAL_8_VN NULL
 #define OPTION_VAL_9_VN NULL
 #define OPTION_VAL_10_VN NULL
+#define XEMU_SUBPIXEL_OFFSET_LABEL_VN "Điều chỉnh độ lệch điểm ảnh phụ"
+#define XEMU_SUBPIXEL_OFFSET_INFO_0_VN "Khi Tỷ lệ độ phân giải nội bộ lớn hơn 1x, dịch chuyển hình ảnh một phần nhỏ của điểm ảnh để các điểm ảnh ở độ phân giải cao hơn khớp với các điểm ảnh ban đầu. Khắc phục hiện tượng bóng mờ và đường nối trong một số trò chơi (Jade Empire, Blinx), nhưng gây lỗi ở những trò chơi khác (Splinter Cell). Tắt sẽ giữ nguyên cách hoạt động trước đây."
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_VN "Lọc dị hướng"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_VN "Mức lọc bất đẳng hướng tối thiểu áp dụng cho các kết cấu được trò chơi lọc mượt, giúp các kết cấu hiển thị ở góc nghiêng vẫn sắc nét. Nguyên bản giữ nguyên thiết lập của trò chơi, vốn không sử dụng tính năng này đối với hầu hết trò chơi Xbox."
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_VN "Nguyên bản"
@@ -30693,7 +33803,7 @@ struct retro_core_options_v2 options_val = {
 #define OPTION_VAL_SCART_VN NULL
 #define OPTION_VAL_VGA_VN NULL
 #define XEMU_AUDIO_THREAD_LABEL_VN "Luồng âm thanh (Cần khởi động lại)"
-#define XEMU_AUDIO_THREAD_INFO_0_VN "Chuyển âm thanh sang luồng âm thanh của RetroArch ngay khi bộ xử lý âm thanh của máy chơi game trộn âm thanh xong, để chương trình độc lập phát âm thanh thay vì chờ đủ dữ liệu của một khung hình ở mỗi khung hình: âm thanh vẫn tiếp tục phát khi khung hình bị đình trệ, chẳng hạn trong lúc biên dịch bộ đổ bóng. Các bản RetroArch được xây dựng trước tháng 11 năm 2026 sẽ khiến trình đơn chạy chậm khi sử dụng thiết lập này và Tốc độ khung hình trình đơn (Giới hạn tốc độ khung hình) được đặt thành Tốc độ hiển thị; trong trường hợp đó, hãy đặt thành Tốc độ nội dung."
+#define XEMU_AUDIO_THREAD_INFO_0_VN "Chuyển âm thanh sang luồng âm thanh của RetroArch ngay khi bộ xử lý âm thanh của máy chơi game trộn âm thanh xong, để chương trình độc lập phát âm thanh thay vì chờ đủ dữ liệu của một khung hình ở mỗi khung hình: âm thanh vẫn tiếp tục phát khi khung hình bị đình trệ, chẳng hạn trong lúc biên dịch bộ đổ bóng. Các bản RetroArch được xây dựng trước tháng 11 năm 2026 sẽ khiến Menu chạy chậm khi sử dụng thiết lập này và Tốc độ khung hình Menu (Giới hạn tốc độ khung hình) được đặt thành Tốc độ hiển thị; trong trường hợp đó, hãy đặt thành Tốc độ nội dung."
 #define XEMU_USE_DSP_LABEL_VN "Mô phỏng bộ xử lý tín hiệu số của APU (Khởi động lại)"
 #define XEMU_USE_DSP_INFO_0_VN "Mô phỏng bộ xử lý tín hiệu số của APU, bộ phận phát các hiệu ứng âm thanh, tiếng vang và phần lớn nhạc trong trò chơi: nếu không có nó, âm thanh sẽ trở nên đơn điệu. Thiết lập được áp dụng khi nội dung bắt đầu; thay đổi trong khi trò chơi đang chạy sẽ khiến âm thanh bị lỗi."
 #define XEMU_DSP_JIT_LABEL_VN "Biên dịch tức thời bộ xử lý tín hiệu số (Khởi động lại)"
@@ -30704,30 +33814,25 @@ struct retro_core_options_v2 options_val = {
 #define XEMU_VP_WORKERS_INFO_0_VN "Số luồng dùng để xử lý và phối trộn các âm thanh giọng nói. Tự động sử dụng một luồng cho mỗi lõi bộ xử lý."
 #define XEMU_SMOOTH_FIRST_PLAY_LABEL_VN "Làm mượt lần chơi đầu tiên (cần khởi động lại)"
 #define XEMU_SMOOTH_FIRST_PLAY_INFO_0_VN "Biên dịch các bộ đổ bóng mà trò chơi dự kiến sử dụng ngay trong quá trình khởi động, giúp tránh hiện tượng giật khựng trong những phút đầu khi chúng được biên dịch. Với OpenGL, các bộ đổ bóng đã biên dịch được lưu trong bộ nhớ đệm bộ đổ bóng, tính năng này luôn được bật."
-#define XEMU_AUDIO_VOLUME_LABEL_VN "Giới hạn âm lượng (%)"
-#define XEMU_AUDIO_VOLUME_INFO_0_VN "Giới hạn âm lượng đầu ra của Xbox độc lập với âm lượng tổng của RetroArch."
-#define OPTION_VAL_100_VN NULL
-#define OPTION_VAL_80_VN NULL
-#define OPTION_VAL_60_VN NULL
-#define OPTION_VAL_40_VN NULL
-#define OPTION_VAL_20_VN NULL
-#define OPTION_VAL_0_VN "Đã tắt tiếng"
 #define XEMU_VK_FAST_PATHS_LABEL_VN "Các phương thức tăng tốc Vulkan (cần khởi động lại)"
 #define XEMU_VK_FAST_PATHS_INFO_0_VN "Ảnh hưởng đến tốc độ biên dịch bộ đổ bóng trên Vulkan. \"Tất cả\" là lựa chọn nhanh nhất nhưng có thể khiến một số trò chơi bị lỗi."
 #define OPTION_VAL_ALL_VN "Tất cả"
 #define OPTION_VAL_NO_GPL_VN "Không dùng thư viện quy trình xử lý"
 #define OPTION_VAL_NO_DYN_VN "Không dùng trạng thái động"
 #define OPTION_VAL_NONE_VN "Không"
+#define XEMU_MSPF_OVERLAY_LABEL_VN "Lớp phủ hiệu năng"
+#define XEMU_MSPF_OVERLAY_INFO_0_VN "Hiển thị hai dòng ở góc trên bên trái. FPS: số khung hình mỗi giây mà trò chơi hiển thị, tương tự lớp phủ thông tin gỡ lỗi hình ảnh của xemu bản độc lập, được tính trong 60 khung hình gần nhất. GPU: tốc độ khung hình mà trò chơi có thể đạt được dựa trên thời gian cần thiết để vẽ một khung hình (MSPF của bản độc lập), lấy trung bình trong 60 khung hình gần nhất và cập nhật sau mỗi 20 khung hình; chỉ có giá trị khi GPU là yếu tố giới hạn tốc độ của trò chơi. Khi được bật, cứ sau mỗi 300 lượt chạy, lõi giả lập cũng ghi vào nhật ký của RetroArch thông tin về mức độ đồng bộ giữa các khung hình của máy được mô phỏng và các lượt chạy của giao diện chính. Có hiệu lực ngay lập tức."
 #define XEMU_RUMBLE_P1_LABEL_VN "Độ rung (người chơi 1)"
 #define XEMU_RUMBLE_P1_INFO_0_VN "Tay cầm của người chơi 1 rung theo phản hồi từ các trò chơi Xbox và phản hồi lực trong một trò đua xe Chihiro. Tắt để vô hiệu hóa cả hai loại rung."
 #define XEMU_RUMBLE_P2_LABEL_VN "Độ rung (người chơi 2)"
 #define XEMU_RUMBLE_P2_INFO_0_VN "Tay cầm của người chơi 2 rung theo phản hồi từ các trò chơi Xbox và phản hồi lực trong một trò đua xe Chihiro. Tắt để vô hiệu hóa cả hai loại rung."
 #define XEMU_DEADZONE_P1_LABEL_VN "Vùng chết cần analog (người chơi 1)"
 #define XEMU_DEADZONE_P1_INFO_0_VN "Khoảng di chuyển mà các cần analog của người chơi 1 có thể dịch chuyển trước khi trò chơi nhận được tín hiệu, áp dụng cho cả hai cần trên Xbox và Chihiro; phần hành trình còn lại được tăng tỷ lệ để đạt mức tối đa."
-#define OPTION_VAL_0_XEMU_DEADZONE_P1_VN NULL
+#define OPTION_VAL_0_VN NULL
 #define OPTION_VAL_5_XEMU_DEADZONE_P1_VN NULL
 #define OPTION_VAL_10_XEMU_DEADZONE_P1_VN NULL
 #define OPTION_VAL_15_VN NULL
+#define OPTION_VAL_20_VN NULL
 #define OPTION_VAL_25_VN NULL
 #define OPTION_VAL_30_VN NULL
 #define XEMU_DEADZONE_P2_LABEL_VN "Vùng chết cần analog (người chơi 2)"
@@ -30741,8 +33846,11 @@ struct retro_core_options_v2 options_val = {
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_LABEL_VN "Độ nhạy ngắm bằng cần điều khiển"
 #define XEMU_CHIHIRO_STICK_SENSITIVITY_INFO_0_VN "Tốc độ cần điều khiển di chuyển tâm ngắm khi bật Ngắm bằng súng quang trên cần điều khiển analog, với tốc độ ngang bằng tốc độ lên xuống; ở mức 100%, nghiêng cần điều khiển hết cỡ sẽ đưa tâm ngắm đi hết chiều cao hình ảnh trong khoảng một giây. Chuột ngắm tại vị trí con trỏ đang chỉ tới."
 #define OPTION_VAL_50_VN NULL
+#define OPTION_VAL_60_VN NULL
 #define OPTION_VAL_70_VN NULL
+#define OPTION_VAL_80_VN NULL
 #define OPTION_VAL_90_VN NULL
+#define OPTION_VAL_100_VN NULL
 #define OPTION_VAL_110_VN NULL
 #define OPTION_VAL_120_VN NULL
 #define OPTION_VAL_130_VN NULL
@@ -30755,6 +33863,19 @@ struct retro_core_options_v2 options_val = {
 #define OPTION_VAL_200_VN NULL
 #define XEMU_CHIHIRO_CROSSHAIR_LABEL_VN "Tâm ngắm"
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_VN "Hiển thị tâm ngắm của từng người chơi trên hình ảnh, người chơi 1 màu đỏ, người chơi 2 màu xanh dương."
+#define XEMU_CHIHIRO_STEERING_LABEL_VN NULL
+#define XEMU_CHIHIRO_STEERING_INFO_0_VN NULL
+#define OPTION_VAL_LINEAR_VN "Tuyến tính"
+#define OPTION_VAL_LOGARITHMIC_VN NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_VN NULL
+#define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_VN NULL
+#define OPTION_VAL_CUBIC_VN NULL
+#define OPTION_VAL_SQUARE_VN NULL
+#define XEMU_CHIHIRO_STEERING_INNER_LABEL_VN NULL
+#define XEMU_CHIHIRO_STEERING_INNER_INFO_0_VN NULL
+#define OPTION_VAL_35_VN NULL
+#define OPTION_VAL_40_VN NULL
+#define OPTION_VAL_45_VN NULL
 #define XEMU_CHIHIRO_FFB_LABEL_VN "Rung phản hồi lực"
 #define XEMU_CHIHIRO_FFB_INFO_0_VN "Truyền phản hồi lực của các trò chơi đua xe Chihiro (OutRun 2, Maximum Tune) thành rung trên tay cầm ở cổng 1, với cường độ này."
 #define OPTION_VAL_75_VN NULL
@@ -30990,6 +34111,21 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
         },
         "1"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
+    {
+        "xemu_subpixel_offset",
+        XEMU_SUBPIXEL_OFFSET_LABEL_VN,
+        NULL,
+        XEMU_SUBPIXEL_OFFSET_INFO_0_VN,
+        NULL,
+        "video",
+        {
+            { "off", "OFF" },
+            { "on", "ON" },
+            { NULL, NULL },
+        },
+        "off"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -31122,28 +34258,8 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
         },
         "enabled"
     },
-    {
-        "xemu_audio_volume",
-        XEMU_AUDIO_VOLUME_LABEL_VN,
-        NULL,
-        XEMU_AUDIO_VOLUME_INFO_0_VN,
-        NULL,
-        "audio",
-        {
-            { "100", OPTION_VAL_100_VN },
-            { "80",  OPTION_VAL_80_VN },
-            { "60",  OPTION_VAL_60_VN },
-            { "40",  OPTION_VAL_40_VN },
-            { "20",  OPTION_VAL_20_VN },
-            { "0",   OPTION_VAL_0_VN },
-            { NULL, NULL },
-        },
-        "100"
-    },
-    /* No Pipeline Libraries by default, unlike standalone, which uses all:
-     * RalliSport Challenge 2 and Conker crash with them (NNshi), and the
-     * dynamic states keep most of the speed; fewer still for a GPU that
-     * crashes on one of those (Akrido) */
+    /* All by default, as standalone; fewer for a GPU that crashes on one
+     * of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         XEMU_VK_FAST_PATHS_LABEL_VN,
@@ -31158,7 +34274,21 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
             { "none",     OPTION_VAL_NONE_VN },
             { NULL, NULL },
         },
-        "no_gpl"
+        "all"
+    },
+    {
+        "xemu_mspf_overlay",
+        XEMU_MSPF_OVERLAY_LABEL_VN,
+        NULL,
+        XEMU_MSPF_OVERLAY_INFO_0_VN,
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     {
         "xemu_rumble_p1",
@@ -31199,7 +34329,7 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_VN },
+            { "0",  OPTION_VAL_0_VN },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_VN },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_VN },
             { "15", OPTION_VAL_15_VN },
@@ -31221,7 +34351,7 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
         NULL,
         "controls",
         {
-            { "0",  OPTION_VAL_0_XEMU_DEADZONE_P1_VN },
+            { "0",  OPTION_VAL_0_VN },
             { "5",  OPTION_VAL_5_XEMU_DEADZONE_P1_VN },
             { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_VN },
             { "15", OPTION_VAL_15_VN },
@@ -31312,6 +34442,58 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
             { NULL, NULL },
         },
         "enabled"
+    },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        XEMU_CHIHIRO_STEERING_LABEL_VN,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INFO_0_VN,
+        NULL,
+        "chihiro",
+        {
+            { "linear", OPTION_VAL_LINEAR_VN },
+            { "logarithmic", OPTION_VAL_LOGARITHMIC_VN },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        XEMU_CHIHIRO_STEERING_EFFECT_LABEL_VN,
+        NULL,
+        XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_VN,
+        NULL,
+        "chihiro",
+        {
+            { "cubic", OPTION_VAL_CUBIC_VN },
+            { "square", OPTION_VAL_SQUARE_VN },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        XEMU_CHIHIRO_STEERING_INNER_LABEL_VN,
+        NULL,
+        XEMU_CHIHIRO_STEERING_INNER_INFO_0_VN,
+        NULL,
+        "chihiro",
+        {
+            { "5", OPTION_VAL_5_XEMU_DEADZONE_P1_VN },
+            { "10", OPTION_VAL_10_XEMU_DEADZONE_P1_VN },
+            { "15", OPTION_VAL_15_VN },
+            { "20", OPTION_VAL_20_VN },
+            { "25", OPTION_VAL_25_VN },
+            { "30", OPTION_VAL_30_VN },
+            { "35", OPTION_VAL_35_VN },
+            { "40", OPTION_VAL_40_VN },
+            { "45", OPTION_VAL_45_VN },
+            { "50", OPTION_VAL_50_VN },
+            { NULL, NULL },
+        },
+        "25"
     },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */

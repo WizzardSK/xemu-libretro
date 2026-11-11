@@ -469,18 +469,22 @@ void glue(helper_pshufhw, SUFFIX)(Reg *d, Reg *s, int order)
             Reg *d, Reg *v, Reg *s)                                     \
     {                                                                   \
         int i;                                                          \
+        XEMU_SSE_BEGIN();                                               \
         for (i = 0; i < 2 << SHIFT; i++) {                              \
             d->ZMM_S(i) = F(32, v->ZMM_S(i), s->ZMM_S(i));              \
         }                                                               \
+        XEMU_SSE_END();                                                 \
     }                                                                   \
                                                                         \
     void glue(helper_ ## name ## pd, SUFFIX)(CPUX86State *env,          \
             Reg *d, Reg *v, Reg *s)                                     \
     {                                                                   \
         int i;                                                          \
+        XEMU_SSE_BEGIN();                                               \
         for (i = 0; i < 1 << SHIFT; i++) {                              \
             d->ZMM_D(i) = F(64, v->ZMM_D(i), s->ZMM_D(i));              \
         }                                                               \
+        XEMU_SSE_END();                                                 \
     }
 
 #if SHIFT == 1
@@ -491,7 +495,9 @@ void glue(helper_pshufhw, SUFFIX)(Reg *d, Reg *s, int order)
     void helper_ ## name ## ss(CPUX86State *env, Reg *d, Reg *v, Reg *s)\
     {                                                                   \
         int i;                                                          \
+        XEMU_SSE_BEGIN();                                               \
         d->ZMM_S(0) = F(32, v->ZMM_S(0), s->ZMM_S(0));                  \
+        XEMU_SSE_END();                                                 \
         /* CPU boost: non-VEX encodings have d == v, a self-move. */    \
         if (!xemu_cpu_boost || d != v) {                                \
             for (i = 1; i < 2 << SHIFT; i++) {                          \
@@ -503,7 +509,9 @@ void glue(helper_pshufhw, SUFFIX)(Reg *d, Reg *s, int order)
     void helper_ ## name ## sd(CPUX86State *env, Reg *d, Reg *v, Reg *s)\
     {                                                                   \
         int i;                                                          \
+        XEMU_SSE_BEGIN();                                               \
         d->ZMM_D(0) = F(64, v->ZMM_D(0), s->ZMM_D(0));                  \
+        XEMU_SSE_END();                                                 \
         if (!xemu_cpu_boost || d != v) {                                \
             for (i = 1; i < 1 << SHIFT; i++) {                          \
                 d->ZMM_Q(i) = v->ZMM_Q(i);                              \
@@ -519,12 +527,16 @@ void glue(helper_pshufhw, SUFFIX)(Reg *d, Reg *s, int order)
 
 #if defined(XBOX) && defined(__x86_64__)
 /*
- * Native SSE arithmetic, on by default (the "CPU boost" setting) and taken
- * only with round-to-nearest and no flush-to-zero, where the host rounds
- * exactly as the guest's SSE unit does. It differs from the real CPU in two
- * ways: it raises no exception flags, so stmxcsr and fxsave show only those
- * of the software path; and the compiler may swap the operands of add and
- * mul, which changes which NaN comes back when both are NaN.
+ * Native SSE arithmetic, on by default (the "CPU boost" setting). The host
+ * is an x86 too, so with the host MXCSR set to the guest's rounding, FTZ
+ * and DAZ the host instruction computes exactly what the guest's would:
+ * each helper sets it for its elements and puts the previous value back,
+ * so the hard x87 path (gen_flcr) finds the MXCSR it loaded. It differs
+ * from the real CPU in two ways: it raises no exception flags, so stmxcsr
+ * and fxsave show only those of the software path; and the compiler may
+ * swap the operands of add and mul, which changes which NaN comes back
+ * when both are NaN. min and max select an operand, which DAZ would have
+ * turned into a zero, so they run natively only without DAZ.
  */
 #define XEMU_HOST_F32 float
 #define XEMU_HOST_F64 double
@@ -533,6 +545,7 @@ void glue(helper_pshufhw, SUFFIX)(Reg *d, Reg *s, int order)
 #ifndef XEMU_SSE_NATIVE_DECLARED
 #define XEMU_SSE_NATIVE_DECLARED
 
+/* The float-to-integer conversions: exact only as the host MXCSR is. */
 static inline bool sse_native_ok(CPUX86State *env)
 {
     const float_status *s = &env->sse_status;
@@ -559,12 +572,55 @@ static inline bool sse_native_ok(CPUX86State *env)
     }
     return false;
 }
+
+#define XEMU_SSE_KEEP 1u
+
+static inline void xemu_ldmxcsr(uint32_t v)
+{
+    /* a compiler barrier too: the guest operands are loaded after it and
+     * the results stored before the next one */
+    asm volatile("ldmxcsr %0" : : "m"(v) : "memory");
+}
+
+/*
+ * 0: the software path. XEMU_SSE_KEEP: native, the host MXCSR is right as
+ * it is. Otherwise native, and the value is the host MXCSR to restore.
+ */
+static inline uint32_t xemu_sse_begin(CPUX86State *env)
+{
+    if (!xemu_cpu_boost) {
+        return 0;
+    }
+    /* exceptions masked; the guest's rounding (13-14), FZ (15), DAZ (6) */
+    uint32_t want = 0x1f80 | (env->mxcsr & 0xe040);
+    uint32_t cur = env->xemu_host_mxcsr;
+    if (unlikely(cur == 0)) {
+        /* First native operation on this vCPU, or after a reset. */
+        cur = __builtin_ia32_stmxcsr() & ~0x3fu;
+        env->xemu_host_mxcsr = cur;
+    }
+    if (likely(cur == want)) {
+        return XEMU_SSE_KEEP;
+    }
+    xemu_ldmxcsr(want);
+    return cur;
+}
+
+static inline void xemu_sse_end(uint32_t xs)
+{
+    if (xs > XEMU_SSE_KEEP) {
+        xemu_ldmxcsr(xs);
+    }
+}
 #endif
+
+#define XEMU_SSE_BEGIN() uint32_t _xs = xemu_sse_begin(env)
+#define XEMU_SSE_END() xemu_sse_end(_xs)
 
 #define XEMU_SSE_OP(size, a, b, op, softfn)                              \
     ({                                                                   \
         float ## size _r;                                                \
-        if (likely(sse_native_ok(env))) {                                \
+        if (likely(_xs)) {                                               \
             union { float ## size s; XEMU_HOST_F ## size h; }            \
                 _ua = { .s = (a) }, _ub = { .s = (b) }, _ur;             \
             _ur.h = _ua.h op _ub.h;                                      \
@@ -578,11 +634,37 @@ static inline bool sse_native_ok(CPUX86State *env)
 #define FPU_ADD(size, a, b) XEMU_SSE_OP(size, a, b, +, float ## size ## _add)
 #define FPU_SUB(size, a, b) XEMU_SSE_OP(size, a, b, -, float ## size ## _sub)
 #define FPU_MUL(size, a, b) XEMU_SSE_OP(size, a, b, *, float ## size ## _mul)
+#define FPU_DIV(size, a, b) XEMU_SSE_OP(size, a, b, /, float ## size ## _div)
+#define FPU_MIN(size, a, b)                                              \
+    ({                                                                   \
+        float ## size _r;                                                \
+        if (likely(_xs) && !(env->mxcsr & 0x40)) {                       \
+            union { float ## size s; XEMU_HOST_F ## size h; }            \
+                _ua = { .s = (a) }, _ub = { .s = (b) };                  \
+            _r = (_ua.h < _ub.h) ? _ua.s : _ub.s;                        \
+        } else {                                                         \
+            _r = float ## size ## _lt(a, b, &env->sse_status) ? (a) : (b); \
+        }                                                                \
+        _r;                                                              \
+    })
+#define FPU_MAX(size, a, b)                                              \
+    ({                                                                   \
+        float ## size _r;                                                \
+        if (likely(_xs) && !(env->mxcsr & 0x40)) {                       \
+            union { float ## size s; XEMU_HOST_F ## size h; }            \
+                _ua = { .s = (a) }, _ub = { .s = (b) };                  \
+            _r = (_ub.h < _ua.h) ? _ua.s : _ub.s;                        \
+        } else {                                                         \
+            _r = float ## size ## _lt(b, a, &env->sse_status) ? (a) : (b); \
+        }                                                                \
+        _r;                                                              \
+    })
 #else
+#define XEMU_SSE_BEGIN() do { } while (0)
+#define XEMU_SSE_END() do { } while (0)
 #define FPU_ADD(size, a, b) float ## size ## _add(a, b, &env->sse_status)
 #define FPU_SUB(size, a, b) float ## size ## _sub(a, b, &env->sse_status)
 #define FPU_MUL(size, a, b) float ## size ## _mul(a, b, &env->sse_status)
-#endif
 #define FPU_DIV(size, a, b) float ## size ## _div(a, b, &env->sse_status)
 
 /* Note that the choice of comparison op here is important to get the
@@ -593,6 +675,7 @@ static inline bool sse_native_ok(CPUX86State *env)
     (float ## size ## _lt(a, b, &env->sse_status) ? (a) : (b))
 #define FPU_MAX(size, a, b)                                     \
     (float ## size ## _lt(b, a, &env->sse_status) ? (a) : (b))
+#endif
 
 SSE_HELPER_S(add, FPU_ADD)
 SSE_HELPER_S(sub, FPU_SUB)

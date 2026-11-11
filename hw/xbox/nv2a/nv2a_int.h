@@ -115,10 +115,14 @@ typedef struct NV2AState {
          * (pg_held, the PFIFO thread's alone) and takes pfifo.lock back by
          * trylock. Every other pgraph.lock taker goes through
          * nv2a_pgraph_lock_ext, whose ext_waiters count has PFIFO hand the
-         * lock over after its current command (on its own cache line).
+         * lock over after its current command (on its own cache line: the
+         * vCPU writes doorbell and parked at every DMA_PUT).
          */
         bool pg_held;
         uint32_t pg_run;
+        /* DMA_PUT doorbell without the lock (pfifo_put_doorbell) */
+        bool doorbell;
+        bool parked;
         char ext_waiters_pad0[128];
         uint32_t ext_waiters;
         char ext_waiters_pad1[124];

@@ -99,6 +99,30 @@ void pfifo_kick(NV2AState *d)
     qemu_cond_broadcast(&d->pfifo.fifo_cond);
 }
 
+/*
+ * The guest's DMA_PUT doorbell, its hottest nv2a write, without pfifo.lock:
+ * the PFIFO thread holds that lock while it runs the pusher and processes
+ * reports, and the vCPU used to wait for it here. The release store
+ * publishes the pushbuffer words written before it to the pusher's acquire
+ * load of PUT. The doorbell flag and the thread's parked flag form a Dekker
+ * pair (full barrier on both sides): either this sees the thread parked and
+ * kicks it under the lock as before, or the thread sees the doorbell before
+ * it parks and runs the pusher again. Only the first doorbell per park pays
+ * for the lock and the broadcast.
+ */
+void pfifo_put_doorbell(NV2AState *d, uint32_t put)
+{
+    qatomic_store_release(&d->pfifo.regs[NV_PFIFO_CACHE1_DMA_PUT], put);
+    qatomic_store_release(&d->pfifo.doorbell, true);
+    smp_mb();
+    if (qatomic_read(&d->pfifo.parked) &&
+        qatomic_xchg(&d->pfifo.parked, false)) {
+        qemu_mutex_lock(&d->pfifo.lock);
+        pfifo_kick(d);
+        qemu_mutex_unlock(&d->pfifo.lock);
+    }
+}
+
 static bool can_fifo_access(NV2AState *d) {
     return qatomic_read(&d->pgraph.regs_[NV_PGRAPH_FIFO]) &
            NV_PGRAPH_FIFO_ACCESS;
@@ -378,7 +402,8 @@ static void pfifo_run_pusher(NV2AState *d)
     uint8_t *dma = nv_dma_map(d, dma_instance, &dma_len);
     while (!pfifo_pusher_should_stall(d)) {
         uint32_t dma_get_v = *dma_get;
-        uint32_t dma_put_v = *dma_put;
+        /* Pairs with the release in pfifo_put_doorbell. */
+        uint32_t dma_put_v = qatomic_load_acquire(dma_put);
 
         if (dma_get_v == dma_put_v) break;
         if (dma_get_v >= dma_len) {
@@ -522,7 +547,8 @@ static void pfifo_run_pusher(NV2AState *d)
             }
         }
 
-        *dma_get = dma_get_v;
+        /* The words before GET are consumed (lockless user_read). */
+        qatomic_store_release(dma_get, dma_get_v);
 
         if (GET_MASK(*dma_state, NV_PFIFO_CACHE1_DMA_STATE_ERROR)) {
             break;
@@ -565,6 +591,8 @@ void *pfifo_thread(void *arg)
     d->pfifo.thread_running = true;
     while (true) {
         d->pfifo.fifo_kick = false;
+        /* Before the pusher reads PUT (pfifo_put_doorbell). */
+        qatomic_xchg(&d->pfifo.doorbell, false);
 
         pgraph_process_pending(d);
 
@@ -575,10 +603,16 @@ void *pfifo_thread(void *arg)
         pgraph_process_pending_reports(d);
 
         if (!d->pfifo.fifo_kick) {
-            qemu_cond_broadcast(&d->pfifo.fifo_idle_cond);
+            /* The other half of the pfifo_put_doorbell Dekker pair. */
+            qatomic_set(&d->pfifo.parked, true);
+            smp_mb();
+            if (!qatomic_read(&d->pfifo.doorbell)) {
+                qemu_cond_broadcast(&d->pfifo.fifo_idle_cond);
 
-            // Both the pusher and puller are waiting for some action
-            pfifo_idle_cond_wait(d);
+                // Both the pusher and puller are waiting for some action
+                pfifo_idle_cond_wait(d);
+            }
+            qatomic_set(&d->pfifo.parked, false);
         }
 
         if (d->exiting) {

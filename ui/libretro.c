@@ -275,6 +275,10 @@ extern bool libretro_chihiro_aim_stick;   /* libretro-chihiro.c */
 extern float libretro_chihiro_aim_speed;
 extern float libretro_chihiro_aim_across;
 extern bool libretro_chihiro_crosshair;
+extern bool libretro_chihiro_steering_log;
+extern float libretro_chihiro_steering_inner;
+extern int libretro_chihiro_steering_power;
+static bool update_option_display(void);
 static bool opt_use_dsp = true;
 static int  opt_surface_scale = 1;
 static int  opt_avpack = CONFIG_SYS_AVPACK_HDTV;
@@ -1754,6 +1758,26 @@ static void update_variables(void)
         libretro_chihiro_crosshair = strcmp(var.value, "disabled") != 0;
     }
 
+    var.key = "xemu_chihiro_steering";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        libretro_chihiro_steering_log = !strcmp(var.value, "logarithmic");
+    }
+
+    var.key = "xemu_chihiro_steering_effect";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        libretro_chihiro_steering_power = !strcmp(var.value, "square") ? 2 : 3;
+    }
+
+    var.key = "xemu_chihiro_steering_inner";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        const int percent = atoi(var.value);
+        libretro_chihiro_steering_inner = percent >= 5 && percent <= 50 ? percent / 100.0f : 0.25f;
+    }
+    update_option_display();
+
     var.key = "xemu_chihiro_ffb";
     var.value = NULL;
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
@@ -3102,6 +3126,30 @@ void libretro_set_input_descriptors(const struct retro_input_descriptor *desc)
     }
 }
 
+/* Steering Effect and Inner Zone only with logarithmic Steering Response:
+ * shown or hidden as it changes in the menu, not only at the next opening */
+static bool update_option_display(void)
+{
+    static int shown = -1;
+    struct retro_variable var = { "xemu_chihiro_steering", NULL };
+    if (!environ_cb) {
+        return false;
+    }
+    const bool on = environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
+                    var.value && !strcmp(var.value, "logarithmic");
+    if (shown == (int)on) {
+        return false;
+    }
+    shown = on;
+    static const char *const curve[] = { "xemu_chihiro_steering_effect",
+                                         "xemu_chihiro_steering_inner" };
+    for (unsigned i = 0; i < 2; i++) {
+        struct retro_core_option_display display = { curve[i], on };
+        environ_cb(RETRO_ENVIRONMENT_SET_CORE_OPTIONS_DISPLAY, &display);
+    }
+    return true;
+}
+
 RETRO_API void retro_set_environment(retro_environment_t cb)
 {
     environ_cb = cb;
@@ -3109,6 +3157,11 @@ RETRO_API void retro_set_environment(retro_environment_t cb)
     /* Set core options v2 */
     bool categories_supported = false;
     libretro_set_core_options(environ_cb, &categories_supported);
+    struct retro_core_options_update_display_callback display_cb = {
+        update_option_display
+    };
+    environ_cb(RETRO_ENVIRONMENT_SET_CORE_OPTIONS_UPDATE_DISPLAY_CALLBACK, &display_cb);
+    update_option_display();
 
     /* Get log interface */
     struct retro_log_callback log;

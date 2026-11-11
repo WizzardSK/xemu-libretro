@@ -75,6 +75,13 @@ bool libretro_chihiro_crosshair = true;
 
 XemuLibretroCrosshair xemu_libretro_crosshairs[2];
 
+/* Sega Chihiro > Steering Response (ui/libretro.c sets them): the left
+ * stick's steering on a curve, its Inner Zone the share of the turn that
+ * rises evenly from the centre, its Effect the power of the rest, 2 or 3 */
+bool libretro_chihiro_steering_log;
+float libretro_chihiro_steering_inner = 0.25f;
+int libretro_chihiro_steering_power = 3;
+
 /* The light gun, unless the stick aims: then RetroArch's light gun, which
  * follows the mouse, must not move the aim or press anything */
 static bool gun(unsigned port, unsigned id)
@@ -111,11 +118,29 @@ static uint16_t axis_smooth(uint16_t pos, bool neg, bool posv)
     return target;
 }
 
-/* A left-stick axis, or the D-pad ramping, as a JVS channel */
+/* Steering Response's logarithmic curve, as linuxloader-libretro has it
+ * (NNshi, after the Sega System 32 racers' dip switch): i x + (1 - i) x^n,
+ * n 3 (Cubic) or 2 (Square), so less of the turn around the centre and
+ * full lock at full tilt */
+static int16_t steering_curve(int16_t v)
+{
+    const float x = v / 32767.0f;
+    const float ax = x < 0 ? -x : x;
+    const float outer = libretro_chihiro_steering_power == 2 ? x * ax : x * x * x;
+    const float i = libretro_chihiro_steering_inner;
+    float y = i * x + (1.0f - i) * outer;
+    y = y > 1.0f ? 1.0f : y < -1.0f ? -1.0f : y;
+    return (int16_t)(y * 32767.0f);
+}
+
+/* A left-stick axis, through Steering Response, or the D-pad ramping, as a
+ * JVS channel */
 static uint16_t steering(unsigned port, uint16_t *ramp, bool invert)
 {
     int16_t x = stick(port, RETRO_DEVICE_INDEX_ANALOG_LEFT,
                       RETRO_DEVICE_ID_ANALOG_X);
+    if (libretro_chihiro_steering_log)
+        x = steering_curve(x);
     bool l = pad(port, RETRO_DEVICE_ID_JOYPAD_LEFT);
     bool r = pad(port, RETRO_DEVICE_ID_JOYPAD_RIGHT);
 

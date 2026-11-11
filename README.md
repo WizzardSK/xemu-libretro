@@ -54,7 +54,7 @@ The cabinet's controls are on RetroArch's pads, by the game. RetroArch's control
 | Ollie King | swing = left stick or D-pad left/right, board front/rear = up/down, L/R = grabs |
 | Gundam | left stick or D-pad = left stick, L2/L = its trigger/button; right stick = right stick, R2/R = its trigger/button; B = pedal, X = card |
 
-The driving games' force feedback (OutRun 2, Maximum Tune) can rumble port 1's pad: Sega Chihiro > Force Feedback Rumble, at 100% by default (off in standalone), from 25 to 200% or off. A pad gives the knocks and vibrations; the wheel's centering and weight have nothing to act on. Controls > Rumble (Player 1) and (Player 2) turn a player's rumble off altogether, and Controls > Analog Dead Zone sets how far each player's sticks can move before the game sees it (10% by default).
+The driving games' force feedback (OutRun 2, Maximum Tune) can rumble port 1's pad: Sega Chihiro > Force Feedback Rumble, at 100% by default (off in standalone), from 25 to 200% or off. A pad gives the knocks and vibrations; the wheel's centering and weight have nothing to act on. Controls > Rumble (Player 1) and (Player 2) turn a player's rumble off altogether, and Controls > Analog Dead Zone sets how far each player's sticks can move before the game sees it (10% by default). Sega Chihiro > Steering Response on Logarithmic steers the driving games and Ollie King with the left stick on a curve, calmer around the centre (Steering Effect: Cubic or Square; Steering Inner Zone: 5 to 50%); the D-pad is not affected.
 
 ## Video
 

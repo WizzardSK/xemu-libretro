@@ -629,6 +629,58 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "enabled"
     },
+    /* Not in standalone, which steers linearly: a stick's short travel
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+    {
+        "xemu_chihiro_steering",
+        "Steering Response",
+        NULL,
+        "How the left stick steers in OutRun 2, OutRun 2 SP, Maximum Tune 1 and 2, Crazy Taxi 3 and Ollie King. Linear: as the stick is pushed. Logarithmic: on a curve with less of the turn around the centre and steeper towards the ends, so a stick steers less twitchily; its shape is set by Steering Effect and Steering Inner Zone. The D-pad is not affected.",
+        NULL,
+        "chihiro",
+        {
+            { "linear", "Linear" },
+            { "logarithmic", "Logarithmic" },
+            { NULL, NULL },
+        },
+        "linear"
+    },
+    {
+        "xemu_chihiro_steering_effect",
+        "Steering Effect",
+        NULL,
+        "With logarithmic Steering Response: how the rest of the turn rises towards full lock. Cubic is strong, Square weak.",
+        NULL,
+        "chihiro",
+        {
+            { "cubic", "Cubic (Strong)" },
+            { "square", "Square (Weak)" },
+            { NULL, NULL },
+        },
+        "cubic"
+    },
+    {
+        "xemu_chihiro_steering_inner",
+        "Steering Inner Zone",
+        NULL,
+        "With logarithmic Steering Response: the share of the turn that rises evenly from the centre. Lower is calmer around the centre.",
+        NULL,
+        "chihiro",
+        {
+            { "5", "5%" },
+            { "10", "10%" },
+            { "15", "15%" },
+            { "20", "20%" },
+            { "25", "25%" },
+            { "30", "30%" },
+            { "35", "35%" },
+            { "40", "40%" },
+            { "45", "45%" },
+            { "50", "50%" },
+            { NULL, NULL },
+        },
+        "25"
+    },
     /* 100% by default, unlike standalone, where it is off: the Xbox games
      * rumble as they are anyway (NNshi) */
     {

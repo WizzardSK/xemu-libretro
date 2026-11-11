@@ -105,7 +105,7 @@ jobs:
             --extra-ldflags="-L/opt/glslang/lib" \
             --target-list=i386-softmmu \
             --cross-prefix=$CROSSPREFIX --static \
-            -Dlibretro=true
+            -Dlibretro=true -Doptimization=3 -Dstack_protector=disabled
         env:
           AR: ${{ env.CROSSAR }}
 

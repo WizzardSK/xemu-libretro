@@ -203,21 +203,6 @@ static void tb_jmp_cache_clear_page(CPUState *cpu, vaddr page_addr)
  * high), since otherwise we are likely to have a significant amount of
  * conflict misses.
  */
-#ifdef XBOX
-/*
- * xemu: the TLB is resized only when it is flushed, and with the access
- * callbacks refilling only their own pages (tlb_flush_host_range) nothing
- * flushes it in a steady scene, so it would keep tlb_init's 256 entries for
- * good. It starts at, and never shrinks below, this size.
- */
-#define XEMU_TLB_FLOOR_BITS 13
-
-static size_t xemu_tlb_floor(void)
-{
-    return (size_t)1 << XEMU_TLB_FLOOR_BITS;
-}
-#endif
-
 static void tlb_mmu_resize_locked(CPUTLBDesc *desc, CPUTLBDescFast *fast,
                                   int64_t now)
 {
@@ -254,9 +239,6 @@ static void tlb_mmu_resize_locked(CPUTLBDesc *desc, CPUTLBDescFast *fast,
         }
         new_size = MAX(ceil, 1 << CPU_TLB_DYN_MIN_BITS);
     }
-#ifdef XBOX
-    new_size = MAX(new_size, xemu_tlb_floor());
-#endif
 
     if (new_size == old_size) {
         if (window_expired) {
@@ -319,9 +301,6 @@ static void tlb_flush_one_mmuidx_locked(CPUState *cpu, int mmu_idx,
 static void tlb_mmu_init(CPUTLBDesc *desc, CPUTLBDescFast *fast, int64_t now)
 {
     size_t n_entries = 1 << CPU_TLB_DYN_DEFAULT_BITS;
-#ifdef XBOX
-    n_entries = MAX(n_entries, xemu_tlb_floor());
-#endif
 
     tlb_window_reset(desc, now, 0);
     desc->n_used_entries = 0;

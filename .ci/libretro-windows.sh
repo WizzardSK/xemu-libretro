@@ -51,7 +51,7 @@ AR=${CROSSPREFIX}gcc-ar ./configure \
   --extra-ldflags="-L/opt/glslang/lib" \
   --target-list=i386-softmmu \
   --cross-prefix=$CROSSPREFIX --static \
-  -Dlibretro=true
+  -Dlibretro=true -Doptimization=3 -Dstack_protector=disabled
 
 ninja -C build -j "$NUMPROC" xemu_libretro.dll
 mv build/xemu_libretro.dll xemu_libretro.dll

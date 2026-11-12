@@ -181,13 +181,36 @@ static bool pfifo_puller_should_stall(NV2AState *d)
 
 /* A pending report is re-checked within a millisecond: the hardware
  * writes it when the GPU reaches it, not when the guest next pushes. */
+#ifdef LIBRETRO
+/* Performance Overlay's NV2A idle (ui/libretro.c): while the overlay is on,
+ * the time this thread waits for the guest to push work. Waits for the
+ * vblank of a flip or for pending reports are the GPU's own, not counted.
+ * Written only by this thread. */
+bool xemu_lr_nv2a_idle_track;
+int64_t xemu_lr_nv2a_idle_ns;
+#endif
+
 static inline void pfifo_idle_cond_wait(NV2AState *d)
 {
+#ifdef LIBRETRO
+    const bool track = __atomic_load_n(&xemu_lr_nv2a_idle_track, __ATOMIC_RELAXED) &&
+                       !d->pgraph.reports_pending &&
+                       !qatomic_read(&d->pgraph.waiting_for_flip);
+    const int64_t t0 = track ? qemu_clock_get_ns(QEMU_CLOCK_REALTIME) : 0;
+#endif
     if (d->pgraph.reports_pending) {
         qemu_cond_timedwait(&d->pfifo.fifo_cond, &d->pfifo.lock, 1);
     } else {
         qemu_cond_wait(&d->pfifo.fifo_cond, &d->pfifo.lock);
     }
+#ifdef LIBRETRO
+    if (track) {
+        __atomic_store_n(&xemu_lr_nv2a_idle_ns,
+                         __atomic_load_n(&xemu_lr_nv2a_idle_ns, __ATOMIC_RELAXED) +
+                         qemu_clock_get_ns(QEMU_CLOCK_REALTIME) - t0,
+                         __ATOMIC_RELAXED);
+    }
+#endif
 }
 
 /*

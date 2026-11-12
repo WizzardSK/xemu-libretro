@@ -336,7 +336,12 @@ void glue(helper_pmuludq, SUFFIX)(CPUX86State *env, Reg *d, Reg *v, Reg *s)
 typedef short xemu_v8hi __attribute__((vector_size(16)));
 typedef int xemu_v4si_mmx __attribute__((vector_size(16)));
 typedef char xemu_v16qi __attribute__((vector_size(16)));
-/* MMX forms on the host's SSE2 unit, in the low half: bit for bit. */
+typedef long long xemu_v2di __attribute__((vector_size(16)));
+/*
+ * MMX forms on the host's SSE2 unit, in the low half: bit for bit. The
+ * operands go straight into the vector register (movq): two 8-byte stores
+ * read back as one 16-byte load stall the CPU (no store forwarding).
+ */
 #define XEMU_MMX_SSE2 1
 #endif
 
@@ -344,12 +349,9 @@ void glue(helper_pmaddwd, SUFFIX)(CPUX86State *env, Reg *d, Reg *v, Reg *s)
 {
     int i;
 #ifdef XEMU_MMX_SSE2
-    xemu_v8hi a = { 0 }, b = { 0 };
-    xemu_v4si_mmx r;
-    memcpy(&a, &v->Q(0), 8);
-    memcpy(&b, &s->Q(0), 8);
-    r = __builtin_ia32_pmaddwd128(a, b);
-    memcpy(&d->Q(0), &r, 8);
+    xemu_v2di a = { (long long)v->Q(0), 0 }, b = { (long long)s->Q(0), 0 };
+    xemu_v4si_mmx r = __builtin_ia32_pmaddwd128((xemu_v8hi)a, (xemu_v8hi)b);
+    d->Q(0) = ((xemu_v2di)r)[0];
     return;
 #endif
 
@@ -1486,12 +1488,11 @@ uint32_t glue(helper_movmskpd, SUFFIX)(CPUX86State *env, Reg *s)
 #ifdef XEMU_MMX_SSE2
 #define PACK_HELPER_B_SSE2(name)                              \
     {                                                         \
-        xemu_v8hi a;                                          \
-        xemu_v16qi r;                                         \
-        memcpy(&a, &v->Q(0), 8);                              \
-        memcpy((char *)&a + 8, &s->Q(0), 8);                  \
-        r = __builtin_ia32_pack ## name ## 128(a, a);         \
-        memcpy(&d->Q(0), &r, 8);                              \
+        xemu_v2di a = { (long long)v->Q(0),                   \
+                        (long long)s->Q(0) };                 \
+        xemu_v16qi r = __builtin_ia32_pack ## name ## 128(    \
+            (xemu_v8hi)a, (xemu_v8hi)a);                      \
+        d->Q(0) = ((xemu_v2di)r)[0];                          \
         return;                                               \
     }
 #else
@@ -1527,12 +1528,10 @@ void glue(helper_packssdw, SUFFIX)(CPUX86State *env, Reg *d, Reg *v, Reg *s)
     int j, k;
 #ifdef XEMU_MMX_SSE2
     {
-        xemu_v4si_mmx a;
-        xemu_v8hi w;
-        memcpy(&a, &v->Q(0), 8);
-        memcpy((char *)&a + 8, &s->Q(0), 8);
-        w = __builtin_ia32_packssdw128(a, a);
-        memcpy(&d->Q(0), &w, 8);
+        xemu_v2di a = { (long long)v->Q(0), (long long)s->Q(0) };
+        xemu_v8hi w = __builtin_ia32_packssdw128((xemu_v4si_mmx)a,
+                                                 (xemu_v4si_mmx)a);
+        d->Q(0) = ((xemu_v2di)w)[0];
         return;
     }
 #endif

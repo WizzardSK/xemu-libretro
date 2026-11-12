@@ -28,6 +28,11 @@ extern unsigned int xemu_libretro_osd_fps100;
  * so 59.94 reads as such; the first line */
 extern unsigned int xemu_libretro_osd_guest_fps100;
 
+/* NV2A idle, in hundredths of a percent: the share of the time since the
+ * overlay was turned on that the PFIFO thread waited for the guest to push
+ * work (not for a flip's vblank or for reports); the third line */
+extern unsigned int xemu_libretro_osd_idle100;
+
 /* One guest frame's render time, in microseconds: from the flip of the frame
  * before to this frame's FLIP_STALL, where it starts to wait for the vblank */
 void xemu_libretro_osd_frame(int64_t render_us);
@@ -37,8 +42,9 @@ void xemu_libretro_osd_frame(int64_t render_us);
 typedef void (*XemuLibretroOsdRect)(void *ctx, int x, int y, int w, int h,
                                     bool white);
 
-/* Digits, the point, the colon and the labels' letters (F, G, P, S, U),
- * 3x5 cells, a row's bits from the left */
+/* Digits, the point, the colon, the percent sign and the labels' letters
+ * (A, D, E, F, G, I, L, N, P, S, U, V), 3x5 cells, a row's bits from the
+ * left */
 static inline const uint8_t *xemu_libretro_osd_glyph(char c)
 {
     static const uint8_t colon[5] = { 0, 2, 0, 2, 0 };
@@ -47,8 +53,24 @@ static inline const uint8_t *xemu_libretro_osd_glyph(char c)
     static const uint8_t letter_p[5] = { 7, 5, 7, 4, 4 };
     static const uint8_t letter_s[5] = { 7, 4, 7, 1, 7 };
     static const uint8_t letter_u[5] = { 5, 5, 5, 5, 7 };
+    static const uint8_t letter_a[5] = { 7, 5, 7, 5, 5 };
+    static const uint8_t letter_d[5] = { 6, 5, 5, 5, 6 };
+    static const uint8_t letter_e[5] = { 7, 4, 6, 4, 7 };
+    static const uint8_t letter_i[5] = { 7, 2, 2, 2, 7 };
+    static const uint8_t letter_l[5] = { 4, 4, 4, 4, 7 };
+    static const uint8_t letter_n[5] = { 5, 7, 7, 5, 5 };
+    static const uint8_t letter_v[5] = { 5, 5, 5, 5, 2 };
+    static const uint8_t percent[5] = { 5, 1, 2, 4, 5 };
     switch (c) {
     case ':': return colon;
+    case '%': return percent;
+    case 'A': return letter_a;
+    case 'D': return letter_d;
+    case 'E': return letter_e;
+    case 'I': return letter_i;
+    case 'L': return letter_l;
+    case 'N': return letter_n;
+    case 'V': return letter_v;
     case 'F': return letter_f;
     case 'G': return letter_g;
     case 'P': return letter_p;
@@ -71,8 +93,9 @@ static inline const uint8_t *xemu_libretro_osd_glyph(char c)
 /* The text's rectangles for one pass: 0 is the black outline, 1 the white
  * cells over it (the caller orders the second after the first). A cell is a
  * 200th of the picture's height, 2 to 10 pixels; the largest rectangle is a
- * row of three cells with its outline, 36x16 pixels. Two lines: FPS, the
- * game's flips per second, and under it GPU, the rate from the render time. */
+ * row of three cells with its outline, 36x16 pixels. Three lines: FPS, the
+ * game's flips per second, GPU, the rate from the render time, and NV2A
+ * IDLE, the share of time the GPU thread waited for work. */
 static inline void xemu_libretro_osd_draw(int height, int pass,
                                           XemuLibretroOsdRect rect, void *ctx)
 {
@@ -83,17 +106,21 @@ static inline void xemu_libretro_osd_draw(int height, int pass,
     }
     const unsigned int guest100 =
         __atomic_load_n(&xemu_libretro_osd_guest_fps100, __ATOMIC_RELAXED);
-    char buf[2][24];
+    const unsigned int idle100 =
+        __atomic_load_n(&xemu_libretro_osd_idle100, __ATOMIC_RELAXED);
+    char buf[3][24];
     /* FPS: the game's flips per second (standalone xemu's FPS); GPU: the
      * rate its render time allows (standalone's MSPF) */
     snprintf(buf[0], sizeof(buf[0]), "FPS: %u.%02u", guest100 / 100,
              guest100 % 100);
     snprintf(buf[1], sizeof(buf[1]), "GPU: %u.%02u", fps100 / 100,
              fps100 % 100);
+    snprintf(buf[2], sizeof(buf[2]), "NV2A IDLE: %u.%u%%", idle100 / 100,
+             idle100 % 100 / 10);
     int s = height / 200;
     s = s < 2 ? 2 : (s > 10 ? 10 : s);
     const int o = s / 3 > 0 ? s / 3 : 1;
-    for (int line = 0; line < 2; line++) {
+    for (int line = 0; line < 3; line++) {
     const char *text = buf[line];
     int x = 2 * s;
     const int y = 2 * s + line * 7 * s;

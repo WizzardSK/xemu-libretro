@@ -466,7 +466,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_mspf_overlay",
         "Performance Overlay",
         NULL,
-        "Shows two lines in the top left corner. FPS: the frames per second the game shows, as in standalone xemu's video debug overlay, over its last 60 frames. GPU: the frame rate the game could reach from the time it takes to draw a frame (standalone's MSPF), averaged over its last 60 frames and updated every 20 frames; valid only when the GPU is what limits the game. While on, the core also writes to RetroArch's log every 300 runs how the guest's frames and the frontend's runs lined up. Takes effect right away.",
+        "Shows three lines in the top left corner. FPS: the frames per second the game shows, as in standalone xemu's video debug overlay, over its last 60 frames. GPU: the frame rate the game could reach from the time it takes to draw a frame (standalone's MSPF), averaged over its last 60 frames and updated every 20 frames; valid only when the GPU is what limits the game. NV2A IDLE: the share of time since the overlay was turned on that the GPU thread waited for the game to send work; high while the frame rate is below the game's target means the CPU is what limits it. F8 on the keyboard turns the overlay on or off, and each time it comes on NV2A IDLE starts over. While on, the core also writes to RetroArch's log every 300 runs how the guest's frames and the frontend's runs lined up. Takes effect right away.",
         NULL,
         "video",
         {

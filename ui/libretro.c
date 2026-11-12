@@ -220,6 +220,10 @@ static char opt_hdd_path[4096] = "";
 static bool opt_hdd_trim = false;
 /* Performance Overlay (ui/libretro-osd.h) */
 static bool opt_internal_fps = false;
+#include "ui/libretro-prof.h"
+static void prof_log(const char *fmt, ...);
+/* The vCPU profiler runs while the overlay is on (retro_run) */
+static bool prof_running;
 unsigned int xemu_libretro_osd_fps100;
 unsigned int xemu_libretro_osd_guest_fps100;
 unsigned int xemu_libretro_osd_idle100;
@@ -273,6 +277,16 @@ void xemu_libretro_osd_frame(int64_t render_us)
     int64_t fps100 = ((int64_t)n * 100000000LL + sum / 2) / sum;
     __atomic_store_n(&xemu_libretro_osd_fps100,
                      (unsigned int)MIN(fps100, 9999999), __ATOMIC_RELAXED);
+}
+static void prof_log(const char *fmt, ...)
+{
+    va_list ap;
+    char buf[512];
+
+    va_start(ap, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, ap);
+    va_end(ap);
+    LRLOG_INFO("[xemu] %s", buf);
 }
 static void hdd_trim(void);
 static char opt_eeprom_path[4096] = "";
@@ -3823,6 +3837,12 @@ RETRO_API void retro_unload_game(void)
 {
     LRLOG_INFO("[xemu] retro_unload_game\n");
 
+    if (prof_running) {
+        g_autofree char *dir = system_dir[0] ? g_strdup_printf("%s/xemu", system_dir) : NULL;
+        prof_running = false;
+        xemu_lr_prof_stop(prof_log, dir);
+    }
+
     if (emu_thread_running) {
         /* while the guest still runs: the switch needs its CPU, and the
          * frontend destroys the device after this */
@@ -4063,6 +4083,20 @@ RETRO_API void retro_run(void)
                              __ATOMIC_RELAXED);
         }
         f10_down = down;
+    }
+
+    /* The vCPU profiler runs while the overlay is on; turned off, it logs
+     * where the vCPU spent its time (ui/libretro-prof.c) */
+    {
+        const bool on = __atomic_load_n(&opt_internal_fps, __ATOMIC_RELAXED);
+        if (on && !prof_running) {
+            prof_running = true;
+            xemu_lr_prof_start();
+        } else if (!on && prof_running) {
+            g_autofree char *dir = system_dir[0] ? g_strdup_printf("%s/xemu", system_dir) : NULL;
+            prof_running = false;
+            xemu_lr_prof_stop(prof_log, dir);
+        }
     }
 
     /* A Chihiro's cabinet controls (libretro-chihiro.c) */

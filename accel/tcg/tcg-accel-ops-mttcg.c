@@ -74,6 +74,13 @@ static void *mttcg_cpu_thread_fn(void *arg)
     force_rcu.cpu = cpu;
     rcu_add_force_rcu_notifier(&force_rcu.notifier);
     tcg_register_thread();
+#ifdef LIBRETRO
+    {
+        /* the thread the Performance Overlay's profiler samples */
+        extern void xemu_lr_prof_vcpu(void);
+        xemu_lr_prof_vcpu();
+    }
+#endif
 
 #if defined(XBOX) && defined(_WIN32)
     /*

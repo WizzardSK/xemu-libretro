@@ -12,10 +12,12 @@
  * vCPU a little: compare runs with the overlay on in both.
  *
  * Two more things go to the file. A sample in Windows (a wait or a system
- * call) is also counted by where in the core it came from: the first
- * return address into the core's code on the vCPU stack, copied while the
- * thread is stopped (a heuristic: a stale value on the stack can win). And
- * the guest code of the hottest blocks, so they can be disassembled.
+ * call) is also counted by where in the core it came from: the first three
+ * return addresses into the core's code on the vCPU stack, copied while the
+ * thread is stopped (a heuristic: a stale value on the stack can win), so a
+ * mutex wait shows who took the lock. And the guest code of the hottest
+ * blocks, so they can be disassembled; a block's key is its offset in the
+ * guest RAM blocks (ram_addr_t), read through qemu_map_ram_ptr.
  *
  * Windows only: SuspendThread/GetThreadContext. Elsewhere the calls do
  * nothing and the log says so.
@@ -31,6 +33,8 @@
 #include "tcg/tcg.h"
 #include "exec/translation-block.h"
 #include "exec/cpu-common.h"
+#include "system/memory.h"
+#include "qemu/rcu.h"
 
 static HANDLE prof_vcpu;           /* the vCPU thread (xemu_lr_prof_vcpu) */
 static HANDLE prof_thread;
@@ -39,7 +43,7 @@ static GHashTable *prof_guest;     /* guest block phys addr -> count */
 static GHashTable *prof_host;      /* (module index << 40 | offset) -> count */
 static GPtrArray *prof_modules;    /* module names, index = slot */
 static GArray *prof_bases;         /* module bases, same index */
-static GHashTable *prof_via;       /* core offset a Windows sample came from */
+static GHashTable *prof_via;       /* "off>off>off" core callers -> count */
 static GHashTable *prof_tbsize;    /* guest block phys addr -> guest size */
 static uintptr_t prof_core, prof_text_lo, prof_text_hi; /* the core's .text */
 static uintptr_t prof_stack_base;  /* top of the vCPU thread's stack */
@@ -175,12 +179,26 @@ static DWORD WINAPI prof_fn(LPVOID arg)
             uintptr_t base;
             unsigned m = prof_module(pc, &base);
             prof_count(prof_host, (uint64_t)m << 40 | (pc - base));
-            for (size_t i = 0; i < words; i++) {
+            GString *chain = NULL;
+            int hits = 0;
+            for (size_t i = 0; i < words && hits < 3; i++) {
                 if (prof_stack[i] >= prof_text_lo &&
                     prof_stack[i] < prof_text_hi) {
-                    prof_count(prof_via, prof_stack[i] - prof_core);
-                    break;
+                    if (!chain) {
+                        chain = g_string_new(NULL);
+                    }
+                    g_string_append_printf(chain, "%s0x%" PRIx64,
+                                           hits ? ">" : "",
+                                           (uint64_t)(prof_stack[i] -
+                                                      prof_core));
+                    hits++;
                 }
+            }
+            if (chain) {
+                char *k = g_string_free(chain, FALSE);
+                gpointer v = g_hash_table_lookup(prof_via, k);
+                g_hash_table_insert(prof_via, k, GSIZE_TO_POINTER(
+                    GPOINTER_TO_SIZE(v) + 1));
             }
         }
         prof_samples++;
@@ -204,7 +222,7 @@ void xemu_lr_prof_start(void)
     prof_core_text();
     prof_guest = g_hash_table_new(NULL, NULL);
     prof_host = g_hash_table_new(NULL, NULL);
-    prof_via = g_hash_table_new(NULL, NULL);
+    prof_via = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
     prof_tbsize = g_hash_table_new(NULL, NULL);
     prof_modules = g_ptr_array_new_with_free_func(g_free);
     g_ptr_array_add(prof_modules, g_strdup("(no module)"));
@@ -251,7 +269,9 @@ static double pct(uint64_t n)
 
 void xemu_lr_prof_stop(XemuLrProfLog log, const char *dir)
 {
-    GArray *guest, *host, *via;
+    GArray *guest, *host;
+    GHashTableIter it;
+    gpointer k, v;
     uint64_t *per_module;
     FILE *f = NULL;
     char *path = NULL;
@@ -270,7 +290,6 @@ void xemu_lr_prof_stop(XemuLrProfLog log, const char *dir)
 
     guest = prof_sorted(prof_guest);
     host = prof_sorted(prof_host);
-    via = prof_sorted(prof_via);
     per_module = g_new0(uint64_t, prof_modules->len);
     for (unsigned i = 0; i < host->len; i++) {
         ProfEntry *e = &g_array_index(host, ProfEntry, i);
@@ -316,10 +335,10 @@ void xemu_lr_prof_stop(XemuLrProfLog log, const char *dir)
                     (char *)g_ptr_array_index(prof_modules, e->key >> 40),
                     e->key & ((1ULL << 40) - 1), e->count);
         }
-        for (unsigned i = 0; i < via->len; i++) {
-            ProfEntry *e = &g_array_index(via, ProfEntry, i);
-            fprintf(f, "via xemu_libretro 0x%" PRIx64 " %" PRIu64 "\n",
-                    e->key, e->count);
+        g_hash_table_iter_init(&it, prof_via);
+        while (g_hash_table_iter_next(&it, &k, &v)) {
+            fprintf(f, "via xemu_libretro %s %" PRIu64 "\n", (char *)k,
+                    (uint64_t)GPOINTER_TO_SIZE(v));
         }
         /* the hottest blocks' guest code (the block may have changed since) */
         for (unsigned i = 0; i < guest->len && i < 30; i++) {
@@ -328,7 +347,9 @@ void xemu_lr_prof_stop(XemuLrProfLog log, const char *dir)
             size_t n = GPOINTER_TO_SIZE(g_hash_table_lookup(prof_tbsize,
                 GSIZE_TO_POINTER((gsize)e->key)));
             n = MIN(MAX(n, 16), sizeof(code));
-            cpu_physical_memory_read(e->key, code, n);
+            WITH_RCU_READ_LOCK_GUARD() {
+                memcpy(code, qemu_map_ram_ptr(NULL, e->key), n);
+            }
             fprintf(f, "code 0x%08" PRIx64 " ", e->key);
             for (size_t j = 0; j < n; j++) {
                 fprintf(f, "%02x", code[j]);
@@ -345,7 +366,6 @@ void xemu_lr_prof_stop(XemuLrProfLog log, const char *dir)
     g_free(per_module);
     g_array_free(guest, TRUE);
     g_array_free(host, TRUE);
-    g_array_free(via, TRUE);
     g_hash_table_destroy(prof_guest);
     g_hash_table_destroy(prof_host);
     g_hash_table_destroy(prof_via);

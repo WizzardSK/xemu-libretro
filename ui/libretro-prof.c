@@ -11,6 +11,12 @@
  * the unstripped build (llvm-symbolizer). The sampling itself slows the
  * vCPU a little: compare runs with the overlay on in both.
  *
+ * Two more things go to the file. A sample in Windows (a wait or a system
+ * call) is also counted by where in the core it came from: the first
+ * return address into the core's code on the vCPU stack, copied while the
+ * thread is stopped (a heuristic: a stale value on the stack can win). And
+ * the guest code of the hottest blocks, so they can be disassembled.
+ *
  * Windows only: SuspendThread/GetThreadContext. Elsewhere the calls do
  * nothing and the log says so.
  *
@@ -24,6 +30,7 @@
 #include <windows.h>
 #include "tcg/tcg.h"
 #include "exec/translation-block.h"
+#include "exec/cpu-common.h"
 
 static HANDLE prof_vcpu;           /* the vCPU thread (xemu_lr_prof_vcpu) */
 static HANDLE prof_thread;
@@ -32,6 +39,11 @@ static GHashTable *prof_guest;     /* guest block phys addr -> count */
 static GHashTable *prof_host;      /* (module index << 40 | offset) -> count */
 static GPtrArray *prof_modules;    /* module names, index = slot */
 static GArray *prof_bases;         /* module bases, same index */
+static GHashTable *prof_via;       /* core offset a Windows sample came from */
+static GHashTable *prof_tbsize;    /* guest block phys addr -> guest size */
+static uintptr_t prof_core, prof_text_lo, prof_text_hi; /* the core's .text */
+static uintptr_t prof_stack_base;  /* top of the vCPU thread's stack */
+static uint64_t prof_stack[512];
 static uint64_t prof_samples, prof_jit, prof_jit_unknown, prof_failed;
 static int64_t prof_start_us, prof_end_us;
 
@@ -44,6 +56,34 @@ void xemu_lr_prof_vcpu(void)
                         THREAD_SUSPEND_RESUME | THREAD_GET_CONTEXT |
                         THREAD_QUERY_INFORMATION, FALSE, 0)) {
         prof_vcpu = h;
+        prof_stack_base = (uintptr_t)((NT_TIB *)NtCurrentTeb())->StackBase;
+    }
+}
+
+/* The core's code section, for telling return addresses from the rest. */
+static void prof_core_text(void)
+{
+    HMODULE m = NULL;
+    const IMAGE_DOS_HEADER *dos;
+    const IMAGE_NT_HEADERS *nt;
+    const IMAGE_SECTION_HEADER *sec;
+
+    if (prof_core ||
+        !GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                            GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                            (LPCWSTR)(void *)prof_core_text, &m) || !m) {
+        return;
+    }
+    prof_core = (uintptr_t)m;
+    dos = (const IMAGE_DOS_HEADER *)m;
+    nt = (const IMAGE_NT_HEADERS *)((const char *)m + dos->e_lfanew);
+    sec = IMAGE_FIRST_SECTION(nt);
+    for (unsigned i = 0; i < nt->FileHeader.NumberOfSections; i++) {
+        if (sec[i].Characteristics & IMAGE_SCN_MEM_EXECUTE) {
+            prof_text_lo = prof_core + sec[i].VirtualAddress;
+            prof_text_hi = prof_text_lo + sec[i].Misc.VirtualSize;
+            return;
+        }
     }
 }
 
@@ -99,11 +139,21 @@ static DWORD WINAPI prof_fn(LPVOID arg)
     while (!prof_stop) {
         CONTEXT ctx = { .ContextFlags = CONTEXT_CONTROL };
         uintptr_t pc = 0;
+        size_t words = 0;
 
         if (SuspendThread(prof_vcpu) != (DWORD)-1) {
             /* the context is only certain once the thread really stopped */
             if (GetThreadContext(prof_vcpu, &ctx)) {
                 pc = (uintptr_t)ctx.Rip;
+                /* outside the core and the translated code: keep the top of
+                 * the stack, to find the core's call that led here */
+                if ((pc < prof_core || pc >= prof_text_hi) &&
+                    !in_code_gen_buffer((void *)pc) && prof_text_lo &&
+                    ctx.Rsp < prof_stack_base) {
+                    words = MIN(ARRAY_SIZE(prof_stack),
+                                (prof_stack_base - ctx.Rsp) / 8);
+                    memcpy(prof_stack, (void *)(uintptr_t)ctx.Rsp, words * 8);
+                }
             }
             ResumeThread(prof_vcpu);
         }
@@ -114,7 +164,10 @@ static DWORD WINAPI prof_fn(LPVOID arg)
             TranslationBlock *tb = tcg_tb_lookup(pc);
             prof_jit++;
             if (tb) {
-                prof_count(prof_guest, tb_page_addr0(tb));
+                gpointer k = GSIZE_TO_POINTER((gsize)tb_page_addr0(tb));
+                prof_count(prof_guest, (gsize)k);
+                g_hash_table_insert(prof_tbsize, k,
+                                    GSIZE_TO_POINTER((gsize)tb->size));
             } else {
                 prof_jit_unknown++;
             }
@@ -122,6 +175,13 @@ static DWORD WINAPI prof_fn(LPVOID arg)
             uintptr_t base;
             unsigned m = prof_module(pc, &base);
             prof_count(prof_host, (uint64_t)m << 40 | (pc - base));
+            for (size_t i = 0; i < words; i++) {
+                if (prof_stack[i] >= prof_text_lo &&
+                    prof_stack[i] < prof_text_hi) {
+                    prof_count(prof_via, prof_stack[i] - prof_core);
+                    break;
+                }
+            }
         }
         prof_samples++;
         if (timer && SetWaitableTimer(timer, &due, 0, NULL, NULL, FALSE)) {
@@ -141,8 +201,11 @@ void xemu_lr_prof_start(void)
     if (!prof_vcpu || prof_thread) {
         return;
     }
+    prof_core_text();
     prof_guest = g_hash_table_new(NULL, NULL);
     prof_host = g_hash_table_new(NULL, NULL);
+    prof_via = g_hash_table_new(NULL, NULL);
+    prof_tbsize = g_hash_table_new(NULL, NULL);
     prof_modules = g_ptr_array_new_with_free_func(g_free);
     g_ptr_array_add(prof_modules, g_strdup("(no module)"));
     prof_bases = g_array_new(FALSE, TRUE, sizeof(uintptr_t));
@@ -188,7 +251,7 @@ static double pct(uint64_t n)
 
 void xemu_lr_prof_stop(XemuLrProfLog log, const char *dir)
 {
-    GArray *guest, *host;
+    GArray *guest, *host, *via;
     uint64_t *per_module;
     FILE *f = NULL;
     char *path = NULL;
@@ -207,6 +270,7 @@ void xemu_lr_prof_stop(XemuLrProfLog log, const char *dir)
 
     guest = prof_sorted(prof_guest);
     host = prof_sorted(prof_host);
+    via = prof_sorted(prof_via);
     per_module = g_new0(uint64_t, prof_modules->len);
     for (unsigned i = 0; i < host->len; i++) {
         ProfEntry *e = &g_array_index(host, ProfEntry, i);
@@ -252,6 +316,25 @@ void xemu_lr_prof_stop(XemuLrProfLog log, const char *dir)
                     (char *)g_ptr_array_index(prof_modules, e->key >> 40),
                     e->key & ((1ULL << 40) - 1), e->count);
         }
+        for (unsigned i = 0; i < via->len; i++) {
+            ProfEntry *e = &g_array_index(via, ProfEntry, i);
+            fprintf(f, "via xemu_libretro 0x%" PRIx64 " %" PRIu64 "\n",
+                    e->key, e->count);
+        }
+        /* the hottest blocks' guest code (the block may have changed since) */
+        for (unsigned i = 0; i < guest->len && i < 30; i++) {
+            ProfEntry *e = &g_array_index(guest, ProfEntry, i);
+            uint8_t code[256];
+            size_t n = GPOINTER_TO_SIZE(g_hash_table_lookup(prof_tbsize,
+                GSIZE_TO_POINTER((gsize)e->key)));
+            n = MIN(MAX(n, 16), sizeof(code));
+            cpu_physical_memory_read(e->key, code, n);
+            fprintf(f, "code 0x%08" PRIx64 " ", e->key);
+            for (size_t j = 0; j < n; j++) {
+                fprintf(f, "%02x", code[j]);
+            }
+            fprintf(f, "\n");
+        }
         fclose(f);
         log("vCPU profile: every sample in %s\n", path);
     } else if (path) {
@@ -262,8 +345,11 @@ void xemu_lr_prof_stop(XemuLrProfLog log, const char *dir)
     g_free(per_module);
     g_array_free(guest, TRUE);
     g_array_free(host, TRUE);
+    g_array_free(via, TRUE);
     g_hash_table_destroy(prof_guest);
     g_hash_table_destroy(prof_host);
+    g_hash_table_destroy(prof_via);
+    g_hash_table_destroy(prof_tbsize);
     g_ptr_array_free(prof_modules, TRUE);
     g_array_free(prof_bases, TRUE);
 }

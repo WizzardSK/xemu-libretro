@@ -110,6 +110,18 @@ typedef struct NV2AState {
         bool fifo_kick;
         bool halt;
         bool thread_running; /* set after PFIFO thread enters main loop */
+        /*
+         * The threaded puller keeps pgraph.lock from one command to the next
+         * (pg_held, the PFIFO thread's alone) and takes pfifo.lock back by
+         * trylock. Every other pgraph.lock taker goes through
+         * nv2a_pgraph_lock_ext, whose ext_waiters count has PFIFO hand the
+         * lock over after its current command (on its own cache line).
+         */
+        bool pg_held;
+        uint32_t pg_run;
+        char ext_waiters_pad0[128];
+        uint32_t ext_waiters;
+        char ext_waiters_pad1[124];
     } pfifo;
 
     struct {
@@ -159,6 +171,20 @@ typedef struct NV2AState {
     } puserdac;
 
 } NV2AState;
+
+/*
+ * Every pgraph.lock taker but the PFIFO thread's own path: a waiter counts
+ * itself, so a puller batching commands under pgraph.lock lets go after its
+ * current command. A wait is timed as before (xemu_tbrate_lock).
+ */
+static inline void nv2a_pgraph_lock_ext(NV2AState *d)
+{
+    if (qemu_mutex_trylock(&d->pgraph.lock) != 0) {
+        qatomic_inc(&d->pfifo.ext_waiters);
+        xemu_tbrate_lock(&d->pgraph.lock);
+        qatomic_dec(&d->pfifo.ext_waiters);
+    }
+}
 
 typedef struct NV2ABlockInfo {
     const char *name;

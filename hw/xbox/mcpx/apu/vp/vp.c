@@ -203,6 +203,40 @@ static void voice_off(MCPXAPUState *d, uint16_t v)
 static void voice_lock(MCPXAPUState *d, uint16_t v, bool lock)
 {
     assert(v < MCPX_HW_MAX_VOICES);
+
+    if (xemu_cpu_boost) {
+        /*
+         * Without the APU lock: the frame thread holds it for a whole frame
+         * (the voices and the DSPs), and a VOICE_LOCK, VOICE_ON or
+         * VOICE_RELEASE from the vCPU waited for all of it, twice for ON
+         * and RELEASE (7-9% of the vCPU in Burnout 3 and Splinter Cell,
+         * NNshi's profiles). A lock still waits while this voice is in the
+         * batch being mixed, so the game never changes a voice under the
+         * workers: voice_work_dispatch() marks the batch in flight and then
+         * looks at the lock bits again, and this sets the bit and then
+         * looks at the batch, each with a full barrier between, so one of
+         * the two sees the other.
+         */
+        VoiceWorkDispatch *vwd = &d->vp.voice_work_dispatch;
+        uint64_t mask = 1ULL << (v % 64);
+        if (lock) {
+            qatomic_or(&d->vp.voice_locked[v / 64], mask);
+            smp_mb();
+            if (qatomic_read(&d->vp.voice_in_flight[v / 64]) & mask) {
+                qemu_mutex_lock(&vwd->lock);
+                while (qatomic_read(&d->vp.voice_in_flight[v / 64]) & mask) {
+                    qemu_cond_wait(&vwd->batch_done, &vwd->lock);
+                }
+                qemu_mutex_unlock(&vwd->lock);
+            }
+        } else {
+            qatomic_and(&d->vp.voice_locked[v / 64], ~mask);
+        }
+        /* the dispatcher waits at most 1 ms for it anyway */
+        qemu_cond_signal(&d->cond);
+        return;
+    }
+
     qemu_mutex_lock(&d->lock);
 
     uint64_t mask = 1LL << (v % 64);
@@ -2002,6 +2036,24 @@ static void voice_work_schedule(MCPXAPUState *d)
     }
 }
 
+/* CPU boost: the queued voices in flight or not; vwd->lock is held. */
+static void voice_work_mark_in_flight(MCPXAPUState *d, bool in_flight)
+{
+    VoiceWorkDispatch *vwd = &d->vp.voice_work_dispatch;
+
+    if (in_flight) {
+        for (int i = 0; i < vwd->queue_len; i++) {
+            uint16_t v = vwd->queue[i].voice;
+            qatomic_or(&d->vp.voice_in_flight[v / 64], 1ULL << (v % 64));
+        }
+    } else {
+        for (int i = 0; i < 4; i++) {
+            qatomic_set(&d->vp.voice_in_flight[i], 0);
+        }
+        qemu_cond_broadcast(&vwd->batch_done);
+    }
+}
+
 static bool any_queued_voice_locked(MCPXAPUState *d)
 {
     VoiceWorkDispatch *vwd = &d->vp.voice_work_dispatch;
@@ -2029,14 +2081,24 @@ voice_work_dispatch(MCPXAPUState *d,
             return;
         }
 
-        if (!any_queued_voice_locked(d)) {
+        if (xemu_cpu_boost) {
+            if (!any_queued_voice_locked(d)) {
+                qemu_mutex_lock(&vwd->lock);
+                voice_work_mark_in_flight(d, true);
+                smp_mb();
+                if (!any_queued_voice_locked(d)) {
+                    break; /* with vwd->lock */
+                }
+                voice_work_mark_in_flight(d, false);
+                qemu_mutex_unlock(&vwd->lock);
+            }
+        } else if (!any_queued_voice_locked(d)) {
+            qemu_mutex_lock(&vwd->lock);
             break;
         }
 
         qemu_cond_timedwait(&d->cond, &d->lock, 1);
     }
-
-    qemu_mutex_lock(&vwd->lock);
 
     if (vwd->queue_len) {
         memset(vwd->mixbins, 0, sizeof(vwd->mixbins));
@@ -2070,6 +2132,9 @@ voice_work_dispatch(MCPXAPUState *d,
     int64_t end_time = qemu_clock_get_us(QEMU_CLOCK_REALTIME);
     g_dbg.vp.total_worker_time_us = end_time - start_time;
 
+    if (xemu_cpu_boost) {
+        voice_work_mark_in_flight(d, false);
+    }
     qemu_mutex_unlock(&vwd->lock);
 }
 
@@ -2094,6 +2159,7 @@ static void voice_work_init(MCPXAPUState *d)
     qemu_mutex_lock(&vwd->lock);
     qemu_cond_init(&vwd->work_pending);
     qemu_cond_init(&vwd->work_finished);
+    qemu_cond_init(&vwd->batch_done);
     for (int i = 0; i < vwd->num_workers; i++) {
         qemu_cond_init(&vwd->workers[i].work_pending);
         vwd->workers_pending |= 1 << i;
@@ -2196,6 +2262,7 @@ void mcpx_apu_vp_reset(MCPXAPUState *d)
     memset(d->vp.hrtf_submix, 0, sizeof(d->vp.hrtf_submix));
     memset(d->vp.submix_headroom, 0, sizeof(d->vp.submix_headroom));
     memset(d->vp.voice_locked, 0, sizeof(d->vp.voice_locked));
+    memset(d->vp.voice_in_flight, 0, sizeof(d->vp.voice_in_flight));
     for (int v = 0; v < ARRAY_SIZE(d->vp.filters); v++) {
         hrtf_filter_init(&d->vp.filters[v].hrtf);
     }

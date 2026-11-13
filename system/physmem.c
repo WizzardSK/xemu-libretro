@@ -867,11 +867,25 @@ int mem_access_callback_address_matches(CPUState *cpu, hwaddr addr, hwaddr len)
     return ret;
 }
 
+/*
+ * Refill only the TLB entries for the callback's pages: tlb_set_page_full
+ * sets or clears their trap. A full flush here (each surface create and
+ * destroy, ~190 a second with the Vulkan renderer) cost the refills of every
+ * live page and the jump cache it wiped.
+ */
+static void mem_access_callback_flush(CPUState *cpu, MemAccessCallback *cb)
+{
+    uint8_t *host = memory_region_get_ram_ptr(cb->mr) +
+                    (cb->addr - memory_region_get_ram_addr(cb->mr));
+    tlb_flush_host_range(cpu, (uintptr_t)host, cb->len);
+}
+
 static void do_mem_access_callback_insert(CPUState *cpu, run_on_cpu_data data)
 
 {
     MemAccessCallback *cb = (MemAccessCallback *)data.host_ptr;
     QTAILQ_INSERT_TAIL(&cpu->mem_access_callbacks, cb, entry);
+    mem_access_callback_flush(cpu, cb);
 }
 
 MemAccessCallback *mem_access_callback_insert(CPUState *cpu, MemoryRegion *mr,
@@ -892,9 +906,6 @@ MemAccessCallback *mem_access_callback_insert(CPUState *cpu, MemoryRegion *mr,
     async_safe_run_on_cpu(cpu, do_mem_access_callback_insert,
                           RUN_ON_CPU_HOST_PTR(cb));
 
-    // FIXME: flush only applicable pages
-    tlb_flush_all_cpus_synced(cpu);
-
     return cb;
 }
 
@@ -903,6 +914,7 @@ static void do_mem_access_callback_remove_by_ref(CPUState *cpu,
 {
     MemAccessCallback *cb = (MemAccessCallback *)data.host_ptr;
     QTAILQ_REMOVE(&cpu->mem_access_callbacks, cb, entry);
+    mem_access_callback_flush(cpu, cb);
     g_free(cb);
 }
 
@@ -914,9 +926,6 @@ void mem_access_callback_remove_by_ref(CPUState *cpu, MemAccessCallback *cb)
 
     async_safe_run_on_cpu(cpu, do_mem_access_callback_remove_by_ref,
                           RUN_ON_CPU_HOST_PTR(cb));
-
-    // FIXME: flush only applicable pages
-    tlb_flush_all_cpus_synced(cpu);
 }
 
 void mem_access_callback_set_flags(CPUState *cpu, MemAccessCallback *cb,

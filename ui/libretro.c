@@ -220,17 +220,41 @@ static char opt_hdd_path[4096] = "";
 static bool opt_hdd_trim = false;
 /* Performance Overlay (ui/libretro-osd.h) */
 static bool opt_internal_fps = false;
+#include "ui/libretro-prof.h"
+static void prof_log(const char *fmt, ...);
+/* The vCPU profiler runs while the overlay is on (retro_run) */
+static bool prof_running;
 unsigned int xemu_libretro_osd_fps100;
 unsigned int xemu_libretro_osd_guest_fps100;
+unsigned int xemu_libretro_osd_idle100;
+/* hw/xbox/nv2a/pfifo.c: the PFIFO thread's waits for work while on */
+extern bool xemu_lr_nv2a_idle_track;
+extern int64_t xemu_lr_nv2a_idle_ns;
 
+/* Runs on the PFIFO thread, at each guest frame's flip */
 void xemu_libretro_osd_frame(int64_t render_us)
 {
     static int64_t ring[60];
     static unsigned int n, w, since;
+    static int64_t idle_start;
     if (!__atomic_load_n(&opt_internal_fps, __ATOMIC_RELAXED)) {
         n = w = since = 0;
+        __atomic_store_n(&xemu_lr_nv2a_idle_track, false, __ATOMIC_RELAXED);
         __atomic_store_n(&xemu_libretro_osd_fps100, 0, __ATOMIC_RELAXED);
         return;
+    }
+    /* NV2A idle: from the moment the overlay is turned on, each time anew */
+    const int64_t now_ns = g_get_monotonic_time() * 1000;
+    if (!__atomic_load_n(&xemu_lr_nv2a_idle_track, __ATOMIC_RELAXED)) {
+        __atomic_store_n(&xemu_lr_nv2a_idle_ns, 0, __ATOMIC_RELAXED);
+        idle_start = now_ns;
+        __atomic_store_n(&xemu_lr_nv2a_idle_track, true, __ATOMIC_RELAXED);
+    }
+    if (now_ns > idle_start) {
+        const int64_t idle = __atomic_load_n(&xemu_lr_nv2a_idle_ns, __ATOMIC_RELAXED);
+        __atomic_store_n(&xemu_libretro_osd_idle100,
+                         (unsigned int)MIN(idle * 10000 / (now_ns - idle_start), 10000),
+                         __ATOMIC_RELAXED);
     }
     ring[w] = render_us > 0 ? render_us : 0;
     w = (w + 1) % ARRAY_SIZE(ring);
@@ -253,6 +277,16 @@ void xemu_libretro_osd_frame(int64_t render_us)
     int64_t fps100 = ((int64_t)n * 100000000LL + sum / 2) / sum;
     __atomic_store_n(&xemu_libretro_osd_fps100,
                      (unsigned int)MIN(fps100, 9999999), __ATOMIC_RELAXED);
+}
+static void prof_log(const char *fmt, ...)
+{
+    va_list ap;
+    char buf[512];
+
+    va_start(ap, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, ap);
+    va_end(ap);
+    LRLOG_INFO("[xemu] %s", buf);
 }
 static void hdd_trim(void);
 static char opt_eeprom_path[4096] = "";
@@ -1632,10 +1666,17 @@ static void update_variables(void)
 
     var.key = "xemu_mspf_overlay";
     var.value = NULL;
-    __atomic_store_n(&opt_internal_fps,
-                     environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
-                     var.value && !strcmp(var.value, "enabled"),
-                     __ATOMIC_RELAXED);
+    {
+        /* only a change of the option itself, so that another option's
+         * change keeps what F10 turned on or off */
+        static int last = -1;
+        const int on = environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
+                       var.value && !strcmp(var.value, "enabled");
+        if (on != last) {
+            last = on;
+            __atomic_store_n(&opt_internal_fps, on, __ATOMIC_RELAXED);
+        }
+    }
 
     var.key = "xemu_video_aspect";
     var.value = NULL;
@@ -3796,6 +3837,12 @@ RETRO_API void retro_unload_game(void)
 {
     LRLOG_INFO("[xemu] retro_unload_game\n");
 
+    if (prof_running) {
+        g_autofree char *dir = system_dir[0] ? g_strdup_printf("%s/xemu", system_dir) : NULL;
+        prof_running = false;
+        xemu_lr_prof_stop(prof_log, dir);
+    }
+
     if (emu_thread_running) {
         /* while the guest still runs: the switch needs its CPU, and the
          * frontend destroys the device after this */
@@ -4024,6 +4071,32 @@ RETRO_API void retro_run(void)
     /* Poll input */
     if (input_poll_cb) {
         input_poll_cb();
+    }
+
+    /* F10 turns the Performance Overlay on or off (NNshi) */
+    if (input_state_cb) {
+        static bool f10_down;
+        const bool down = input_state_cb(0, RETRO_DEVICE_KEYBOARD, 0, RETROK_F10) != 0;
+        if (down && !f10_down) {
+            __atomic_store_n(&opt_internal_fps,
+                             !__atomic_load_n(&opt_internal_fps, __ATOMIC_RELAXED),
+                             __ATOMIC_RELAXED);
+        }
+        f10_down = down;
+    }
+
+    /* The vCPU profiler runs while the overlay is on; turned off, it logs
+     * where the vCPU spent its time (ui/libretro-prof.c) */
+    {
+        const bool on = __atomic_load_n(&opt_internal_fps, __ATOMIC_RELAXED);
+        if (on && !prof_running) {
+            prof_running = true;
+            xemu_lr_prof_start();
+        } else if (!on && prof_running) {
+            g_autofree char *dir = system_dir[0] ? g_strdup_printf("%s/xemu", system_dir) : NULL;
+            prof_running = false;
+            xemu_lr_prof_stop(prof_log, dir);
+        }
     }
 
     /* A Chihiro's cabinet controls (libretro-chihiro.c) */

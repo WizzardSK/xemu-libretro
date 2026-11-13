@@ -86,6 +86,9 @@ typedef struct VoiceWorkDispatch {
     uint64_t workers_pending;
     QemuCond work_pending; /* stock: wakes every worker */
     QemuCond work_finished;
+    /* CPU boost: the voices of the batch being mixed (vp.voice_in_flight),
+     * cleared with a broadcast here under lock when it is done */
+    QemuCond batch_done;
     float mixbins[NUM_MIXBINS][NUM_SAMPLES_PER_FRAME];
     VoiceWorkItem queue[MCPX_HW_MAX_VOICES];
     int queue_len;
@@ -104,6 +107,7 @@ typedef struct {
     uint8_t submix_headroom[NUM_MIXBINS];
     float sample_buf[NUM_SAMPLES_PER_FRAME][2];
     uint64_t voice_locked[4];
+    uint64_t voice_in_flight[4]; /* CPU boost, see voice_lock() */
 
     struct {
         int current_entry;

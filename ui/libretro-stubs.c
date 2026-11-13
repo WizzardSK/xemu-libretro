@@ -189,8 +189,8 @@ void libretro_input_stick(unsigned port, unsigned index, int16_t *x, int16_t *y)
     const int raw_x = input_state_cb(port, RETRO_DEVICE_ANALOG, index, RETRO_DEVICE_ID_ANALOG_X);
     const int raw_y = input_state_cb(port, RETRO_DEVICE_ANALOG, index, RETRO_DEVICE_ID_ANALOG_Y);
     const int percent = port < 4 ? libretro_deadzone_percent[port] : 0;
-    *x = (int16_t)raw_x;
-    *y = (int16_t)raw_y;
+    *x = (int16_t)MAX(raw_x, -32767);
+    *y = (int16_t)MAX(raw_y, -32767);
     if (percent <= 0) {
         return;
     }
@@ -202,8 +202,14 @@ void libretro_input_stick(unsigned port, unsigned index, int16_t *x, int16_t *y)
     }
     float scale = (magnitude - dead) / (32767.0f - dead) * 32767.0f / magnitude;
     float fx = raw_x * scale, fy = raw_y * scale;
-    *x = (int16_t)(fx > 32767.0f ? 32767.0f : fx < -32768.0f ? -32768.0f : fx);
-    *y = (int16_t)(fy > 32767.0f ? 32767.0f : fy < -32768.0f ? -32768.0f : fy);
+    /* -32767, not -32768: the Y axes are turned over (-y) for the pad, and
+     * -(-32768) does not fit in 16 bits; it came back as -32768, the stick
+     * at full the other way. A push past the dead zone that was not straight
+     * along an axis is longer than 32767 and reached -32768 up or left, so
+     * forward on the left stick read as full backward now and then, with any
+     * dead zone (NNshi, JSRF, Baldur's Gate: Dark Alliance) */
+    *x = (int16_t)(fx > 32767.0f ? 32767.0f : fx < -32767.0f ? -32767.0f : fx);
+    *y = (int16_t)(fy > 32767.0f ? 32767.0f : fy < -32767.0f ? -32767.0f : fy);
 }
 
 /* The pad's motors as the guest last set them, on the emulation thread

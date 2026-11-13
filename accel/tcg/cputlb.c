@@ -940,6 +940,62 @@ void tlb_reset_dirty(CPUState *cpu, uintptr_t start, uintptr_t length)
     qemu_spin_unlock(&cpu->neg.tlb.c.lock);
 }
 
+#ifdef XBOX
+/* Called with tlb_c.lock held: does @ent map host RAM in the range? */
+static bool tlb_entry_maps_host_locked(const CPUTLBEntry *ent,
+                                       uintptr_t start, uintptr_t length)
+{
+    uint64_t addr = ent->addr_read;
+
+    if (addr == -1) {
+        addr = tlb_addr_write(ent);
+    }
+    if (addr == -1) {
+        return false;
+    }
+    /* I/O entries have no host page in any RAM range. */
+    uintptr_t host = (addr & TARGET_PAGE_MASK) + ent->addend;
+    return host - start < length || start - host < TARGET_PAGE_SIZE;
+}
+
+/*
+ * xemu: drop the entries that map host RAM [start, start + length), so the
+ * next access refills them and tlb_set_page_full picks up a
+ * MemAccessCallback change. No mapping changes, so unlike the full flush
+ * this replaces, the other entries and the jump cache stay. Called only
+ * from the vCPU context.
+ */
+void tlb_flush_host_range(CPUState *cpu, uintptr_t start, uintptr_t length)
+{
+    assert_cpu_is_self(cpu);
+
+    qemu_spin_lock(&cpu->neg.tlb.c.lock);
+    for (int mmu_idx = 0; mmu_idx < NB_MMU_MODES; mmu_idx++) {
+        CPUTLBDesc *desc = &cpu->neg.tlb.d[mmu_idx];
+        CPUTLBDescFast *fast = cpu_tlb_fast(cpu, mmu_idx);
+        size_t n = tlb_n_entries(fast);
+
+        /* A clean mmu_idx holds no valid entry. */
+        if (!(cpu->neg.tlb.c.dirty & (1 << mmu_idx))) {
+            continue;
+        }
+        for (size_t i = 0; i < n; i++) {
+            if (tlb_entry_maps_host_locked(&fast->table[i], start, length)) {
+                memset(&fast->table[i], -1, sizeof(fast->table[i]));
+                tlb_n_used_entries_dec(cpu, mmu_idx);
+            }
+        }
+        /* Victim entries are not counted in n_used_entries. */
+        for (int k = 0; k < CPU_VTLB_SIZE; k++) {
+            if (tlb_entry_maps_host_locked(&desc->vtable[k], start, length)) {
+                memset(&desc->vtable[k], -1, sizeof(desc->vtable[k]));
+            }
+        }
+    }
+    qemu_spin_unlock(&cpu->neg.tlb.c.lock);
+}
+#endif
+
 /* Called with tlb_c.lock held */
 static inline void tlb_set_dirty1_locked(CPUTLBEntry *tlb_entry,
                                          vaddr addr)

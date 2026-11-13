@@ -117,6 +117,9 @@ jobs:
           mkdir -p dist
           cp build/xemu_libretro.dll dist/
           cp ui/xemu_libretro.info dist/
+          # the unstripped core too, to resolve profiles and crash addresses
+          mkdir -p symbols
+          cp build/xemu_libretro.dll symbols/
           ${CROSSPREFIX}strip --strip-unneeded dist/xemu_libretro.dll
           ls -la dist
           # What it needs at load time: Windows' own DLLs and nothing else.
@@ -126,6 +129,11 @@ jobs:
         with:
           name: xemu_libretro-windows-x86_64
           path: dist/xemu_libretro.dll
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xemu_libretro-windows-x86_64-symbols
+          path: symbols/
 
   linux:
     if: github.event_name != 'workflow_dispatch' || inputs.platforms == 'all' || contains(inputs.platforms, 'linux')

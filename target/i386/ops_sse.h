@@ -857,7 +857,7 @@ void glue(helper_cvtdq2ps, SUFFIX)(CPUX86State *env, Reg *d, Reg *s)
             xemu_v4si x;
             xemu_v4sf r;
             memcpy(&x, &s->ZMM_L(i), sizeof(x));
-            r = __builtin_ia32_cvtdq2ps(x);
+            r = __builtin_convertvector(x, xemu_v4sf);
             memcpy(&d->ZMM_S(i), &r, sizeof(r));
         });
     for (i = 0; i < 2 << SHIFT; i++) {
@@ -879,7 +879,7 @@ void helper_cvtpi2ps(CPUX86State *env, ZMMReg *d, MMXReg *s)
 {
     XEMU_SSE_CVT_TRY(
         xemu_v4si x = { (int32_t)s->MMX_L(0), (int32_t)s->MMX_L(1), 0, 0 };
-        xemu_v4sf r = __builtin_ia32_cvtdq2ps(x);
+        xemu_v4sf r = __builtin_convertvector(x, xemu_v4sf);
         d->ZMM_S(0) = float32_val_of(r[0]);
         d->ZMM_S(1) = float32_val_of(r[1]));
     d->ZMM_S(0) = int32_to_float32(s->MMX_L(0), &env->sse_status);
@@ -896,7 +896,7 @@ void helper_cvtsi2ss(CPUX86State *env, ZMMReg *d, uint32_t val)
 {
     XEMU_SSE_CVT_TRY(
         xemu_v4si x = { (int32_t)val, 0, 0, 0 };
-        xemu_v4sf r = __builtin_ia32_cvtdq2ps(x);
+        xemu_v4sf r = __builtin_convertvector(x, xemu_v4sf);
         d->ZMM_S(0) = float32_val_of(r[0]));
     d->ZMM_S(0) = int32_to_float32(val, &env->sse_status);
 }

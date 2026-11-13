@@ -2266,6 +2266,7 @@ static bool write_bundled_hdd(const char *path)
 typedef bool (*xiso_read_fn)(void *ctx, int64_t off, size_t len, void *buf);
 
 #include "libretro-bundled-patches.h"
+#include "libretro-hakux-mods.h"
 
 /* the patches of the content loaded, and the ones switched on: a file in
  * system/xemu/patches by its path, a bundled one as "bundled:<name>" */
@@ -2284,6 +2285,25 @@ static const LibretroBundledPatch *bundled_patch(const char *name)
         }
     }
     return NULL;
+}
+
+/* A bundled patch's or hakuX mod's bytes by its name */
+static bool bundled_data(const char *name, const unsigned char **data, unsigned int *size)
+{
+    const LibretroBundledPatch *b = bundled_patch(name);
+    if (b) {
+        *data = b->data;
+        *size = b->size;
+        return true;
+    }
+    for (size_t i = 0; i < ARRAY_SIZE(libretro_hakux_mods); i++) {
+        if (!strcmp(libretro_hakux_mods[i].name, name)) {
+            *data = libretro_hakux_mods[i].data;
+            *size = libretro_hakux_mods[i].size;
+            return true;
+        }
+    }
+    return false;
 }
 
 /* A name as the Patch Manager compares them: lower case letters and digits,
@@ -2392,7 +2412,7 @@ static bool xiso_blk_read(void *ctx, int64_t off, size_t len, void *buf)
 #define XBE_REGION_JAPAN 0x2
 #define XBE_REGION_REST_OF_WORLD 0x4
 static bool xiso_title(const char *image, uint32_t *title_id, char **title_name,
-                       uint32_t *regions)
+                       uint32_t *regions, uint32_t *version)
 {
     static const int64_t offsets[] = { 0, 0x18300000, 0xFD90000, 0x2080000 };
     FILE *f = fopen(image, "rb");
@@ -2403,7 +2423,7 @@ static bool xiso_title(const char *image, uint32_t *title_id, char **title_name,
     for (size_t i = 0; i < ARRAY_SIZE(offsets) && !ok; i++) {
         struct xiso_file x = { f, offsets[i] };
         uint32_t sector, size;
-        uint8_t hdr[0x120], cert[0xA4];
+        uint8_t hdr[0x120], cert[0xB0];
         if (!xiso_find_xbe(xiso_file_read, &x, &sector, &size) ||
             !xiso_file_read(&x, (int64_t)sector * XISO_SECTOR, sizeof(hdr), hdr) ||
             memcmp(hdr, "XBEH", 4)) {
@@ -2417,6 +2437,7 @@ static bool xiso_title(const char *image, uint32_t *title_id, char **title_name,
         }
         *title_id = ldl_le_p(cert + 8);
         *regions = ldl_le_p(cert + 0xA0);
+        *version = ldl_le_p(cert + 0xAC);
         gunichar2 name[41] = { 0 };
         for (int c = 0; c < 40; c++) {
             name[c] = lduw_le_p(cert + 0xC + 2 * c);
@@ -2620,12 +2641,12 @@ static void patch_manager_load(const char *image, bool chihiro)
     patch_enabled = g_ptr_array_new_with_free_func(g_free);
     patch_bundled = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
 
-    uint32_t title_id = 0, regions = 0;
+    uint32_t title_id = 0, regions = 0, version = 0;
     g_autofree char *title_name = NULL;
     g_autofree char *dir = system_dir[0] ? g_strdup_printf("%s/xemu/patches", system_dir) : NULL;
     GDir *d = dir ? g_dir_open(dir, 0, NULL) : NULL;
     if (!chihiro && image && image[0] && !strstr(image, "://") &&
-        xiso_title(image, &title_id, &title_name, &regions)) {
+        xiso_title(image, &title_id, &title_name, &regions, &version)) {
         g_autofree char *title_norm = patch_name_norm(title_name);
         /* XboxGraphicalPatches' IPS patches are for the North American
          * releases: on a PAL or Japanese one, which can have the same title
@@ -2633,7 +2654,8 @@ static void patch_manager_load(const char *image, bool chihiro)
          * patch carries the CRC of the XBE it is for and checks it itself;
          * a .jmp says its region (jmp_listed). */
         const bool north_america = regions & XBE_REGION_NORTH_AMERICA;
-        LRLOG_INFO("[xemu] Patch Manager: %08X \"%s\", regions %X\n", title_id, title_name, regions);
+        LRLOG_INFO("[xemu] Patch Manager: %08X \"%s\", regions %X, version %u\n",
+                   title_id, title_name, regions, version);
         const char *n;
         while (d && (n = g_dir_read_name(d))) {
             g_autofree char *lower = g_ascii_strdown(n, -1);
@@ -2669,6 +2691,21 @@ static void patch_manager_load(const char *image, bool chihiro)
             if (!have && listed) {
                 g_ptr_array_add(patch_files, g_strdup(bn));
                 g_hash_table_add(patch_bundled, g_strdup(bn));
+            }
+        }
+        /* hakuX's 60 fps mods (NNshi): by title ID and the certificate's
+         * version, the one release their addresses hold for */
+        for (size_t i = 0; i < ARRAY_SIZE(libretro_hakux_mods) &&
+                           patch_files->len < PATCH_OPTIONS_MAX; i++) {
+            const char *hn = libretro_hakux_mods[i].name;
+            bool have = false;
+            for (guint j = 0; j < patch_files->len && !have; j++) {
+                have = !g_ascii_strcasecmp(patch_files->pdata[j], hn);
+            }
+            if (!have && libretro_hakux_mods[i].title_id == title_id &&
+                libretro_hakux_mods[i].version == version) {
+                g_ptr_array_add(patch_files, g_strdup(hn));
+                g_hash_table_add(patch_bundled, g_strdup(hn));
             }
         }
         g_ptr_array_sort(patch_files, patch_name_cmp);
@@ -2953,6 +2990,112 @@ static int xbe_apply_jmp(uint8_t *xbe, size_t size, const char *text, const char
     return find ? -1 : records;
 }
 
+/* The XBE file offset of a virtual address as the XBE is loaded: the headers
+ * (from the base address up to the first section's data) or a section's
+ * data in the file; -1 elsewhere (a section's part past its file data, which
+ * the loader zeroes, or no section at all) */
+static int64_t xbe_va_offset(const uint8_t *xbe, size_t size, uint32_t va)
+{
+    if (size < 0x120 || memcmp(xbe, "XBEH", 4)) {
+        return -1;
+    }
+    const uint32_t base = ldl_le_p(xbe + 0x104);
+    const uint32_t nsec = ldl_le_p(xbe + 0x11C), sec_va = ldl_le_p(xbe + 0x120);
+    uint32_t first_raw = UINT32_MAX;
+    for (uint32_t i = 0; i < nsec; i++) {
+        const uint64_t h = (uint64_t)sec_va - base + (uint64_t)i * 0x38;
+        if (sec_va < base || h + 0x38 > size) {
+            return -1;
+        }
+        const uint32_t vaddr = ldl_le_p(xbe + h + 4), raw = ldl_le_p(xbe + h + 0xC),
+                       raw_size = ldl_le_p(xbe + h + 0x10);
+        first_raw = MIN(first_raw, raw);
+        if (va >= vaddr && va - vaddr < raw_size) {
+            return (int64_t)raw + (va - vaddr);
+        }
+    }
+    if (va >= base && va - base < MIN(first_raw, (uint32_t)size)) {
+        return va - base;
+    }
+    return -1;
+}
+
+/* Hex bytes with spaces between them, as mod.txt writes them */
+static bool hakux_hex(const char *text, GByteArray *out)
+{
+    g_autofree char *packed = g_strdup(text);
+    char *w = packed;
+    for (const char *r = text; *r; r++) {
+        if (!g_ascii_isspace(*r)) {
+            *w++ = *r;
+        }
+    }
+    *w = '\0';
+    return jmp_hex(packed, out);
+}
+
+/* A hakuX mod (mod.txt, scripts/gen_hakux_mods.py): under "[default.xbe]",
+ * "0xADDRESS: bytes" or "0xADDRESS: old -> new", the address virtual. Every
+ * "old" must be there, or the mod is for another release (-2); other
+ * sections (a title update's "[$u\default.xbe]") and "key: value" lines are
+ * skipped. */
+static int xbe_apply_hakux(uint8_t *xbe, size_t size, const char *text, const char *name)
+{
+    g_auto(GStrv) lines = g_strsplit_set(text, "\r\n", -1);
+    bool in_xbe = false;
+    int records = 0;
+    for (char **l = lines; *l; l++) {
+        char *s = g_strstrip(*l);
+        if (!s[0] || s[0] == '#') {
+            continue;
+        }
+        if (s[0] == '[') {
+            in_xbe = !g_ascii_strcasecmp(s, "[default.xbe]");
+            continue;
+        }
+        if (!in_xbe || g_ascii_strncasecmp(s, "0x", 2)) {
+            continue; /* name:, description:, author: and other sections */
+        }
+        char *colon = strchr(s, ':');
+        if (!colon) {
+            return -1;
+        }
+        *colon = '\0';
+        char *end;
+        const guint64 va = g_ascii_strtoull(s + 2, &end, 16);
+        if (*end || end == s + 2 || va > UINT32_MAX) {
+            return -1;
+        }
+        char *bytes_text = colon + 1;
+        char *arrow = strstr(bytes_text, "->");
+        g_autoptr(GByteArray) old = g_byte_array_new();
+        g_autoptr(GByteArray) put = g_byte_array_new();
+        if (arrow) {
+            *arrow = '\0';
+            if (!hakux_hex(g_strstrip(bytes_text), old) ||
+                !hakux_hex(g_strstrip(arrow + 2), put) || old->len != put->len) {
+                return -1;
+            }
+        } else if (!hakux_hex(g_strstrip(bytes_text), put)) {
+            return -1;
+        }
+        const int64_t off = xbe_va_offset(xbe, size, (uint32_t)va);
+        if (off < 0 || (uint64_t)off + put->len > size) {
+            LRLOG_ERROR("[xemu] XBE patch %s: address 0x%08X is not in this "
+                        "default.xbe's file data\n", name, (uint32_t)va);
+            return -2;
+        }
+        if (old->len && memcmp(xbe + off, old->data, old->len)) {
+            LRLOG_ERROR("[xemu] XBE patch %s: the bytes at 0x%08X differ from the "
+                        "mod's, it is for another release\n", name, (uint32_t)va);
+            return -2;
+        }
+        memcpy(xbe + off, put->data, put->len);
+        records++;
+    }
+    return records ? records : -1;
+}
+
 /* The overlay with image's default.xbe patched, for the drive to open
  * (system/vl.c, xemu_libretro_change_disc); its path, or NULL without
  * patches or when none applied. offset is the game partition's in a Redump
@@ -2998,22 +3141,25 @@ char *xemu_libretro_xbe_patched(const char *image, uint64_t offset)
         g_autofree char *data = NULL;
         gsize n;
         if (g_str_has_prefix(f, "bundled:")) {
-            const LibretroBundledPatch *b = bundled_patch(f + strlen("bundled:"));
-            if (!b) {
+            const unsigned char *bd;
+            unsigned int bn;
+            if (!bundled_data(f + strlen("bundled:"), &bd, &bn)) {
                 continue;
             }
-            /* with a NUL after it: .jmp and .wdb are read as text */
-            data = g_malloc0(b->size + 1);
-            memcpy(data, b->data, b->size);
-            n = b->size;
+            /* with a NUL after it: .jmp, .wdb and .hakux are read as text */
+            data = g_malloc0(bn + 1);
+            memcpy(data, bd, bn);
+            n = bn;
         } else if (!g_file_get_contents(f, &data, &n, NULL)) {
             continue;
         }
         /* each patch on a copy, so one that fails leaves no half of itself */
         g_autofree uint8_t *copy = g_memdup2(xbe, size);
         g_autofree char *lower = g_ascii_strdown(f, -1);
-        const bool find_bytes = g_str_has_suffix(lower, ".jmp") || g_str_has_suffix(lower, ".wdb");
-        const int r = g_str_has_suffix(lower, ".jmp") ? xbe_apply_jmp(copy, size, data, f)
+        const bool find_bytes = g_str_has_suffix(lower, ".jmp") || g_str_has_suffix(lower, ".wdb") ||
+                                g_str_has_suffix(lower, ".hakux");
+        const int r = g_str_has_suffix(lower, ".hakux") ? xbe_apply_hakux(copy, size, data, f)
+                    : g_str_has_suffix(lower, ".jmp") ? xbe_apply_jmp(copy, size, data, f)
                     : g_str_has_suffix(lower, ".wdb") ? xbe_apply_wdb(copy, size, data, f)
                     : g_str_has_suffix(lower, ".bps") ? xbe_apply_bps(copy, size, (const uint8_t *)data, n)
                     : xbe_apply_ips(copy, size, (const uint8_t *)data, n);

@@ -304,6 +304,8 @@ static bool opt_chihiro_freeplay = true;
 /* Video > Vulkan Fast Paths: which of the renderer's fast-path features the
  * shared device may get (xemu_vk_create_device) */
 static bool opt_vk_gpl = false, opt_vk_dynamic = true;
+/* Vulkan Minimal Device (test, issue 2) */
+static bool opt_vk_minimal = false;
 static int opt_chihiro_ffb = 100; /* percent, 0 = off */
 extern bool libretro_chihiro_aim_stick;   /* libretro-chihiro.c */
 extern float libretro_chihiro_aim_speed;
@@ -944,6 +946,7 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
         [EXT_GPL] = VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME,
     };
     bool own_ext_enabled[G_N_ELEMENTS(own_exts)] = { false };
+    bool own_ext_listed[G_N_ELEMENTS(own_exts)] = { false };
     const char **exts = g_new0(const char *, num_required_exts + G_N_ELEMENTS(own_exts));
     uint32_t nexts = 0;
     for (unsigned i = 0; i < num_required_exts; i++) {
@@ -956,12 +959,12 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
         }
         if (listed) {
             own_ext_enabled[i] = true;
+            own_ext_listed[i] = true;
             continue;
         }
-        if (xemu_vk_has_ext(eprops, ecount, own_exts[i])) {
-            exts[nexts++] = own_exts[i];
-            own_ext_enabled[i] = true;
-        }
+        /* available; added to the device below only when its features are
+         * used */
+        own_ext_enabled[i] = xemu_vk_has_ext(eprops, ecount, own_exts[i]);
     }
     g_free(eprops);
 
@@ -998,10 +1001,14 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
     XEMU_VK_FEATURE(fillModeNonSolid, true);
     XEMU_VK_FEATURE(geometryShader, true);
     XEMU_VK_FEATURE(occlusionQueryPrecise, true);
-    XEMU_VK_FEATURE(samplerAnisotropy, false);
+    if (!opt_vk_minimal) {
+        XEMU_VK_FEATURE(samplerAnisotropy, false);
+    }
     XEMU_VK_FEATURE(shaderClipDistance, true);
     XEMU_VK_FEATURE(shaderTessellationAndGeometryPointSize, true);
-    XEMU_VK_FEATURE(wideLines, false);
+    if (!opt_vk_minimal) {
+        XEMU_VK_FEATURE(wideLines, false);
+    }
 #undef XEMU_VK_FEATURE
     if (!renderer_features) {
         g_free(exts);
@@ -1047,8 +1054,8 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
     if (p_vkGetPhysicalDeviceFeatures2) {
         p_vkGetPhysicalDeviceFeatures2(gpu, &features2_q);
     }
-    const bool shader_demote = query_v13 && v13_q.shaderDemoteToHelperInvocation;
-    const bool host_query_reset = api >= VK_API_VERSION_1_2 && hqr_q.hostQueryReset;
+    const bool shader_demote = !opt_vk_minimal && query_v13 && v13_q.shaderDemoteToHelperInvocation;
+    const bool host_query_reset = !opt_vk_minimal && api >= VK_API_VERSION_1_2 && hqr_q.hostQueryReset;
     const bool dyn_cull_front = opt_vk_dynamic && own_ext_enabled[EXT_EDS] &&
                                 eds_q.extendedDynamicState;
     const bool dyn_blend = opt_vk_dynamic && own_ext_enabled[EXT_EDS3] &&
@@ -1060,6 +1067,28 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
     const bool pipeline_library = opt_vk_gpl && own_ext_enabled[EXT_PIPELINE_LIBRARY] &&
                                   own_ext_enabled[EXT_GPL] &&
                                   gpl_q.graphicsPipelineLibrary;
+
+    /* Only the extensions whose features the renderer turns on go to the
+     * device RetroArch shares: an RX 9070 GRE lost the device on the second
+     * frame, before the emulation started, with every one of them enabled
+     * and the fast paths off (XieTieqiang, issue 2) */
+    {
+        const bool use[G_N_ELEMENTS(own_exts)] = {
+            [EXT_CUSTOM_BORDER] = !opt_vk_minimal && own_ext_enabled[EXT_CUSTOM_BORDER],
+            [EXT_MEMORY_BUDGET] = !opt_vk_minimal && own_ext_enabled[EXT_MEMORY_BUDGET],
+            [EXT_EDS] = dyn_cull_front,
+            [EXT_EDS3] = dyn_blend,
+            [EXT_VERTEX_INPUT] = dyn_vertex_input,
+            [EXT_PIPELINE_LIBRARY] = pipeline_library,
+            [EXT_GPL] = pipeline_library,
+        };
+        for (unsigned k = 0; k < G_N_ELEMENTS(own_exts); k++) {
+            if (use[k] && !own_ext_listed[k]) {
+                exts[nexts++] = own_exts[k];
+            }
+            own_ext_enabled[k] = use[k] || own_ext_listed[k];
+        }
+    }
 
     void *next = NULL;
     VkPhysicalDeviceExtendedDynamicStateFeaturesEXT eds_features = {
@@ -1778,6 +1807,12 @@ static void update_variables(void)
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
         opt_vk_gpl = !strcmp(var.value, "all") || !strcmp(var.value, "no_dyn");
         opt_vk_dynamic = !strcmp(var.value, "all") || !strcmp(var.value, "no_gpl");
+    }
+
+    var.key = "xemu_vk_minimal_device";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        opt_vk_minimal = !strcmp(var.value, "enabled");
     }
 
     var.key = "xemu_chihiro_gun_aim";

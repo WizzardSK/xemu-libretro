@@ -462,6 +462,21 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "all"
     },
+    /* A test for issue 2 (XieTieqiang's RX 9070 GRE loses the device) */
+    {
+        "xemu_vk_minimal_device",
+        "Vulkan Minimal Device (Restart)",
+        NULL,
+        "Test option. The Vulkan device shared with RetroArch gets only what the renderer cannot do without: no custom border colors, memory budget, host query reset, shader demote, anisotropic filtering or wide lines. With Vulkan Fast Paths on None it also gets none of their extensions.",
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
     {
         "xemu_mspf_overlay",
         "Performance Overlay",

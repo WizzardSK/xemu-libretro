@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- Vulkan: FMVs played through the video overlay (Forza Motorsport, Star Wars: KOTOR, GTA San Andreas) were upside down, and an overlay smaller than the screen sat mirrored top to bottom. The core hands RetroArch the frame top row first, without the flip standalone's display needs for GL, but the overlay's position was still turned over as there (NNshi, XieTieqiang, #2).
 - Android x86_64 builds again: the native SSE conversions used a GCC-only builtin for cvtdq2ps, which the NDK's clang does not have; they use the compilers' common vector conversion, the same instruction.
 - Without content (xemu-dashboard), player 1's pad controls the dashboard. The pads sit on the Xbox's USB ports 3, 4, 1 and 2 for players 1 to 4, as on the console, and the dashboard reads only the first pad it finds, on USB port 1: player 3's, so neither of the first two players could control it. With the dashboard the pads take the players in USB port order; with a game as before (NNshi).
 - Controls > Analog Dead Zone is 0% by default for players 1 and 2 (was 10%), and Sega Chihiro > Steering Response is Logarithmic by default (was Linear). The README says what to do about a drive board calibration error in a Chihiro driving game (raise the dead zone so the stick at rest reads as centred) and that Maximum Tune 1 and 2 need their I/O calibrated in the test menu, or the wheel always steers to the right (NNshi).

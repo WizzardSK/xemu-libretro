@@ -2947,6 +2947,14 @@ void pgraph_vk_begin_command_buffer(PGRAPHState *pg)
 static void emit_dynamic_state(PGRAPHState *pg, bool force)
 {
     PGRAPHVkState *r = pg->vk_renderer_state;
+    /* Clear pipelines own their static blend/mask/depth state. Emitting
+     * normal draw registers here clobbers that state on some drivers.
+     * From parallel-xbox 53008f26 (NNshi: Burnout 3's car reflections,
+     * Dynasty Warriors 5's black screens). */
+    if (pg->clearing) {
+        r->dyn_last.valid = false;
+        return;
+    }
     VkCommandBuffer cmd = r->command_buffer;
 
     uint32_t blend = pgraph_reg_r(pg, NV_PGRAPH_BLEND);

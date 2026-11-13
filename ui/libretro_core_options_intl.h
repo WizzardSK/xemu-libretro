@@ -654,7 +654,7 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
             { "30", OPTION_VAL_30_AR },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -676,7 +676,7 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
             { "30", OPTION_VAL_30_AR },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -773,7 +773,7 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_AR },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -1456,7 +1456,7 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
             { "30", OPTION_VAL_30_AST },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -1478,7 +1478,7 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
             { "30", OPTION_VAL_30_AST },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -1575,7 +1575,7 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_AST },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -2258,7 +2258,7 @@ struct retro_core_option_v2_definition option_defs_be[] = {
             { "30", OPTION_VAL_30_BE },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -2280,7 +2280,7 @@ struct retro_core_option_v2_definition option_defs_be[] = {
             { "30", OPTION_VAL_30_BE },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -2377,7 +2377,7 @@ struct retro_core_option_v2_definition option_defs_be[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_BE },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -3060,7 +3060,7 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
             { "30", OPTION_VAL_30_BG },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -3082,7 +3082,7 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
             { "30", OPTION_VAL_30_BG },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -3179,7 +3179,7 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_BG },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -3862,7 +3862,7 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
             { "30", OPTION_VAL_30_CA },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -3884,7 +3884,7 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
             { "30", OPTION_VAL_30_CA },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -3981,7 +3981,7 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_CA },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -4664,7 +4664,7 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
             { "30", OPTION_VAL_30_CHS },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -4686,7 +4686,7 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
             { "30", OPTION_VAL_30_CHS },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -4783,7 +4783,7 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_CHS },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -5466,7 +5466,7 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
             { "30", OPTION_VAL_30_CHT },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -5488,7 +5488,7 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
             { "30", OPTION_VAL_30_CHT },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -5585,7 +5585,7 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_CHT },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -6268,7 +6268,7 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
             { "30", OPTION_VAL_30_CS },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -6290,7 +6290,7 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
             { "30", OPTION_VAL_30_CS },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -6387,7 +6387,7 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_CS },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -7070,7 +7070,7 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
             { "30", OPTION_VAL_30_CY },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -7092,7 +7092,7 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
             { "30", OPTION_VAL_30_CY },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -7189,7 +7189,7 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_CY },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -7872,7 +7872,7 @@ struct retro_core_option_v2_definition option_defs_da[] = {
             { "30", OPTION_VAL_30_DA },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -7894,7 +7894,7 @@ struct retro_core_option_v2_definition option_defs_da[] = {
             { "30", OPTION_VAL_30_DA },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -7991,7 +7991,7 @@ struct retro_core_option_v2_definition option_defs_da[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_DA },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -8674,7 +8674,7 @@ struct retro_core_option_v2_definition option_defs_de[] = {
             { "30", OPTION_VAL_30_DE },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -8696,7 +8696,7 @@ struct retro_core_option_v2_definition option_defs_de[] = {
             { "30", OPTION_VAL_30_DE },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -8793,7 +8793,7 @@ struct retro_core_option_v2_definition option_defs_de[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_DE },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -9476,7 +9476,7 @@ struct retro_core_option_v2_definition option_defs_el[] = {
             { "30", OPTION_VAL_30_EL },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -9498,7 +9498,7 @@ struct retro_core_option_v2_definition option_defs_el[] = {
             { "30", OPTION_VAL_30_EL },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -9595,7 +9595,7 @@ struct retro_core_option_v2_definition option_defs_el[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_EL },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -10278,7 +10278,7 @@ struct retro_core_option_v2_definition option_defs_en[] = {
             { "30", OPTION_VAL_30_EN },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -10300,7 +10300,7 @@ struct retro_core_option_v2_definition option_defs_en[] = {
             { "30", OPTION_VAL_30_EN },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -10397,7 +10397,7 @@ struct retro_core_option_v2_definition option_defs_en[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_EN },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -11080,7 +11080,7 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
             { "30", OPTION_VAL_30_EO },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -11102,7 +11102,7 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
             { "30", OPTION_VAL_30_EO },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -11199,7 +11199,7 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_EO },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -11882,7 +11882,7 @@ struct retro_core_option_v2_definition option_defs_es[] = {
             { "30", OPTION_VAL_30_ES },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -11904,7 +11904,7 @@ struct retro_core_option_v2_definition option_defs_es[] = {
             { "30", OPTION_VAL_30_ES },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -12001,7 +12001,7 @@ struct retro_core_option_v2_definition option_defs_es[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_ES },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -12684,7 +12684,7 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
             { "30", OPTION_VAL_30_FA },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -12706,7 +12706,7 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
             { "30", OPTION_VAL_30_FA },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -12803,7 +12803,7 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_FA },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -13486,7 +13486,7 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
             { "30", OPTION_VAL_30_FI },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -13508,7 +13508,7 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
             { "30", OPTION_VAL_30_FI },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -13605,7 +13605,7 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_FI },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -14288,7 +14288,7 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
             { "30", OPTION_VAL_30_FR },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -14310,7 +14310,7 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
             { "30", OPTION_VAL_30_FR },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -14407,7 +14407,7 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_FR },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -15090,7 +15090,7 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
             { "30", OPTION_VAL_30_GA },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -15112,7 +15112,7 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
             { "30", OPTION_VAL_30_GA },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -15209,7 +15209,7 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_GA },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -15892,7 +15892,7 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
             { "30", OPTION_VAL_30_GL },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -15914,7 +15914,7 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
             { "30", OPTION_VAL_30_GL },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -16011,7 +16011,7 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_GL },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -16694,7 +16694,7 @@ struct retro_core_option_v2_definition option_defs_he[] = {
             { "30", OPTION_VAL_30_HE },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -16716,7 +16716,7 @@ struct retro_core_option_v2_definition option_defs_he[] = {
             { "30", OPTION_VAL_30_HE },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -16813,7 +16813,7 @@ struct retro_core_option_v2_definition option_defs_he[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_HE },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -17496,7 +17496,7 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
             { "30", OPTION_VAL_30_HR },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -17518,7 +17518,7 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
             { "30", OPTION_VAL_30_HR },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -17615,7 +17615,7 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_HR },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -18298,7 +18298,7 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
             { "30", OPTION_VAL_30_HU },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -18320,7 +18320,7 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
             { "30", OPTION_VAL_30_HU },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -18417,7 +18417,7 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_HU },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -19100,7 +19100,7 @@ struct retro_core_option_v2_definition option_defs_id[] = {
             { "30", OPTION_VAL_30_ID },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -19122,7 +19122,7 @@ struct retro_core_option_v2_definition option_defs_id[] = {
             { "30", OPTION_VAL_30_ID },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -19219,7 +19219,7 @@ struct retro_core_option_v2_definition option_defs_id[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_ID },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -19902,7 +19902,7 @@ struct retro_core_option_v2_definition option_defs_it[] = {
             { "30", OPTION_VAL_30_IT },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -19924,7 +19924,7 @@ struct retro_core_option_v2_definition option_defs_it[] = {
             { "30", OPTION_VAL_30_IT },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -20021,7 +20021,7 @@ struct retro_core_option_v2_definition option_defs_it[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_IT },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -20704,7 +20704,7 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
             { "30", OPTION_VAL_30_JA },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -20726,7 +20726,7 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
             { "30", OPTION_VAL_30_JA },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -20823,7 +20823,7 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_JA },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -21506,7 +21506,7 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
             { "30", OPTION_VAL_30_KO },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -21528,7 +21528,7 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
             { "30", OPTION_VAL_30_KO },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -21625,7 +21625,7 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_KO },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -22308,7 +22308,7 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
             { "30", OPTION_VAL_30_NL },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -22330,7 +22330,7 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
             { "30", OPTION_VAL_30_NL },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -22427,7 +22427,7 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_NL },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -23110,7 +23110,7 @@ struct retro_core_option_v2_definition option_defs_no[] = {
             { "30", OPTION_VAL_30_NO },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -23132,7 +23132,7 @@ struct retro_core_option_v2_definition option_defs_no[] = {
             { "30", OPTION_VAL_30_NO },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -23229,7 +23229,7 @@ struct retro_core_option_v2_definition option_defs_no[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_NO },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -23912,7 +23912,7 @@ struct retro_core_option_v2_definition option_defs_or[] = {
             { "30", OPTION_VAL_30_OR },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -23934,7 +23934,7 @@ struct retro_core_option_v2_definition option_defs_or[] = {
             { "30", OPTION_VAL_30_OR },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -24031,7 +24031,7 @@ struct retro_core_option_v2_definition option_defs_or[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_OR },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -24714,7 +24714,7 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
             { "30", OPTION_VAL_30_PL },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -24736,7 +24736,7 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
             { "30", OPTION_VAL_30_PL },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -24833,7 +24833,7 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_PL },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -25516,7 +25516,7 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
             { "30", OPTION_VAL_30_PT_BR },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -25538,7 +25538,7 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
             { "30", OPTION_VAL_30_PT_BR },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -25635,7 +25635,7 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_PT_BR },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -26318,7 +26318,7 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
             { "30", OPTION_VAL_30_PT_PT },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -26340,7 +26340,7 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
             { "30", OPTION_VAL_30_PT_PT },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -26437,7 +26437,7 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_PT_PT },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -27120,7 +27120,7 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
             { "30", OPTION_VAL_30_RU },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -27142,7 +27142,7 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
             { "30", OPTION_VAL_30_RU },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -27239,7 +27239,7 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_RU },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -27922,7 +27922,7 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
             { "30", OPTION_VAL_30_SK },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -27944,7 +27944,7 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
             { "30", OPTION_VAL_30_SK },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -28041,7 +28041,7 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_SK },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -28724,7 +28724,7 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
             { "30", OPTION_VAL_30_SR },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -28746,7 +28746,7 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
             { "30", OPTION_VAL_30_SR },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -28843,7 +28843,7 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_SR },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -29526,7 +29526,7 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
             { "30", OPTION_VAL_30_SV },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -29548,7 +29548,7 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
             { "30", OPTION_VAL_30_SV },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -29645,7 +29645,7 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_SV },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -30328,7 +30328,7 @@ struct retro_core_option_v2_definition option_defs_th[] = {
             { "30", OPTION_VAL_30_TH },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -30350,7 +30350,7 @@ struct retro_core_option_v2_definition option_defs_th[] = {
             { "30", OPTION_VAL_30_TH },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -30447,7 +30447,7 @@ struct retro_core_option_v2_definition option_defs_th[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_TH },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -31130,7 +31130,7 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
             { "30", OPTION_VAL_30_TR },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -31152,7 +31152,7 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
             { "30", OPTION_VAL_30_TR },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -31249,7 +31249,7 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_TR },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -31932,7 +31932,7 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
             { "30", OPTION_VAL_30_TT },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -31954,7 +31954,7 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
             { "30", OPTION_VAL_30_TT },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -32051,7 +32051,7 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_TT },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -32734,7 +32734,7 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
             { "30", OPTION_VAL_30_UK },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -32756,7 +32756,7 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
             { "30", OPTION_VAL_30_UK },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -32853,7 +32853,7 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_UK },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -33536,7 +33536,7 @@ struct retro_core_option_v2_definition option_defs_val[] = {
             { "30", OPTION_VAL_30_VAL },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -33558,7 +33558,7 @@ struct retro_core_option_v2_definition option_defs_val[] = {
             { "30", OPTION_VAL_30_VAL },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -33655,7 +33655,7 @@ struct retro_core_option_v2_definition option_defs_val[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_VAL },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",
@@ -34338,7 +34338,7 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
             { "30", OPTION_VAL_30_VN },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
      * at a drive board error when the wheel is not centred during its test
@@ -34360,7 +34360,7 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
             { "30", OPTION_VAL_30_VN },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -34457,7 +34457,7 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
             { "logarithmic", OPTION_VAL_LOGARITHMIC_VN },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",

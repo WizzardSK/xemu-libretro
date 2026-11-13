@@ -504,9 +504,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "enabled"
     },
-    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
-     * at a drive board error when the wheel is not centred during its test
-     * (NNshi) */
+    /* 0% by default (NNshi); a Chihiro driving game that stops at a drive
+     * board error during its test needs it raised (README) */
     {
         "xemu_deadzone_p1",
         "Analog Dead Zone (Player 1)",
@@ -524,11 +523,10 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "30", "30%" },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
-    /* 10% by default: a stick at rest is rarely at 0, and OutRun 2 stops
-     * at a drive board error when the wheel is not centred during its test
-     * (NNshi) */
+    /* 0% by default (NNshi); a Chihiro driving game that stops at a drive
+     * board error during its test needs it raised (README) */
     {
         "xemu_deadzone_p2",
         "Analog Dead Zone (Player 2)",
@@ -546,7 +544,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "30", "30%" },
             { NULL, NULL },
         },
-        "10"
+        "0"
     },
     /* The Chihiro's options last: their category goes last (RetroArch lists
      * the categories in the order their first options come) */
@@ -630,7 +628,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "enabled"
     },
     /* Not in standalone, which steers linearly: a stick's short travel
-     * makes the racers twitchy (NNshi, as linuxloader-libretro has it) */
+     * makes the racers twitchy (NNshi, as linuxloader-libretro has it);
+     * logarithmic by default (NNshi) */
     {
         "xemu_chihiro_steering",
         "Steering Response",
@@ -643,7 +642,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "logarithmic", "Logarithmic" },
             { NULL, NULL },
         },
-        "linear"
+        "logarithmic"
     },
     {
         "xemu_chihiro_steering_effect",

@@ -176,7 +176,7 @@ void xemu_input_update_controller(ControllerState *state)
 /* Controls > Analog Dead Zone and Rumble, per player (ui/libretro.c sets
  * them; players 3 and 4 have neither option, and keep no dead zone and their
  * rumble) */
-int libretro_deadzone_percent[4] = { 10, 10, 0, 0 };
+int libretro_deadzone_percent[4] = { 0, 0, 0, 0 };
 bool libretro_rumble_enabled[4] = { true, true, true, true };
 
 /* A stick through its player's Analog Dead Zone: a push inside it reads as

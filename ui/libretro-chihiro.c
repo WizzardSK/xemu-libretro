@@ -78,7 +78,7 @@ XemuLibretroCrosshair xemu_libretro_crosshairs[2];
 /* Sega Chihiro > Steering Response (ui/libretro.c sets them): the left
  * stick's steering on a curve, its Inner Zone the share of the turn that
  * rises evenly from the centre, its Effect the power of the rest, 2 or 3 */
-bool libretro_chihiro_steering_log;
+bool libretro_chihiro_steering_log = true;
 float libretro_chihiro_steering_inner = 0.25f;
 int libretro_chihiro_steering_power = 3;
 

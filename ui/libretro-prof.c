@@ -46,7 +46,7 @@ static GArray *prof_bases;         /* module bases, same index */
 static GHashTable *prof_via;       /* "off>off>off" core callers -> count */
 static GHashTable *prof_tbsize;    /* guest block phys addr -> guest size */
 static uintptr_t prof_core, prof_text_lo, prof_text_hi; /* the core's .text */
-static uintptr_t prof_stack_base;  /* top of the vCPU thread's stack */
+static NT_TIB *prof_tib;           /* the vCPU thread's, for its stack */
 static uint64_t prof_stack[512];
 static uint64_t prof_samples, prof_jit, prof_jit_unknown, prof_failed;
 static int64_t prof_start_us, prof_end_us;
@@ -60,7 +60,7 @@ void xemu_lr_prof_vcpu(void)
                         THREAD_SUSPEND_RESUME | THREAD_GET_CONTEXT |
                         THREAD_QUERY_INFORMATION, FALSE, 0)) {
         prof_vcpu = h;
-        prof_stack_base = (uintptr_t)((NT_TIB *)NtCurrentTeb())->StackBase;
+        prof_tib = (NT_TIB *)NtCurrentTeb();
     }
 }
 
@@ -151,12 +151,25 @@ static DWORD WINAPI prof_fn(LPVOID arg)
                 pc = (uintptr_t)ctx.Rip;
                 /* outside the core and the translated code: keep the top of
                  * the stack, to find the core's call that led here */
+                /* The stack it is on now: a coroutine runs on a fiber of
+                 * its own (QEMU's block layer, from the vCPU too), whose
+                 * bounds the thread's TIB holds while it runs. The bounds of
+                 * the thread's own stack, read once, let a sample in a
+                 * coroutine near its fiber stack's top copy past its end
+                 * (RalliSport 2 crashed there, NNshi). The copy does not
+                 * fault even so. */
+                const uintptr_t top = (uintptr_t)prof_tib->StackBase;
+                const uintptr_t low = (uintptr_t)prof_tib->StackLimit;
+                SIZE_T got = 0;
                 if ((pc < prof_core || pc >= prof_text_hi) &&
                     !in_code_gen_buffer((void *)pc) && prof_text_lo &&
-                    ctx.Rsp < prof_stack_base) {
-                    words = MIN(ARRAY_SIZE(prof_stack),
-                                (prof_stack_base - ctx.Rsp) / 8);
-                    memcpy(prof_stack, (void *)(uintptr_t)ctx.Rsp, words * 8);
+                    ctx.Rsp >= low && ctx.Rsp < top) {
+                    words = MIN(ARRAY_SIZE(prof_stack), (top - ctx.Rsp) / 8);
+                    if (!ReadProcessMemory(GetCurrentProcess(),
+                                           (LPCVOID)(uintptr_t)ctx.Rsp,
+                                           prof_stack, words * 8, &got)) {
+                        words = 0;
+                    }
                 }
             }
             ResumeThread(prof_vcpu);

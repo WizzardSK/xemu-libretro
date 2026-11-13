@@ -3625,6 +3625,11 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
 
     /* Store the DVD path (empty: no disc) */
     snprintf(opt_dvd_path, sizeof(opt_dvd_path), "%s", content);
+    {
+        /* xemu-dashboard reads player 1's pad (libretro-stubs.c) */
+        extern bool libretro_input_dashboard;
+        libretro_input_dashboard = !content[0];
+    }
 
     /* Set shader cache base path */
     if (system_dir[0]) {

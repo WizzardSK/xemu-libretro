@@ -95,10 +95,23 @@ static void libretro_controllers_ensure_init(void)
     }
 }
 
+/* The content is the dashboard (no disc): ui/libretro.c sets it at each
+ * load. */
+bool libretro_input_dashboard;
+
 ControllerState *xemu_input_get_bound(int index)
 {
     libretro_controllers_ensure_init();
     if (index < 0 || index >= 4) return NULL;
+    /* The pads sit on the Xbox's USB ports 3, 4, 1 and 2 for players 1 to
+     * 4, as on the console, where games number them so. xemu-dashboard
+     * reads only the first pad it finds, the one on USB port 1, which was
+     * player 3: neither of the first two players could control it (NNshi).
+     * With the dashboard, the pads take the players in USB port order, so
+     * the one it finds is player 1's. */
+    if (libretro_input_dashboard) {
+        index = (index + 2) % 4;
+    }
     return bound_controllers[index];
 }
 

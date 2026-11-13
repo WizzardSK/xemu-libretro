@@ -606,6 +606,15 @@ static void surface_access_callback(void *opaque, MemoryRegion *mr, hwaddr addr,
 
         if (write) {
             surface->upload_pending = true;
+            /* One write is enough to know a re-upload is needed: stop
+             * watching until the upload consumes it (RAM is the truth), as
+             * the OpenGL renderer does. Otherwise every store of a CPU-drawn
+             * frame (an FMV) is a trap. */
+            if (!surface->watch_off && surface->access_cb) {
+                surface->watch_off = true;
+                mem_access_callback_set_flags(qemu_get_cpu(0),
+                                              surface->access_cb, 0);
+            }
         }
     }
 
@@ -643,8 +652,19 @@ static void surface_access_callback(void *opaque, MemoryRegion *mr, hwaddr addr,
     }
 }
 
+/* RAM stops being the truth (an upload or a draw): watch CPU access again. */
+void pgraph_vk_surface_watch_on(SurfaceBinding *surface)
+{
+    if (surface->watch_off) {
+        surface->watch_off = false;
+        mem_access_callback_set_flags(qemu_get_cpu(0), surface->access_cb,
+                                      BP_MEM_READ | BP_MEM_WRITE);
+    }
+}
+
 static void register_cpu_access_callback(NV2AState *d, SurfaceBinding *surface)
 {
+    surface->watch_off = false;
     if (tcg_enabled()) {
         if (surface->width && surface->height) {
             surface->access_cb = mem_access_callback_insert(
@@ -1184,6 +1204,7 @@ void pgraph_vk_upload_surface_data(NV2AState *d, SurfaceBinding *surface,
                  surface->fmt.bytes_per_pixel);
 
     surface->upload_pending = false;
+    pgraph_vk_surface_watch_on(surface);
     surface->draw_time = pg->draw_time;
 
     if (!surface->width || !surface->height) {

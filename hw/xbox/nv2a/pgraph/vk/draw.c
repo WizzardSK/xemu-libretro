@@ -3959,6 +3959,16 @@ void pgraph_vk_set_surface_dirty(PGRAPHState *pg, bool color, bool zeta)
     pg->surface_color.draw_dirty |= color;
     pg->surface_zeta.draw_dirty |= zeta;
 
+    /* The GPU gets ahead of RAM: CPU access has to reach the download path
+     * again. */
+    if (color || zeta) {
+        if (r->color_binding) {
+            pgraph_vk_surface_watch_on(r->color_binding);
+        }
+        if (r->zeta_binding) {
+            pgraph_vk_surface_watch_on(r->zeta_binding);
+        }
+    }
     if (r->color_binding) {
         r->color_binding->draw_dirty |= color;
         r->color_binding->frame_time = pg->frame_time;

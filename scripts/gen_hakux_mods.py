@@ -28,6 +28,9 @@ GAMES = {
     0x4D53006E: "Forza Motorsport",
 }
 MODS = ["60fps"]
+# Games whose 60 fps patch XboxGraphicalPatches already has (bundled, NNshi):
+# Halo, Halo 2, Otogi, Crimson Skies, Conker
+SKIP = {0x4D530004, 0x4D530064, 0x46530002, 0x4D530021, 0x4D530051}
 
 src = os.path.join(sys.argv[1], "mods")
 commit = sys.argv[2] if len(sys.argv) > 2 else "?"
@@ -37,6 +40,8 @@ for key in sorted(os.listdir(src)):
         continue
     tid, ver = key.split(".", 1)
     title, version = int(tid, 16), int(ver)
+    if title in SKIP:
+        continue
     for mod in MODS:
         path = os.path.join(src, key, mod, "mod.txt")
         if not os.path.exists(path):

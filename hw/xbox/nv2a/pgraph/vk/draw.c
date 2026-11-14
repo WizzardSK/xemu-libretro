@@ -2156,6 +2156,28 @@ static void create_pipeline(PGRAPHState *pg)
         .basePipelineHandle = VK_NULL_HANDLE,
     };
     VkPipeline pipeline;
+#ifdef LIBRETRO
+    {
+        /* issue 2: what the first pipelines ask for, logged before the
+         * driver sees them (the device is lost at the boot animation) */
+        extern void xemu_lr_log_info(const char *fmt, ...);
+        static int logged;
+        if (logged < 12) {
+            char ds[160] = "";
+            for (int i = 0; i < num_dynamic_states; i++) {
+                char n[12];
+                snprintf(n, sizeof(n), "%s%d", i ? "," : "",
+                         (int)dynamic_states[i]);
+                g_strlcat(ds, n, sizeof(ds));
+            }
+            xemu_lr_log_info("[xemu] pipeline %d: %s, %d stages, dynamic "
+                             "states %s\n", logged,
+                             r->pipeline_library ? "library link" : "whole",
+                             num_active_shader_stages, ds);
+            logged++;
+        }
+    }
+#endif
     if (r->pipeline_library) {
         uint64_t frag_hash;
         bool frag_pending;

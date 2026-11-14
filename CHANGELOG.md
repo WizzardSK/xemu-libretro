@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## Unreleased
 
+- Vulkan Fast Paths, for testing issue 2: four more values turn on one group alone (the cull/front, blend or vertex input dynamic state, or the pipeline libraries), and the first twelve pipelines the renderer creates go to RetroArch's log with the dynamic states they ask for.
 - Vulkan: the device shared with RetroArch gets only the extensions whose features the renderer turns on; with Vulkan Fast Paths on None, none of the dynamic state and pipeline library ones. Test option Video > Vulkan Minimal Device (Restart) leaves out the optional features and extensions as well (custom border colors, memory budget, host query reset, shader demote, anisotropic filtering, wide lines). For an RX 9070 GRE that loses the device on the second frame, before the emulation starts (XieTieqiang, issue 2).
 - Android x86_64 builds again: the native SSE conversions used a GCC-only builtin for cvtdq2ps, which the NDK's clang does not have; they use the compilers' common vector conversion, the same instruction.
 - Without content (xemu-dashboard), player 1's pad controls the dashboard. The pads sit on the Xbox's USB ports 3, 4, 1 and 2 for players 1 to 4, as on the console, and the dashboard reads only the first pad it finds, on USB port 1: player 3's, so neither of the first two players could control it. With the dashboard the pads take the players in USB port order; with a game as before (NNshi).

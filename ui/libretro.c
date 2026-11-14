@@ -81,6 +81,19 @@ static retro_log_printf_t         log_cb       = NULL;
 #define LRLOG_ERROR(...) do { if (log_cb) log_cb(RETRO_LOG_ERROR, __VA_ARGS__); } while(0)
 #define LRLOG_DEBUG(...) do { if (log_cb) log_cb(RETRO_LOG_DEBUG, __VA_ARGS__); } while(0)
 
+/* A line to RetroArch's log from the emulation (the renderer's issue 2 test) */
+void xemu_lr_log_info(const char *fmt, ...)
+{
+    char buf[512];
+    va_list ap;
+    va_start(ap, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, ap);
+    va_end(ap);
+    if (log_cb) {
+        log_cb(RETRO_LOG_INFO, "%s", buf);
+    }
+}
+
 /* ========================================================================= */
 /* VFS interface (optional)                                                  */
 /* ========================================================================= */
@@ -304,6 +317,8 @@ static bool opt_chihiro_freeplay = true;
 /* Video > Vulkan Fast Paths: which of the renderer's fast-path features the
  * shared device may get (xemu_vk_create_device) */
 static bool opt_vk_gpl = false, opt_vk_dynamic = true;
+/* Issue 2 test: each dynamic-state group on its own (all three with "all") */
+static bool opt_vk_dyn_cull = true, opt_vk_dyn_blend = true, opt_vk_dyn_vtx = true;
 /* Vulkan Minimal Device (test, issue 2) */
 static bool opt_vk_minimal = false;
 static int opt_chihiro_ffb = 100; /* percent, 0 = off */
@@ -1056,13 +1071,13 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
     }
     const bool shader_demote = !opt_vk_minimal && query_v13 && v13_q.shaderDemoteToHelperInvocation;
     const bool host_query_reset = !opt_vk_minimal && api >= VK_API_VERSION_1_2 && hqr_q.hostQueryReset;
-    const bool dyn_cull_front = opt_vk_dynamic && own_ext_enabled[EXT_EDS] &&
+    const bool dyn_cull_front = opt_vk_dynamic && opt_vk_dyn_cull && own_ext_enabled[EXT_EDS] &&
                                 eds_q.extendedDynamicState;
-    const bool dyn_blend = opt_vk_dynamic && own_ext_enabled[EXT_EDS3] &&
+    const bool dyn_blend = opt_vk_dynamic && opt_vk_dyn_blend && own_ext_enabled[EXT_EDS3] &&
                            eds3_q.extendedDynamicState3ColorBlendEnable &&
                            eds3_q.extendedDynamicState3ColorBlendEquation &&
                            eds3_q.extendedDynamicState3ColorWriteMask;
-    const bool dyn_vertex_input = opt_vk_dynamic && own_ext_enabled[EXT_VERTEX_INPUT] &&
+    const bool dyn_vertex_input = opt_vk_dynamic && opt_vk_dyn_vtx && own_ext_enabled[EXT_VERTEX_INPUT] &&
                                   vids_q.vertexInputDynamicState;
     const bool pipeline_library = opt_vk_gpl && own_ext_enabled[EXT_PIPELINE_LIBRARY] &&
                                   own_ext_enabled[EXT_GPL] &&
@@ -1805,8 +1820,14 @@ static void update_variables(void)
     var.key = "xemu_vk_fast_paths";
     var.value = NULL;
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
-        opt_vk_gpl = !strcmp(var.value, "all") || !strcmp(var.value, "no_dyn");
-        opt_vk_dynamic = !strcmp(var.value, "all") || !strcmp(var.value, "no_gpl");
+        const char *v = var.value;
+        opt_vk_gpl = !strcmp(v, "all") || !strcmp(v, "no_dyn") || !strcmp(v, "only_gpl");
+        opt_vk_dynamic = !strcmp(v, "all") || !strcmp(v, "no_gpl") ||
+                         !strncmp(v, "only_dyn_", 9);
+        /* issue 2 test values: one dynamic-state group alone */
+        opt_vk_dyn_cull = strncmp(v, "only_dyn_", 9) || !strcmp(v, "only_dyn_cull");
+        opt_vk_dyn_blend = strncmp(v, "only_dyn_", 9) || !strcmp(v, "only_dyn_blend");
+        opt_vk_dyn_vtx = strncmp(v, "only_dyn_", 9) || !strcmp(v, "only_dyn_vtx");
     }
 
     var.key = "xemu_vk_minimal_device";

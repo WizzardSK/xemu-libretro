@@ -458,6 +458,10 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "no_gpl",   "No Pipeline Libraries" },
             { "no_dyn",   "No Dynamic States" },
             { "none",     "None" },
+            { "only_dyn_cull",  "Test: Cull/Front Dynamic State Only" },
+            { "only_dyn_blend", "Test: Blend Dynamic State Only" },
+            { "only_dyn_vtx",   "Test: Vertex Input Dynamic State Only" },
+            { "only_gpl",       "Test: Pipeline Libraries Only" },
             { NULL, NULL },
         },
         "all"

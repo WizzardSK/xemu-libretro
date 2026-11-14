@@ -30,6 +30,7 @@
 #include "hw/usb.h"
 #include "net/net.h"
 #include "hw/boards.h"
+#include "exec/cputlb.h"
 #include "hw/ide/pci.h"
 #include "ui/xemu-settings.h"
 #include "system/system.h"
@@ -195,6 +196,8 @@ static void xbox_memory_init(PCMachineState *pcms,
     ram = g_malloc(sizeof(*ram));
     memory_region_init_ram(ram, NULL, "xbox.ram",
                            machine->ram_size, &error_fatal);
+    /* the guest RAM whose writable pages the vCPU's TLB tracks */
+    tlb_xbox_ram_register(memory_region_get_ram_ptr(ram), machine->ram_size);
 
     *ram_memory = ram;
     memory_region_add_subregion(system_memory, 0, ram);

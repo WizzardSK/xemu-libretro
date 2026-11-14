@@ -316,6 +316,16 @@ typedef struct CPUTLBCommon {
     size_t full_flush_count;
     size_t part_flush_count;
     size_t elide_flush_count;
+#ifdef XBOX
+    /*
+     * xemu: a bit per page of the guest RAM (tlb_xbox_ram_register) that
+     * an entry may map writable, set when one is filled or made dirty,
+     * cleared when tlb_reset_dirty has reset that page in every entry.
+     * A reset of a range with no bit set skips the walk of the whole TLB.
+     * Protected by tlb_c.lock.
+     */
+    unsigned long *wr_ram;
+#endif
 } CPUTLBCommon;
 
 /*

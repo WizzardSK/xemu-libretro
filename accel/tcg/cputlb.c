@@ -19,6 +19,7 @@
  */
 
 #include "qemu/osdep.h"
+#include "qemu/bitmap.h"
 #include "qemu/main-loop.h"
 #include "qemu/target-info.h"
 #include "accel/tcg/cpu-ops.h"
@@ -911,6 +912,39 @@ static inline void copy_tlb_helper_locked(CPUTLBEntry *d, const CPUTLBEntry *s)
     *d = *s;
 }
 
+#ifdef XBOX
+/*
+ * xemu: the GPU thread clears the dirty bits of every texture, surface and
+ * vertex range it checks, and each clear reset the whole TLB of the vCPU
+ * under the lock its fills need too: a quarter of the vCPU in Crimson Skies
+ * (NNshi's profiles), most of it for pages no entry mapped writable. The
+ * vCPU's TLB keeps a bit per guest RAM page an entry may map writable.
+ */
+static uintptr_t xemu_tlb_ram_base;
+static size_t xemu_tlb_ram_size;
+
+void tlb_xbox_ram_register(void *base, size_t size)
+{
+    xemu_tlb_ram_base = (uintptr_t)base;
+    xemu_tlb_ram_size = size;
+}
+
+/* Called with tlb_c.lock held: an entry may now map @host writable. */
+static void xemu_tlb_mark_writable(CPUState *cpu, uintptr_t host)
+{
+    const uintptr_t off = host - xemu_tlb_ram_base;
+
+    if (!xemu_tlb_ram_size || off >= xemu_tlb_ram_size) {
+        return;
+    }
+    if (!cpu->neg.tlb.c.wr_ram) {
+        cpu->neg.tlb.c.wr_ram =
+            bitmap_new(xemu_tlb_ram_size >> TARGET_PAGE_BITS);
+    }
+    set_bit(off >> TARGET_PAGE_BITS, cpu->neg.tlb.c.wr_ram);
+}
+#endif
+
 /* This is a cross vCPU call (i.e. another vCPU resetting the flags of
  * the target vCPU).
  * We must take tlb_c.lock to avoid racing with another vCPU update. The only
@@ -921,6 +955,25 @@ void tlb_reset_dirty(CPUState *cpu, uintptr_t start, uintptr_t length)
     int mmu_idx;
 
     qemu_spin_lock(&cpu->neg.tlb.c.lock);
+#ifdef XBOX
+    /* A range inside the guest RAM that no entry maps writable: nothing to
+     * reset. Afterwards no entry maps it writable, until a fill or
+     * tlb_set_dirty marks a page again. */
+    const uintptr_t off = start - xemu_tlb_ram_base;
+    unsigned long first = 0, last = 0;
+    bool tracked = xemu_tlb_ram_size && length &&
+                   off < xemu_tlb_ram_size &&
+                   length <= xemu_tlb_ram_size - off;
+    if (tracked) {
+        first = off >> TARGET_PAGE_BITS;
+        last = (off + length - 1) >> TARGET_PAGE_BITS;
+        if (!cpu->neg.tlb.c.wr_ram ||
+            find_next_bit(cpu->neg.tlb.c.wr_ram, last + 1, first) > last) {
+            qemu_spin_unlock(&cpu->neg.tlb.c.lock);
+            return;
+        }
+    }
+#endif
     for (mmu_idx = 0; mmu_idx < NB_MMU_MODES; mmu_idx++) {
         CPUTLBDesc *desc = &cpu->neg.tlb.d[mmu_idx];
         CPUTLBDescFast *fast = cpu_tlb_fast(cpu, mmu_idx);
@@ -937,6 +990,11 @@ void tlb_reset_dirty(CPUState *cpu, uintptr_t start, uintptr_t length)
                                          start, length);
         }
     }
+#ifdef XBOX
+    if (tracked) {
+        bitmap_clear(cpu->neg.tlb.c.wr_ram, first, last - first + 1);
+    }
+#endif
     qemu_spin_unlock(&cpu->neg.tlb.c.lock);
 }
 
@@ -997,11 +1055,14 @@ void tlb_flush_host_range(CPUState *cpu, uintptr_t start, uintptr_t length)
 #endif
 
 /* Called with tlb_c.lock held */
-static inline void tlb_set_dirty1_locked(CPUTLBEntry *tlb_entry,
+static inline void tlb_set_dirty1_locked(CPUState *cpu, CPUTLBEntry *tlb_entry,
                                          vaddr addr)
 {
     if (tlb_entry->addr_write == (addr | TLB_NOTDIRTY)) {
         tlb_entry->addr_write = addr;
+#ifdef XBOX
+        xemu_tlb_mark_writable(cpu, addr + tlb_entry->addend);
+#endif
     }
 }
 
@@ -1016,13 +1077,13 @@ static void tlb_set_dirty(CPUState *cpu, vaddr addr)
     addr &= TARGET_PAGE_MASK;
     qemu_spin_lock(&cpu->neg.tlb.c.lock);
     for (mmu_idx = 0; mmu_idx < NB_MMU_MODES; mmu_idx++) {
-        tlb_set_dirty1_locked(tlb_entry(cpu, mmu_idx, addr), addr);
+        tlb_set_dirty1_locked(cpu, tlb_entry(cpu, mmu_idx, addr), addr);
     }
 
     for (mmu_idx = 0; mmu_idx < NB_MMU_MODES; mmu_idx++) {
         int k;
         for (k = 0; k < CPU_VTLB_SIZE; k++) {
-            tlb_set_dirty1_locked(&cpu->neg.tlb.d[mmu_idx].vtable[k], addr);
+            tlb_set_dirty1_locked(cpu, &cpu->neg.tlb.d[mmu_idx].vtable[k], addr);
         }
     }
     qemu_spin_unlock(&cpu->neg.tlb.c.lock);
@@ -1240,6 +1301,12 @@ void tlb_set_page_full(CPUState *cpu, int mmu_idx,
     tlb_set_compare(full, &tn, addr_page, write_flags,
                     MMU_DATA_STORE, prot & PAGE_WRITE);
 
+#ifdef XBOX
+    /* whatever the flags: a page later made dirty keeps this entry */
+    if (is_ram && (prot & PAGE_WRITE)) {
+        xemu_tlb_mark_writable(cpu, addend);
+    }
+#endif
     copy_tlb_helper_locked(te, &tn);
     tlb_n_used_entries_inc(cpu, mmu_idx);
     qemu_spin_unlock(&tlb->c.lock);

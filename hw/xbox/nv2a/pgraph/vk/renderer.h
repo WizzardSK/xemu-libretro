@@ -256,6 +256,9 @@ typedef struct TextureBinding {
     VmaAllocation allocation;
     VkSampler sampler;
     bool possibly_dirty;
+    /* The dirty-range log entries already applied to possibly_dirty
+     * (texture.c, mark_textures_possibly_dirty) */
+    uint64_t dirty_seen;
     uint64_t hash;
     unsigned int draw_time;
     uint32_t submit_time;
@@ -668,6 +671,13 @@ typedef struct PGRAPHVkState {
     TextureBinding dummy_texture;
     bool texture_bindings_changed;
     uint64_t texture_binding_seq;
+    /* VRAM ranges found dirty, newest last: a texture applies the ones it
+     * has not seen when it is next looked at, instead of every dirty find
+     * walking the whole texture cache (texture.c) */
+    struct {
+        hwaddr addr, end;
+    } dirty_log[512];
+    uint64_t dirty_log_count;
     VkFormatProperties *texture_format_properties;
     /* Formats already asked whether this device blits them (texture.c). */
     struct {

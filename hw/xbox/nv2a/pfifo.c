@@ -579,6 +579,12 @@ void *pfifo_thread(void *arg)
     /* the vCPU waits on this thread; above normal with it (mttcg) */
     SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
 #endif
+#ifdef LIBRETRO
+    {
+        extern void xemu_lr_prof_pfifo(void);
+        xemu_lr_prof_pfifo(); /* the Performance Overlay's profiler */
+    }
+#endif
 
     pgraph_init_thread(d);
 

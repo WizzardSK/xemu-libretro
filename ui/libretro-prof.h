@@ -1,5 +1,5 @@
 /*
- * vCPU sampling profiler for the Performance Overlay (ui/libretro-prof.c).
+ * vCPU and GPU-thread sampling profiler for the Performance Overlay (ui/libretro-prof.c).
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -12,6 +12,8 @@ typedef void (*XemuLrProfLog)(const char *fmt, ...);
 
 /* On the vCPU thread, once: the thread the profiler samples */
 void xemu_lr_prof_vcpu(void);
+/* On the GPU thread (nv2a.pfifo), once: sampled beside the vCPU */
+void xemu_lr_prof_pfifo(void);
 /* The overlay came on: start sampling */
 void xemu_lr_prof_start(void);
 /* The overlay went off (or the game closes): stop, log the shares and

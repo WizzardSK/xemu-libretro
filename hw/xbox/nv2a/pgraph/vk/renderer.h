@@ -152,6 +152,9 @@ typedef struct SurfaceBinding {
     bool draw_dirty;
     bool download_pending;
     bool upload_pending;
+    /* The CPU access watch is disarmed: a guest write already left RAM the
+     * truth (upload_pending), until the upload or a draw arms it again. */
+    bool watch_off;
     /* Guest CPU reads of this surface's RAM; consumed by the eviction
      * dead-writeback predicate (pgraph_writeback_dead). */
     unsigned int cpu_reads;
@@ -856,6 +859,7 @@ void pgraph_vk_surface_update(NV2AState *d, bool upload, bool color_write,
                               bool zeta_write);
 SurfaceBinding *pgraph_vk_surface_get(NV2AState *d, hwaddr addr);
 void pgraph_vk_set_surface_dirty(PGRAPHState *pg, bool color, bool zeta);
+void pgraph_vk_surface_watch_on(SurfaceBinding *surface);
 void pgraph_vk_set_surface_scale_factor(NV2AState *d, unsigned int scale);
 unsigned int pgraph_vk_get_surface_scale_factor(NV2AState *d);
 void pgraph_vk_reload_surface_scale_factor(PGRAPHState *pg);

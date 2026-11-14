@@ -247,7 +247,16 @@ static const char *display_frag_glsl =
 #endif
     "    out_Color.rgba = texture(tex, tex_coord);\n"
     "    if (pvideo_enable) {\n"
+#ifdef LIBRETRO
+    /* The frame goes to RetroArch as drawn, top row first, without the flip
+     * for GL above: the overlay's screen position is gl_FragCoord as it is.
+     * Turned over like the frame's in standalone, the video overlay's FMVs
+     * came out upside down (Forza Motorsport, KOTOR, GTA SA; NNshi,
+     * XieTieqiang #2) */
+    "        vec2 screen_coord = gl_FragCoord.xy * pvideo_scale.z;\n"
+#else
     "        vec2 screen_coord = vec2(gl_FragCoord.x, display_size.y - gl_FragCoord.y) * pvideo_scale.z;\n"
+#endif
     "        vec4 output_region = vec4(pvideo_pos.xy, pvideo_pos.xy + pvideo_pos.zw);\n"
     "        bvec4 clip = bvec4(lessThan(screen_coord, output_region.xy),\n"
     "                           greaterThan(screen_coord, output_region.zw));\n"

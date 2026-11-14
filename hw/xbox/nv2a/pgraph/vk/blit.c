@@ -151,6 +151,7 @@ void pgraph_vk_image_blit(NV2AState *d)
             if (gdst->upload_pending) {
                 if (full_replace) {
                     gdst->upload_pending = false;
+                    pgraph_vk_surface_watch_on(gdst);
                 } else {
                     pgraph_vk_upload_surface_data(d, gdst, false);
                 }
@@ -209,6 +210,7 @@ void pgraph_vk_image_blit(NV2AState *d)
             gdst->frame_time = pg->frame_time;
             gdst->draw_dirty = true;
             gdst->upload_pending = false;
+            pgraph_vk_surface_watch_on(gdst);
             return;
         }
     }

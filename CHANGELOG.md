@@ -2,7 +2,7 @@
 
 What changed in the libretro core of this fork, newest first. Changes that come with a merge of upstream xemu are in upstream's own history; a merge is noted here with the upstream version it brought in.
 
-## Unreleased
+## November 2026
 
 - Performance Overlay, Windows: the profiler also samples the GPU thread (the one that reads the game's pushbuffer and drives the renderer), in the same tick as the CPU emulation and counted apart. RetroArch's log gets its shares too (the core, Windows, the GPU driver), and xemu_profile.txt a second section after the CPU's, starting at "# xemu pfifo profile", with the same call chains for its waits. For scenes where the GPU thread, not the CPU, limits the frame rate (NNshi).
 - Vulkan: after the first guest CPU write to a surface's memory, the core stops trapping further accesses to it until the next upload or draw (RAM is the truth meanwhile), as the OpenGL renderer already does. Before, every store of a frame the CPU draws itself was a trap: in Splinter Cell's FMVs about a third of the CPU time went there, against almost none on OpenGL (NNshi's traces).
@@ -53,6 +53,9 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 - Audio Thread's tooltip: the slow menu with Menu Frame Rate on Display Rate is only in RetroArch builds from before November 2026, which RetroArch fixed (Akrido).
 - Trim HDD on Close: switched on in the menu and the content closed straight from the menu, it trims again without a restart; the core saw the change only at the next frame, which never came (Akrido).
 - Patch Manager: XboxGraphicalPatches' 16:9 widescreen, 60 FPS and miscellaneous patches (140) are built into the core, with icup321's permission (XboxGraphicalPatches issue #16), and listed for their games next to the patches in system/xemu/patches, which still load and take a bundled patch's place when one has the same name (NNshi). `scripts/gen_bundled_patches.py` makes `ui/libretro-bundled-patches.h` from a checkout of that repository. The patches' options are now `xemu_zpatch_<hash>` (they were `xemu_patch_<hash>`), so that they come after the core's own options in RetroArch's .opt file: patches switched on before have to be switched on again.
+
+## October 2026
+
 - Core info: no longer marked experimental, and the hard disk image is listed as optional, as the core creates one when there is none (NNshi).
 - Patch Manager: a patched game started again in the same RetroArch session gets its patches; every second start ran unpatched, as on Windows the first start's patched disc was still open in the drive and could not be made again (NNshi).
 - APU DSP Emulation and DSP JIT are on by default: without the DSP the games' effects, reverb and much of their music are missing, and it costs no speed, as xemu's CPU thread is what limits it. Both are now (Restart), taken when the content starts: switched while a game ran, they garbled its sound (NNshi).

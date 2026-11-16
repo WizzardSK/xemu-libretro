@@ -1053,18 +1053,6 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
     }
     const bool shader_demote = query_v13 && v13_q.shaderDemoteToHelperInvocation;
     const bool host_query_reset = api >= VK_API_VERSION_1_2 && hqr_q.hostQueryReset;
-    /* AMD RDNA4 (RX 9000: Navi 48 and 44) loses the device shared with
-     * RetroArch on the second frame, before the emulation starts, as soon
-     * as the vertex input dynamic state or graphics pipeline library
-     * extension is on it, used or not (XieTieqiang's RX 9070 GRE, issue 2).
-     * Those two stay off there; the rest goes by Vulkan Fast Paths, whose
-     * Auto (the default) is None on AMD. */
-    const bool amd_rdna4 = props.vendorID == 0x1002 &&
-                           props.deviceID >= 0x7550 && props.deviceID <= 0x75ff;
-    if (amd_rdna4) {
-        LRLOG_INFO("[xemu] Vulkan: AMD RDNA4 (device 0x%04x): no vertex input dynamic state or pipeline libraries on the shared device\n",
-                   props.deviceID);
-    }
     /* Vulkan Fast Paths Auto: None on AMD, where they draw garbage (issue
      * 2, Tovarichtch/xemu#47), All elsewhere; an AMD user can still pick
      * them (NNshi) */
@@ -1079,9 +1067,9 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
                            eds3_q.extendedDynamicState3ColorBlendEnable &&
                            eds3_q.extendedDynamicState3ColorBlendEquation &&
                            eds3_q.extendedDynamicState3ColorWriteMask;
-    const bool dyn_vertex_input = !amd_rdna4 && opt_vk_dynamic && own_ext_enabled[EXT_VERTEX_INPUT] &&
+    const bool dyn_vertex_input = opt_vk_dynamic && own_ext_enabled[EXT_VERTEX_INPUT] &&
                                   vids_q.vertexInputDynamicState;
-    const bool pipeline_library = !amd_rdna4 && opt_vk_gpl && own_ext_enabled[EXT_PIPELINE_LIBRARY] &&
+    const bool pipeline_library = opt_vk_gpl && own_ext_enabled[EXT_PIPELINE_LIBRARY] &&
                                   own_ext_enabled[EXT_GPL] &&
                                   gpl_q.graphicsPipelineLibrary;
 

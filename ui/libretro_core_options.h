@@ -444,23 +444,24 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "enabled"
     },
-    /* All by default, as standalone; fewer for a GPU that crashes on one
-     * of them (Akrido) */
+    /* Auto by default: All, as standalone, but None on AMD, where they draw
+     * garbage (NNshi); fewer for a GPU that crashes on one of them (Akrido) */
     {
         "xemu_vk_fast_paths",
         "Vulkan Fast Paths (Restart)",
         NULL,
-        "Affects shader compilation speed on Vulkan. \"All\" is the fastest but can crash some games.",
+        "Currently only confirmed to work on Nvidia graphics cards, broken on AMD. Affects shader compilation speed on Vulkan. \"All\" is the fastest but can crash some games. \"Auto\" is None on AMD graphics cards and All on others.",
         NULL,
         "video",
         {
+            { "auto",     "Auto" },
             { "all",      "All" },
             { "no_gpl",   "No Pipeline Libraries" },
             { "no_dyn",   "No Dynamic States" },
             { "none",     "None" },
             { NULL, NULL },
         },
-        "all"
+        "auto"
     },
     {
         "xemu_mspf_overlay",

@@ -304,6 +304,9 @@ static bool opt_chihiro_freeplay = true;
 /* Video > Vulkan Fast Paths: which of the renderer's fast-path features the
  * shared device may get (xemu_vk_create_device) */
 static bool opt_vk_gpl = false, opt_vk_dynamic = true;
+/* Vulkan Fast Paths Auto: decided by the GPU's vendor when the device is
+ * made (above) */
+static bool opt_vk_auto = true;
 static int opt_chihiro_ffb = 100; /* percent, 0 = off */
 extern bool libretro_chihiro_aim_stick;   /* libretro-chihiro.c */
 extern float libretro_chihiro_aim_speed;
@@ -1053,18 +1056,26 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
     /* AMD RDNA4 (RX 9000: Navi 48 and 44) loses the device shared with
      * RetroArch on the second frame, before the emulation starts, as soon
      * as the vertex input dynamic state or graphics pipeline library
-     * extension is on it, used or not, and draws garbage with the cull/front
-     * and blend dynamic states (XieTieqiang's RX 9070 GRE, issue 2): there
-     * the fast paths stay off, as with Vulkan Fast Paths None. */
+     * extension is on it, used or not (XieTieqiang's RX 9070 GRE, issue 2).
+     * Those two stay off there; the rest goes by Vulkan Fast Paths, whose
+     * Auto (the default) is None on AMD. */
     const bool amd_rdna4 = props.vendorID == 0x1002 &&
                            props.deviceID >= 0x7550 && props.deviceID <= 0x75ff;
     if (amd_rdna4) {
-        LRLOG_INFO("[xemu] Vulkan: AMD RDNA4 (device 0x%04x): the fast paths stay off\n",
+        LRLOG_INFO("[xemu] Vulkan: AMD RDNA4 (device 0x%04x): no vertex input dynamic state or pipeline libraries on the shared device\n",
                    props.deviceID);
     }
-    const bool dyn_cull_front = !amd_rdna4 && opt_vk_dynamic && own_ext_enabled[EXT_EDS] &&
+    /* Vulkan Fast Paths Auto: None on AMD, where they draw garbage (issue
+     * 2, Tovarichtch/xemu#47), All elsewhere; an AMD user can still pick
+     * them (NNshi) */
+    if (opt_vk_auto) {
+        const bool amd = props.vendorID == 0x1002;
+        opt_vk_gpl = opt_vk_dynamic = !amd;
+        LRLOG_INFO("[xemu] Vulkan Fast Paths Auto: %s\n", amd ? "None (AMD)" : "All");
+    }
+    const bool dyn_cull_front = opt_vk_dynamic && own_ext_enabled[EXT_EDS] &&
                                 eds_q.extendedDynamicState;
-    const bool dyn_blend = !amd_rdna4 && opt_vk_dynamic && own_ext_enabled[EXT_EDS3] &&
+    const bool dyn_blend = opt_vk_dynamic && own_ext_enabled[EXT_EDS3] &&
                            eds3_q.extendedDynamicState3ColorBlendEnable &&
                            eds3_q.extendedDynamicState3ColorBlendEquation &&
                            eds3_q.extendedDynamicState3ColorWriteMask;
@@ -1810,6 +1821,7 @@ static void update_variables(void)
     var.key = "xemu_vk_fast_paths";
     var.value = NULL;
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        opt_vk_auto = !strcmp(var.value, "auto");
         opt_vk_gpl = !strcmp(var.value, "all") || !strcmp(var.value, "no_dyn");
         opt_vk_dynamic = !strcmp(var.value, "all") || !strcmp(var.value, "no_gpl");
     }

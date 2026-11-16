@@ -409,11 +409,9 @@ struct pgraph_texture_possibly_dirty_struct {
     hwaddr addr, end;
 };
 
-static void mark_textures_possibly_dirty_visitor(Lru *lru, LruNode *node, void *opaque)
+static void mark_texture_possibly_dirty(TextureBinding *tnode,
+    const struct pgraph_texture_possibly_dirty_struct *test)
 {
-    struct pgraph_texture_possibly_dirty_struct *test = opaque;
-
-    TextureBinding *tnode = container_of(node, TextureBinding, node);
 
     uintptr_t k_tex_addr = tnode->key.texture_vram_offset;
     uintptr_t k_tex_end = k_tex_addr + tnode->key.texture_length - 1;
@@ -435,21 +433,46 @@ static void mark_textures_possibly_dirty_visitor(Lru *lru, LruNode *node, void *
     }
 }
 
+/* A dirty range goes to a log; each texture applies the entries it has
+ * not seen when it is looked at next (texture_catch_up). Walking the whole
+ * texture cache on every dirty find was a fifth of the GPU thread in
+ * Burnout Revenge (NNshi's pfifo profile). */
 void pgraph_vk_mark_textures_possibly_dirty(NV2AState *d,
     hwaddr addr, hwaddr size)
 {
+    PGRAPHVkState *r = d->pgraph.vk_renderer_state;
     hwaddr end = TARGET_PAGE_ALIGN(addr + size) - 1;
     addr &= TARGET_PAGE_MASK;
     assert(end <= memory_region_size(d->vram));
 
-    struct pgraph_texture_possibly_dirty_struct test = {
-        .addr = addr,
-        .end = end,
-    };
+    const uint64_t i = r->dirty_log_count % ARRAY_SIZE(r->dirty_log);
+    r->dirty_log[i].addr = addr;
+    r->dirty_log[i].end = end;
+    r->dirty_log_count++;
+}
 
-    lru_visit_active(&d->pgraph.vk_renderer_state->texture_cache,
-                     mark_textures_possibly_dirty_visitor,
-                     &test);
+/* Applies the dirty ranges logged since the texture last looked; one that
+ * fell too far behind (the log wrapped) counts as dirty. */
+static void texture_catch_up(PGRAPHVkState *r, TextureBinding *tnode)
+{
+    const uint64_t n = r->dirty_log_count;
+    if (tnode->dirty_seen == n) {
+        return;
+    }
+    if (n - tnode->dirty_seen > ARRAY_SIZE(r->dirty_log)) {
+        tnode->possibly_dirty = true;
+        tnode->validation_frame = -1;
+    } else {
+        for (uint64_t k = tnode->dirty_seen; k < n; k++) {
+            const uint64_t i = k % ARRAY_SIZE(r->dirty_log);
+            const struct pgraph_texture_possibly_dirty_struct test = {
+                .addr = r->dirty_log[i].addr,
+                .end = r->dirty_log[i].end,
+            };
+            mark_texture_possibly_dirty(tnode, &test);
+        }
+    }
+    tnode->dirty_seen = n;
 }
 
 static bool check_texture_dirty(NV2AState *d, hwaddr addr, hwaddr size)
@@ -1915,6 +1938,7 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
     if (binding_found) {
         NV2A_VK_DPRINTF("Cache hit");
         r->texture_bindings[texture_idx] = snode;
+        texture_catch_up(r, snode);
         possibly_dirty |= snode->possibly_dirty;
     } else {
         possibly_dirty = true;
@@ -1925,6 +1949,11 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
         possibly_dirty |= check_texture_possibly_dirty(
             d, texture_vram_offset, texture_length, texture_palette_vram_offset,
             texture_palette_data_size);
+        /* its own dirty find too, as the walk marked it: a page written
+         * after an earlier draw of this frame sampled it revalidates now */
+        if (binding_found) {
+            texture_catch_up(r, snode);
+        }
     }
 
     // Calculate hash of texture data, if necessary
@@ -1933,7 +1962,7 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
 
     /* HEURISTIC: without a newly found dirty page, the content hash, the
      * costly part of revalidation, runs at most once per frame per binding
-     * (mark_textures_possibly_dirty_visitor resets it): bind_textures stamps
+     * (mark_texture_possibly_dirty resets it): bind_textures stamps
      * validation_frame after this call (-1 on a fresh node, which always
      * hashes). The sampler is still resolved on every bind below. */
     uint64_t content_hash = 0;
@@ -2005,6 +2034,8 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
     memcpy(&snode->key, &key, sizeof(key));
     snode->current_layout = VK_IMAGE_LAYOUT_UNDEFINED;
     snode->possibly_dirty = false;
+    /* uploaded from RAM as it is now: the ranges logged so far are in it */
+    snode->dirty_seen = r->dirty_log_count;
     snode->hash = content_hash;
 
     VkColorFormatInfo vkf = kelvin_color_format_vk_map[state.color_format];
@@ -2121,6 +2152,7 @@ static bool check_textures_dirty(PGRAPHState *pg)
          * once per frame, and again when a dirty page of it is found after
          * that (validation_frame reset to -1), as a CPU write between two
          * draws of a frame */
+        texture_catch_up(r, r->texture_bindings[i]);
         if (r->texture_bindings[i]->possibly_dirty &&
             r->texture_bindings[i]->validation_frame != pg->frame_time) {
             return true;
@@ -2212,6 +2244,8 @@ static void texture_cache_entry_init(Lru *lru, LruNode *node, const void *state)
     snode->s2t_borrowed = false;
     snode->seq = ++r->texture_binding_seq;
     snode->validation_frame = (unsigned int)-1;
+    /* new content: what was dirty before it is in it */
+    snode->dirty_seen = r->dirty_log_count;
 }
 
 static void texture_cache_release_node_resources(PGRAPHVkState *r, TextureBinding *snode)

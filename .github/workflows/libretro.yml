@@ -250,6 +250,22 @@ jobs:
           path: ~/.cache/vcpkg/archives
           key: vcpkg-android-${{ matrix.triplet }}-v1
 
+      # vcpkg's pcre2 port (for glib) asks the GitHub API for its sljit
+      # gitlink without a token, and the runners' shared addresses run into
+      # the anonymous rate limit (403, NNshi). Fetched here with the
+      # workflow's token, vcpkg finds the file in its downloads and only
+      # checks its hash; if this fails, vcpkg tries as before.
+      - name: pcre2's sljit gitlink
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v=$(jq -r '.version // ."version-string"' "$VCPKG_INSTALLATION_ROOT/ports/pcre2/vcpkg.json")
+          d="${VCPKG_DOWNLOADS:-$VCPKG_INSTALLATION_ROOT/downloads}"
+          mkdir -p "$d"
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" \
+            -o "$d/pcre2-pcre2-$v-sljit-gitlink.json" \
+            "https://api.github.com/repos/PCRE2Project/pcre2/contents/deps/sljit?ref=pcre2-$v" || true
+
       - name: vcpkg
         run: |
           "$VCPKG_INSTALLATION_ROOT/vcpkg" install --triplet=${{ matrix.triplet }} \

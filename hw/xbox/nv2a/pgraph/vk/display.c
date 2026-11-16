@@ -247,16 +247,7 @@ static const char *display_frag_glsl =
 #endif
     "    out_Color.rgba = texture(tex, tex_coord);\n"
     "    if (pvideo_enable) {\n"
-#ifdef LIBRETRO
-    /* The frame goes to RetroArch as drawn, top row first, without the flip
-     * for GL above: the overlay's screen position is gl_FragCoord as it is.
-     * Turned over like the frame's in standalone, the video overlay's FMVs
-     * came out upside down (Forza Motorsport, KOTOR, GTA SA; NNshi,
-     * XieTieqiang #2) */
-    "        vec2 screen_coord = gl_FragCoord.xy * pvideo_scale.z;\n"
-#else
     "        vec2 screen_coord = vec2(gl_FragCoord.x, display_size.y - gl_FragCoord.y) * pvideo_scale.z;\n"
-#endif
     "        vec4 output_region = vec4(pvideo_pos.xy, pvideo_pos.xy + pvideo_pos.zw);\n"
     "        bvec4 clip = bvec4(lessThan(screen_coord, output_region.xy),\n"
     "                           greaterThan(screen_coord, output_region.zw));\n"
@@ -1038,12 +1029,34 @@ static void update_uniforms(PGRAPHState *pg, SurfaceBinding *surface)
             GET_MASK(pvideo->color_key, NV_PVIDEO_COLOR_KEY_RED) / 255.0,
             GET_MASK(pvideo->color_key, NV_PVIDEO_COLOR_KEY_GREEN) / 255.0,
             GET_MASK(pvideo->color_key, NV_PVIDEO_COLOR_KEY_BLUE) / 255.0);
+#ifdef LIBRETRO
+        /* The frame goes to RetroArch as drawn, top row first, without the
+         * GL flip, but the shader (left as standalone has it: changing its
+         * text made AMD RDNA4 draw garbage, XieTieqiang #2) places the
+         * overlay at display_size.y - gl_FragCoord.y. The overlay's
+         * position and its reading direction are turned over here instead,
+         * so it lands where gl_FragCoord.y puts it: else the video
+         * overlay's FMVs came out upside down (Forza Motorsport, KOTOR, GTA
+         * SA; NNshi, XieTieqiang #2) */
+        {
+            float z = 1.0f / pg->surface_scale_factor;
+            float flip_y = r->display.height * z - pvideo->out_y -
+                           pvideo->out_height;
+            uniform2f(l, uniform_index(l, "pvideo_in_pos"), pvideo->in_s / 16.f,
+                      pvideo->in_t / 8.f + pvideo->out_height * pvideo->scale_y);
+            uniform4f(l, uniform_index(l, "pvideo_pos"), pvideo->out_x, flip_y,
+                      pvideo->out_width, pvideo->out_height);
+            uniform4f(l, uniform_index(l, "pvideo_scale"), pvideo->scale_x,
+                      -pvideo->scale_y, z, 1.0);
+        }
+#else
         uniform2f(l, uniform_index(l, "pvideo_in_pos"), pvideo->in_s / 16.f,
                   pvideo->in_t / 8.f);
         uniform4f(l, uniform_index(l, "pvideo_pos"), pvideo->out_x,
                   pvideo->out_y, pvideo->out_width, pvideo->out_height);
         uniform4f(l, uniform_index(l, "pvideo_scale"), pvideo->scale_x,
                   pvideo->scale_y, 1.0f / pg->surface_scale_factor, 1.0);
+#endif
     }
 }
 

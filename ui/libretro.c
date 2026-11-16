@@ -944,6 +944,7 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
         [EXT_GPL] = VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME,
     };
     bool own_ext_enabled[G_N_ELEMENTS(own_exts)] = { false };
+    bool own_ext_listed[G_N_ELEMENTS(own_exts)] = { false };
     const char **exts = g_new0(const char *, num_required_exts + G_N_ELEMENTS(own_exts));
     uint32_t nexts = 0;
     for (unsigned i = 0; i < num_required_exts; i++) {
@@ -956,12 +957,12 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
         }
         if (listed) {
             own_ext_enabled[i] = true;
+            own_ext_listed[i] = true;
             continue;
         }
-        if (xemu_vk_has_ext(eprops, ecount, own_exts[i])) {
-            exts[nexts++] = own_exts[i];
-            own_ext_enabled[i] = true;
-        }
+        /* available; added to the device below only when its features are
+         * used */
+        own_ext_enabled[i] = xemu_vk_has_ext(eprops, ecount, own_exts[i]);
     }
     g_free(eprops);
 
@@ -1049,17 +1050,50 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
     }
     const bool shader_demote = query_v13 && v13_q.shaderDemoteToHelperInvocation;
     const bool host_query_reset = api >= VK_API_VERSION_1_2 && hqr_q.hostQueryReset;
-    const bool dyn_cull_front = opt_vk_dynamic && own_ext_enabled[EXT_EDS] &&
+    /* AMD RDNA4 (RX 9000: Navi 48 and 44) loses the device shared with
+     * RetroArch on the second frame, before the emulation starts, as soon
+     * as the vertex input dynamic state or graphics pipeline library
+     * extension is on it, used or not, and draws garbage with the cull/front
+     * and blend dynamic states (XieTieqiang's RX 9070 GRE, issue 2): there
+     * the fast paths stay off, as with Vulkan Fast Paths None. */
+    const bool amd_rdna4 = props.vendorID == 0x1002 &&
+                           props.deviceID >= 0x7550 && props.deviceID <= 0x75ff;
+    if (amd_rdna4) {
+        LRLOG_INFO("[xemu] Vulkan: AMD RDNA4 (device 0x%04x): the fast paths stay off\n",
+                   props.deviceID);
+    }
+    const bool dyn_cull_front = !amd_rdna4 && opt_vk_dynamic && own_ext_enabled[EXT_EDS] &&
                                 eds_q.extendedDynamicState;
-    const bool dyn_blend = opt_vk_dynamic && own_ext_enabled[EXT_EDS3] &&
+    const bool dyn_blend = !amd_rdna4 && opt_vk_dynamic && own_ext_enabled[EXT_EDS3] &&
                            eds3_q.extendedDynamicState3ColorBlendEnable &&
                            eds3_q.extendedDynamicState3ColorBlendEquation &&
                            eds3_q.extendedDynamicState3ColorWriteMask;
-    const bool dyn_vertex_input = opt_vk_dynamic && own_ext_enabled[EXT_VERTEX_INPUT] &&
+    const bool dyn_vertex_input = !amd_rdna4 && opt_vk_dynamic && own_ext_enabled[EXT_VERTEX_INPUT] &&
                                   vids_q.vertexInputDynamicState;
-    const bool pipeline_library = opt_vk_gpl && own_ext_enabled[EXT_PIPELINE_LIBRARY] &&
+    const bool pipeline_library = !amd_rdna4 && opt_vk_gpl && own_ext_enabled[EXT_PIPELINE_LIBRARY] &&
                                   own_ext_enabled[EXT_GPL] &&
                                   gpl_q.graphicsPipelineLibrary;
+
+    /* Only the extensions whose features the renderer turns on go to the
+     * device RetroArch shares: the RX 9070 GRE above lost the device with
+     * every one of them enabled and the fast paths off */
+    {
+        const bool use[G_N_ELEMENTS(own_exts)] = {
+            [EXT_CUSTOM_BORDER] = own_ext_enabled[EXT_CUSTOM_BORDER],
+            [EXT_MEMORY_BUDGET] = own_ext_enabled[EXT_MEMORY_BUDGET],
+            [EXT_EDS] = dyn_cull_front,
+            [EXT_EDS3] = dyn_blend,
+            [EXT_VERTEX_INPUT] = dyn_vertex_input,
+            [EXT_PIPELINE_LIBRARY] = pipeline_library,
+            [EXT_GPL] = pipeline_library,
+        };
+        for (unsigned k = 0; k < G_N_ELEMENTS(own_exts); k++) {
+            if (use[k] && !own_ext_listed[k]) {
+                exts[nexts++] = own_exts[k];
+            }
+            own_ext_enabled[k] = use[k] || own_ext_listed[k];
+        }
+    }
 
     void *next = NULL;
     VkPhysicalDeviceExtendedDynamicStateFeaturesEXT eds_features = {

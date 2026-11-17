@@ -237,6 +237,8 @@ typedef struct DisasContext {
 
     /* Floating point */
     bool flcr_set;
+    /* The host MXCSR holds the guest's SSE mode (gen_sse_mxcsr) */
+    bool sse_mxcsr_set;
     int fpstt_delta;
     TCGv_fp fpregs[8];
     TCGv_fp ft0;
@@ -1669,6 +1671,7 @@ static void gen_flcr(DisasContext *s)
     }
     tcg_gen_flcr(v);
     s->flcr_set = true;
+    s->sse_mxcsr_set = false;
 }
 
 static void gen_mov32i_f64(TCGv_f64 ret, TCGv_i32 arg)
@@ -1755,6 +1758,7 @@ static void gen_flush_fp(DisasContext *s)
     fp_wrapper(flush_fp_regs)(s);
     s->fpstt_delta = 0;
     s->flcr_set = false;
+    s->sse_mxcsr_set = false;
     gen_flush_fip(s);
 }
 
@@ -4363,6 +4367,7 @@ static void i386_tr_init_disas_context(DisasContextBase *dcbase, CPUState *cpu)
     dc->fip_sel = NULL;
     dc->ft0 = NULL;
     dc->flcr_set = false;
+    dc->sse_mxcsr_set = false;
 }
 
 static void i386_tr_tb_start(DisasContextBase *db, CPUState *cpu)

@@ -528,6 +528,129 @@ static void gen_3dnow(DisasContext *s, X86DecodedInsn *decode)
     }
 }
 
+#if defined(XBOX) && defined(__x86_64__)
+/*
+ * Legacy-SSE float arithmetic compiled into the TB instead of a helper call
+ * (CPU boost). The host is an x86 as well: with the host MXCSR at the
+ * guest's rounding, FTZ and DAZ (exceptions masked) the host's ADDSS/MULSS
+ * compute what the guest's do, as the native helpers do in ops_sse.h, but
+ * without a call per instruction. The mode is loaded once per TB from the
+ * guest MXCSR at run time, and again after the x87 path (gen_flcr) or a
+ * guest LDMXCSR/FXRSTOR/XRSTOR changes it. Same caveats as the native
+ * helpers: no MXCSR exception flags are raised for the guest, and which NaN
+ * comes back from add/mul of two NaNs may differ.
+ */
+static void gen_sse_mxcsr(DisasContext *s)
+{
+    if (s->sse_mxcsr_set) {
+        return;
+    }
+    TCGv_i32 v = tcg_temp_new_i32();
+    tcg_gen_ld_i32(v, tcg_env, offsetof(CPUX86State, mxcsr));
+    tcg_gen_andi_i32(v, v, 0xe040);
+    tcg_gen_ori_i32(v, v, 0x1f80);
+    tcg_gen_st_i32(v, tcg_env, offsetof(CPUX86State, xemu_host_mxcsr));
+    tcg_gen_flcr(v);
+    s->sse_mxcsr_set = true;
+    /* the x87 path must load its own rounding again */
+    s->flcr_set = false;
+}
+
+enum { SSE_INL_ADD, SSE_INL_SUB, SSE_INL_MUL, SSE_INL_DIV };
+
+static bool gen_fp_sse_inline(DisasContext *s, X86DecodedInsn *decode, int op)
+{
+    if (!xemu_cpu_boost || (s->prefix & (PREFIX_VEX | PREFIX_DATA | PREFIX_REPNZ))) {
+        return false;
+    }
+    bool scalar = s->prefix & PREFIX_REPZ;
+    int n = scalar ? 1 : 4;
+    TCGv_i32 r[4];
+
+    gen_sse_mxcsr(s);
+    /* every lane is computed before any is stored: the source may be the
+     * destination */
+    for (int i = 0; i < n; i++) {
+        TCGv_i32 a = tcg_temp_new_i32(), b = tcg_temp_new_i32();
+        TCGv_f32 fa = tcg_temp_new_f32(), fb = tcg_temp_new_f32();
+        tcg_gen_ld_i32(a, tcg_env, vector_elem_offset(&decode->op[1], MO_32, i));
+        tcg_gen_ld_i32(b, tcg_env, vector_elem_offset(&decode->op[2], MO_32, i));
+        tcg_gen_mov32i_f32(fa, a);
+        tcg_gen_mov32i_f32(fb, b);
+        switch (op) {
+        case SSE_INL_ADD: tcg_gen_add_f32(fa, fa, fb); break;
+        case SSE_INL_SUB: tcg_gen_sub_f32(fa, fa, fb); break;
+        case SSE_INL_MUL: tcg_gen_mul_f32(fa, fa, fb); break;
+        default: tcg_gen_div_f32(fa, fa, fb); break;
+        }
+        r[i] = tcg_temp_new_i32();
+        tcg_gen_mov32f_i32(r[i], fa);
+    }
+    for (int i = 0; i < n; i++) {
+        tcg_gen_st_i32(r[i], tcg_env, vector_elem_offset(&decode->op[0], MO_32, i));
+    }
+    return true;
+}
+
+/* SHUFPS on xmm: four 32-bit moves, no helper */
+static bool gen_shufps_inline(DisasContext *s, X86DecodedInsn *decode)
+{
+    if (!xemu_cpu_boost || (s->prefix & (PREFIX_VEX | PREFIX_DATA))) {
+        return false;
+    }
+    int imm = decode->immediate;
+    TCGv_i32 r[4];
+    for (int i = 0; i < 4; i++) {
+        X86DecodedOp *src = &decode->op[i < 2 ? 1 : 2];
+        r[i] = tcg_temp_new_i32();
+        tcg_gen_ld_i32(r[i], tcg_env,
+                       vector_elem_offset(src, MO_32, (imm >> (2 * i)) & 3));
+    }
+    for (int i = 0; i < 4; i++) {
+        tcg_gen_st_i32(r[i], tcg_env, vector_elem_offset(&decode->op[0], MO_32, i));
+    }
+    return true;
+}
+
+/*
+ * CVTPI2PS (two int32 from MMX into the low two floats of an xmm, the upper
+ * two kept) and CVTPS2PI (the low two floats into int32 in MMX), both
+ * rounding as MXCSR says; CVTSS2SI gives the integer indefinite for NaN and
+ * out-of-range inputs as the guest's instruction does.
+ */
+static bool gen_cvt_pi_ps_inline(DisasContext *s, X86DecodedInsn *decode, bool to_int)
+{
+    if (!xemu_cpu_boost || (s->prefix & PREFIX_DATA)) {
+        return false;
+    }
+    TCGv_i32 r[2];
+
+    gen_sse_mxcsr(s);
+    for (int i = 0; i < 2; i++) {
+        TCGv_i32 a = tcg_temp_new_i32();
+        TCGv_f32 f = tcg_temp_new_f32();
+        tcg_gen_ld_i32(a, tcg_env, vector_elem_offset(&decode->op[2], MO_32, i));
+        r[i] = tcg_temp_new_i32();
+        if (to_int) {
+            tcg_gen_mov32i_f32(f, a);
+            tcg_gen_cvt32f_i32(r[i], f);
+        } else {
+            tcg_gen_cvt32i_f32(f, a);
+            tcg_gen_mov32f_i32(r[i], f);
+        }
+    }
+    for (int i = 0; i < 2; i++) {
+        tcg_gen_st_i32(r[i], tcg_env, vector_elem_offset(&decode->op[0], MO_32, i));
+    }
+    return true;
+}
+#else
+static inline void gen_sse_mxcsr(DisasContext *s) { }
+#define gen_fp_sse_inline(s, decode, op) false
+#define gen_shufps_inline(s, decode) false
+#define gen_cvt_pi_ps_inline(s, decode, to_int) false
+#endif
+
 /*
  * 00 = v*ps Vps, Hps, Wpd
  * 66 = v*pd Vpd, Hpd, Wps
@@ -597,6 +720,25 @@ static inline void gen_fp_sse(DisasContext *s, X86DecodedInsn *decode,
     }
 }
 
+#define FP_SSE_INL(uname, lname, inl)                                              \
+static void gen_##uname(DisasContext *s, X86DecodedInsn *decode)                   \
+{                                                                                  \
+    if (gen_fp_sse_inline(s, decode, inl)) {                                       \
+        return;                                                                    \
+    }                                                                              \
+    gen_fp_sse(s, decode,                                                          \
+               gen_helper_##lname##pd_xmm,                                         \
+               gen_helper_##lname##ps_xmm,                                         \
+               gen_helper_##lname##pd_ymm,                                         \
+               gen_helper_##lname##ps_ymm,                                         \
+               gen_helper_##lname##sd,                                             \
+               gen_helper_##lname##ss);                                            \
+}
+FP_SSE_INL(VADD, add, SSE_INL_ADD)
+FP_SSE_INL(VMUL, mul, SSE_INL_MUL)
+FP_SSE_INL(VSUB, sub, SSE_INL_SUB)
+FP_SSE_INL(VDIV, div, SSE_INL_DIV)
+
 #define FP_SSE(uname, lname)                                                       \
 static void gen_##uname(DisasContext *s, X86DecodedInsn *decode)                   \
 {                                                                                  \
@@ -608,11 +750,7 @@ static void gen_##uname(DisasContext *s, X86DecodedInsn *decode)                
                gen_helper_##lname##sd,                                             \
                gen_helper_##lname##ss);                                            \
 }
-FP_SSE(VADD, add)
-FP_SSE(VMUL, mul)
-FP_SSE(VSUB, sub)
 FP_SSE(VMIN, min)
-FP_SSE(VDIV, div)
 FP_SSE(VMAX, max)
 
 #define FMA_SSE_PACKED(uname, ptr0, ptr1, ptr2, even, odd)                         \
@@ -1915,6 +2053,9 @@ static void gen_CRC32(DisasContext *s, X86DecodedInsn *decode)
 static void gen_CVTPI2Px(DisasContext *s, X86DecodedInsn *decode)
 {
     gen_enter_mmx(s);
+    if (gen_cvt_pi_ps_inline(s, decode, false)) {
+        return;
+    }
     if (s->prefix & PREFIX_DATA) {
         gen_helper_cvtpi2pd(tcg_env, OP_PTR0, OP_PTR2);
     } else {
@@ -1925,6 +2066,9 @@ static void gen_CVTPI2Px(DisasContext *s, X86DecodedInsn *decode)
 static void gen_CVTPx2PI(DisasContext *s, X86DecodedInsn *decode)
 {
     gen_enter_mmx(s);
+    if (gen_cvt_pi_ps_inline(s, decode, true)) {
+        return;
+    }
     if (s->prefix & PREFIX_DATA) {
         gen_helper_cvtpd2pi(tcg_env, OP_PTR0, OP_PTR2);
     } else {
@@ -2029,6 +2173,7 @@ static void gen_FXRSTOR(DisasContext *s, X86DecodedInsn *decode)
         gen_NM_exception(s);
     } else {
         gen_helper_fxrstor(tcg_env, s->A0);
+        s->sse_mxcsr_set = false;
     }
 }
 
@@ -2371,6 +2516,7 @@ static void gen_LDMXCSR(DisasContext *s, X86DecodedInsn *decode)
 
     tcg_gen_trunc_tl_i32(tmp, s->T0);
     gen_helper_ldmxcsr(tcg_env, tmp);
+    s->sse_mxcsr_set = false;
 }
 
 static void gen_lxx_seg(DisasContext *s, X86DecodedInsn *decode, int seg)
@@ -4656,6 +4802,9 @@ static void gen_VROUNDSS(DisasContext *s, X86DecodedInsn *decode)
 
 static void gen_VSHUF(DisasContext *s, X86DecodedInsn *decode)
 {
+    if (gen_shufps_inline(s, decode)) {
+        return;
+    }
     TCGv_i32 imm = tcg_constant_i32(decode->immediate);
     SSEFunc_0_pppi ps, pd, fn;
     ps = s->vex_l ? gen_helper_shufps_ymm : gen_helper_shufps_xmm;
@@ -4797,6 +4946,7 @@ static void gen_XRSTOR(DisasContext *s, X86DecodedInsn *decode)
 
     tcg_gen_concat_tl_i64(features, cpu_regs[R_EAX], cpu_regs[R_EDX]);
     gen_helper_xrstor(tcg_env, s->A0, features);
+    s->sse_mxcsr_set = false;
     if (s->cpuid_7_0_ebx_features & CPUID_7_0_EBX_MPX) {
         /*
          * XRSTOR is how MPX is enabled, which changes how

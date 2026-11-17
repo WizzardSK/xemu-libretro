@@ -568,6 +568,21 @@ static bool gen_fp_sse_inline(DisasContext *s, X86DecodedInsn *decode, int op)
     TCGv_i32 r[4];
 
     gen_sse_mxcsr(s);
+    if (!scalar && tcg_op_supported(INDEX_op_fadd_vec, TCG_TYPE_V128, 0)) {
+        /* one host VADDPS..VDIVPS on the whole register */
+        TCGv_vec a = tcg_temp_new_vec(TCG_TYPE_V128);
+        TCGv_vec b = tcg_temp_new_vec(TCG_TYPE_V128);
+        tcg_gen_ld_vec(a, tcg_env, vector_reg_offset(&decode->op[1]));
+        tcg_gen_ld_vec(b, tcg_env, vector_reg_offset(&decode->op[2]));
+        switch (op) {
+        case SSE_INL_ADD: tcg_gen_fadd_vec(MO_32, a, a, b); break;
+        case SSE_INL_SUB: tcg_gen_fsub_vec(MO_32, a, a, b); break;
+        case SSE_INL_MUL: tcg_gen_fmul_vec(MO_32, a, a, b); break;
+        default: tcg_gen_fdiv_vec(MO_32, a, a, b); break;
+        }
+        tcg_gen_st_vec(a, tcg_env, vector_reg_offset(&decode->op[0]));
+        return true;
+    }
     /* every lane is computed before any is stored: the source may be the
      * destination */
     for (int i = 0; i < n; i++) {

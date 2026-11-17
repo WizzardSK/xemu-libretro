@@ -4183,6 +4183,19 @@ static void tcg_out_vec_op(TCGContext *s, TCGOpcode opc,
     a2 = args[2];
 
     switch (opc) {
+    /* VEX.NDS 0F 58/5C/59/5E: VADDPS/VSUBPS/VMULPS/VDIVPS (vece MO_32) */
+    case INDEX_op_fadd_vec:
+        insn = 0x58 | P_EXT;
+        goto gen_simd;
+    case INDEX_op_fsub_vec:
+        insn = 0x5c | P_EXT;
+        goto gen_simd;
+    case INDEX_op_fmul_vec:
+        insn = 0x59 | P_EXT;
+        goto gen_simd;
+    case INDEX_op_fdiv_vec:
+        insn = 0x5e | P_EXT;
+        goto gen_simd;
     case INDEX_op_add_vec:
         insn = add_insn[vece];
         goto gen_simd;
@@ -4488,6 +4501,10 @@ tcg_target_op_def(TCGOpcode op, TCGType type, unsigned flags)
     case INDEX_op_st_vec:
         return C_O0_I2(x, r);
 
+    case INDEX_op_fadd_vec:
+    case INDEX_op_fsub_vec:
+    case INDEX_op_fmul_vec:
+    case INDEX_op_fdiv_vec:
     case INDEX_op_add_vec:
     case INDEX_op_sub_vec:
     case INDEX_op_mul_vec:
@@ -4557,6 +4574,11 @@ tcg_target_op_def(TCGOpcode op, TCGType type, unsigned flags)
 int tcg_can_emit_vec_op(TCGOpcode opc, TCGType type, unsigned vece)
 {
     switch (opc) {
+    case INDEX_op_fadd_vec:
+    case INDEX_op_fsub_vec:
+    case INDEX_op_fmul_vec:
+    case INDEX_op_fdiv_vec:
+        return TCG_TARGET_HAS_fvec && vece == MO_32;
     case INDEX_op_add_vec:
     case INDEX_op_sub_vec:
     case INDEX_op_and_vec:

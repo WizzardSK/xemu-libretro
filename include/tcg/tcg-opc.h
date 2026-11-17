@@ -227,6 +227,17 @@ DEF(cmp_vec, 1, 2, 1, TCG_OPF_VECTOR)
 DEF(bitsel_vec, 1, 3, 0, TCG_OPF_VECTOR)
 DEF(cmpsel_vec, 1, 4, 1, TCG_OPF_VECTOR)
 
+/*
+ * xemu: IEEE add/sub/mul/div per lane (vece MO_32: single precision), under
+ * the rounding and flush modes the host's FP control register holds at run
+ * time. Gated by TCG_TARGET_HAS_fvec. (After xemu-macos 8fe62f2, which has
+ * them on aarch64; here the x86-64 backend.)
+ */
+DEF(fadd_vec, 1, 2, 0, TCG_OPF_VECTOR)
+DEF(fsub_vec, 1, 2, 0, TCG_OPF_VECTOR)
+DEF(fmul_vec, 1, 2, 0, TCG_OPF_VECTOR)
+DEF(fdiv_vec, 1, 2, 0, TCG_OPF_VECTOR)
+
 DEF(last_generic, 0, 0, 0, TCG_OPF_NOT_PRESENT)
 
 #include "tcg-target-opc.h.inc"

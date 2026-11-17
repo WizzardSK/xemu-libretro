@@ -32,6 +32,8 @@
 #endif
 
 #define TCG_TARGET_HAS_fpu              (TCG_TARGET_REG_BITS == 64)
+/* fadd/fsub/fmul/fdiv_vec as (V)ADDPS..DIVPS: inline SSE packed single */
+#define TCG_TARGET_HAS_fvec             TCG_TARGET_HAS_fpu
 
 #define TCG_TARGET_HAS_qemu_ldst_i128 \
     (TCG_TARGET_REG_BITS == 64 && (cpuinfo & CPUINFO_ATOMIC_VMOVDQA))

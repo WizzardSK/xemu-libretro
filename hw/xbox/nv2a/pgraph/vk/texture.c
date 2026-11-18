@@ -2152,7 +2152,15 @@ static bool check_textures_dirty(PGRAPHState *pg)
          * once per frame, and again when a dirty page of it is found after
          * that (validation_frame reset to -1), as a CPU write between two
          * draws of a frame */
-        texture_catch_up(r, r->texture_bindings[i]);
+        /* Not the dummy a disabled unit holds: it is no cache entry, its
+         * dirty_seen never moves and its key's length is 0 (its end wraps,
+         * so every range overlaps it), so it would count as dirty before
+         * every draw and rebind all textures each time. The old walk never
+         * visited it (lru_visit_active). That was Breakdown's menu: 17
+         * texture readbacks and uploads a frame instead of 2. */
+        if (r->texture_bindings[i] != &r->dummy_texture) {
+            texture_catch_up(r, r->texture_bindings[i]);
+        }
         if (r->texture_bindings[i]->possibly_dirty &&
             r->texture_bindings[i]->validation_frame != pg->frame_time) {
             return true;

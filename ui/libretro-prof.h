@@ -14,6 +14,9 @@ typedef void (*XemuLrProfLog)(const char *fmt, ...);
 void xemu_lr_prof_vcpu(void);
 /* On the GPU thread (nv2a.pfifo), once: sampled beside the vCPU */
 void xemu_lr_prof_pfifo(void);
+/* Debug > Profiler: PFIFO/PGRAPH: the GPU thread is sampled too (read when
+ * the profiler comes on) */
+extern bool xemu_lr_prof_pfifo_on;
 /* The profiler came on: start sampling */
 void xemu_lr_prof_start(void);
 /* The profiler went off (or the game closes): stop, log the shares and

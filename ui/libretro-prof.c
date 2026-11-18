@@ -33,6 +33,8 @@
 
 #include "qemu/osdep.h"
 #include "ui/libretro-prof.h"
+
+bool xemu_lr_prof_pfifo_on;
 #include <glib/gstdio.h>
 
 #if defined(_WIN32)
@@ -56,6 +58,8 @@ typedef struct ProfTarget {
 
 static ProfTarget prof_vcpu = { .name = "vCPU" };
 static ProfTarget prof_pfifo = { .name = "pfifo" };
+/* sampled this run (Debug > Profiler: PFIFO/PGRAPH, read at start) */
+static bool prof_pfifo_run;
 static HANDLE prof_thread;
 static volatile LONG prof_stop;
 static GPtrArray *prof_modules;    /* module names, index = slot */
@@ -247,7 +251,9 @@ static DWORD WINAPI prof_fn(LPVOID arg)
 
     while (!prof_stop) {
         prof_sample(&prof_vcpu);
-        prof_sample(&prof_pfifo);
+        if (prof_pfifo_run) {
+            prof_sample(&prof_pfifo);
+        }
         if (timer && SetWaitableTimer(timer, &due, 0, NULL, NULL, FALSE)) {
             WaitForSingleObject(timer, INFINITE);
         } else {
@@ -281,6 +287,7 @@ void xemu_lr_prof_start(void)
         return;
     }
     prof_core_text();
+    prof_pfifo_run = qatomic_read(&xemu_lr_prof_pfifo_on);
     prof_target_init(&prof_vcpu);
     prof_target_init(&prof_pfifo);
     prof_tbsize = g_hash_table_new(NULL, NULL);
@@ -429,7 +436,9 @@ void xemu_lr_prof_stop(XemuLrProfLog log, const char *path,
         fputs(header, f);
     }
     prof_report(&prof_vcpu, log, f);
-    if (prof_pfifo.h) {
+    if (!prof_pfifo_run) {
+        /* off in Debug: no section */
+    } else if (prof_pfifo.h) {
         prof_report(&prof_pfifo, log, f);
     } else {
         log("pfifo profile: no GPU thread registered\n");

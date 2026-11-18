@@ -236,7 +236,10 @@ static void nv2a_totals_reset(void)
     extern uint64_t nv2a_profile_totals[NV2A_PROF__COUNT];
     memset(nv2a_profile_totals, 0, sizeof(nv2a_profile_totals));
     nv2a_totals_start_us = g_get_monotonic_time();
+    nv2a_s2t_miss_reset();
 }
+/* Debug > Profiler: Renderer Counters */
+static bool opt_prof_counters;
 static void nv2a_totals_dump(const char *path)
 {
     extern uint64_t nv2a_profile_totals[NV2A_PROF__COUNT];
@@ -248,13 +251,17 @@ static void nv2a_totals_dump(const char *path)
         return;
     }
     const double s = (g_get_monotonic_time() - nv2a_totals_start_us) / 1e6;
-    fprintf(f, "# renderer counters, per second over %.1f s\n", s);
-    for (int i = 0; i < NV2A_PROF__COUNT; i++) {
-        if (nv2a_profile_totals[i]) {
-            fprintf(f, "nv2a %s %.1f\n", nv2a_profile_get_counter_name(i),
-                    nv2a_profile_totals[i] / s);
+    if (opt_prof_counters) {
+        fprintf(f, "# renderer counters, per second over %.1f s\n", s);
+        for (int i = 0; i < NV2A_PROF__COUNT; i++) {
+            if (nv2a_profile_totals[i]) {
+                fprintf(f, "nv2a %s %.1f\n",
+                        nv2a_profile_get_counter_name(i),
+                        nv2a_profile_totals[i] / s);
+            }
         }
     }
+    nv2a_s2t_miss_dump(f);
     fclose(f);
 }
 unsigned int xemu_libretro_osd_fps100;
@@ -1749,6 +1756,26 @@ static void update_variables(void)
             last = on;
             __atomic_store_n(&opt_internal_fps, on, __ATOMIC_RELAXED);
         }
+    }
+
+    /* What the profile adds to the vCPU's samples; all off by default */
+    {
+        static const char *const keys[] = {
+            "xemu_prof_pfifo", "xemu_prof_counters", "xemu_prof_s2t",
+            "xemu_prof_surf",
+        };
+        bool on[4];
+        for (int i = 0; i < 4; i++) {
+            var.key = keys[i];
+            var.value = NULL;
+            on[i] = environ_cb &&
+                    environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
+                    var.value && !strcmp(var.value, "enabled");
+        }
+        qatomic_set(&xemu_lr_prof_pfifo_on, on[0]);
+        opt_prof_counters = on[1];
+        qatomic_set(&nv2a_prof_s2t_on, on[2]);
+        qatomic_set(&nv2a_prof_surf_on, on[3]);
     }
 
     var.key = "xemu_video_aspect";

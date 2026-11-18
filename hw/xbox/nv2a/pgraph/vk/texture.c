@@ -1898,6 +1898,30 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
     }
 
     if (!surface_to_texture && !surface_to_texture_cube) {
+        /* For the profile: a texture on render-target memory that is not
+         * taken from the render target, and why (nv2a_s2t_miss_note) */
+        SurfaceBinding *ms = qatomic_read(&nv2a_prof_s2t_on) ? surface : NULL;
+        int why = 0;
+        if (!ms && qatomic_read(&nv2a_prof_s2t_on)) {
+            SurfaceBinding *it;
+            QTAILQ_FOREACH (it, &r->surfaces, entry) {
+                if (texture_vram_offset < it->vram_addr + it->size &&
+                    it->vram_addr < texture_vram_offset + texture_length) {
+                    ms = it;
+                    why = (texture_vram_offset > it->vram_addr) ? 1 : 2;
+                    break;
+                }
+            }
+        }
+        if (ms) {
+            nv2a_s2t_miss_note(why, texture_vram_offset, texture_length,
+                               state.color_format, state.width, state.height,
+                               state.pitch, state.levels, state.cubemap,
+                               ms->vram_addr, ms->size, ms->shape.color_format,
+                               ms->color, ms->swizzle, ms->width, ms->height,
+                               ms->pitch, ms->fmt.bytes_per_pixel);
+        }
+
         // FIXME: Restructure to support rendering surfaces to cubemap faces
 
         // Writeback any surfaces which this texture may index

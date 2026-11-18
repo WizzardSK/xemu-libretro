@@ -155,6 +155,24 @@ extern "C" {
 extern NV2AStats g_nv2a_stats;
 
 const char *nv2a_profile_get_counter_name(unsigned int cnt);
+/* Textures that sit on render-target memory but are not taken from the render
+ * target (a texture/surface mismatch): each distinct case with its count, for
+ * the profile file */
+void nv2a_s2t_miss_note(int why, uint32_t tex_addr, uint32_t tex_len,
+                        unsigned tex_fmt, unsigned tw, unsigned th,
+                        unsigned tpitch, unsigned levels, bool cube,
+                        uint32_t surf_addr, size_t surf_size, unsigned sfmt,
+                        bool color, bool swizzle, unsigned sw, unsigned sh,
+                        unsigned spitch, unsigned sbpp);
+void nv2a_s2t_miss_reset(void);
+/* Debug > Profiler: Missed Render Targets / Surface Downloads and Uploads:
+ * whether the two lists are kept (off, the notes return at once) */
+extern bool nv2a_prof_s2t_on, nv2a_prof_surf_on;
+/* surface downloads (kind 0) and uploads (1) by the renderer function and
+ * line that asked for them, with the surface */
+void nv2a_surf_site_note(int kind, const char *func, int line, uint32_t addr,
+                         unsigned w, unsigned h, unsigned fmt, bool color);
+void nv2a_s2t_miss_dump(FILE *f);
 int nv2a_profile_get_counter_value(unsigned int cnt);
 void nv2a_profile_increment(void);
 void nv2a_profile_flip_stall(void);

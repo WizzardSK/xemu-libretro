@@ -865,6 +865,20 @@ void pgraph_vk_download_dirty_surfaces(NV2AState *d);
 void pgraph_vk_download_surfaces_in_range_if_dirty(PGRAPHState *pg, hwaddr start, hwaddr size);
 void pgraph_vk_upload_surface_data(NV2AState *d, SurfaceBinding *surface,
                                    bool force);
+/* For the profile: where surface downloads and uploads are asked for. Each
+ * call notes its caller; the definitions are named in parentheses, so
+ * these do not expand there. */
+extern __thread const char *vk_surf_site_func;
+extern __thread int vk_surf_site_line;
+#define VK_SURF_SITE() \
+    (vk_surf_site_func = __func__, vk_surf_site_line = __LINE__)
+#define pgraph_vk_surface_download_if_dirty(d, s) \
+    (VK_SURF_SITE(), (pgraph_vk_surface_download_if_dirty)(d, s))
+#define pgraph_vk_download_surfaces_in_range_if_dirty(pg, start, size) \
+    (VK_SURF_SITE(), \
+     (pgraph_vk_download_surfaces_in_range_if_dirty)(pg, start, size))
+#define pgraph_vk_upload_surface_data(d, s, force) \
+    (VK_SURF_SITE(), (pgraph_vk_upload_surface_data)(d, s, force))
 void pgraph_vk_surface_update(NV2AState *d, bool upload, bool color_write,
                               bool zeta_write);
 SurfaceBinding *pgraph_vk_surface_get(NV2AState *d, hwaddr addr);

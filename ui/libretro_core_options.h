@@ -395,7 +395,63 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_mspf_overlay",
         "Profiler (F10)",
         NULL,
-        "Shows three lines in the top left corner. FPS: the frames per second the game shows, as in standalone xemu's video debug overlay, over its last 60 frames. GPU: the frame rate the game could reach from the time it takes to draw a frame (standalone's MSPF), averaged over its last 60 frames and updated every 20 frames; valid only when the GPU is what limits the game. NV2A IDLE: the share of time since the profiler was turned on that the GPU thread waited for the game to send work; high while the frame rate is below the game's target means the CPU is what limits it. F10 on the keyboard turns the profiler on or off, and each time it comes on NV2A IDLE starts over. On Windows, while it is on the core also samples where the CPU emulation spends its time (this slows it slightly), and when it goes off writes the shares to RetroArch's log and every sample to system/xemu/<commit> <game>.txt (the same run again overwrites it). On every system that file starts with the core's version, the game, the settings that matter for speed and the run's average FPS, GPU and NV2A IDLE, and ends with the renderer's counters per second (draws, pipeline and shader binds, texture uploads, surface downloads, syncs with the host GPU and why). While on, the core also writes to RetroArch's log every 300 runs how the guest's frames and the frontend's runs lined up. Takes effect right away.",
+        "Shows three lines in the top left corner. FPS: the frames per second the game shows, as in standalone xemu's video debug overlay, over its last 60 frames. GPU: the frame rate the game could reach from the time it takes to draw a frame (standalone's MSPF), averaged over its last 60 frames and updated every 20 frames; valid only when the GPU is what limits the game. NV2A IDLE: the share of time since the profiler was turned on that the GPU thread waited for the game to send work; high while the frame rate is below the game's target means the CPU is what limits it. F10 on the keyboard turns the profiler on or off, and each time it comes on NV2A IDLE starts over. On Windows, while it is on the core also samples where the CPU emulation spends its time (this slows it slightly), and when it goes off writes the shares to RetroArch's log and every sample to system/xemu/<commit> <game>.txt (the same run again overwrites it). On every system that file starts with the core's version, the game, the settings that matter for speed and the run's average FPS, GPU and NV2A IDLE; the Profiler options below add more to it. While on, the core also writes to RetroArch's log every 300 runs how the guest's frames and the frontend's runs lined up. Takes effect right away.",
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        "Profiler: PFIFO/PGRAPH",
+        NULL,
+        "Windows: with the profiler on, the GPU thread (the pushbuffer and the renderer) is sampled beside the CPU emulation, and the profile file gets its section after the CPU's: where it spends its time and what it waits for. Read when the profiler comes on.",
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        "Profiler: Renderer Counters",
+        NULL,
+        "The profile file ends with the renderer's counters per second over the run: draws, pipeline and shader binds, texture uploads, surface downloads, syncs with the host GPU and why.",
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        "Profiler: Missed Render Targets",
+        NULL,
+        "Vulkan: the profile file lists the textures that sit on memory the game renders into but are not taken from that render target (they go through RAM instead, which is slow), each case once with its count and the texture's and the render target's address, format, size and pitch.",
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        "Profiler: Surface Downloads and Uploads",
+        NULL,
+        "Vulkan: the profile file lists the render targets read back into RAM and written back to the GPU, by the part of the renderer that asked for it, with each render target's address, size and format.",
         NULL,
         "debug",
         {

@@ -154,3 +154,153 @@ int nv2a_profile_get_counter_value(unsigned int cnt)
                        NV2A_PROF_NUM_FRAMES;
     return g_nv2a_stats.frame_history[idx].counters[cnt];
 }
+
+/* nv2a_s2t_miss_note: the distinct texture/render-target mismatches since the
+ * last reset. Only the miss path calls it, at most a few times a draw. */
+typedef struct S2TMiss {
+    int why;
+    uint32_t tex_addr, tex_len;
+    unsigned tex_fmt, tw, th, tpitch, levels;
+    bool cube;
+    uint32_t surf_addr;
+    size_t surf_size;
+    unsigned sfmt;
+    bool color, swizzle;
+    unsigned sw, sh, spitch, sbpp;
+    uint64_t count;
+} S2TMiss;
+bool nv2a_prof_s2t_on, nv2a_prof_surf_on;
+static S2TMiss s2t_miss[48];
+static int s2t_miss_n;
+static QemuMutex s2t_miss_lock;
+static bool s2t_miss_lock_init;
+
+static void s2t_miss_lock_once(void)
+{
+    if (!qatomic_read(&s2t_miss_lock_init)) {
+        static gsize once;
+        if (g_once_init_enter(&once)) {
+            qemu_mutex_init(&s2t_miss_lock);
+            qatomic_set(&s2t_miss_lock_init, true);
+            g_once_init_leave(&once, 1);
+        }
+    }
+}
+
+void nv2a_s2t_miss_note(int why, uint32_t tex_addr, uint32_t tex_len,
+                        unsigned tex_fmt, unsigned tw, unsigned th,
+                        unsigned tpitch, unsigned levels, bool cube,
+                        uint32_t surf_addr, size_t surf_size, unsigned sfmt,
+                        bool color, bool swizzle, unsigned sw, unsigned sh,
+                        unsigned spitch, unsigned sbpp)
+{
+    if (!qatomic_read(&nv2a_prof_s2t_on)) {
+        return;
+    }
+    S2TMiss m = { why, tex_addr, tex_len, tex_fmt, tw, th, tpitch, levels,
+                  cube, surf_addr, surf_size, sfmt, color, swizzle, sw, sh,
+                  spitch, sbpp, 0 };
+    s2t_miss_lock_once();
+    qemu_mutex_lock(&s2t_miss_lock);
+    for (int i = 0; i < s2t_miss_n; i++) {
+        S2TMiss *e = &s2t_miss[i];
+        if (e->why == why && e->tex_addr == tex_addr && e->tex_len == tex_len &&
+            e->tex_fmt == tex_fmt && e->tw == tw && e->th == th &&
+            e->tpitch == tpitch && e->surf_addr == surf_addr &&
+            e->sw == sw && e->sh == sh && e->sfmt == sfmt) {
+            e->count++;
+            qemu_mutex_unlock(&s2t_miss_lock);
+            return;
+        }
+    }
+    if (s2t_miss_n < (int)ARRAY_SIZE(s2t_miss)) {
+        m.count = 1;
+        s2t_miss[s2t_miss_n++] = m;
+    }
+    qemu_mutex_unlock(&s2t_miss_lock);
+}
+
+typedef struct SurfSite {
+    int kind;
+    const char *func;
+    int line;
+    uint32_t addr;
+    unsigned w, h, fmt;
+    bool color;
+    uint64_t count;
+} SurfSite;
+static SurfSite surf_site[64];
+static int surf_site_n;
+
+void nv2a_surf_site_note(int kind, const char *func, int line, uint32_t addr,
+                         unsigned w, unsigned h, unsigned fmt, bool color)
+{
+    if (!qatomic_read(&nv2a_prof_surf_on)) {
+        return;
+    }
+    s2t_miss_lock_once();
+    qemu_mutex_lock(&s2t_miss_lock);
+    for (int i = 0; i < surf_site_n; i++) {
+        SurfSite *e = &surf_site[i];
+        if (e->kind == kind && e->func == func && e->line == line &&
+            e->addr == addr && e->w == w && e->h == h && e->fmt == fmt) {
+            e->count++;
+            qemu_mutex_unlock(&s2t_miss_lock);
+            return;
+        }
+    }
+    if (surf_site_n < (int)ARRAY_SIZE(surf_site)) {
+        surf_site[surf_site_n++] = (SurfSite){ kind, func, line, addr, w, h,
+                                              fmt, color, 1 };
+    }
+    qemu_mutex_unlock(&s2t_miss_lock);
+}
+
+void nv2a_s2t_miss_reset(void)
+{
+    s2t_miss_lock_once();
+    qemu_mutex_lock(&s2t_miss_lock);
+    s2t_miss_n = 0;
+    surf_site_n = 0;
+    qemu_mutex_unlock(&s2t_miss_lock);
+}
+
+void nv2a_s2t_miss_dump(FILE *f)
+{
+    static const char *const whys[] = {
+        "same address, shape or format differs",
+        "inside a render target, not at its start",
+        "overlaps a render target",
+    };
+    s2t_miss_lock_once();
+    qemu_mutex_lock(&s2t_miss_lock);
+    if (s2t_miss_n) {
+        fprintf(f, "# textures on render-target memory not taken from it "
+                   "(count over the run; tex/surf: address+length, format, "
+                   "width x height, pitch)\n");
+    }
+    for (int i = 0; i < s2t_miss_n; i++) {
+        S2TMiss *e = &s2t_miss[i];
+        fprintf(f, "s2t-miss %" PRIu64 " %s: tex %08x+%x fmt %02x %ux%u "
+                   "pitch %u levels %u%s | surf %08x+%zx fmt %02x %s%s "
+                   "%ux%u pitch %u bpp %u\n",
+                e->count, whys[e->why], e->tex_addr, e->tex_len, e->tex_fmt,
+                e->tw, e->th, e->tpitch, e->levels, e->cube ? " cube" : "",
+                e->surf_addr, e->surf_size, e->sfmt,
+                e->color ? "color" : "zeta", e->swizzle ? " swizzled" : "",
+                e->sw, e->sh, e->spitch, e->sbpp);
+    }
+    if (surf_site_n) {
+        fprintf(f, "# surface downloads (GPU to RAM) and uploads (RAM to "
+                   "GPU) by the renderer code that asked for them (count "
+                   "over the run; surface address, size, format)\n");
+    }
+    for (int i = 0; i < surf_site_n; i++) {
+        SurfSite *e = &surf_site[i];
+        fprintf(f, "surf-%s %" PRIu64 " %s:%d surf %08x %ux%u fmt %02x %s\n",
+                e->kind ? "upload" : "download", e->count,
+                e->func ? e->func : "?", e->line, e->addr, e->w, e->h, e->fmt,
+                e->color ? "color" : "zeta");
+    }
+    qemu_mutex_unlock(&s2t_miss_lock);
+}

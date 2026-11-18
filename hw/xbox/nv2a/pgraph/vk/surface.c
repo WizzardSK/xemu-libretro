@@ -136,7 +136,10 @@ static void parked_materialize_range(NV2AState *d, hwaddr start,
                                      hwaddr size);
 static void parked_owed_settled(NV2AState *d, SurfaceBinding *s);
 
-void pgraph_vk_download_surfaces_in_range_if_dirty(PGRAPHState *pg,
+__thread const char *vk_surf_site_func;
+__thread int vk_surf_site_line;
+
+void (pgraph_vk_download_surfaces_in_range_if_dirty)(PGRAPHState *pg,
                                                    hwaddr start, hwaddr size)
 {
     PGRAPHVkState *r = pg->vk_renderer_state;
@@ -144,7 +147,8 @@ void pgraph_vk_download_surfaces_in_range_if_dirty(PGRAPHState *pg,
 
     QTAILQ_FOREACH(surface, &r->surfaces, entry) {
         if (check_surface_overlaps_range(surface, start, size)) {
-            pgraph_vk_surface_download_if_dirty(
+            /* not the macro: the site stays the caller's */
+            (pgraph_vk_surface_download_if_dirty)(
                 container_of(pg, NV2AState, pgraph), surface);
         }
     }
@@ -164,6 +168,9 @@ static void download_surface_to_buffer(NV2AState *d, SurfaceBinding *surface,
     }
 
     nv2a_profile_inc_counter(NV2A_PROF_SURF_DOWNLOAD);
+    nv2a_surf_site_note(0, vk_surf_site_func, vk_surf_site_line,
+                        surface->vram_addr, surface->width, surface->height,
+                        surface->shape.color_format, surface->color);
 
     bool use_compute_to_convert_depth_stencil_format =
         surface->host_fmt.vk_format == VK_FORMAT_D24_UNORM_S8_UINT ||
@@ -541,11 +548,13 @@ void pgraph_vk_process_pending_downloads(NV2AState *d)
     SurfaceBinding *surface;
 
     QTAILQ_FOREACH(surface, &r->surfaces, entry) {
+        VK_SURF_SITE();
         download_surface(d, surface, false);
     }
     /* Owed lazy writebacks the CPU access callback queued. */
     QTAILQ_FOREACH(surface, &r->invalid_surfaces, entry) {
         if (surface->writeback_owed && surface->download_pending) {
+            VK_SURF_SITE();
             download_surface(d, surface, false);
             parked_owed_settled(d, surface);
         }
@@ -1168,14 +1177,15 @@ static bool check_surface_compatibility(SurfaceBinding const *s1,
     }
 }
 
-void pgraph_vk_surface_download_if_dirty(NV2AState *d, SurfaceBinding *surface)
+void (pgraph_vk_surface_download_if_dirty)(NV2AState *d,
+                                           SurfaceBinding *surface)
 {
     if (surface->draw_dirty) {
         download_surface(d, surface, true);
     }
 }
 
-void pgraph_vk_upload_surface_data(NV2AState *d, SurfaceBinding *surface,
+void (pgraph_vk_upload_surface_data)(NV2AState *d, SurfaceBinding *surface,
                                    bool force)
 {
     PGRAPHState *pg = &d->pgraph;
@@ -1186,6 +1196,9 @@ void pgraph_vk_upload_surface_data(NV2AState *d, SurfaceBinding *surface,
     }
 
     nv2a_profile_inc_counter(NV2A_PROF_SURF_UPLOAD);
+    nv2a_surf_site_note(1, vk_surf_site_func, vk_surf_site_line,
+                        surface->vram_addr, surface->width, surface->height,
+                        surface->shape.color_format, surface->color);
 
     /* An aux upload runs before the open recording: when draws recorded
      * there wrote this surface or sample it in place,
@@ -1954,6 +1967,7 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
     if (!upload && pg_surface->draw_dirty) {
         if (!tcg_enabled()) {
             // FIXME: Cannot monitor for reads/writes; flush now
+            VK_SURF_SITE();
             download_surface(d, color ? r->color_binding : r->zeta_binding,
                              true);
         }

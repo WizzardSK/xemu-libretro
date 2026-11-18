@@ -296,10 +296,10 @@ bool xemu_libretro_has_xbe_patches(const char *image);
 static int  opt_memory_mb = 64;
 static bool opt_skip_boot_anim = true;
 static bool opt_hard_fpu = true;
-/* The fork's CPU boost and smooth first play (Tovarichtch/xemu), on by
- * default there */
+/* The fork's CPU boost (Tovarichtch/xemu), on by default there. Its smooth
+ * first play (shader seeding) is always on: no case for turning it off
+ * (NNshi). */
 static bool opt_cpu_boost = true;
-static bool opt_smooth_first_play = true;
 static bool opt_chihiro_freeplay = true;
 /* Video > Vulkan Fast Paths: which of the renderer's fast-path features the
  * shared device may get (xemu_vk_create_device) */
@@ -1858,12 +1858,6 @@ static void update_variables(void)
     g_config.chihiro.settings.force_feedback = opt_chihiro_ffb > 0;
     g_config.chihiro.settings.ffb_strength = opt_chihiro_ffb;
 
-    var.key = "xemu_smooth_first_play";
-    var.value = NULL;
-    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
-        opt_smooth_first_play = !strcmp(var.value, "enabled");
-    }
-
     var.key = "xemu_dsp_jit";
     var.value = NULL;
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
@@ -2023,7 +2017,7 @@ static void populate_config(const char *dvd_path)
     g_config.general.skip_boot_anim = opt_skip_boot_anim;
     g_config.perf.hard_fpu = opt_hard_fpu;
     g_config.perf.native_sse = opt_cpu_boost;
-    g_config.perf.shader_seeding = opt_smooth_first_play;
+    g_config.perf.shader_seeding = true;
     /* GPU boost is the renderer the core is made for: the stock one the fork
      * keeps for it being off (hw/xbox/nv2a-stock) has none of the core's
      * frontend handover. Real hardware speed paces the machine itself, which

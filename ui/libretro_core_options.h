@@ -429,20 +429,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "0"
     },
-    {
-        "xemu_smooth_first_play",
-        "Smooth First Play (Restart)",
-        NULL,
-        "Compiles the shaders a game is known to use while it boots, so the first minutes do not stutter while they are compiled. On OpenGL it keeps what it compiles in the shader cache, which is always on.",
-        NULL,
-        "video",
-        {
-            { "enabled",  "Enabled" },
-            { "disabled", "Disabled" },
-            { NULL, NULL },
-        },
-        "enabled"
-    },
     /* Auto by default: All, as standalone, but None on AMD, where they draw
      * garbage (NNshi); fewer for a GPU that crashes on one of them (Akrido) */
     {

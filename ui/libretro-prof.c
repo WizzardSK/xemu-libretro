@@ -7,7 +7,7 @@
  * physical address, as i386 blocks are PC-relative); any other sample by
  * the host module and the offset in it. When the overlay goes off, the
  * shares go to RetroArch's log and every bucket to system/xemu/
- * xemu_profile.txt, from which the core's offsets resolve to functions with
+ * "<commit> <game>.txt" (system/xemu), from which the core's offsets resolve to functions with
  * the unstripped build (llvm-symbolizer). The sampling itself slows the
  * vCPU a little: compare runs with the overlay on in both.
  *
@@ -33,6 +33,7 @@
 
 #include "qemu/osdep.h"
 #include "ui/libretro-prof.h"
+#include <glib/gstdio.h>
 
 #if defined(_WIN32)
 #include <windows.h>
@@ -404,10 +405,10 @@ static void prof_report(ProfTarget *t, XemuLrProfLog log, FILE *f)
     g_array_free(host, TRUE);
 }
 
-void xemu_lr_prof_stop(XemuLrProfLog log, const char *dir)
+void xemu_lr_prof_stop(XemuLrProfLog log, const char *path,
+                       const char *header)
 {
     FILE *f = NULL;
-    char *path = NULL;
 
     if (!prof_thread) {
         if (!prof_vcpu.h) {
@@ -421,9 +422,11 @@ void xemu_lr_prof_stop(XemuLrProfLog log, const char *dir)
     prof_thread = NULL;
     prof_end_us = g_get_monotonic_time();
 
-    if (dir && *dir) {
-        path = g_build_filename(dir, "xemu_profile.txt", NULL);
-        f = fopen(path, "w");
+    if (path && *path) {
+        f = g_fopen(path, "w"); /* UTF-8 names on Windows too */
+    }
+    if (f && header) {
+        fputs(header, f);
     }
     prof_report(&prof_vcpu, log, f);
     if (prof_pfifo.h) {
@@ -438,7 +441,6 @@ void xemu_lr_prof_stop(XemuLrProfLog log, const char *dir)
         log("vCPU profile: could not write %s\n", path);
     }
 
-    g_free(path);
     prof_target_free(&prof_vcpu);
     prof_target_free(&prof_pfifo);
     g_hash_table_destroy(prof_tbsize);
@@ -460,9 +462,11 @@ void xemu_lr_prof_start(void)
 {
 }
 
-void xemu_lr_prof_stop(XemuLrProfLog log, const char *dir)
+void xemu_lr_prof_stop(XemuLrProfLog log, const char *path,
+                       const char *header)
 {
-    (void)dir;
+    (void)path;
+    (void)header;
     log("vCPU profile: only in Windows builds\n");
 }
 

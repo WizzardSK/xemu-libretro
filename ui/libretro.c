@@ -231,6 +231,11 @@ unsigned int xemu_libretro_osd_idle100;
 extern bool xemu_lr_nv2a_idle_track;
 extern int64_t xemu_lr_nv2a_idle_ns;
 
+/* Since the profiler came on: flips, their render time and the first and
+ * last flip's time (the PFIFO thread writes, retro_run reads at the end) */
+static int64_t osd_run_start_ns, osd_run_last_ns, osd_run_flips,
+               osd_run_render_us;
+
 /* Runs on the PFIFO thread, at each guest frame's flip */
 void xemu_libretro_osd_frame(int64_t render_us)
 {
@@ -243,13 +248,21 @@ void xemu_libretro_osd_frame(int64_t render_us)
         __atomic_store_n(&xemu_libretro_osd_fps100, 0, __ATOMIC_RELAXED);
         return;
     }
-    /* NV2A idle: from the moment the overlay is turned on, each time anew */
+    /* NV2A idle: from the moment the profiler is turned on, each time anew */
     const int64_t now_ns = g_get_monotonic_time() * 1000;
     if (!__atomic_load_n(&xemu_lr_nv2a_idle_track, __ATOMIC_RELAXED)) {
         __atomic_store_n(&xemu_lr_nv2a_idle_ns, 0, __ATOMIC_RELAXED);
         idle_start = now_ns;
         __atomic_store_n(&xemu_lr_nv2a_idle_track, true, __ATOMIC_RELAXED);
+        __atomic_store_n(&osd_run_start_ns, now_ns, __ATOMIC_RELAXED);
+        __atomic_store_n(&osd_run_flips, 0, __ATOMIC_RELAXED);
+        __atomic_store_n(&osd_run_render_us, 0, __ATOMIC_RELAXED);
     }
+    /* the whole run, for the profile's header (osd_run_summary) */
+    __atomic_add_fetch(&osd_run_flips, 1, __ATOMIC_RELAXED);
+    __atomic_add_fetch(&osd_run_render_us, render_us > 0 ? render_us : 0,
+                       __ATOMIC_RELAXED);
+    __atomic_store_n(&osd_run_last_ns, now_ns, __ATOMIC_RELAXED);
     if (now_ns > idle_start) {
         const int64_t idle = __atomic_load_n(&xemu_lr_nv2a_idle_ns, __ATOMIC_RELAXED);
         __atomic_store_n(&xemu_libretro_osd_idle100,
@@ -4009,14 +4022,72 @@ RETRO_API bool retro_load_game_special(unsigned type,
     return false;
 }
 
+/* Profiler (F10)'s file: "<commit> <game>.txt" in system/xemu, overwritten
+ * by the next run of the same game and build, with what the run was made
+ * with in front, so whoever sends it needs to say nothing else (NNshi) */
+static char *prof_file(char **header)
+{
+    *header = NULL;
+    if (!system_dir[0]) {
+        return NULL;
+    }
+    g_autofree char *base = g_path_get_basename(opt_dvd_path[0] ? opt_dvd_path : "no content");
+    char *dot = strrchr(base, '.');
+    if (dot && dot != base) {
+        *dot = '\0';
+    }
+    /* characters a Windows file name cannot have */
+    for (char *c = base; *c; c++) {
+        if (strchr("<>:\"/\\|?*", *c) || (unsigned char)*c < 32) {
+            *c = '_';
+        }
+    }
+    const char *commit = xemu_commit[0] ? xemu_commit : "unknown";
+    g_autofree char *name = g_strdup_printf("%.7s %s.txt", commit, base);
+    g_autofree char *dir = g_build_filename(system_dir, "xemu", NULL);
+    g_mkdir_with_parents(dir, 0755);
+
+    /* averages over the run: the game's frames per second, the rate its
+     * render time allows (MSPF as a frame rate) and the GPU thread's idle */
+    const int64_t flips = __atomic_load_n(&osd_run_flips, __ATOMIC_RELAXED);
+    const int64_t render = __atomic_load_n(&osd_run_render_us, __ATOMIC_RELAXED);
+    const int64_t span = __atomic_load_n(&osd_run_last_ns, __ATOMIC_RELAXED) -
+                         __atomic_load_n(&osd_run_start_ns, __ATOMIC_RELAXED);
+    const unsigned int idle100 =
+        __atomic_load_n(&xemu_libretro_osd_idle100, __ATOMIC_RELAXED);
+    const char *fast = opt_vk_auto ? "auto" :
+                       opt_vk_gpl && opt_vk_dynamic ? "all" :
+                       opt_vk_gpl ? "no dynamic states" :
+                       opt_vk_dynamic ? "no pipeline libraries" : "none";
+    *header = g_strdup_printf(
+        "# core %s, commit %s\n"
+        "# game %s, title ID %08X\n"
+        "# renderer %s, internal resolution %dx, Vulkan fast paths %s, "
+        "anisotropic %ux, subpixel offset %s\n"
+        "# CPU boost %s, hardware FPU %s, memory %d MB, APU DSP %s, DSP JIT %s\n"
+        "# run: %.1f s, average FPS %.2f, GPU (MSPF as a frame rate) %.2f, NV2A idle %u.%u%%\n",
+        xemu_version, commit, base, (unsigned)qatomic_read(&guest_title_id),
+        use_vulkan ? "Vulkan" : "OpenGL", opt_surface_scale, fast,
+        qatomic_read(&xemu_min_anisotropy),
+        qatomic_read(&xemu_libretro_subpixel_offset) ? "on" : "off",
+        opt_cpu_boost ? "on" : "off", opt_hard_fpu ? "on" : "off",
+        opt_memory_mb, opt_use_dsp ? "on" : "off", opt_dsp_jit ? "on" : "off",
+        span > 0 ? span / 1e9 : 0.0,
+        span > 0 && flips > 1 ? (flips - 1) * 1e9 / span : 0.0,
+        render > 0 ? flips * 1e6 / render : 0.0,
+        idle100 / 100, idle100 % 100 / 10);
+    return g_build_filename(dir, name, NULL);
+}
+
 RETRO_API void retro_unload_game(void)
 {
     LRLOG_INFO("[xemu] retro_unload_game\n");
 
     if (prof_running) {
-        g_autofree char *dir = system_dir[0] ? g_strdup_printf("%s/xemu", system_dir) : NULL;
+        g_autofree char *header = NULL;
+        g_autofree char *path = prof_file(&header);
         prof_running = false;
-        xemu_lr_prof_stop(prof_log, dir);
+        xemu_lr_prof_stop(prof_log, path, header);
     }
 
     if (emu_thread_running) {
@@ -4269,9 +4340,10 @@ RETRO_API void retro_run(void)
             prof_running = true;
             xemu_lr_prof_start();
         } else if (!on && prof_running) {
-            g_autofree char *dir = system_dir[0] ? g_strdup_printf("%s/xemu", system_dir) : NULL;
+            g_autofree char *header = NULL;
+            g_autofree char *path = prof_file(&header);
             prof_running = false;
-            xemu_lr_prof_stop(prof_log, dir);
+            xemu_lr_prof_stop(prof_log, path, header);
         }
     }
 

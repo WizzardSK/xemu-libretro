@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## November 2026
 
+- Profiler (F10), Windows: each run is saved as system/xemu/<commit> <game>.txt (for example "d00eb23 Burnout 3.txt"), overwritten by the next run of the same game on the same build, instead of one xemu_profile.txt. The file starts with the core's version and commit, the game and its title ID, the settings that matter for speed (graphics API, internal resolution, Vulkan fast paths, anisotropic filtering, subpixel offset, CPU boost, hardware FPU, memory, APU DSP and DSP JIT) and the run's length, average FPS, GPU rate (MSPF as a frame rate) and NV2A idle, so a profile needs no other explanation (NNshi).
 - A new Debug category, after Video, holds what is there for finding what slows a game down or breaks it: Profiler (F10) (the Performance Overlay, renamed), CPU Boost, Hardware FPU Emulation, Vulkan Fast Paths and Subpixel Offset Scaling. CPU Boost and Hardware FPU Emulation say (Restart) now that they left System (Restart) (NNshi).
 - Virtua Cop 3: the pedal is on the right mouse button and L2, change weapon on the middle mouse button and L, the other way round from before: the pedal is held most of the game (NNshi). The light gun keeps its buttons.
 - The Smooth First Play option is gone; it is always on (the shaders a game is known to use are compiled while it boots). There was no case for turning it off (NNshi).

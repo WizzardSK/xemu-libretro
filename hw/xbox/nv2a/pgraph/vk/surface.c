@@ -883,15 +883,6 @@ static void invalidate_overlapping_surfaces(NV2AState *d,
             trace_nv2a_pgraph_surface_evict_overlapping(
                 other_surface->vram_addr, other_surface->width,
                 other_surface->height, other_surface->pitch);
-            nv2a_surf_evict_note(
-                "overlapped", other_surface->vram_addr, other_surface->width,
-                other_surface->height, other_surface->pitch,
-                other_surface->shape.color_format,
-                other_surface->shape.zeta_format, other_surface->color,
-                other_surface->shape.anti_aliasing, surface->vram_addr,
-                surface->width, surface->height, surface->pitch,
-                surface->shape.color_format, surface->shape.zeta_format,
-                surface->color, surface->shape.anti_aliasing, 0, 0);
             evict_surface(d, other_surface);
         }
     }
@@ -1843,8 +1834,6 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
         if (surface != NULL) {
             bool is_compatible =
                 check_surface_compatibility(surface, &target, false);
-            /* for the profile: the first check the binding failed */
-            const char *why = is_compatible ? NULL : "shape";
 
             void (*trace_fn)(uint32_t addr, uint32_t width, uint32_t height,
                              const char *layout, uint32_t anti_aliasing,
@@ -1888,16 +1877,10 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
                 hwaddr zeta_end = zeta_entry.vram_addr + zeta_entry.size;
                 is_compatible &= surface->vram_addr >= zeta_end ||
                                  zeta_entry.vram_addr >= color_end;
-                if (!is_compatible) {
-                    why = "color over zeta";
-                }
             }
 
             if (is_compatible && !color && r->color_binding) {
                 is_compatible &= zeta_covers_color(r, surface);
-                if (!is_compatible) {
-                    why = "zeta smaller than color";
-                }
             }
 
             if (is_compatible) {
@@ -1909,16 +1892,6 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
                 trace_nv2a_pgraph_surface_evict_reason(
                     "incompatible", surface->vram_addr);
                 compare_surfaces(surface, &target);
-                nv2a_surf_evict_note(
-                    why, surface->vram_addr, surface->width, surface->height,
-                    surface->pitch, surface->shape.color_format,
-                    surface->shape.zeta_format, surface->color,
-                    surface->shape.anti_aliasing, target.vram_addr,
-                    target.width, target.height, target.pitch,
-                    target.shape.color_format, target.shape.zeta_format,
-                    target.color, target.shape.anti_aliasing,
-                    (!color && r->color_binding) ? r->color_binding->width : 0,
-                    (!color && r->color_binding) ? r->color_binding->height : 0);
                 evict_surface(d, surface);
             }
         }

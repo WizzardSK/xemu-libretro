@@ -451,7 +451,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_prof_surf",
         "Profiler: Surface Downloads and Uploads",
         NULL,
-        "Vulkan: the profile file lists the render targets read back into RAM and written back to the GPU, by the part of the renderer that asked for it, with each render target's address, size and format. Also the render targets evicted, with why and the target that replaced them.",
+        "Vulkan: the profile file lists the render targets read back into RAM and written back to the GPU, by the part of the renderer that asked for it, with each render target's address, size and format.",
         NULL,
         "debug",
         {

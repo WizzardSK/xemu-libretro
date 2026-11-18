@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## November 2026
 
+- Patch Manager: the OgXHD (wdb.dat) 16:9 patch is no longer listed for the 19 games that also have a bundled 16-9 Widescreen patch (Conker, both Baldur's Gate: Dark Alliance, Sonic Heroes, Prince of Persia: The Sands of Time and others): the two did the same. 71 games keep their OgXHD patch (NNshi).
 - Debug > Skip Idle TLB Modes (off by default): when the dirty state of guest memory is reset in the CPU's address cache, only the address-translation modes the Xbox uses (one or two of 22) are walked. Faster in some games (Crimson Skies, Virtua Cop 3), but it makes others micro-stutter (Burnout 3, Ollie King, Otogi, Ninja Gaiden Black, Conker), for reasons not found yet (NNshi).
 - Vulkan: a draw whose pipeline state matches the pipeline already bound (a register rewritten with its old value, new textures only) no longer hashes the whole state and looks it up again, and a shader state change is hashed once instead of three times. About 15% faster in Project Gotham Racing and 7% in Project Gotham Racing 2 in NNshi's tests, no regressions in 35 Xbox and 9 Chihiro games.
 - Profiler (F10): the profile's file ends with the renderer's counters per second over the run (draws, pipeline and shader binds, texture uploads, surface downloads, syncs with the host GPU and why), on every system; on systems other than Windows the file holds the run's description and these counters.

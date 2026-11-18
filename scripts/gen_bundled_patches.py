@@ -8,7 +8,8 @@ icup321/XboxGraphicalPatches, and the 16:9 database of the OgXHD tool in it
 wdb.dat lists, per title ID, lines of bytes to find, each followed by the
 bytes to put in their place; OgXHD replaces every place they are found. Each
 title becomes a patch "<game> (16-9 Widescreen, OgXHD).wdb" holding those
-lines, listed for that title ID (ui/libretro.c, xbe_apply_wdb).
+lines, listed for that title ID (ui/libretro.c, xbe_apply_wdb), unless the
+16-9 Widescreen Patches folder already has a patch for that game.
 
     python3 scripts/gen_bundled_patches.py <XboxGraphicalPatches checkout> [commit]
 """
@@ -24,6 +25,22 @@ for folder in FOLDERS:
     for name in sorted(os.listdir(os.path.join(src, folder))):
         if name.lower().endswith((".ips", ".bps", ".jmp")):
             files.append((name, open(os.path.join(src, folder, name), "rb").read(), 0))
+
+# A wdb.dat title whose game already has a patch in "16-9 Widescreen
+# Patches" is left out: the two do the same, and both listed only confused
+# (Conker, Baldur's Gate: Dark Alliance; NNshi). Matched by the game's name,
+# the part before " (", letters and digits only, II/III as 2/3.
+def game_key(name):
+    base = name.split(" (")[0].lower()
+    for roman, digit in ((" iii", " 3"), (" ii", " 2")):
+        if base.endswith(roman) or (roman + " ") in base:
+            base = base.replace(roman + " ", digit + " ")
+            if base.endswith(roman):
+                base = base[: -len(roman)] + digit
+    return "".join(c for c in base if c.isalnum())
+widescreen = {game_key(n) for n in os.listdir(os.path.join(src, "16-9 Widescreen Patches"))
+              if n.lower().endswith((".ips", ".bps", ".jmp"))}
+skipped = []
 
 # OgXHD's wdb.dat: "'Game / ID: 4343000e" names the title, ":4343000e" starts
 # it, then hex lines in pairs (find, replace); "'" lines are comments
@@ -43,6 +60,9 @@ def wdb_flush():
         if not lines:
             return
         name = (game or "%08X" % title).replace(": ", " - ").replace(":", " -").replace("/", "-")
+        if game_key(name) in widescreen:
+            skipped.append(name)
+            return
         files.append(("%s (16-9 Widescreen, OgXHD).wdb" % name, ("\n".join(lines) + "\n").encode(), title))
 for raw in open(os.path.join(src, "!OgXHD", "wdb.dat"), encoding="latin-1"):
     s = raw.strip()
@@ -92,4 +112,4 @@ for i, (name, data, title) in enumerate(files):
     out.append('    { "%s", libretro_bundled_patch_%d, %d, 0x%08x },' % (esc, i, len(data), title))
 out.append("};")
 open("ui/libretro-bundled-patches.h", "w", newline="\n").write("\n".join(out) + "\n")
-print(len(files), "patches")
+print(len(files), "patches;", len(skipped), "wdb.dat titles left out for their 16-9 patch:", ", ".join(skipped))

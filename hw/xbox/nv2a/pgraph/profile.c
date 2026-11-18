@@ -256,12 +256,57 @@ void nv2a_surf_site_note(int kind, const char *func, int line, uint32_t addr,
     qemu_mutex_unlock(&s2t_miss_lock);
 }
 
+typedef struct SurfEvict {
+    const char *why;
+    uint32_t addr, naddr;
+    unsigned w, h, pitch, cfmt, zfmt, aa, nw, nh, npitch, ncfmt, nzfmt, naa;
+    unsigned cw, ch;
+    bool color, ncolor;
+    uint64_t count;
+} SurfEvict;
+static SurfEvict surf_evict[32];
+static int surf_evict_n;
+
+void nv2a_surf_evict_note(const char *why, uint32_t addr, unsigned w,
+                          unsigned h, unsigned pitch, unsigned cfmt,
+                          unsigned zfmt, bool color, unsigned aa,
+                          uint32_t naddr, unsigned nw, unsigned nh,
+                          unsigned npitch, unsigned ncfmt, unsigned nzfmt,
+                          bool ncolor, unsigned naa, unsigned cw, unsigned ch)
+{
+    if (!qatomic_read(&nv2a_prof_surf_on)) {
+        return;
+    }
+    SurfEvict n = { why, addr, naddr, w, h, pitch, cfmt, zfmt, aa, nw, nh,
+                    npitch, ncfmt, nzfmt, naa, cw, ch, color, ncolor, 1 };
+    s2t_miss_lock_once();
+    qemu_mutex_lock(&s2t_miss_lock);
+    for (int i = 0; i < surf_evict_n; i++) {
+        SurfEvict *e = &surf_evict[i];
+        if (e->why == why && e->addr == addr && e->naddr == naddr &&
+            e->w == w && e->h == h && e->nw == nw && e->nh == nh &&
+            e->pitch == pitch && e->npitch == npitch && e->color == color &&
+            e->ncolor == ncolor && e->zfmt == zfmt && e->nzfmt == nzfmt &&
+            e->cfmt == cfmt && e->ncfmt == ncfmt && e->aa == aa &&
+            e->naa == naa && e->cw == cw && e->ch == ch) {
+            e->count++;
+            qemu_mutex_unlock(&s2t_miss_lock);
+            return;
+        }
+    }
+    if (surf_evict_n < (int)ARRAY_SIZE(surf_evict)) {
+        surf_evict[surf_evict_n++] = n;
+    }
+    qemu_mutex_unlock(&s2t_miss_lock);
+}
+
 void nv2a_s2t_miss_reset(void)
 {
     s2t_miss_lock_once();
     qemu_mutex_lock(&s2t_miss_lock);
     s2t_miss_n = 0;
     surf_site_n = 0;
+    surf_evict_n = 0;
     qemu_mutex_unlock(&s2t_miss_lock);
 }
 
@@ -301,6 +346,25 @@ void nv2a_s2t_miss_dump(FILE *f)
                 e->kind ? "upload" : "download", e->count,
                 e->func ? e->func : "?", e->line, e->addr, e->w, e->h, e->fmt,
                 e->color ? "color" : "zeta");
+    }
+    if (surf_evict_n) {
+        fprintf(f, "# render targets evicted (each a download if dirty and a "
+                   "new target): why, the evicted one, the target that "
+                   "evicted it (address size pitch color/zeta format AA)\n");
+    }
+    for (int i = 0; i < surf_evict_n; i++) {
+        SurfEvict *e = &surf_evict[i];
+        fprintf(f, "surf-evict %" PRIu64 " %s: %08x %ux%u pitch %u %s %02x "
+                   "aa %u -> %08x %ux%u pitch %u %s %02x aa %u",
+                e->count, e->why, e->addr, e->w, e->h, e->pitch,
+                e->color ? "color" : "zeta", e->color ? e->cfmt : e->zfmt,
+                e->aa, e->naddr, e->nw, e->nh, e->npitch,
+                e->ncolor ? "color" : "zeta", e->ncolor ? e->ncfmt : e->nzfmt,
+                e->naa);
+        if (e->cw) {
+            fprintf(f, " (color bound %ux%u)", e->cw, e->ch);
+        }
+        fputc('\n', f);
     }
     qemu_mutex_unlock(&s2t_miss_lock);
 }

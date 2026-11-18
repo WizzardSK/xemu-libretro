@@ -168,6 +168,15 @@ void nv2a_s2t_miss_reset(void);
 /* Debug > Profiler: Missed Render Targets / Surface Downloads and Uploads:
  * whether the two lists are kept (off, the notes return at once) */
 extern bool nv2a_prof_s2t_on, nv2a_prof_surf_on;
+/* With the surface list on: why a render target was evicted (its shape
+ * against the target that evicted it; cw/ch the bound color target's size
+ * for a zeta that does not cover it) */
+void nv2a_surf_evict_note(const char *why, uint32_t addr, unsigned w,
+                          unsigned h, unsigned pitch, unsigned cfmt,
+                          unsigned zfmt, bool color, unsigned aa,
+                          uint32_t naddr, unsigned nw, unsigned nh,
+                          unsigned npitch, unsigned ncfmt, unsigned nzfmt,
+                          bool ncolor, unsigned naa, unsigned cw, unsigned ch);
 /* surface downloads (kind 0) and uploads (1) by the renderer function and
  * line that asked for them, with the surface */
 void nv2a_surf_site_note(int kind, const char *func, int line, uint32_t addr,

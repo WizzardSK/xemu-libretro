@@ -261,7 +261,9 @@ static uint8_t gun_aim(ChihiroJVSState *jvs, unsigned port)
  * standalone binds them: the trigger, the gun's button (House of the Dead
  * III's pump reload, Virtua Cop 3's change weapon, Ghost Squad's action),
  * and Virtua Cop 3's pedal or Ghost Squad's fire rate. With the mouse the
- * left, right and middle buttons; with the stick R2, L2 and L. */
+ * left, right and middle buttons; with the stick R2, L2 and L. Virtua Cop 3
+ * swaps the last two on the mouse and the stick: pedal right/L2, change
+ * weapon middle/L. */
 static void gun_player(ChihiroJVSState *jvs, unsigned port, int profile,
                        uint8_t *sw0, uint8_t *sw1)
 {
@@ -273,14 +275,19 @@ static void gun_player(ChihiroJVSState *jvs, unsigned port, int profile,
         *sw0 |= 0x02;
         aim_used[port] |= stick;
     }
-    if (gun(port, RETRO_DEVICE_ID_LIGHTGUN_AUX_A) ||
-        mouse(port, RETRO_DEVICE_ID_MOUSE_RIGHT) ||
-        (stick && pad(port, RETRO_DEVICE_ID_JOYPAD_L2)))
+    /* the mouse's and pad's second and third button: in Virtua Cop 3 the
+     * pedal, which is held most of the game, is on the right button and L2
+     * and the change weapon on the middle one and L (NNshi); the light gun
+     * keeps the gun's button on Aux A */
+    const bool vc3 = profile == CONFIG_CHIHIRO_JVS_PROFILE_VC3;
+    const bool second = mouse(port, RETRO_DEVICE_ID_MOUSE_RIGHT) ||
+                        (stick && pad(port, RETRO_DEVICE_ID_JOYPAD_L2));
+    const bool third = mouse(port, RETRO_DEVICE_ID_MOUSE_MIDDLE) ||
+                       (stick && pad(port, RETRO_DEVICE_ID_JOYPAD_L));
+    if (gun(port, RETRO_DEVICE_ID_LIGHTGUN_AUX_A) || (vc3 ? third : second))
         *sw1 |= 0x80;
     if (profile != CONFIG_CHIHIRO_JVS_PROFILE_HOTD3 &&
-        (gun(port, RETRO_DEVICE_ID_LIGHTGUN_AUX_B) ||
-         mouse(port, RETRO_DEVICE_ID_MOUSE_MIDDLE) ||
-         (stick && pad(port, RETRO_DEVICE_ID_JOYPAD_L))))
+        (gun(port, RETRO_DEVICE_ID_LIGHTGUN_AUX_B) || (vc3 ? second : third)))
         *sw1 |= 0x40;
 }
 
@@ -428,9 +435,9 @@ static void chihiro_publish_descriptors(int profile)
                 chihiro_joy(p, RETRO_DEVICE_ID_JOYPAD_R, "Reload");
                 chihiro_joy(p, RETRO_DEVICE_ID_JOYPAD_L2,
                             profile == CONFIG_CHIHIRO_JVS_PROFILE_HOTD3 ? "Pump Reload" :
-                            profile == CONFIG_CHIHIRO_JVS_PROFILE_VC3 ? "Change Weapon" : "Action");
+                            profile == CONFIG_CHIHIRO_JVS_PROFILE_VC3 ? "Pedal" : "Action");
                 if (profile == CONFIG_CHIHIRO_JVS_PROFILE_VC3) {
-                    chihiro_joy(p, RETRO_DEVICE_ID_JOYPAD_L, "Pedal");
+                    chihiro_joy(p, RETRO_DEVICE_ID_JOYPAD_L, "Change Weapon");
                 } else if (profile == CONFIG_CHIHIRO_JVS_PROFILE_GS) {
                     chihiro_joy(p, RETRO_DEVICE_ID_JOYPAD_L, "Fire Rate");
                 }

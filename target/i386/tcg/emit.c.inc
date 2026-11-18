@@ -1052,21 +1052,126 @@ static void gen_##uname(DisasContext *s, X86DecodedInsn *decode)                
                           gen_helper_##lname##_xmm,                                \
                           gen_helper_##lname##_ymm);                               \
 }
-BINARY_INT_MMX(PUNPCKLBW,  punpcklbw)
-BINARY_INT_MMX(PUNPCKLWD,  punpcklwd)
-BINARY_INT_MMX(PUNPCKLDQ,  punpckldq)
-BINARY_INT_MMX(PACKSSWB,   packsswb)
-BINARY_INT_MMX(PACKUSWB,   packuswb)
-BINARY_INT_MMX(PUNPCKHBW,  punpckhbw)
-BINARY_INT_MMX(PUNPCKHWD,  punpckhwd)
-BINARY_INT_MMX(PUNPCKHDQ,  punpckhdq)
-BINARY_INT_MMX(PACKSSDW,   packssdw)
+
+#ifdef XBOX
+/*
+ * MMX (no 66 prefix) unpacks, packs, PMADDWD and PMULHW compiled into the
+ * TB with CPU boost, instead of a helper call per instruction: the 64-bit
+ * register is taken apart and put together again with integer TCG ops.
+ * Plain integer results, so they are exact, and no MXCSR is involved.
+ * The whole result is built before the store: the source may be the
+ * destination.
+ */
+enum {
+    MMX_INL_UNPCKL, MMX_INL_UNPCKH, MMX_INL_PACKSS, MMX_INL_PACKUS,
+    MMX_INL_PMADDWD, MMX_INL_PMULHW,
+};
+
+static bool gen_mmx_inline(DisasContext *s, X86DecodedInsn *decode,
+                           int kind, int esz)
+{
+    if (!xemu_cpu_boost || (s->prefix & (PREFIX_VEX | PREFIX_DATA))) {
+        return false;
+    }
+    TCGv_i64 a = tcg_temp_new_i64(), b = tcg_temp_new_i64();
+    TCGv_i64 r = tcg_temp_new_i64(), t = tcg_temp_new_i64();
+    TCGv_i64 u = tcg_temp_new_i64();
+    int bits = 8 << esz;            /* source element width */
+
+    tcg_gen_ld_i64(a, tcg_env, vector_elem_offset(&decode->op[1], MO_64, 0));
+    tcg_gen_ld_i64(b, tcg_env, vector_elem_offset(&decode->op[2], MO_64, 0));
+    tcg_gen_movi_i64(r, 0);
+
+    switch (kind) {
+    case MMX_INL_UNPCKL:
+    case MMX_INL_UNPCKH: {
+        /* a0 b0 a1 b1 ... from the low (or high) half of each */
+        int n = 32 / bits, base = kind == MMX_INL_UNPCKH ? 32 : 0;
+        for (int i = 0; i < n; i++) {
+            tcg_gen_extract_i64(t, a, base + i * bits, bits);
+            tcg_gen_deposit_i64(r, r, t, 2 * i * bits, bits);
+            tcg_gen_extract_i64(t, b, base + i * bits, bits);
+            tcg_gen_deposit_i64(r, r, t, (2 * i + 1) * bits, bits);
+        }
+        break;
+    }
+    case MMX_INL_PACKSS:
+    case MMX_INL_PACKUS: {
+        /* elements of a then b, each saturated to half its width */
+        int n = 64 / bits, ob = bits / 2;
+        int64_t lo = kind == MMX_INL_PACKUS ? 0 : -(1LL << (ob - 1));
+        int64_t hi = kind == MMX_INL_PACKUS ? (1LL << ob) - 1
+                                            : (1LL << (ob - 1)) - 1;
+        TCGv_i64 vlo = tcg_constant_i64(lo), vhi = tcg_constant_i64(hi);
+        for (int i = 0; i < 2 * n; i++) {
+            tcg_gen_sextract_i64(t, i < n ? a : b, (i % n) * bits, bits);
+            tcg_gen_smax_i64(t, t, vlo);
+            tcg_gen_smin_i64(t, t, vhi);
+            tcg_gen_deposit_i64(r, r, t, i * ob, ob);
+        }
+        break;
+    }
+    case MMX_INL_PMADDWD:
+        /* two dwords, each a0*b0 + a1*b1 of signed words; the sum
+         * 0x8000*0x8000*2 wraps to 0x80000000 as on the hardware */
+        for (int j = 0; j < 2; j++) {
+            tcg_gen_sextract_i64(t, a, 32 * j, 16);
+            tcg_gen_sextract_i64(u, b, 32 * j, 16);
+            tcg_gen_mul_i64(t, t, u);
+            TCGv_i64 v = tcg_temp_new_i64(), w = tcg_temp_new_i64();
+            tcg_gen_sextract_i64(v, a, 32 * j + 16, 16);
+            tcg_gen_sextract_i64(w, b, 32 * j + 16, 16);
+            tcg_gen_mul_i64(v, v, w);
+            tcg_gen_add_i64(t, t, v);
+            tcg_gen_deposit_i64(r, r, t, 32 * j, 32);
+        }
+        break;
+    case MMX_INL_PMULHW:
+        /* the high word of each signed 16x16 product */
+        for (int i = 0; i < 4; i++) {
+            tcg_gen_sextract_i64(t, a, 16 * i, 16);
+            tcg_gen_sextract_i64(u, b, 16 * i, 16);
+            tcg_gen_mul_i64(t, t, u);
+            tcg_gen_extract_i64(t, t, 16, 16);
+            tcg_gen_deposit_i64(r, r, t, 16 * i, 16);
+        }
+        break;
+    default:
+        g_assert_not_reached();
+    }
+    tcg_gen_st_i64(r, tcg_env, vector_elem_offset(&decode->op[0], MO_64, 0));
+    return true;
+}
+
+#define BINARY_INT_MMX_INL(uname, lname, kind, esz)                                \
+static void gen_##uname(DisasContext *s, X86DecodedInsn *decode)                   \
+{                                                                                  \
+    if (gen_mmx_inline(s, decode, kind, esz)) {                                    \
+        return;                                                                    \
+    }                                                                              \
+    gen_binary_int_sse(s, decode,                                                  \
+                          gen_helper_##lname##_mmx,                                \
+                          gen_helper_##lname##_xmm,                                \
+                          gen_helper_##lname##_ymm);                               \
+}
+#else
+#define BINARY_INT_MMX_INL(uname, lname, kind, esz) BINARY_INT_MMX(uname, lname)
+#endif
+BINARY_INT_MMX_INL(PUNPCKLBW,  punpcklbw, MMX_INL_UNPCKL, MO_8)
+BINARY_INT_MMX_INL(PUNPCKLWD,  punpcklwd, MMX_INL_UNPCKL, MO_16)
+BINARY_INT_MMX_INL(PUNPCKLDQ,  punpckldq, MMX_INL_UNPCKL, MO_32)
+BINARY_INT_MMX_INL(PACKSSWB,   packsswb,  MMX_INL_PACKSS, MO_16)
+BINARY_INT_MMX_INL(PACKUSWB,   packuswb,  MMX_INL_PACKUS, MO_16)
+BINARY_INT_MMX_INL(PUNPCKHBW,  punpckhbw, MMX_INL_UNPCKH, MO_8)
+BINARY_INT_MMX_INL(PUNPCKHWD,  punpckhwd, MMX_INL_UNPCKH, MO_16)
+BINARY_INT_MMX_INL(PUNPCKHDQ,  punpckhdq, MMX_INL_UNPCKH, MO_32)
+BINARY_INT_MMX_INL(PACKSSDW,   packssdw,  MMX_INL_PACKSS, MO_32)
 
 BINARY_INT_MMX(PAVGB,   pavgb)
 BINARY_INT_MMX(PAVGW,   pavgw)
-BINARY_INT_MMX(PMADDWD, pmaddwd)
+BINARY_INT_MMX_INL(PMADDWD, pmaddwd, MMX_INL_PMADDWD, MO_16)
 BINARY_INT_MMX(PMULHUW, pmulhuw)
-BINARY_INT_MMX(PMULHW,  pmulhw)
+BINARY_INT_MMX_INL(PMULHW,  pmulhw,  MMX_INL_PMULHW, MO_16)
 BINARY_INT_MMX(PMULUDQ, pmuludq)
 BINARY_INT_MMX(PSADBW,  psadbw)
 
@@ -3252,6 +3357,21 @@ static void gen_POPF(DisasContext *s, X86DecodedInsn *decode)
 
 static void gen_PSHUFW(DisasContext *s, X86DecodedInsn *decode)
 {
+#ifdef XBOX
+    /* CPU boost: four 16-bit picks in a register, no helper call */
+    if (xemu_cpu_boost) {
+        TCGv_i64 a = tcg_temp_new_i64(), r = tcg_temp_new_i64();
+        TCGv_i64 t = tcg_temp_new_i64();
+        tcg_gen_ld_i64(a, tcg_env, vector_elem_offset(&decode->op[1], MO_64, 0));
+        tcg_gen_movi_i64(r, 0);
+        for (int i = 0; i < 4; i++) {
+            tcg_gen_extract_i64(t, a, 16 * ((decode->immediate >> (2 * i)) & 3), 16);
+            tcg_gen_deposit_i64(r, r, t, 16 * i, 16);
+        }
+        tcg_gen_st_i64(r, tcg_env, vector_elem_offset(&decode->op[0], MO_64, 0));
+        return;
+    }
+#endif
     TCGv_i32 imm = tcg_constant8u_i32(decode->immediate);
     gen_helper_pshufw_mmx(OP_PTR0, OP_PTR1, imm);
 }

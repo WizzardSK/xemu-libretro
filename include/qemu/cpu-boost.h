@@ -27,4 +27,12 @@
  */
 extern int xemu_cpu_boost;
 
+/*
+ * xemu (libretro core option Debug > Skip Idle TLB Modes): tlb_reset_dirty
+ * walks only the MMU modes that hold an entry. Read on every walk, so it
+ * switches while a game runs. Off by default: faster in some games,
+ * micro-stutters in others (NNshi).
+ */
+extern int xemu_tlb_skip_idle;
+
 #endif

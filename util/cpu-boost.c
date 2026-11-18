@@ -21,3 +21,4 @@
 #include "qemu/cpu-boost.h"
 
 int xemu_cpu_boost;
+int xemu_tlb_skip_idle;

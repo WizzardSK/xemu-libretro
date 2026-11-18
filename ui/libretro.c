@@ -20,6 +20,7 @@
 #include "libretro-state.h"
 #include "ui/console.h"
 #include "hw/xbox/nv2a/nv2a.h"
+#include "qemu/cpu-boost.h"
 #include "hw/xbox/nv2a/debug.h"
 #include "hw/xbox/xemu-anisotropy.h"
 #include "hw/xbox/chihiro/chihiro.h"
@@ -1834,6 +1835,14 @@ static void update_variables(void)
         const int aniso = atoi(var.value);
         qatomic_set(&xemu_min_anisotropy, aniso == 2 || aniso == 4 || aniso == 8 || aniso == 16 ? aniso : 1);
     }
+
+    /* Debug > Skip Idle TLB Modes: read on every TLB dirty walk
+     * (accel/tcg/cputlb.c), so it applies at once */
+    var.key = "xemu_tlb_skip_idle";
+    var.value = NULL;
+    qatomic_set(&xemu_tlb_skip_idle,
+                environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
+                var.value && !strcmp(var.value, "enabled"));
 
     var.key = "xemu_cpu_boost";
     var.value = NULL;

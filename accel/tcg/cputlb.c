@@ -927,6 +927,21 @@ void tlb_reset_dirty(CPUState *cpu, uintptr_t start, uintptr_t length)
         unsigned int n = tlb_n_entries(fast);
         unsigned int i;
 
+#ifdef XBOX
+        /* xemu, Debug > Skip Idle TLB Modes (off by default): a clean mmu_idx
+         * holds no valid entry, victims included (the flush that cleans it
+         * clears them too). Of the 22 modes the Xbox uses one or two, and
+         * this runs for every new translation on a page the guest wrote
+         * (tlb_protect_code) and for the GPU thread's dirty checks: walking
+         * all 22 was an eighth of the vCPU in Virtua Cop 3. It speeds up
+         * some games and makes others micro-stutter (Burnout 3, Ollie King,
+         * Otogi, Ninja Gaiden Black, Conker; NNshi), for reasons not found
+         * yet, hence an option. */
+        if (qatomic_read(&xemu_tlb_skip_idle) &&
+            !(cpu->neg.tlb.c.dirty & (1 << mmu_idx))) {
+            continue;
+        }
+#endif
         for (i = 0; i < n; i++) {
             tlb_reset_dirty_range_locked(&desc->fulltlb[i], &fast->table[i],
                                          start, length);

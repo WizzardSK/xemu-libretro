@@ -467,6 +467,22 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "off"
     },
+    /* Off by default: faster in some games, micro-stutters in others
+     * (NNshi) */
+    {
+        "xemu_tlb_skip_idle",
+        "Skip Idle TLB Modes",
+        NULL,
+        "When the emulator resets the dirty state of guest memory in the CPU's address cache (the TLB), it looks only at the address-translation modes the Xbox actually uses (one or two of 22). Makes some games faster (Crimson Skies, Virtua Cop 3) and makes others micro-stutter (Burnout 3, Ollie King, Otogi, Ninja Gaiden Black, Conker). Takes effect right away.",
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
     {
         "xemu_rumble_p1",
         "Rumble (Player 1)",

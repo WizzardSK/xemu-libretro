@@ -1395,19 +1395,19 @@ static bool patched_widescreen;
 #define EEPROM_USER_SECTION_LEN 0x5C
 
 /* System Aspect Ratio: what the dashboard's video settings say to the game,
- * set in the emulated EEPROM at each start - 0 as the EEPROM has it, 1 4:3,
- * 2 16:9, 3 letterbox - so that it no longer takes the dashboard to change
+ * set in the emulated EEPROM at each start - 1 4:3, 2 16:9, 3 letterbox - so
+ * that it no longer takes the dashboard to change (NNshi). There is no
+ * "as the EEPROM has it": every EEPROM setting a game reads is a core option
  * (NNshi). In memory only: the EEPROM file keeps the dashboard's. */
 static int opt_video_aspect = 2;
 
 /* System Language: the language the console's settings give games, set in
  * the emulated EEPROM at each start like the aspect ratio above, so that an
  * EEPROM made elsewhere (in French, say) no longer needs the dashboard to
- * change it (Good Dragon). 0 the EEPROM's own, as standalone has it; -1
- * (the default, NNshi) RetroArch's language where the Xbox has it, else English;
- * else the Xbox's language number (1 English, 2 Japanese, 3 German,
- * 4 French, 5 Spanish, 6 Italian, 7 Korean, 8 Chinese, 9 Portuguese).
- * In memory only, as above. */
+ * change it (Good Dragon). -1 (the default, NNshi) RetroArch's language where
+ * the Xbox has it, else English; else the Xbox's language number (1 English,
+ * 2 Japanese, 3 German, 4 French, 5 Spanish, 6 Italian, 7 Korean, 8 Chinese,
+ * 9 Portuguese). In memory only, as above. */
 #define EEPROM_LANGUAGE 0x90
 static int opt_language = -1;
 
@@ -1452,28 +1452,21 @@ static uint32_t xbox_language_of_frontend(void)
 /* System Aspect Ratio and System Language into the EEPROM's user section */
 static void apply_eeprom_settings(void)
 {
-    if (opt_video_aspect == 0 && opt_language == 0) {
-        return;
-    }
     uint8_t user[EEPROM_USER_SECTION_LEN];
     if (!smbus_storage_peek(EEPROM_USER_SECTION, user, sizeof(user))) {
         return;
     }
     uint32_t *flags = (uint32_t *)(user + EEPROM_VIDEO_FLAGS - EEPROM_USER_SECTION);
     uint32_t value = le32_to_cpu(*flags);
-    if (opt_video_aspect != 0) {
-        value &= ~(EEPROM_VIDEO_WIDESCREEN | EEPROM_VIDEO_LETTERBOX);
-        if (opt_video_aspect == 2) {
-            value |= EEPROM_VIDEO_WIDESCREEN;
-        } else if (opt_video_aspect == 3) {
-            value |= EEPROM_VIDEO_LETTERBOX;
-        }
-        *flags = cpu_to_le32(value);
+    value &= ~(EEPROM_VIDEO_WIDESCREEN | EEPROM_VIDEO_LETTERBOX);
+    if (opt_video_aspect == 2) {
+        value |= EEPROM_VIDEO_WIDESCREEN;
+    } else if (opt_video_aspect == 3) {
+        value |= EEPROM_VIDEO_LETTERBOX;
     }
+    *flags = cpu_to_le32(value);
     uint32_t *lang = (uint32_t *)(user + EEPROM_LANGUAGE - EEPROM_USER_SECTION);
-    if (opt_language != 0) {
-        *lang = cpu_to_le32(opt_language < 0 ? xbox_language_of_frontend() : (uint32_t)opt_language);
-    }
+    *lang = cpu_to_le32(opt_language < 0 ? xbox_language_of_frontend() : (uint32_t)opt_language);
     uint32_t sum = cpu_to_le32(eeprom_checksum(user, sizeof(user)));
     smbus_storage_poke(EEPROM_USER_SECTION, user, sizeof(user));
     smbus_storage_poke(EEPROM_USER_CHECKSUM, &sum, sizeof(sum));
@@ -1715,19 +1708,20 @@ static void update_variables(void)
     var.key = "xemu_video_aspect";
     var.value = NULL;
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
-        opt_video_aspect = !strcmp(var.value, "4:3") ? 1 : !strcmp(var.value, "16:9") ? 2 :
-                           !strcmp(var.value, "letterbox") ? 3 : 0;
+        opt_video_aspect = !strcmp(var.value, "4:3") ? 1 :
+                           !strcmp(var.value, "letterbox") ? 3 : 2;
     }
 
     var.key = "xemu_language";
     var.value = NULL;
     if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
-        static const char *const languages[] = { "dashboard", "english", "japanese", "german", "french",
+        /* the Xbox's language numbers, from 1 */
+        static const char *const languages[] = { "english", "japanese", "german", "french",
                                                  "spanish", "italian", "korean", "chinese", "portuguese" };
         opt_language = -1; /* auto, or a value the core does not know */
         for (int i = 0; i < (int)(sizeof(languages) / sizeof(languages[0])); i++) {
             if (!strcmp(var.value, languages[i])) {
-                opt_language = i;
+                opt_language = i + 1;
             }
         }
     }

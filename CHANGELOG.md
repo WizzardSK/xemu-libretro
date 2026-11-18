@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## November 2026
 
+- System Language and System Aspect Ratio no longer have a Dashboard value: what the EEPROM holds is never what games see, as every EEPROM setting a game reads is a core option. A saved Dashboard falls back to the default (Auto, 16:9) (NNshi).
 - Audio: APU DSP Emulation and DSP JIT switch while a game runs again, and APU DSP Emulation is off by default for now, as in standalone: with it on, loading a savestate could leave the sound corrupted. Turn it on for the games' effects, reverb and music (NNshi).
 - Vulkan Fast Paths has a new default, Auto: None on AMD graphics cards, where the fast paths draw garbage (XieTieqiang's RX 9070 GRE, issue 2), and All on the others, as before. All and the other values can still be picked on AMD, to help get them working there (NNshi).
 - Vulkan: the device the core shares with RetroArch gets only the optional extensions whose features the renderer turns on, not every one the GPU offers. With every one on that device, used or not, an AMD RX 9070 GRE lost the device on the second frame and RetroArch closed, whatever Vulkan Fast Paths was set to (XieTieqiang, issue 2). Nothing is forced off for any GPU: Auto (None on AMD) is the safe default there, and on that card turning the vertex input dynamic state or pipeline libraries on still loses the device.

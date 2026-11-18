@@ -104,6 +104,8 @@ void nv2a_profile_present(void)
     }
 }
 
+extern uint64_t nv2a_profile_totals[NV2A_PROF__COUNT];
+
 void nv2a_profile_flip_stall(void)
 {
     int64_t now = qemu_clock_get_us(QEMU_CLOCK_REALTIME);
@@ -116,8 +118,16 @@ void nv2a_profile_flip_stall(void)
     g_nv2a_stats.frame_ptr =
         (g_nv2a_stats.frame_ptr + 1) % NV2A_PROF_NUM_FRAMES;
     g_nv2a_stats.frame_count++;
+    for (int i = 0; i < NV2A_PROF__COUNT; i++) {
+        nv2a_profile_totals[i] += g_nv2a_stats.frame_working.counters[i];
+    }
     memset(&g_nv2a_stats.frame_working, 0, sizeof(g_nv2a_stats.frame_working));
 }
+
+/* The renderer's counters (host GPU syncs by reason, pipeline and shader
+ * binds...) summed over the frames since the last reset, for the profile
+ * the libretro core writes while its overlay is on */
+uint64_t nv2a_profile_totals[NV2A_PROF__COUNT];
 
 const char *nv2a_profile_get_counter_name(unsigned int cnt)
 {

@@ -20,6 +20,7 @@
 #include "libretro-state.h"
 #include "ui/console.h"
 #include "hw/xbox/nv2a/nv2a.h"
+#include "hw/xbox/nv2a/debug.h"
 #include "hw/xbox/xemu-anisotropy.h"
 #include "hw/xbox/chihiro/chihiro.h"
 #include "libretro-crosshair.h"
@@ -224,6 +225,37 @@ static bool opt_internal_fps = false;
 static void prof_log(const char *fmt, ...);
 /* The vCPU profiler runs while the overlay is on (retro_run) */
 static bool prof_running;
+
+/* The renderer's counters summed while the profiler was on (profile.c),
+ * appended to the profile's file: how often the pusher synced with the host
+ * GPU and why, texture uploads, surface downloads and the like */
+static int64_t nv2a_totals_start_us;
+static void nv2a_totals_reset(void)
+{
+    extern uint64_t nv2a_profile_totals[NV2A_PROF__COUNT];
+    memset(nv2a_profile_totals, 0, sizeof(nv2a_profile_totals));
+    nv2a_totals_start_us = g_get_monotonic_time();
+}
+static void nv2a_totals_dump(const char *path)
+{
+    extern uint64_t nv2a_profile_totals[NV2A_PROF__COUNT];
+    if (!path || !*path || !nv2a_totals_start_us) {
+        return;
+    }
+    FILE *f = g_fopen(path, "a");
+    if (!f) {
+        return;
+    }
+    const double s = (g_get_monotonic_time() - nv2a_totals_start_us) / 1e6;
+    fprintf(f, "# renderer counters, per second over %.1f s\n", s);
+    for (int i = 0; i < NV2A_PROF__COUNT; i++) {
+        if (nv2a_profile_totals[i]) {
+            fprintf(f, "nv2a %s %.1f\n", nv2a_profile_get_counter_name(i),
+                    nv2a_profile_totals[i] / s);
+        }
+    }
+    fclose(f);
+}
 unsigned int xemu_libretro_osd_fps100;
 unsigned int xemu_libretro_osd_guest_fps100;
 unsigned int xemu_libretro_osd_idle100;
@@ -4088,6 +4120,7 @@ RETRO_API void retro_unload_game(void)
         g_autofree char *path = prof_file(&header);
         prof_running = false;
         xemu_lr_prof_stop(prof_log, path, header);
+        nv2a_totals_dump(path);
     }
 
     if (emu_thread_running) {
@@ -4339,11 +4372,13 @@ RETRO_API void retro_run(void)
         if (on && !prof_running) {
             prof_running = true;
             xemu_lr_prof_start();
+            nv2a_totals_reset();
         } else if (!on && prof_running) {
             g_autofree char *header = NULL;
             g_autofree char *path = prof_file(&header);
             prof_running = false;
             xemu_lr_prof_stop(prof_log, path, header);
+            nv2a_totals_dump(path);
         }
     }
 

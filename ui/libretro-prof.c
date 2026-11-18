@@ -465,8 +465,15 @@ void xemu_lr_prof_start(void)
 void xemu_lr_prof_stop(XemuLrProfLog log, const char *path,
                        const char *header)
 {
-    (void)path;
-    (void)header;
+    /* no samples here, but the file still gets the run's description, and
+     * the renderer's counters after it */
+    FILE *f = path && *path ? g_fopen(path, "w") : NULL;
+    if (f) {
+        if (header) {
+            fputs(header, f);
+        }
+        fclose(f);
+    }
     log("vCPU profile: only in Windows builds\n");
 }
 

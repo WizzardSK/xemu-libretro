@@ -1903,6 +1903,18 @@ static void create_pipeline(PGRAPHState *pg)
 
     PipelineKey key;
     init_pipeline_key(pg, &key);
+
+    /* The dirty check above is coarse: a register rewritten with its value,
+     * or new textures (not part of the key), land here with the pipeline
+     * already bound. Comparing against it is cheaper than hashing the key
+     * (several KB) and looking it up again on every such draw. */
+    if (r->pipeline_binding &&
+        r->pipeline_binding->pipeline != VK_NULL_HANDLE &&
+        !memcmp(&r->pipeline_binding->key, &key, sizeof(key))) {
+        NV2A_VK_DGROUP_END();
+        return;
+    }
+
     uint64_t hash = fast_hash((void *)&key, sizeof(key));
 
     LruNode *node = lru_lookup(&r->pipeline_cache, hash, &key);

@@ -440,9 +440,9 @@ static void shader_cache_finalize(PGRAPHState *pg)
 }
 
 static ShaderBinding *get_shader_binding_for_state(PGRAPHVkState *r,
-                                                   const ShaderState *state)
+                                                   const ShaderState *state,
+                                                   uint64_t hash)
 {
-    uint64_t hash = fast_hash((void *)state, sizeof(*state));
     LruNode *node = lru_lookup(&r->shader_cache, hash, state);
     ShaderBinding *binding = container_of(node, ShaderBinding, node);
     NV2A_VK_DPRINTF("shader state hash: %016" PRIx64 " %p", hash, binding);
@@ -942,6 +942,7 @@ void pgraph_vk_bind_shaders(PGRAPHState *pg)
                             nv2a_profile_inc_counter(
                                 NV2A_PROF_SHADER_FALLBACK);
                             new_state = fb;
+                            h = fh;
                         } else if (fh != h && !sphase) {
                             /* The sibling, interpreter code, compiles
                              * slower than the state: queue it; the
@@ -951,9 +952,10 @@ void pgraph_vk_bind_shaders(PGRAPHState *pg)
                     }
                 }
             }
-            r->shader_binding = get_shader_binding_for_state(r, &new_state);
-            vk_seen_add(
-                fast_hash((const uint8_t *)&new_state, sizeof(new_state)));
+            /* h is the hash of new_state (the sibling's when it was
+             * swapped in): one hash of the state per change, not three */
+            r->shader_binding = get_shader_binding_for_state(r, &new_state, h);
+            vk_seen_add(h);
             r->shader_bindings_changed = true;
         }
     } else {

@@ -316,16 +316,17 @@ extern bool libretro_chihiro_steering_log;
 extern float libretro_chihiro_steering_inner;
 extern int libretro_chihiro_steering_power;
 static bool update_option_display(void);
-static bool opt_use_dsp = true;
+static bool opt_use_dsp = false;
 static int  opt_surface_scale = 1;
 static int  opt_avpack = CONFIG_SYS_AVPACK_HDTV;
 /* OpenGL's shader cache, always on, as Vulkan's is (NNshi): turning it off
  * only made the next start compile everything again */
 static const bool opt_cache_shaders = true;
-/* audio.use_dsp_jit on, unlike standalone, as audio.use_dsp (NNshi);
- * audio.hrtf and audio.vp.num_workers as standalone's defaults. The DSP and
- * its JIT are taken when the content starts, HRTF as the audio runs, the
- * threads when the voice processor starts */
+/* audio.use_dsp off as standalone for now (savestates with it on can come
+ * back with corrupted sound, NNshi), audio.use_dsp_jit on; both switch while
+ * a game runs (gp_ep.c follows g_config each frame). audio.hrtf and
+ * audio.vp.num_workers as standalone's defaults, HRTF taken as the audio
+ * runs, the threads when the voice processor starts */
 static bool opt_dsp_jit = true;
 static bool opt_hrtf = true;
 static int  opt_vp_workers = 0;
@@ -1768,13 +1769,14 @@ static void update_variables(void)
         if (opt_surface_scale > 10) opt_surface_scale = 10;
     }
 
-    /* APU DSP Emulation and DSP JIT (Restart): taken when the content starts
-     * only. Switched while a game ran, they garbled its sound (NNshi). */
+    /* APU DSP Emulation and DSP JIT: the APU's frame loop (gp_ep.c) picks
+     * a change up on its next frame, so they apply while a game runs */
     var.key = "xemu_use_dsp";
     var.value = NULL;
-    if (!emu_initialized && environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
         opt_use_dsp = !strcmp(var.value, "enabled");
     }
+    g_config.audio.use_dsp = opt_use_dsp;
 
     var.key = "xemu_avpack";
     var.value = NULL;
@@ -1870,9 +1872,10 @@ static void update_variables(void)
 
     var.key = "xemu_dsp_jit";
     var.value = NULL;
-    if (!emu_initialized && environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
         opt_dsp_jit = !strcmp(var.value, "enabled");
     }
+    g_config.audio.use_dsp_jit = opt_dsp_jit;
 
     var.key = "xemu_hrtf";
     var.value = NULL;

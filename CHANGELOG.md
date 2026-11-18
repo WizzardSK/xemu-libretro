@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## November 2026
 
+- Audio: APU DSP Emulation and DSP JIT switch while a game runs again, and APU DSP Emulation is off by default for now, as in standalone: with it on, loading a savestate could leave the sound corrupted. Turn it on for the games' effects, reverb and music (NNshi).
 - Vulkan Fast Paths has a new default, Auto: None on AMD graphics cards, where the fast paths draw garbage (XieTieqiang's RX 9070 GRE, issue 2), and All on the others, as before. All and the other values can still be picked on AMD, to help get them working there (NNshi).
 - Vulkan: the device the core shares with RetroArch gets only the optional extensions whose features the renderer turns on, not every one the GPU offers. With every one on that device, used or not, an AMD RX 9070 GRE lost the device on the second frame and RetroArch closed, whatever Vulkan Fast Paths was set to (XieTieqiang, issue 2). Nothing is forced off for any GPU: Auto (None on AMD) is the safe default there, and on that card turning the vertex input dynamic state or pipeline libraries on still loses the device.
 - Vulkan: the video overlay's FMVs stay the right way up (below) with the display shader as standalone has it: the overlay is turned over in the values the shader gets, not in its code. With the shader's text changed, an AMD RX 9070 GRE drew garbage over the whole picture, in the game too (XieTieqiang, issue 2).

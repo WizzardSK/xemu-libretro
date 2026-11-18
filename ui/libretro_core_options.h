@@ -69,12 +69,17 @@ struct retro_core_option_v2_category option_cats_us[] = {
     {
         "system",
         "System (Restart)",
-        "The machine itself: memory, network, boot and CPU. Taken when the content starts (Trim HDD on Close when it closes)."
+        "The machine itself: memory, network, boot and language. Taken when the content starts (Trim HDD on Close when it closes)."
     },
     {
         "video",
         "Video",
         "Configure video rendering settings."
+    },
+    {
+        "debug",
+        "Debug",
+        "The profiler and switches for finding what slows a game down or breaks it: the CPU and GPU fast paths and the renderer's details. Best left as they are otherwise."
     },
     {
         "audio",
@@ -135,34 +140,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         {
             { "disabled", "Disabled" },
             { "enabled",  "Enabled" },
-            { NULL, NULL },
-        },
-        "enabled"
-    },
-    {
-        "xemu_hard_fpu",
-        "Hardware FPU Emulation",
-        NULL,
-        "Use host FPU for x87 emulation. Faster but may have minor inaccuracies.",
-        NULL,
-        "system",
-        {
-            { "enabled",  "Enabled" },
-            { "disabled", "Disabled" },
-            { NULL, NULL },
-        },
-        "enabled"
-    },
-    {
-        "xemu_cpu_boost",
-        "CPU Boost",
-        NULL,
-        "Faster paths for the guest CPU and the audio processor: native SSE and a wider jump cache. Turn it off if a game misbehaves.",
-        NULL,
-        "system",
-        {
-            { "enabled",  "Enabled" },
-            { "disabled", "Disabled" },
             { NULL, NULL },
         },
         "enabled"
@@ -295,21 +272,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "1"
     },
-    /* Off by default: it helps some games and breaks others (NNshi) */
-    {
-        "xemu_subpixel_offset",
-        "Subpixel Offset Scaling",
-        NULL,
-        "With an Internal Resolution Scale above 1x, moves the picture by a fraction of a pixel so the pixels of the higher resolution line up with the original ones. Fixes ghosting and seams in some games (Jade Empire, Blinx) and breaks others (Splinter Cell). Off is as before.",
-        NULL,
-        "video",
-        {
-            { "off", "OFF" },
-            { "on", "ON" },
-            { NULL, NULL },
-        },
-        "off"
-    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -429,6 +391,48 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "0"
     },
+    {
+        "xemu_mspf_overlay",
+        "Profiler (F10)",
+        NULL,
+        "Shows three lines in the top left corner. FPS: the frames per second the game shows, as in standalone xemu's video debug overlay, over its last 60 frames. GPU: the frame rate the game could reach from the time it takes to draw a frame (standalone's MSPF), averaged over its last 60 frames and updated every 20 frames; valid only when the GPU is what limits the game. NV2A IDLE: the share of time since the profiler was turned on that the GPU thread waited for the game to send work; high while the frame rate is below the game's target means the CPU is what limits it. F10 on the keyboard turns the profiler on or off, and each time it comes on NV2A IDLE starts over. On Windows, while it is on the core also samples where the CPU emulation spends its time (this slows it slightly), and when it goes off writes the shares to RetroArch's log and every sample to system/xemu/xemu_profile.txt. While on, the core also writes to RetroArch's log every 300 runs how the guest's frames and the frontend's runs lined up. Takes effect right away.",
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_cpu_boost",
+        "CPU Boost (Restart)",
+        NULL,
+        "Faster paths for the guest CPU and the audio processor: native SSE and a wider jump cache. Turn it off if a game misbehaves. Taken when the content starts.",
+        NULL,
+        "debug",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
+    {
+        "xemu_hard_fpu",
+        "Hardware FPU Emulation (Restart)",
+        NULL,
+        "Use host FPU for x87 emulation. Faster but may have minor inaccuracies. Taken when the content starts.",
+        NULL,
+        "debug",
+        {
+            { "enabled",  "Enabled" },
+            { "disabled", "Disabled" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     /* Auto by default: All, as standalone, but None on AMD, where they draw
      * garbage (NNshi); fewer for a GPU that crashes on one of them (Akrido) */
     {
@@ -437,7 +441,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         NULL,
         "Currently only confirmed to work on Nvidia graphics cards, broken on AMD. Affects shader compilation speed on Vulkan. \"All\" is the fastest but can crash some games. \"Auto\" is None on AMD graphics cards and All on others.",
         NULL,
-        "video",
+        "debug",
         {
             { "auto",     "Auto" },
             { "all",      "All" },
@@ -448,19 +452,20 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "auto"
     },
+    /* Off by default: it helps some games and breaks others (NNshi) */
     {
-        "xemu_mspf_overlay",
-        "Performance Overlay",
+        "xemu_subpixel_offset",
+        "Subpixel Offset Scaling",
         NULL,
-        "Shows three lines in the top left corner. FPS: the frames per second the game shows, as in standalone xemu's video debug overlay, over its last 60 frames. GPU: the frame rate the game could reach from the time it takes to draw a frame (standalone's MSPF), averaged over its last 60 frames and updated every 20 frames; valid only when the GPU is what limits the game. NV2A IDLE: the share of time since the overlay was turned on that the GPU thread waited for the game to send work; high while the frame rate is below the game's target means the CPU is what limits it. F10 on the keyboard turns the overlay on or off, and each time it comes on NV2A IDLE starts over. On Windows, while it is on the core also samples where the CPU emulation spends its time (this slows it slightly), and when it goes off writes the shares to RetroArch's log and every sample to system/xemu/xemu_profile.txt. While on, the core also writes to RetroArch's log every 300 runs how the guest's frames and the frontend's runs lined up. Takes effect right away.",
+        "With an Internal Resolution Scale above 1x, moves the picture by a fraction of a pixel so the pixels of the higher resolution line up with the original ones. Fixes ghosting and seams in some games (Jade Empire, Blinx) and breaks others (Splinter Cell). Off is as before.",
         NULL,
-        "video",
+        "debug",
         {
-            { "disabled", NULL },
-            { "enabled",  NULL },
+            { "off", "OFF" },
+            { "on", "ON" },
             { NULL, NULL },
         },
-        "disabled"
+        "off"
     },
     {
         "xemu_rumble_p1",

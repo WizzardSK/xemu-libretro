@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## November 2026
 
+- A new Debug category, after Video, holds what is there for finding what slows a game down or breaks it: Profiler (F10) (the Performance Overlay, renamed), CPU Boost, Hardware FPU Emulation, Vulkan Fast Paths and Subpixel Offset Scaling. CPU Boost and Hardware FPU Emulation say (Restart) now that they left System (Restart) (NNshi).
 - Virtua Cop 3: the pedal is on the right mouse button and L2, change weapon on the middle mouse button and L, the other way round from before: the pedal is held most of the game (NNshi). The light gun keeps its buttons.
 - The Smooth First Play option is gone; it is always on (the shaders a game is known to use are compiled while it boots). There was no case for turning it off (NNshi).
 - System Language and System Aspect Ratio no longer have a Dashboard value: what the EEPROM holds is never what games see, as every EEPROM setting a game reads is a core option. A saved Dashboard falls back to the default (Auto, 16:9) (NNshi).

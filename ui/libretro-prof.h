@@ -1,5 +1,5 @@
 /*
- * vCPU and GPU-thread sampling profiler for the Performance Overlay (ui/libretro-prof.c).
+ * vCPU and GPU-thread sampling profiler of Profiler (F10) (ui/libretro-prof.c).
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */

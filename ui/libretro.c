@@ -218,7 +218,7 @@ static char opt_bios_path[4096] = "";
 static char opt_hdd_path[4096] = "";
 /* Trim HDD on Close (hdd_trim) */
 static bool opt_hdd_trim = false;
-/* Performance Overlay (ui/libretro-osd.h) */
+/* Profiler (F10) (ui/libretro-osd.h) */
 static bool opt_internal_fps = false;
 #include "ui/libretro-prof.h"
 static void prof_log(const char *fmt, ...);
@@ -515,7 +515,7 @@ static void draw_gl_crosshairs(unsigned width, unsigned height, uintptr_t fbo)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-/* Performance Overlay's text over the OpenGL frame (origin bottom left) */
+/* Profiler (F10)'s text over the OpenGL frame (origin bottom left) */
 static void gl_osd_rect(void *ctx, int x, int y, int w, int h, bool white)
 {
     const int height = *(const int *)ctx;
@@ -4162,7 +4162,7 @@ RETRO_API void retro_run(void)
     }
 
     run_count++;
-    /* the 300-run lines only while Performance Overlay is on (NNshi): a frame
+    /* the 300-run lines only while Profiler (F10) is on (NNshi): a frame
      * presentation benchmark switched with it */
     const bool frame_log = __atomic_load_n(&opt_internal_fps, __ATOMIC_RELAXED);
     if (run_count <= 5 || (frame_log && (run_count % 300) == 0)) {
@@ -4249,7 +4249,7 @@ RETRO_API void retro_run(void)
         input_poll_cb();
     }
 
-    /* F10 turns the Performance Overlay on or off (NNshi) */
+    /* F10 turns Profiler (F10) on or off (NNshi) */
     if (input_state_cb) {
         static bool f10_down;
         const bool down = input_state_cb(0, RETRO_DEVICE_KEYBOARD, 0, RETROK_F10) != 0;

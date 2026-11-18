@@ -1,5 +1,5 @@
 /*
- * vCPU sampling profiler for the Performance Overlay (NNshi).
+ * vCPU sampling profiler of Profiler (F10) (NNshi).
  *
  * While the overlay is on, a thread stops the vCPU thread about 1000 times
  * a second for a moment and reads its host instruction pointer. A sample

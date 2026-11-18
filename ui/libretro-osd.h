@@ -1,5 +1,5 @@
 /*
- * Performance Overlay (NNshi): the game's frames per second (FPS) and the
+ * Profiler (F10) (NNshi): the game's frames per second (FPS) and the
  * rate its render time allows (GPU; the MSPF of standalone xemu's video
  * debug overlay), drawn in the top left
  * corner of the picture handed to the frontend. hw/xbox/nv2a/pgraph/profile.c

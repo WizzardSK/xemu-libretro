@@ -4,6 +4,7 @@ What changed in the libretro core of this fork, newest first. Changes that come 
 
 ## November 2026
 
+- Linux: the core from RetroArch's core downloader loads in the AppImage of RetroArch too. The AppImage brings an old GLib that is loaded before the system's, and the core, built against a newer one, failed with "undefined symbol: g_spawn_async_with_fds"; GLib is now built into the core, which uses its own (TheHENOOB, issue 4).
 - Vulkan: Breakdown's main menu no longer stutters. Since the dirty texture ranges went into a log, the placeholder texture of an unused texture unit counted as changed before every draw, so every draw re-bound all textures; one that sits on memory the game renders into was read back and uploaded 17 times a frame instead of twice (NNshi).
 - Patch Manager: the OgXHD (wdb.dat) 16:9 patch is no longer listed for the 19 games that also have a bundled 16-9 Widescreen patch (Conker, both Baldur's Gate: Dark Alliance, Sonic Heroes, Prince of Persia: The Sands of Time and others): the two did the same. 71 games keep their OgXHD patch (NNshi).
 - Debug > Skip Idle TLB Modes (off by default): when the dirty state of guest memory is reset in the CPU's address cache, only the address-translation modes the Xbox uses (one or two of 22) are walked. Faster in some games (Crimson Skies, Virtua Cop 3), but it makes others micro-stutter (Burnout 3, Ollie King, Otogi, Ninja Gaiden Black, Conker), for reasons not found yet (NNshi).

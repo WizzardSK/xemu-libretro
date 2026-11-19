@@ -319,6 +319,12 @@ void nv2a_s2t_miss_dump(FILE *f)
     };
     s2t_miss_lock_once();
     qemu_mutex_lock(&s2t_miss_lock);
+    /* An enabled list with no entries says so, so that "none" and "off"
+     * read differently in the file */
+    if (qatomic_read(&nv2a_prof_s2t_on) && !s2t_miss_n) {
+        fprintf(f, "# textures on render-target memory not taken from it: "
+                   "none\n");
+    }
     if (s2t_miss_n) {
         fprintf(f, "# textures on render-target memory not taken from it "
                    "(count over the run; tex/surf: address+length, format, "
@@ -334,6 +340,12 @@ void nv2a_s2t_miss_dump(FILE *f)
                 e->surf_addr, e->surf_size, e->sfmt,
                 e->color ? "color" : "zeta", e->swizzle ? " swizzled" : "",
                 e->sw, e->sh, e->spitch, e->sbpp);
+    }
+    if (qatomic_read(&nv2a_prof_surf_on) && !surf_site_n) {
+        fprintf(f, "# surface downloads and uploads: none\n");
+    }
+    if (qatomic_read(&nv2a_prof_surf_on) && !surf_evict_n) {
+        fprintf(f, "# render targets evicted: none\n");
     }
     if (surf_site_n) {
         fprintf(f, "# surface downloads (GPU to RAM) and uploads (RAM to "

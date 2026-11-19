@@ -1089,8 +1089,9 @@ static void record_surface_copy(PGRAPHState *pg, VkCommandBuffer cmd,
         .dstSubresource.aspectMask = surface->host_fmt.aspect,
         .dstSubresource.baseArrayLayer = layer,
         .dstSubresource.layerCount = 1,
-        .extent.width = surface->width,
-        .extent.height = surface->height,
+        /* the texture, which may be the surface's top-left part */
+        .extent.width = MIN(surface->width, texture->key.state.width),
+        .extent.height = MIN(surface->height, texture->key.state.height),
         .extent.depth = 1,
     };
     pgraph_apply_scaling_factor(pg, &region.extent.width,
@@ -1205,9 +1206,16 @@ static unsigned int vk_format_texel_size(VkFormat format)
 static bool check_surface_to_texture_compatiblity(const SurfaceBinding *surface,
                                                   const TextureShape *shape)
 {
+    /* A linear color texture may also be the top-left part of a surface at
+     * its start, with the surface's pitch: Forza's rear mirror is sampled as
+     * the 179x64 corner of its 640x480 frame buffer. The copy takes that
+     * rectangle on the GPU, and such a texture is never sampled in place. */
+    bool subrect = !surface->swizzle && surface->color &&
+                   shape->width <= surface->width &&
+                   shape->height <= surface->height;
     if ((!surface->swizzle && surface->pitch != shape->pitch) ||
-        surface->width != shape->width ||
-        surface->height != shape->height ||
+        (!subrect && (surface->width != shape->width ||
+                      surface->height != shape->height)) ||
         shape->cubemap ||
         shape->levels > 1) {
         return false;
@@ -1869,6 +1877,20 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
         }
     }
 
+    /* No live target here: a parked image still ahead of the RAM serves
+     * instead of a writeback (pgraph_vk_surface_get_parked). */
+    bool s2t_parked = false;
+    if (!surface && state.levels == 1 && !state.cubemap) {
+        SurfaceBinding *ps = pgraph_vk_surface_get_parked(
+            d, texture_vram_offset, texture_length);
+        if (ps && ps->color &&
+            check_surface_to_texture_compatiblity(ps, &state)) {
+            surface = ps;
+            surface_to_texture = true;
+            s2t_parked = true;
+        }
+    }
+
     /* A cubemap whose six faces are live, compatible color surfaces takes
      * them by GPU copy. */
     if (!surface_to_texture && state.cubemap && state.levels == 1) {
@@ -2092,6 +2114,9 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
     bool s2t_borrow =
         surface_to_texture &&
         surface != r->color_binding &&
+        /* a parked image may be recycled; a part is copied, not aliased */
+        !s2t_parked &&
+        state.width == surface->width && state.height == surface->height &&
         state.dimensionality == 2 && !state.cubemap &&
         kelvin_color_format_vk_map[state.color_format].vk_format ==
             surface->host_fmt.vk_format;

@@ -961,15 +961,21 @@ static bool handoff_inside(const HandoffSrc *h, const SurfaceBinding *t)
            h->dy + (int)h->s->height <= (int)t->height;
 }
 
-/* The old targets the new one t can be built from: every live target and
- * owed parked image overlapping t, all placeable, and the newest of those
- * that covers t as the base. old is the target t replaces at its address,
- * already out of the live list. Returns the count, 0 for the RAM path. */
+/* The old targets the new one t can be built from: the live targets and
+ * owed parked images overlapping t that are placeable, from the newest of
+ * them that covers t (the base) on. One that cannot be placed only stops
+ * it when it is newer than the base: an older one is overwritten by the
+ * base where it overlaps t, and left as it is (evicted by surface_put, or
+ * still owed). A cold start of Forza kept such an old parked image over
+ * the depth buffer until a snapshot settled it (NNshi). old is the target
+ * t replaces at its address, already out of the live list. Returns the
+ * count, 0 for the RAM path. */
 static int handoff_plan(PGRAPHVkState *r, SurfaceBinding *t,
                         SurfaceBinding *old, HandoffSrc *hs, bool *dirty,
                         int *draw_time)
 {
     int n = 0;
+    int block_time = INT_MIN; /* newest overlapping one that cannot be used */
     SurfaceBinding *s;
 
     if (old) {
@@ -985,10 +991,14 @@ static int handoff_plan(PGRAPHVkState *r, SurfaceBinding *t,
         if (!check_surface_overlaps_range(s, t->vram_addr, t->size)) {
             continue;
         }
-        if (n == HANDOFF_MAX || s->upload_pending || !s->image ||
+        if (n == HANDOFF_MAX) {
+            return 0;
+        }
+        if (s->upload_pending || !s->image ||
             s == r->color_binding || s == r->zeta_binding ||
             !handoff_place(s, t, &hs[n].dx, &hs[n].dy)) {
-            return 0;
+            block_time = MAX(block_time, s->draw_time);
+            continue;
         }
         hs[n].s = s;
         hs[n++].live = true;
@@ -998,9 +1008,12 @@ static int handoff_plan(PGRAPHVkState *r, SurfaceBinding *t,
             !check_surface_overlaps_range(s, t->vram_addr, t->size)) {
             continue;
         }
-        if (n == HANDOFF_MAX || !s->image ||
-            !handoff_place(s, t, &hs[n].dx, &hs[n].dy)) {
+        if (n == HANDOFF_MAX) {
             return 0;
+        }
+        if (!s->image || !handoff_place(s, t, &hs[n].dx, &hs[n].dy)) {
+            block_time = MAX(block_time, s->draw_time);
+            continue;
         }
         hs[n].s = s;
         hs[n++].live = false;
@@ -1025,7 +1038,7 @@ static int handoff_plan(PGRAPHVkState *r, SurfaceBinding *t,
             break;
         }
     }
-    if (base < 0) {
+    if (base < 0 || block_time > hs[base].s->draw_time) {
         return 0;
     }
     /* what came before the base is overwritten by it */
@@ -1155,6 +1168,30 @@ static void surface_put(NV2AState *d, SurfaceBinding *surface)
     register_cpu_access_callback(d, surface);
 
     QTAILQ_INSERT_HEAD(&r->surfaces, surface, entry);
+}
+
+/* The parked image a texture at addr can be taken from: the newest owed
+ * content over the texture's memory starts there, and no live target lies
+ * over it (a live one is newer). Forza's mirror texture is the top-left of
+ * a frame buffer parked while the rear view is drawn inside it; taking it
+ * from RAM settled the frame buffer through a download and a GPU wait. */
+SurfaceBinding *pgraph_vk_surface_get_parked(NV2AState *d, hwaddr addr,
+                                             hwaddr len)
+{
+    PGRAPHVkState *r = d->pgraph.vk_renderer_state;
+    SurfaceBinding *s;
+
+    QTAILQ_FOREACH(s, &r->surfaces, entry) {
+        if (check_surface_overlaps_range(s, addr, len)) {
+            return NULL;
+        }
+    }
+    QTAILQ_FOREACH(s, &r->invalid_surfaces, entry) {
+        if (s->writeback_owed && check_surface_overlaps_range(s, addr, len)) {
+            return (s->vram_addr == addr && s->image) ? s : NULL;
+        }
+    }
+    return NULL;
 }
 
 SurfaceBinding *pgraph_vk_surface_get(NV2AState *d, hwaddr addr)

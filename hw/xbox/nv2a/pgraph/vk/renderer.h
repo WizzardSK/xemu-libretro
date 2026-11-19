@@ -885,6 +885,8 @@ extern __thread int vk_surf_site_line;
 void pgraph_vk_surface_update(NV2AState *d, bool upload, bool color_write,
                               bool zeta_write);
 SurfaceBinding *pgraph_vk_surface_get(NV2AState *d, hwaddr addr);
+SurfaceBinding *pgraph_vk_surface_get_parked(NV2AState *d, hwaddr addr,
+                                             hwaddr len);
 void pgraph_vk_set_surface_dirty(PGRAPHState *pg, bool color, bool zeta);
 void pgraph_vk_surface_watch_on(SurfaceBinding *surface);
 void pgraph_vk_set_surface_scale_factor(NV2AState *d, unsigned int scale);

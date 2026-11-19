@@ -1911,6 +1911,9 @@ static void create_pipeline(PGRAPHState *pg)
     if (r->pipeline_binding &&
         r->pipeline_binding->pipeline != VK_NULL_HANDLE &&
         !memcmp(&r->pipeline_binding->key, &key, sizeof(key))) {
+        /* Same binding as the lookup below would return: nothing to
+         * rebind (the flag is only ever set here and at the lookups). */
+        r->pipeline_binding_changed = false;
         NV2A_VK_DGROUP_END();
         return;
     }

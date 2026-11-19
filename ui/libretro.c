@@ -4133,7 +4133,9 @@ static char *prof_file(char **header)
         "# renderer %s, internal resolution %dx, Vulkan fast paths %s, "
         "anisotropic %ux, subpixel offset %s\n"
         "# CPU boost %s, hardware FPU %s, memory %d MB, APU DSP %s, DSP JIT %s\n"
-        "# run: %.1f s, average FPS %.2f, GPU (MSPF as a frame rate) %.2f, NV2A idle %u.%u%%\n",
+        "# run: %.1f s, average FPS %.2f, GPU (MSPF as a frame rate) %.2f, NV2A idle %u.%u%%\n"
+        "# profiler: PFIFO waits %s, renderer counters %s, missed render targets %s, "
+        "surface downloads and uploads %s\n",
         xemu_version, commit, base, (unsigned)qatomic_read(&guest_title_id),
         use_vulkan ? "Vulkan" : "OpenGL", opt_surface_scale, fast,
         qatomic_read(&xemu_min_anisotropy),
@@ -4143,7 +4145,11 @@ static char *prof_file(char **header)
         span > 0 ? span / 1e9 : 0.0,
         span > 0 && flips > 1 ? (flips - 1) * 1e9 / span : 0.0,
         render > 0 ? flips * 1e6 / render : 0.0,
-        idle100 / 100, idle100 % 100 / 10);
+        idle100 / 100, idle100 % 100 / 10,
+        qatomic_read(&xemu_lr_prof_pfifo_on) ? "on" : "off",
+        opt_prof_counters ? "on" : "off",
+        qatomic_read(&nv2a_prof_s2t_on) ? "on" : "off",
+        qatomic_read(&nv2a_prof_surf_on) ? "on" : "off");
     return g_build_filename(dir, name, NULL);
 }
 

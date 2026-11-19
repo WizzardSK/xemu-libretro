@@ -2173,7 +2173,8 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
 
     snode->sampler = create_sampler_for_state(pg, &state, filter, address,
                                               border_color_pack32,
-                                              max_anisotropy);
+                                              max_anisotropy,
+                                              qatomic_read(&xemu_no_mipmaps) != 0);
 
     set_texture_label(pg, snode);
 

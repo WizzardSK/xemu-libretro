@@ -601,6 +601,14 @@ static void surface_access_callback(void *opaque, MemoryRegion *mr, hwaddr addr,
 
         hwaddr offset = addr - surface->vram_addr;
 
+        if (qatomic_read(&nv2a_prof_surf_on)) {
+            CPUState *cs = current_cpu;
+            nv2a_surf_cpu_note(surface->vram_addr, surface->width,
+                               surface->height, surface->color, write,
+                               surface->draw_dirty,
+                               cs && cs->cc->get_pc ? cs->cc->get_pc(cs) : 0);
+        }
+
         if (write) {
             trace_nv2a_pgraph_surface_cpu_write(surface->vram_addr, offset);
         } else {

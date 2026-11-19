@@ -181,6 +181,11 @@ void nv2a_surf_evict_note(const char *why, uint32_t addr, unsigned w,
  * line that asked for them, with the surface */
 void nv2a_surf_site_note(int kind, const char *func, int line, uint32_t addr,
                          unsigned w, unsigned h, unsigned fmt, bool color);
+/* With the surface list on: the CPU (or a DMA from the main loop, pc 0)
+ * touching a render target's memory, by target, read/write and guest code
+ * address (the start of the translated block, so near the access) */
+void nv2a_surf_cpu_note(uint32_t addr, unsigned w, unsigned h, bool color,
+                        bool write, bool dirty, uint64_t pc);
 void nv2a_s2t_miss_dump(FILE *f);
 int nv2a_profile_get_counter_value(unsigned int cnt);
 void nv2a_profile_increment(void);

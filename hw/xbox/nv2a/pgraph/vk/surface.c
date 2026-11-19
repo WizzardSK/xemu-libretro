@@ -145,6 +145,10 @@ void (pgraph_vk_download_surfaces_in_range_if_dirty)(PGRAPHState *pg,
     PGRAPHVkState *r = pg->vk_renderer_state;
     SurfaceBinding *surface;
 
+    /* A texture is built from this RAM: settle its owed lazy writebacks,
+     * first, as a parked image is older than any live target over it. */
+    parked_materialize_range(container_of(pg, NV2AState, pgraph), start,
+                             size);
     QTAILQ_FOREACH(surface, &r->surfaces, entry) {
         if (check_surface_overlaps_range(surface, start, size)) {
             /* not the macro: the site stays the caller's */
@@ -152,9 +156,6 @@ void (pgraph_vk_download_surfaces_in_range_if_dirty)(PGRAPHState *pg,
                 container_of(pg, NV2AState, pgraph), surface);
         }
     }
-    /* A texture is built from this RAM: settle its owed lazy writebacks. */
-    parked_materialize_range(container_of(pg, NV2AState, pgraph), start,
-                             size);
 }
 
 static void download_surface_to_buffer(NV2AState *d, SurfaceBinding *surface,
@@ -545,19 +546,20 @@ void pgraph_vk_wait_for_surface_download(SurfaceBinding *surface)
 void pgraph_vk_process_pending_downloads(NV2AState *d)
 {
     PGRAPHVkState *r = d->pgraph.vk_renderer_state;
-    SurfaceBinding *surface;
+    SurfaceBinding *surface, *prev;
 
-    QTAILQ_FOREACH(surface, &r->surfaces, entry) {
-        VK_SURF_SITE();
-        download_surface(d, surface, false);
-    }
-    /* Owed lazy writebacks the CPU access callback queued. */
-    QTAILQ_FOREACH(surface, &r->invalid_surfaces, entry) {
+    /* Owed lazy writebacks the CPU access callback queued, oldest first and
+     * before the live targets: those are newer where they overlap. */
+    QTAILQ_FOREACH_REVERSE_SAFE(surface, &r->invalid_surfaces, entry, prev) {
         if (surface->writeback_owed && surface->download_pending) {
             VK_SURF_SITE();
             download_surface(d, surface, false);
             parked_owed_settled(d, surface);
         }
+    }
+    QTAILQ_FOREACH(surface, &r->surfaces, entry) {
+        VK_SURF_SITE();
+        download_surface(d, surface, false);
     }
 
     qatomic_set(&r->downloads_pending, false);
@@ -568,16 +570,17 @@ void pgraph_vk_download_dirty_surfaces(NV2AState *d)
 {
     PGRAPHVkState *r = d->pgraph.vk_renderer_state;
 
-    SurfaceBinding *surface;
-    QTAILQ_FOREACH(surface, &r->surfaces, entry) {
-        pgraph_vk_surface_download_if_dirty(d, surface);
-    }
-    /* Settle every owed lazy writeback: a snapshot must find RAM exact. */
-    QTAILQ_FOREACH(surface, &r->invalid_surfaces, entry) {
+    SurfaceBinding *surface, *prev;
+    /* Settle every owed lazy writeback: a snapshot must find RAM exact.
+     * Oldest first, then the live targets, which are newer. */
+    QTAILQ_FOREACH_REVERSE_SAFE(surface, &r->invalid_surfaces, entry, prev) {
         if (surface->writeback_owed) {
             pgraph_vk_surface_download_if_dirty(d, surface);
             parked_owed_settled(d, surface);
         }
+    }
+    QTAILQ_FOREACH(surface, &r->surfaces, entry) {
+        pgraph_vk_surface_download_if_dirty(d, surface);
     }
 
     qatomic_set(&r->download_dirty_surfaces_pending, false);
@@ -806,8 +809,9 @@ static void parked_materialize_range(NV2AState *d, hwaddr start,
                                      hwaddr size)
 {
     PGRAPHVkState *r = d->pgraph.vk_renderer_state;
-    SurfaceBinding *s, *next;
-    QTAILQ_FOREACH_SAFE(s, &r->invalid_surfaces, entry, next) {
+    SurfaceBinding *s, *prev;
+    /* oldest first: invalid_surfaces is head-inserted */
+    QTAILQ_FOREACH_REVERSE_SAFE(s, &r->invalid_surfaces, entry, prev) {
         if (s->writeback_owed && check_surface_overlaps_range(s, start, size)) {
             parked_materialize(d, s);
             /* a texture read this RAM: proven live, stay eager */
@@ -893,6 +897,250 @@ static void invalidate_overlapping_surfaces(NV2AState *d,
                 surface->shape.color_format, surface->shape.zeta_format,
                 surface->color, surface->shape.anti_aliasing, 0, 0);
             evict_surface(d, other_surface);
+        }
+    }
+}
+
+/* Render targets that share memory with the same pitch, handed over on the
+ * GPU. Forza Motorsport's bumper view draws the rear view into a 320x120
+ * target inside its 640x480 frame buffer, and uses one depth buffer with
+ * 2x AA (1280x480) and without (640x480) in turn, with one pitch; each
+ * switch evicted the old target, read it back to RAM waiting for the GPU,
+ * and uploaded the new one from RAM (NNshi's profiles: 123 waits a second).
+ * The bytes of such targets map onto each other row by row, so the new
+ * target is built from the old images instead: the newest image that holds
+ * all of it, then the newer ones that hold a part, each copied at the
+ * internal resolution where the RAM path would have carried it. An old
+ * target that the new one does not cover keeps its image parked with its
+ * writeback owed, settled before any reader of the RAM, oldest first. */
+#define HANDOFF_MAX 8
+
+typedef struct HandoffSrc {
+    SurfaceBinding *s;
+    int dx, dy; /* s's top-left in the new target, in guest pixels */
+    bool live;
+} HandoffSrc;
+
+/* Where s lies in t's rows, if their bytes map onto each other. */
+static bool handoff_place(const SurfaceBinding *s, const SurfaceBinding *t,
+                          int *dx, int *dy)
+{
+    if (s->color != t->color || s->swizzle || t->swizzle ||
+        s->pitch != t->pitch || !t->pitch ||
+        s->fmt.bytes_per_pixel != t->fmt.bytes_per_pixel ||
+        s->host_fmt.vk_format != t->host_fmt.vk_format ||
+        !s->width || !s->height) {
+        return false;
+    }
+    int64_t o = (int64_t)s->vram_addr - (int64_t)t->vram_addr;
+    int64_t p = t->pitch;
+    int64_t row = o >= 0 ? o / p : -((-o + p - 1) / p);
+    int64_t rem = o - row * p;
+    unsigned int bpp = t->fmt.bytes_per_pixel;
+    if (rem % bpp || rem + (int64_t)s->width * bpp > p ||
+        (int64_t)t->width * bpp > p) {
+        return false; /* rows would wrap: not a rectangle of t */
+    }
+    *dx = rem / bpp;
+    *dy = row;
+    return true;
+}
+
+static bool handoff_covers(const HandoffSrc *h, const SurfaceBinding *t)
+{
+    return h->dx <= 0 && h->dy <= 0 &&
+           h->dx + (int)h->s->width >= (int)t->width &&
+           h->dy + (int)h->s->height >= (int)t->height;
+}
+
+/* t covers all of s */
+static bool handoff_inside(const HandoffSrc *h, const SurfaceBinding *t)
+{
+    return h->dx >= 0 && h->dy >= 0 &&
+           h->dx + (int)h->s->width <= (int)t->width &&
+           h->dy + (int)h->s->height <= (int)t->height;
+}
+
+/* The old targets the new one t can be built from: every live target and
+ * owed parked image overlapping t, all placeable, and the newest of those
+ * that covers t as the base. old is the target t replaces at its address,
+ * already out of the live list. Returns the count, 0 for the RAM path. */
+static int handoff_plan(PGRAPHVkState *r, SurfaceBinding *t,
+                        SurfaceBinding *old, HandoffSrc *hs, bool *dirty,
+                        int *draw_time)
+{
+    int n = 0;
+    SurfaceBinding *s;
+
+    if (old) {
+        if (old->upload_pending || !old->image ||
+            old == r->color_binding || old == r->zeta_binding ||
+            !handoff_place(old, t, &hs[n].dx, &hs[n].dy)) {
+            return 0;
+        }
+        hs[n].s = old;
+        hs[n++].live = true;
+    }
+    QTAILQ_FOREACH(s, &r->surfaces, entry) {
+        if (!check_surface_overlaps_range(s, t->vram_addr, t->size)) {
+            continue;
+        }
+        if (n == HANDOFF_MAX || s->upload_pending || !s->image ||
+            s == r->color_binding || s == r->zeta_binding ||
+            !handoff_place(s, t, &hs[n].dx, &hs[n].dy)) {
+            return 0;
+        }
+        hs[n].s = s;
+        hs[n++].live = true;
+    }
+    QTAILQ_FOREACH(s, &r->invalid_surfaces, entry) {
+        if (!s->writeback_owed ||
+            !check_surface_overlaps_range(s, t->vram_addr, t->size)) {
+            continue;
+        }
+        if (n == HANDOFF_MAX || !s->image ||
+            !handoff_place(s, t, &hs[n].dx, &hs[n].dy)) {
+            return 0;
+        }
+        hs[n].s = s;
+        hs[n++].live = false;
+    }
+    if (!n) {
+        return 0;
+    }
+    /* oldest first: each copy overwrites what came before it */
+    for (int i = 1; i < n; i++) {
+        HandoffSrc h = hs[i];
+        int j = i;
+        while (j > 0 && hs[j - 1].s->draw_time > h.s->draw_time) {
+            hs[j] = hs[j - 1];
+            j--;
+        }
+        hs[j] = h;
+    }
+    int base = -1;
+    for (int i = n - 1; i >= 0; i--) {
+        if (handoff_covers(&hs[i], t)) {
+            base = i;
+            break;
+        }
+    }
+    if (base < 0) {
+        return 0;
+    }
+    /* what came before the base is overwritten by it */
+    memmove(hs, hs + base, (n - base) * sizeof(*hs));
+    n -= base;
+    /* t is behind the RAM if any source is; read now, as recycling the
+     * base's image into t (get_any_compatible_invalid_surface) settles it */
+    *dirty = false;
+    *draw_time = 0;
+    for (int i = 0; i < n; i++) {
+        *dirty |= hs[i].live ? hs[i].s->draw_dirty : hs[i].s->writeback_owed;
+        *draw_time = MAX(*draw_time, hs[i].s->draw_time);
+    }
+    return n;
+}
+
+static void handoff_copy(PGRAPHState *pg, VkCommandBuffer cmd,
+                         const HandoffSrc *h, SurfaceBinding *t)
+{
+    SurfaceBinding *s = h->s;
+    int x0 = MAX(h->dx, 0), y0 = MAX(h->dy, 0);
+    int x1 = MIN(h->dx + (int)s->width, (int)t->width);
+    int y1 = MIN(h->dy + (int)s->height, (int)t->height);
+    if (x1 <= x0 || y1 <= y0) {
+        return;
+    }
+    unsigned int sf = pg->surface_scale_factor;
+    VkImageCopy region = {
+        .srcSubresource.aspectMask = s->host_fmt.aspect,
+        .srcSubresource.layerCount = 1,
+        .srcOffset = { (x0 - h->dx) * sf, (y0 - h->dy) * sf, 0 },
+        .dstSubresource.aspectMask = t->host_fmt.aspect,
+        .dstSubresource.layerCount = 1,
+        .dstOffset = { x0 * sf, y0 * sf, 0 },
+        .extent = { (x1 - x0) * sf, (y1 - y0) * sf, 1 },
+    };
+    pgraph_vk_transition_image_layout(pg, cmd, s->image,
+                                      s->host_fmt.vk_format,
+                                      pgraph_vk_surface_base_layout(s),
+                                      VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+    vkCmdCopyImage(cmd, s->image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                   t->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1,
+                   &region);
+    pgraph_vk_transition_image_layout(pg, cmd, s->image,
+                                      s->host_fmt.vk_format,
+                                      VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                                      pgraph_vk_surface_base_layout(s));
+    /* the next copy may write the same texels */
+    VkMemoryBarrier b = {
+        .sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER,
+        .srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
+        .dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT,
+    };
+    vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                         VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 1, &b, 0, NULL, 0,
+                         NULL);
+}
+
+/* t, just made (its image in place, not yet in the live list), filled from
+ * hs. The live sources are out of the live list; they leave parked. */
+static void handoff_run(NV2AState *d, SurfaceBinding *t, HandoffSrc *hs,
+                        int n, bool dirty, int draw_time)
+{
+    PGRAPHState *pg = &d->pgraph;
+    PGRAPHVkState *r = pg->vk_renderer_state;
+
+    nv2a_profile_inc_counter(NV2A_PROF_SURF_HANDOFF);
+
+    VkCommandBuffer cmd = pgraph_vk_begin_nondraw_commands(pg);
+    pgraph_vk_begin_debug_marker(r, cmd, RGBA_GREEN, __func__);
+    pgraph_vk_transition_image_layout(pg, cmd, t->image,
+                                      t->host_fmt.vk_format,
+                                      pgraph_vk_surface_base_layout(t),
+                                      VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+    for (int i = 0; i < n; i++) {
+        SurfaceBinding *s = hs[i].s;
+        /* A base parked at t's range and shape may have become t itself:
+         * its image, recycled, already holds the content. */
+        if (s != t && s->image) {
+            handoff_copy(pg, cmd, &hs[i], t);
+        }
+    }
+    pgraph_vk_transition_image_layout(pg, cmd, t->image,
+                                      t->host_fmt.vk_format,
+                                      VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                      pgraph_vk_surface_base_layout(t));
+    pgraph_vk_end_debug_marker(r, cmd);
+    pgraph_vk_end_nondraw_commands(pg, cmd);
+
+    t->upload_pending = false;
+    t->initialized = true;
+    t->draw_dirty = dirty;
+    t->draw_time = draw_time;
+
+    for (int i = 0; i < n; i++) {
+        SurfaceBinding *s = hs[i].s;
+        if (s == t) {
+            continue;
+        }
+        s->handoff_src = false;
+        bool inside = handoff_inside(&hs[i], t);
+        if (hs[i].live) {
+            /* Its content went into t where t covers it; the rest is
+             * owed to the RAM, as a dead eviction would be. */
+            if (inside) {
+                s->draw_dirty = false;
+                s->writeback_owed = false;
+            } else {
+                parked_supersede_owed(r, s->vram_addr, s->size);
+                s->writeback_owed = s->draw_dirty;
+            }
+            QTAILQ_INSERT_HEAD(&r->surfaces, s, entry);
+            invalidate_surface(d, s);
+        } else if (inside && s->writeback_owed) {
+            parked_owed_settled(d, s);
         }
     }
 }
@@ -1111,6 +1359,12 @@ get_any_compatible_invalid_surface(PGRAPHVkState *r, SurfaceBinding *target)
 {
     SurfaceBinding *surface, *next;
     QTAILQ_FOREACH_SAFE(surface, &r->invalid_surfaces, entry, next) {
+        /* a handoff source's image is copied from after this */
+        if (surface->handoff_src &&
+            (surface->vram_addr != target->vram_addr ||
+             surface->size != target->size)) {
+            continue;
+        }
         if (check_invalid_surface_is_compatibile(surface, target)) {
             /* Recycling would destroy owed content: the same range's is
              * superseded, another range's is materialised first. */
@@ -1839,6 +2093,7 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
             pg->surface_shape.clip_height);
 
         bool should_create = true;
+        SurfaceBinding *handoff_old = NULL;
 
         if (surface != NULL) {
             bool is_compatible =
@@ -1919,18 +2174,45 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
                     target.color, target.shape.anti_aliasing,
                     (!color && r->color_binding) ? r->color_binding->width : 0,
                     (!color && r->color_binding) ? r->color_binding->height : 0);
-                evict_surface(d, surface);
+                if (!mem_dirty) {
+                    /* maybe handed over on the GPU below (handoff_plan) */
+                    handoff_old = surface;
+                    QTAILQ_REMOVE(&r->surfaces, surface, entry);
+                } else {
+                    evict_surface(d, surface);
+                }
+            }
+        }
+
+        HandoffSrc hs[HANDOFF_MAX];
+        int hn = 0;
+        bool h_dirty = false;
+        int h_time = 0;
+        if (should_create && !mem_dirty) {
+            hn = handoff_plan(r, &target, handoff_old, hs, &h_dirty, &h_time);
+        }
+        if (!hn && handoff_old) {
+            QTAILQ_INSERT_HEAD(&r->surfaces, handoff_old, entry);
+            evict_surface(d, handoff_old);
+        }
+        for (int i = 0; i < hn; i++) {
+            hs[i].s->handoff_src = true;
+            if (hs[i].live && hs[i].s != handoff_old) {
+                /* out of the live list, so that surface_put does not
+                 * evict it through the RAM */
+                QTAILQ_REMOVE(&r->surfaces, hs[i].s, entry);
             }
         }
 
         if (should_create) {
             /* Settle an owed writeback first: the create's upload must read
-             * the refreshed RAM, and a settle cancels the dead-upload skip. */
-            bool settled = parked_settle_for_create(d, &target);
+             * the refreshed RAM, and a settle cancels the dead-upload skip.
+             * A handoff takes the content from the old images instead. */
+            bool settled = !hn && parked_settle_for_create(d, &target);
             if (settled) {
                 target.upload_pending = true;
             }
-            if (!settled && target.upload_pending &&
+            if (!hn && !settled && target.upload_pending &&
                 pgraph_writeback_discarded(&d->pgraph, target.vram_addr,
                                            target.size)) {
                 if (memory_region_test_and_clear_dirty(d->vram,
@@ -1960,6 +2242,9 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
             *surface = target;
             set_surface_label(pg, surface);
             surface_put(d, surface);
+            if (hn) {
+                handoff_run(d, surface, hs, hn, h_dirty, h_time);
+            }
 
             set_surface_binding_dimensions(pg, color, &target);
 

@@ -164,6 +164,9 @@ typedef struct SurfaceBinding {
     /* In-place sampling: set while the image rests in SHADER_READ_ONLY
      * (sampled in place); a writer transitions it out and clears this. */
     bool in_shader_read;
+    /* a source of the render target being built on the GPU (surface.c,
+     * handoff_plan): its image is not recycled meanwhile */
+    bool handoff_src;
     /* submit_count when the borrow transition was recorded: while equal, the
      * image still rests in its attachment layout (open recording). */
     uint32_t borrow_submit;

@@ -2874,6 +2874,7 @@ static void teardown_after_settle(PGRAPHState *pg)
     r->descriptor_set_index = 0;
     pgraph_vk_trash_drain(r);
     pgraph_vk_compute_finish_complete(r);
+    pgraph_vk_kind_finish_complete(r);
 
     /* Every submission so far has retired. */
     r->settled_submit = r->submit_count;

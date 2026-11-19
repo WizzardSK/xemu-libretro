@@ -876,6 +876,518 @@ static void evict_surface(NV2AState *d, SurfaceBinding *s)
     invalidate_surface(d, s);
 }
 
+/* Depth and color views of one buffer. A game that binds the same memory
+ * as its depth buffer and as a color target in turn (Jade Empire: one
+ * 640x480 buffer, about 14 times a frame each way) made Vulkan write the
+ * old view to RAM, waiting for the GPU and converting the depth, and build
+ * the new one from RAM, every time. The two views of a linear 32-bit
+ * buffer hold the same bits (Z24S8 as depth << 8 | stencil, read as
+ * A8R8G8B8), so the old view is converted into the new one on the GPU, at
+ * the scaled size, with the compute packing the RAM path uses, and nothing
+ * goes to RAM until something reads it. */
+/* Which kind pipeline renders into this view (renderer.h, r->kind). */
+static int kind_dst_index(const SurfaceBinding *s)
+{
+    switch (s->host_fmt.vk_format) {
+    case VK_FORMAT_B8G8R8A8_UNORM:
+        return s->color ? 0 : -1;
+    case VK_FORMAT_D24_UNORM_S8_UINT:
+        return 1;
+    case VK_FORMAT_D32_SFLOAT_S8_UINT:
+        return 2;
+    default:
+        return -1;
+    }
+}
+
+static bool kind_sampled_ok(PGRAPHVkState *r, VkFormat f)
+{
+    VkFormatProperties props;
+    vkGetPhysicalDeviceFormatProperties(r->physical_device, f, &props);
+    return props.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
+}
+
+static bool surface_kind_switch_ok(PGRAPHVkState *r, const SurfaceBinding *old,
+                                   const SurfaceBinding *t)
+{
+    if (old->color == t->color || old->vram_addr != t->vram_addr ||
+        old->width != t->width || old->height != t->height ||
+        old->pitch != t->pitch || old->swizzle || t->swizzle ||
+        old->shape.anti_aliasing != t->shape.anti_aliasing ||
+        old->fmt.bytes_per_pixel != 4 || t->fmt.bytes_per_pixel != 4 ||
+        old->upload_pending || !old->image) {
+        return false;
+    }
+    const SurfaceBinding *depth = old->color ? t : old;
+    const SurfaceBinding *color = old->color ? old : t;
+    if (kind_dst_index(color) != 0 || kind_dst_index(depth) < 1) {
+        return false;
+    }
+    /* the old view is sampled */
+    static int sampled[3] = { -1, -1, -1 };
+    int i = kind_dst_index(old);
+    if (sampled[i] < 0) {
+        sampled[i] = kind_sampled_ok(r, old->host_fmt.vk_format);
+    }
+    return sampled[i];
+}
+
+/* The shaders pack and unpack exactly as the RAM path does
+ * (surface-compute.c): Z24S8 is depth << 8 | stencil, which as B8G8R8A8 is
+ * R = depth[15:8], G = depth[7:0], B = stencil, A = depth[23:16] (OpenGL's
+ * alias_convert, gl/surface.c, the same bytes). A float depth (D32S8) takes
+ * the compute shaders' conversions. The stencil cannot be written from a
+ * fragment shader without VK_EXT_shader_stencil_export: color to depth
+ * clears it, as OpenGL loses it. */
+static const char *kind_frag_glsl(int idx)
+{
+    switch (idx) {
+    case 0:
+        return "#version 450\n"
+               "layout(set = 0, binding = 0) uniform sampler2D depth_tex;\n"
+               "layout(set = 0, binding = 1) uniform usampler2D stencil_tex;\n"
+               "layout(constant_id = 0) const bool depth_float = false;\n"
+               "layout(location = 0) out vec4 out_color;\n"
+               "void main()\n"
+               "{\n"
+               "    ivec2 p = ivec2(gl_FragCoord.xy);\n"
+               "    float z = texelFetch(depth_tex, p, 0).r;\n"
+               "    uint d = depth_float ? uint(int(z * float(0xffffff)))\n"
+               "                         : uint(z * 16777215.0 + 0.5);\n"
+               "    uint s = texelFetch(stencil_tex, p, 0).r & 0xffu;\n"
+               "    out_color = vec4(float((d >> 8) & 0xffu),\n"
+               "                     float(d & 0xffu),\n"
+               "                     float(s),\n"
+               "                     float((d >> 16) & 0xffu)) / 255.0;\n"
+               "}\n";
+    case 1:
+        return "#version 450\n"
+               "layout(set = 0, binding = 0) uniform sampler2D color_tex;\n"
+               "void main()\n"
+               "{\n"
+               "    vec4 c = floor(texelFetch(color_tex,\n"
+               "        ivec2(gl_FragCoord.xy), 0) * 255.0 + 0.5);\n"
+               "    uint d = (uint(c.a) << 16) | (uint(c.r) << 8) | uint(c.g);\n"
+               "    gl_FragDepth = float(d) / 16777215.0;\n"
+               "}\n";
+    default:
+        return "#version 450\n"
+               "layout(set = 0, binding = 0) uniform sampler2D color_tex;\n"
+               "void main()\n"
+               "{\n"
+               "    vec4 c = floor(texelFetch(color_tex,\n"
+               "        ivec2(gl_FragCoord.xy), 0) * 255.0 + 0.5);\n"
+               "    uint d = (uint(c.a) << 16) | (uint(c.r) << 8) | uint(c.g);\n"
+               "    gl_FragDepth = uintBitsToFloat(\n"
+               "        floatBitsToUint(float(d) / 16777216.0) + 1u);\n"
+               "}\n";
+    }
+}
+
+static void kind_init_common(PGRAPHVkState *r)
+{
+    if (r->kind.pipeline_layout) {
+        return;
+    }
+    VkDescriptorSetLayoutBinding bindings[2];
+    for (int i = 0; i < 2; i++) {
+        bindings[i] = (VkDescriptorSetLayoutBinding){
+            .binding = i,
+            .descriptorCount = 1,
+            .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+            .stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
+        };
+    }
+    VkDescriptorSetLayoutCreateInfo lci = {
+        .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+        .bindingCount = 2,
+        .pBindings = bindings,
+    };
+    VK_CHECK(vkCreateDescriptorSetLayout(r->device, &lci, NULL,
+                                         &r->kind.set_layout));
+
+    VkDescriptorPoolSize ps = {
+        .type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+        .descriptorCount = 2 * ARRAY_SIZE(r->kind.sets),
+    };
+    VkDescriptorPoolCreateInfo pci = {
+        .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+        .poolSizeCount = 1,
+        .pPoolSizes = &ps,
+        .maxSets = ARRAY_SIZE(r->kind.sets),
+    };
+    VK_CHECK(vkCreateDescriptorPool(r->device, &pci, NULL, &r->kind.pool));
+    VkDescriptorSetLayout layouts[ARRAY_SIZE(r->kind.sets)];
+    for (int i = 0; i < ARRAY_SIZE(layouts); i++) {
+        layouts[i] = r->kind.set_layout;
+    }
+    VkDescriptorSetAllocateInfo ai = {
+        .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+        .descriptorPool = r->kind.pool,
+        .descriptorSetCount = ARRAY_SIZE(r->kind.sets),
+        .pSetLayouts = layouts,
+    };
+    VK_CHECK(vkAllocateDescriptorSets(r->device, &ai, r->kind.sets));
+    r->kind.set_index = 0;
+
+    VkPipelineLayoutCreateInfo plci = {
+        .sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+        .setLayoutCount = 1,
+        .pSetLayouts = &r->kind.set_layout,
+    };
+    VK_CHECK(vkCreatePipelineLayout(r->device, &plci, NULL,
+                                    &r->kind.pipeline_layout));
+
+    VkSamplerCreateInfo sci = {
+        .sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
+        .magFilter = VK_FILTER_NEAREST,
+        .minFilter = VK_FILTER_NEAREST,
+        .mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST,
+        .addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+        .addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+        .addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+        .maxLod = 0.0f,
+    };
+    VK_CHECK(vkCreateSampler(r->device, &sci, NULL, &r->kind.sampler));
+}
+
+/* Render pass and pipeline that render the view of kind idx. */
+static void kind_init_pipeline(PGRAPHVkState *r, int idx)
+{
+    if (r->kind.pipeline[idx]) {
+        return;
+    }
+    kind_init_common(r);
+
+    static const VkFormat formats[3] = { VK_FORMAT_B8G8R8A8_UNORM,
+                                         VK_FORMAT_D24_UNORM_S8_UINT,
+                                         VK_FORMAT_D32_SFLOAT_S8_UINT };
+    bool depth = idx > 0;
+    VkImageLayout layout = depth ?
+        VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL :
+        VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    /* every texel is written: nothing to load; the stencil is cleared */
+    VkAttachmentDescription att = {
+        .format = formats[idx],
+        .samples = VK_SAMPLE_COUNT_1_BIT,
+        .loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+        .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
+        .stencilLoadOp = depth ? VK_ATTACHMENT_LOAD_OP_CLEAR :
+                                 VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+        .stencilStoreOp = depth ? VK_ATTACHMENT_STORE_OP_STORE :
+                                  VK_ATTACHMENT_STORE_OP_DONT_CARE,
+        .initialLayout = layout,
+        .finalLayout = layout,
+    };
+    VkAttachmentReference ref = { 0, layout };
+    VkSubpassDescription subpass = {
+        .pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
+        .colorAttachmentCount = depth ? 0 : 1,
+        .pColorAttachments = depth ? NULL : &ref,
+        .pDepthStencilAttachment = depth ? &ref : NULL,
+    };
+    /* after whatever used the memory before, before whatever uses it next */
+    VkSubpassDependency deps[2] = {
+        {
+            .srcSubpass = VK_SUBPASS_EXTERNAL,
+            .dstSubpass = 0,
+            .srcStageMask = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+            .dstStageMask = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT |
+                            VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT |
+                            VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT |
+                            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            .srcAccessMask = VK_ACCESS_MEMORY_WRITE_BIT,
+            .dstAccessMask = VK_ACCESS_SHADER_READ_BIT |
+                             VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT |
+                             VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT |
+                             VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
+                             VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+        },
+        {
+            .srcSubpass = 0,
+            .dstSubpass = VK_SUBPASS_EXTERNAL,
+            .srcStageMask = VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT |
+                            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            .dstStageMask = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+            .srcAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT |
+                             VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+            .dstAccessMask = VK_ACCESS_MEMORY_READ_BIT |
+                             VK_ACCESS_MEMORY_WRITE_BIT,
+        },
+    };
+    VkRenderPassCreateInfo rpci = {
+        .sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
+        .attachmentCount = 1,
+        .pAttachments = &att,
+        .subpassCount = 1,
+        .pSubpasses = &subpass,
+        .dependencyCount = 2,
+        .pDependencies = deps,
+    };
+    VK_CHECK(vkCreateRenderPass(r->device, &rpci, NULL,
+                                &r->kind.render_pass[idx]));
+
+    ShaderModuleInfo *frag = pgraph_vk_create_shader_module_from_glsl(
+        r, VK_SHADER_STAGE_FRAGMENT_BIT, kind_frag_glsl(idx));
+    /* color from a float depth (D32S8): the compute packing's conversion */
+    VkBool32 depth_float =
+        idx == 0 && r->kind.zeta_float;
+    VkSpecializationMapEntry spec_entry = { 0, 0, sizeof(VkBool32) };
+    VkSpecializationInfo spec = { 1, &spec_entry, sizeof(VkBool32),
+                                  &depth_float };
+    VkPipelineShaderStageCreateInfo stages[2] = {
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+            .stage = VK_SHADER_STAGE_VERTEX_BIT,
+            .module = r->quad_vert_module->module,
+            .pName = "main",
+        },
+        {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+            .stage = VK_SHADER_STAGE_FRAGMENT_BIT,
+            .module = frag->module,
+            .pName = "main",
+            .pSpecializationInfo = idx == 0 ? &spec : NULL,
+        },
+    };
+    VkPipelineVertexInputStateCreateInfo vi = {
+        .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+    };
+    VkPipelineInputAssemblyStateCreateInfo ia = {
+        .sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+        .topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+    };
+    VkPipelineViewportStateCreateInfo vp = {
+        .sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
+        .viewportCount = 1,
+        .scissorCount = 1,
+    };
+    VkPipelineRasterizationStateCreateInfo rs = {
+        .sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+        .polygonMode = VK_POLYGON_MODE_FILL,
+        .cullMode = VK_CULL_MODE_NONE,
+        .frontFace = VK_FRONT_FACE_CLOCKWISE,
+        .lineWidth = 1.0f,
+    };
+    VkPipelineMultisampleStateCreateInfo ms = {
+        .sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
+        .rasterizationSamples = VK_SAMPLE_COUNT_1_BIT,
+    };
+    VkPipelineDepthStencilStateCreateInfo ds = {
+        .sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+        .depthTestEnable = VK_TRUE,
+        .depthWriteEnable = VK_TRUE,
+        .depthCompareOp = VK_COMPARE_OP_ALWAYS,
+    };
+    VkPipelineColorBlendAttachmentState cba = {
+        .colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
+                          VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT,
+    };
+    VkPipelineColorBlendStateCreateInfo cb = {
+        .sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+        .attachmentCount = depth ? 0 : 1,
+        .pAttachments = depth ? NULL : &cba,
+    };
+    VkDynamicState dyn[] = { VK_DYNAMIC_STATE_VIEWPORT,
+                             VK_DYNAMIC_STATE_SCISSOR };
+    VkPipelineDynamicStateCreateInfo dy = {
+        .sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
+        .dynamicStateCount = 2,
+        .pDynamicStates = dyn,
+    };
+    VkGraphicsPipelineCreateInfo gci = {
+        .sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
+        .stageCount = 2,
+        .pStages = stages,
+        .pVertexInputState = &vi,
+        .pInputAssemblyState = &ia,
+        .pViewportState = &vp,
+        .pRasterizationState = &rs,
+        .pMultisampleState = &ms,
+        .pDepthStencilState = depth ? &ds : NULL,
+        .pColorBlendState = &cb,
+        .pDynamicState = &dy,
+        .layout = r->kind.pipeline_layout,
+        .renderPass = r->kind.render_pass[idx],
+    };
+    VK_CHECK(vkCreateGraphicsPipelines(r->device, r->vk_pipeline_cache, 1,
+                                       &gci, NULL, &r->kind.pipeline[idx]));
+    pgraph_vk_destroy_shader_module(r, frag);
+}
+
+static void kind_finalize(PGRAPHVkState *r)
+{
+    for (int i = 0; i < 3; i++) {
+        if (r->kind.pipeline[i]) {
+            vkDestroyPipeline(r->device, r->kind.pipeline[i], NULL);
+            vkDestroyRenderPass(r->device, r->kind.render_pass[i], NULL);
+            r->kind.pipeline[i] = VK_NULL_HANDLE;
+            r->kind.render_pass[i] = VK_NULL_HANDLE;
+        }
+    }
+    if (r->kind.pipeline_layout) {
+        vkDestroyPipelineLayout(r->device, r->kind.pipeline_layout, NULL);
+        vkDestroyDescriptorPool(r->device, r->kind.pool, NULL);
+        vkDestroyDescriptorSetLayout(r->device, r->kind.set_layout, NULL);
+        vkDestroySampler(r->device, r->kind.sampler, NULL);
+        r->kind.pipeline_layout = VK_NULL_HANDLE;
+        r->kind.pool = VK_NULL_HANDLE;
+        r->kind.set_layout = VK_NULL_HANDLE;
+        r->kind.sampler = VK_NULL_HANDLE;
+    }
+}
+
+bool pgraph_vk_kind_needs_finish(PGRAPHVkState *r)
+{
+    return r->kind.set_index >= ARRAY_SIZE(r->kind.sets);
+}
+
+void pgraph_vk_kind_finish_complete(PGRAPHVkState *r)
+{
+    r->kind.set_index = 0;
+}
+
+static VkImageView kind_aspect_view(PGRAPHVkState *r, SurfaceBinding *s,
+                                    VkImageAspectFlags aspect)
+{
+    VkImageViewCreateInfo ci = {
+        .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+        .image = s->image,
+        .viewType = VK_IMAGE_VIEW_TYPE_2D,
+        .format = s->host_fmt.vk_format,
+        .subresourceRange.aspectMask = aspect,
+        .subresourceRange.levelCount = 1,
+        .subresourceRange.layerCount = 1,
+    };
+    VkImageView v;
+    VK_CHECK(vkCreateImageView(r->device, &ci, NULL, &v));
+    return v;
+}
+
+/* src's content into dst, the other view of the same buffer, in the open
+ * recording after the draws that wrote src: one draw that samples src and
+ * renders dst, one read and one write per texel at the scaled size, as
+ * OpenGL's alias_convert does. */
+static void surface_kind_switch(PGRAPHState *pg, SurfaceBinding *src,
+                                SurfaceBinding *dst)
+{
+    PGRAPHVkState *r = pg->vk_renderer_state;
+    int idx = kind_dst_index(dst);
+    assert(idx >= 0);
+
+    if (r->kind.pipeline_layout && pgraph_vk_kind_needs_finish(r)) {
+        pgraph_vk_finish(pg, VK_FINISH_REASON_NEED_BUFFER_SPACE);
+    }
+    r->kind.zeta_float = src->color ? false :
+        src->host_fmt.vk_format == VK_FORMAT_D32_SFLOAT_S8_UINT;
+    kind_init_pipeline(r, idx);
+    nv2a_profile_inc_counter(NV2A_PROF_SURF_KIND_SWITCH);
+
+    unsigned int w = dst->width, h = dst->height;
+    pgraph_apply_scaling_factor(pg, &w, &h);
+
+    /* sampled views of src: depth and stencil apart, or its color view */
+    VkImageView v0, v1 = VK_NULL_HANDLE;
+    if (src->color) {
+        v0 = src->image_view;
+    } else {
+        v0 = kind_aspect_view(r, src, VK_IMAGE_ASPECT_DEPTH_BIT);
+        v1 = kind_aspect_view(r, src, VK_IMAGE_ASPECT_STENCIL_BIT);
+    }
+    VkDescriptorSet set = r->kind.sets[r->kind.set_index++];
+    VkDescriptorImageInfo ii[2] = {
+        { r->kind.sampler, v0, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL },
+        { r->kind.sampler, v1, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL },
+    };
+    VkWriteDescriptorSet wr[2];
+    for (int i = 0; i < 2; i++) {
+        wr[i] = (VkWriteDescriptorSet){
+            .sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+            .dstSet = set,
+            .dstBinding = i,
+            .descriptorCount = 1,
+            .descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+            .pImageInfo = &ii[i],
+        };
+    }
+    vkUpdateDescriptorSets(r->device, src->color ? 1 : 2, wr, 0, NULL);
+
+    VkFramebufferCreateInfo fci = {
+        .sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
+        .renderPass = r->kind.render_pass[idx],
+        .attachmentCount = 1,
+        .pAttachments = &dst->image_view,
+        .width = w,
+        .height = h,
+        .layers = 1,
+    };
+    VkFramebuffer fb;
+    VK_CHECK(vkCreateFramebuffer(r->device, &fci, NULL, &fb));
+
+    VkCommandBuffer cmd = pgraph_vk_begin_nondraw_commands(pg);
+    pgraph_vk_begin_debug_marker(r, cmd, RGBA_GREEN, __func__);
+
+    bool src_in_place = src->in_shader_read;
+    if (!src_in_place) {
+        pgraph_vk_transition_image_layout(
+            pg, cmd, src->image, src->host_fmt.vk_format,
+            src->color ? VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL :
+                         VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    }
+    if (dst->in_shader_read) {
+        pgraph_vk_transition_image_layout(
+            pg, cmd, dst->image, dst->host_fmt.vk_format,
+            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+            dst->color ? VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL :
+                         VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+        pgraph_vk_surface_left_shader_read(pg, dst);
+    }
+
+    VkClearValue clear = { .depthStencil = { 0.0f, 0 } };
+    VkRenderPassBeginInfo rbi = {
+        .sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+        .renderPass = r->kind.render_pass[idx],
+        .framebuffer = fb,
+        .renderArea.extent = { w, h },
+        .clearValueCount = 1,
+        .pClearValues = &clear,
+    };
+    vkCmdBeginRenderPass(cmd, &rbi, VK_SUBPASS_CONTENTS_INLINE);
+    vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                      r->kind.pipeline[idx]);
+    vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                            r->kind.pipeline_layout, 0, 1, &set, 0, NULL);
+    VkViewport viewport = { 0, 0, w, h, 0.0f, 1.0f };
+    VkRect2D scissor = { { 0, 0 }, { w, h } };
+    vkCmdSetViewport(cmd, 0, 1, &viewport);
+    vkCmdSetScissor(cmd, 0, 1, &scissor);
+    vkCmdDraw(cmd, 3, 1, 0, 0);
+    vkCmdEndRenderPass(cmd);
+
+    /* src back to its attachment layout, as it was */
+    if (!src_in_place) {
+        pgraph_vk_transition_image_layout(
+            pg, cmd, src->image, src->host_fmt.vk_format,
+            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+            src->color ? VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL :
+                         VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+    }
+    pgraph_vk_end_debug_marker(r, cmd);
+    pgraph_vk_end_nondraw_commands(pg, cmd);
+
+    /* in use by the recording: freed once it settled */
+    struct XemuVkTrashEntry e = { .framebuffer = fb };
+    pgraph_vk_trash_push(r, &e);
+    if (!src->color) {
+        struct XemuVkTrashEntry e0 = { .image_view = v0 };
+        struct XemuVkTrashEntry e1 = { .image_view = v1 };
+        pgraph_vk_trash_push(r, &e0);
+        pgraph_vk_trash_push(r, &e1);
+    }
+    dst->draw_time = src->draw_time;
+}
+
 static void invalidate_overlapping_surfaces(NV2AState *d,
                                             SurfaceBinding const *surface)
 {
@@ -2132,6 +2644,9 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
         bool should_create = true;
         SurfaceBinding *handoff_old = NULL;
         const char *evict_why = NULL;
+        /* the other view of this buffer, converted on the GPU below
+         * (surface_kind_switch) instead of evicted through RAM */
+        SurfaceBinding *kind_src = NULL;
 
         if (surface != NULL) {
             bool is_compatible =
@@ -2203,7 +2718,12 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
                     "incompatible", surface->vram_addr);
                 compare_surfaces(surface, &target);
                 evict_why = why;
-                if (!mem_dirty) {
+                if (!mem_dirty && surface_kind_switch_ok(r, surface, &target)) {
+                    /* out of the live list while the new view is made, so
+                     * that it is not evicted as an overlap */
+                    kind_src = surface;
+                    QTAILQ_REMOVE(&r->surfaces, kind_src, entry);
+                } else if (!mem_dirty) {
                     /* maybe handed over on the GPU below (handoff_plan) */
                     handoff_old = surface;
                     QTAILQ_REMOVE(&r->surfaces, surface, entry);
@@ -2227,7 +2747,7 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
         int hn = 0;
         bool h_dirty = false;
         int h_time = 0;
-        if (should_create && !mem_dirty) {
+        if (should_create && !mem_dirty && !kind_src) {
             hn = handoff_plan(r, &target, handoff_old, hs, &h_dirty, &h_time);
         }
         if (!hn && handoff_old) {
@@ -2256,10 +2776,18 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
         }
 
         if (should_create) {
+            if (kind_src) {
+                /* the content comes from the other view, not from RAM */
+                target.upload_pending = false;
+                target.initialized = true;
+                target.draw_dirty = kind_src->draw_dirty;
+            }
             /* Settle an owed writeback first: the create's upload must read
              * the refreshed RAM, and a settle cancels the dead-upload skip.
-             * A handoff takes the content from the old images instead. */
-            bool settled = !hn && parked_settle_for_create(d, &target);
+             * A handoff or a view conversion takes the content from the old
+             * images instead. */
+            bool settled = !hn && !kind_src &&
+                           parked_settle_for_create(d, &target);
             if (settled) {
                 target.upload_pending = true;
             }
@@ -2295,6 +2823,16 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
             surface_put(d, surface);
             if (hn) {
                 handoff_run(d, surface, hs, hn, h_dirty, h_time);
+            }
+
+            if (kind_src) {
+                surface_kind_switch(pg, kind_src, surface);
+                /* its content now lives in the new view: nothing owed */
+                QTAILQ_INSERT_HEAD(&r->surfaces, kind_src, entry);
+                kind_src->draw_dirty = false;
+                kind_src->download_pending = false;
+                kind_src->writeback_owed = false;
+                invalidate_surface(d, kind_src);
             }
 
             set_surface_binding_dimensions(pg, color, &target);
@@ -2553,6 +3091,7 @@ void pgraph_vk_init_surfaces(PGRAPHState *pg)
 void pgraph_vk_finalize_surfaces(PGRAPHState *pg)
 {
     pgraph_vk_surface_flush(container_of(pg, NV2AState, pgraph));
+    kind_finalize(pg->vk_renderer_state);
 }
 
 void pgraph_vk_surface_flush(NV2AState *d)

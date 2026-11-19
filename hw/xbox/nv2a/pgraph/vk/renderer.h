@@ -618,6 +618,22 @@ typedef struct PGRAPHVkState {
     int descriptor_set_index;
 
     StorageBuffer storage_buffers[BUFFER_COUNT];
+    /* A buffer's depth and color views converted into each other on the
+     * GPU (surface.c, surface_kind_switch): one draw per switch that samples
+     * the old view and renders the new one. Pipelines by destination:
+     * 0 color B8G8R8A8, 1 depth D24S8, 2 depth D32S8, made on first use;
+     * the descriptor sets rotate, reset when every submission settled. */
+    struct {
+        VkRenderPass render_pass[3];
+        VkPipeline pipeline[3];
+        VkPipelineLayout pipeline_layout;
+        VkDescriptorSetLayout set_layout;
+        VkDescriptorPool pool;
+        VkDescriptorSet sets[256];
+        int set_index;
+        VkSampler sampler;
+        bool zeta_float; /* the device keeps depth as D32S8 */
+    } kind;
 
     MemorySyncRequirement vertex_ram_buffer_syncs[NV2A_VERTEXSHADER_ATTRIBUTES];
     size_t num_vertex_ram_buffer_syncs;
@@ -910,6 +926,10 @@ void pgraph_vk_pack_depth_stencil_dims(PGRAPHState *pg,
 void pgraph_vk_unpack_depth_stencil(PGRAPHState *pg, SurfaceBinding *surface,
                                     VkCommandBuffer cmd, VkBuffer src,
                                     VkBuffer dst);
+
+// surface.c
+bool pgraph_vk_kind_needs_finish(PGRAPHVkState *r);
+void pgraph_vk_kind_finish_complete(PGRAPHVkState *r);
 
 // display.c
 void pgraph_vk_init_display(PGRAPHState *pg);

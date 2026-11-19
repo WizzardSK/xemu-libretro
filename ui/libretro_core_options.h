@@ -290,6 +290,21 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "1"
     },
+    /* NNshi: the switch to a smaller mipmap level shows with upscaling */
+    {
+        "xemu_disable_mipmapping",
+        "Disable Mipmapping",
+        NULL,
+        "Vulkan only. Samples every texture from its most detailed level, so distant textures no longer switch to blurrier ones, which shows with a raised internal resolution. Distant surfaces may shimmer, and textures that games stream in may show unloaded data. Off samples the levels the game asks for.",
+        NULL,
+        "video",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
     {
         "xemu_avpack",
         "AV Pack (Restart)",

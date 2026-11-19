@@ -25,6 +25,7 @@
 #include "hw/xbox/xemu-anisotropy.h"
 
 unsigned int xemu_min_anisotropy = 1;
+int xemu_no_mipmaps;
 
 void nv2a_update_irq(NV2AState *d)
 {

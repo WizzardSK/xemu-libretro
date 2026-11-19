@@ -12,6 +12,13 @@
 /* 1 for the game's own; set by ui/libretro.c, read as textures are bound */
 extern unsigned int xemu_min_anisotropy;
 
+/* The Disable Mipmapping option (Vulkan, hw/xbox/nv2a): a mipmapped
+ * texture is sampled from its most detailed level the game allows only,
+ * so it stays sharp at a distance instead of switching to smaller levels
+ * (NNshi: the switch shows with resolution upscaling). Set by
+ * ui/libretro.c, read as textures are bound. */
+extern int xemu_no_mipmaps;
+
 /* The anisotropy for a texture: texfilter is its NV_PGRAPH_TEXFILTER0
  * register, game the anisotropy the game set (its TEXCTL0) */
 static inline uint32_t xemu_texture_anisotropy(uint32_t texfilter, uint32_t game)

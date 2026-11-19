@@ -1863,6 +1863,14 @@ static void update_variables(void)
         qatomic_set(&xemu_min_anisotropy, aniso == 2 || aniso == 4 || aniso == 8 || aniso == 16 ? aniso : 1);
     }
 
+    /* Disable Mipmapping (Vulkan): read as textures are bound, so on the
+     * fly */
+    var.key = "xemu_disable_mipmapping";
+    var.value = NULL;
+    if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value) {
+        qatomic_set(&xemu_no_mipmaps, !strcmp(var.value, "enabled"));
+    }
+
     /* Debug > Skip Idle TLB Modes: read on every TLB dirty walk
      * (accel/tcg/cputlb.c), so it applies at once */
     var.key = "xemu_tlb_skip_idle";

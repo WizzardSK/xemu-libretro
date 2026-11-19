@@ -1590,7 +1590,8 @@ static VkSampler create_sampler_for_state(PGRAPHState *pg,
                                           const TextureShape *state,
                                           uint32_t filter, uint32_t address,
                                           uint32_t border_color_pack32,
-                                          uint32_t max_anisotropy);
+                                          uint32_t max_anisotropy,
+                                          bool no_mip);
 
 static VkSampler sampler_cache_get(PGRAPHState *pg, const TextureShape *state,
                                    uint32_t filter, uint32_t address,
@@ -1612,6 +1613,7 @@ static VkSampler sampler_cache_get(PGRAPHState *pg, const TextureShape *state,
     k.levels = state->levels;
     k.min_mip = state->min_mipmap_level;
     k.max_mip = state->max_mipmap_level;
+    k.no_mip = qatomic_read(&xemu_no_mipmaps) != 0;
     unsigned h = (unsigned)(fast_hash((const uint8_t *)&k, sizeof(k)) %
                             VK_SAMPLER_CACHE_SIZE);
     for (unsigned i = 0; i < VK_SAMPLER_CACHE_SIZE; i++) {
@@ -1621,7 +1623,7 @@ static VkSampler sampler_cache_get(PGRAPHState *pg, const TextureShape *state,
             r->sampler_cache[s].key = k;
             r->sampler_cache[s].sampler = create_sampler_for_state(
                 pg, state, filter, address, border_color_pack32,
-                max_anisotropy);
+                max_anisotropy, k.no_mip);
             r->sampler_cache_n++;
             return r->sampler_cache[s].sampler;
         }
@@ -1669,12 +1671,14 @@ static void resolve_unit_sampler(PGRAPHState *pg, int texture_idx,
         pg, state, filter, address, border_color_pack32, max_anisotropy);
 }
 
-/* Every input comes from the shape and the four sampler registers. */
+/* Every input comes from the shape, the four sampler registers and the
+ * Disable Mipmapping option (no_mip). */
 static VkSampler create_sampler_for_state(PGRAPHState *pg,
                                           const TextureShape *state_in,
                                           uint32_t filter, uint32_t address,
                                           uint32_t border_color_pack32,
-                                          uint32_t max_anisotropy)
+                                          uint32_t max_anisotropy,
+                                          bool no_mip)
 {
     PGRAPHVkState *r = pg->vk_renderer_state;
     const TextureShape state = *state_in;
@@ -1756,7 +1760,7 @@ static VkSampler create_sampler_for_state(PGRAPHState *pg,
           min_filter == NV_PGRAPH_TEXFILTER0_MIN_CONVOLUTION_2D_LOD0);
 
     bool mipmap_nearest =
-        f_basic.linear || mip_levels == 1 ||
+        no_mip || f_basic.linear || mip_levels == 1 ||
         min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_NEARESTLOD ||
         min_filter == NV_PGRAPH_TEXFILTER0_MIN_TENT_NEARESTLOD;
 
@@ -1800,7 +1804,11 @@ static VkSampler create_sampler_for_state(PGRAPHState *pg,
         .mipmapMode = mipmap_nearest ? VK_SAMPLER_MIPMAP_MODE_NEAREST :
                                        VK_SAMPLER_MIPMAP_MODE_LINEAR,
         .minLod = mipmap_en ? MIN(state.min_mipmap_level, state.levels - 1) : 0.0,
+        /* Disable Mipmapping: no level past the most detailed one the
+         * game allows (minLod) */
         .maxLod = mixed_g8b8_lod0 ? 0.25f :
+                  mipmap_en && no_mip ?
+                      MIN(state.min_mipmap_level, state.levels - 1) :
                   mipmap_en ? MIN(state.max_mipmap_level, state.levels - 1) : 0.0f,
         .mipLodBias = lod_bias,
         .pNext = sampler_next_struct,

@@ -422,6 +422,7 @@ typedef struct VkSamplerCacheKey {
     uint8_t dimensionality;
     uint8_t levels;
     uint8_t min_mip, max_mip;
+    uint8_t no_mip;
 } VkSamplerCacheKey;
 
 #define VK_SAMPLER_CACHE_SIZE 512

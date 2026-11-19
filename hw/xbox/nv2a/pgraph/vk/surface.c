@@ -587,6 +587,45 @@ void pgraph_vk_download_dirty_surfaces(NV2AState *d)
     qemu_event_set(&r->dirty_surfaces_download_complete);
 }
 
+/* Render targets the CPU read back after the GPU drew them (Conker reads a
+ * ring of seven 32x32 targets, one about every second frame). The binding
+ * is recreated when it expires, so the address is what is remembered: such
+ * a target is copied to RAM when the next one replaces it, on the pfifo
+ * thread, and the CPU's read later finds RAM current instead of waiting for
+ * the GPU. */
+static struct {
+    hwaddr addr;
+    unsigned width, height;
+} readback_hint[16];
+static unsigned readback_hint_next;
+
+static void readback_hint_note(SurfaceBinding *s)
+{
+    for (int i = 0; i < ARRAY_SIZE(readback_hint); i++) {
+        if (readback_hint[i].addr == s->vram_addr &&
+            readback_hint[i].width == s->width &&
+            readback_hint[i].height == s->height) {
+            return;
+        }
+    }
+    readback_hint[readback_hint_next].addr = s->vram_addr;
+    readback_hint[readback_hint_next].width = s->width;
+    readback_hint[readback_hint_next].height = s->height;
+    readback_hint_next = (readback_hint_next + 1) % ARRAY_SIZE(readback_hint);
+}
+
+static bool readback_hinted(SurfaceBinding *s)
+{
+    for (int i = 0; i < ARRAY_SIZE(readback_hint); i++) {
+        if (readback_hint[i].width && readback_hint[i].addr == s->vram_addr &&
+            readback_hint[i].width == s->width &&
+            readback_hint[i].height == s->height) {
+            return true;
+        }
+    }
+    return false;
+}
+
 static void surface_access_callback(void *opaque, MemoryRegion *mr, hwaddr addr,
                                     hwaddr len, bool write)
 {
@@ -617,6 +656,12 @@ static void surface_access_callback(void *opaque, MemoryRegion *mr, hwaddr addr,
         } else {
             trace_nv2a_pgraph_surface_cpu_read(surface->vram_addr, offset);
             surface->cpu_reads++;
+            /* small color targets only: a big one read back is a frame
+             * the CPU reads, which the copy on every switch would slow */
+            if (surface->draw_dirty && surface->color &&
+                surface->width * surface->height <= 256 * 256) {
+                readback_hint_note(surface);
+            }
         }
 
         if (surface->draw_dirty) {
@@ -2626,6 +2671,12 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
         (upload && (pg_surface->buffer_dirty || mem_dirty))) {
         eager_submit_at_switch(pg);
         pgraph_vk_ensure_not_in_render_pass(pg);
+
+        if (color && current_binding && current_binding->draw_dirty &&
+            readback_hinted(current_binding)) {
+            VK_SURF_SITE();
+            download_surface(d, current_binding, true);
+        }
 
         unbind_surface(d, color);
 

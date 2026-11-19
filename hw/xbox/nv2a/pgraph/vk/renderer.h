@@ -164,6 +164,9 @@ typedef struct SurfaceBinding {
     /* In-place sampling: set while the image rests in SHADER_READ_ONLY
      * (sampled in place); a writer transitions it out and clears this. */
     bool in_shader_read;
+    /* a source of the render target being built on the GPU (surface.c,
+     * handoff_plan): its image is not recycled meanwhile */
+    bool handoff_src;
     /* submit_count when the borrow transition was recorded: while equal, the
      * image still rests in its attachment layout (open recording). */
     uint32_t borrow_submit;
@@ -898,6 +901,8 @@ extern __thread int vk_surf_site_line;
 void pgraph_vk_surface_update(NV2AState *d, bool upload, bool color_write,
                               bool zeta_write);
 SurfaceBinding *pgraph_vk_surface_get(NV2AState *d, hwaddr addr);
+SurfaceBinding *pgraph_vk_surface_get_parked(NV2AState *d, hwaddr addr,
+                                             hwaddr len);
 void pgraph_vk_set_surface_dirty(PGRAPHState *pg, bool color, bool zeta);
 void pgraph_vk_surface_watch_on(SurfaceBinding *surface);
 void pgraph_vk_set_surface_scale_factor(NV2AState *d, unsigned int scale);

@@ -2131,6 +2131,7 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
 
         bool should_create = true;
         SurfaceBinding *handoff_old = NULL;
+        const char *evict_why = NULL;
 
         if (surface != NULL) {
             bool is_compatible =
@@ -2201,21 +2202,22 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
                 trace_nv2a_pgraph_surface_evict_reason(
                     "incompatible", surface->vram_addr);
                 compare_surfaces(surface, &target);
-                nv2a_surf_evict_note(
-                    why, surface->vram_addr, surface->width, surface->height,
-                    surface->pitch, surface->shape.color_format,
-                    surface->shape.zeta_format, surface->color,
-                    surface->shape.anti_aliasing, target.vram_addr,
-                    target.width, target.height, target.pitch,
-                    target.shape.color_format, target.shape.zeta_format,
-                    target.color, target.shape.anti_aliasing,
-                    (!color && r->color_binding) ? r->color_binding->width : 0,
-                    (!color && r->color_binding) ? r->color_binding->height : 0);
+                evict_why = why;
                 if (!mem_dirty) {
                     /* maybe handed over on the GPU below (handoff_plan) */
                     handoff_old = surface;
                     QTAILQ_REMOVE(&r->surfaces, surface, entry);
                 } else {
+                    nv2a_surf_evict_note(
+                        why, surface->vram_addr, surface->width, surface->height,
+                        surface->pitch, surface->shape.color_format,
+                        surface->shape.zeta_format, surface->color,
+                        surface->shape.anti_aliasing, target.vram_addr,
+                        target.width, target.height, target.pitch,
+                        target.shape.color_format, target.shape.zeta_format,
+                        target.color, target.shape.anti_aliasing,
+                        (!color && r->color_binding) ? r->color_binding->width : 0,
+                        (!color && r->color_binding) ? r->color_binding->height : 0);
                     evict_surface(d, surface);
                 }
             }
@@ -2229,6 +2231,18 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
             hn = handoff_plan(r, &target, handoff_old, hs, &h_dirty, &h_time);
         }
         if (!hn && handoff_old) {
+            /* for the profile: only an eviction through RAM is listed */
+            nv2a_surf_evict_note(
+                evict_why, handoff_old->vram_addr, handoff_old->width,
+                handoff_old->height,
+                handoff_old->pitch, handoff_old->shape.color_format,
+                handoff_old->shape.zeta_format, handoff_old->color,
+                handoff_old->shape.anti_aliasing, target.vram_addr,
+                target.width, target.height, target.pitch,
+                target.shape.color_format, target.shape.zeta_format,
+                target.color, target.shape.anti_aliasing,
+                (!color && r->color_binding) ? r->color_binding->width : 0,
+                (!color && r->color_binding) ? r->color_binding->height : 0);
             QTAILQ_INSERT_HEAD(&r->surfaces, handoff_old, entry);
             evict_surface(d, handoff_old);
         }

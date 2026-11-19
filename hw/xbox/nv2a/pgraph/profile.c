@@ -256,6 +256,39 @@ void nv2a_surf_site_note(int kind, const char *func, int line, uint32_t addr,
     qemu_mutex_unlock(&s2t_miss_lock);
 }
 
+typedef struct SurfCpu {
+    uint32_t addr;
+    unsigned w, h;
+    bool color, write, dirty;
+    uint64_t pc, count;
+} SurfCpu;
+static SurfCpu surf_cpu[48];
+static int surf_cpu_n;
+
+void nv2a_surf_cpu_note(uint32_t addr, unsigned w, unsigned h, bool color,
+                        bool write, bool dirty, uint64_t pc)
+{
+    if (!qatomic_read(&nv2a_prof_surf_on)) {
+        return;
+    }
+    s2t_miss_lock_once();
+    qemu_mutex_lock(&s2t_miss_lock);
+    for (int i = 0; i < surf_cpu_n; i++) {
+        SurfCpu *e = &surf_cpu[i];
+        if (e->addr == addr && e->w == w && e->h == h && e->write == write &&
+            e->dirty == dirty && e->pc == pc) {
+            e->count++;
+            qemu_mutex_unlock(&s2t_miss_lock);
+            return;
+        }
+    }
+    if (surf_cpu_n < (int)ARRAY_SIZE(surf_cpu)) {
+        surf_cpu[surf_cpu_n++] = (SurfCpu){ addr, w, h, color, write, dirty,
+                                            pc, 1 };
+    }
+    qemu_mutex_unlock(&s2t_miss_lock);
+}
+
 typedef struct SurfEvict {
     const char *why;
     uint32_t addr, naddr;
@@ -307,6 +340,7 @@ void nv2a_s2t_miss_reset(void)
     s2t_miss_n = 0;
     surf_site_n = 0;
     surf_evict_n = 0;
+    surf_cpu_n = 0;
     qemu_mutex_unlock(&s2t_miss_lock);
 }
 
@@ -346,6 +380,23 @@ void nv2a_s2t_miss_dump(FILE *f)
     }
     if (qatomic_read(&nv2a_prof_surf_on) && !surf_evict_n) {
         fprintf(f, "# render targets evicted: none\n");
+    }
+    if (qatomic_read(&nv2a_prof_surf_on) && !surf_cpu_n) {
+        fprintf(f, "# CPU access to render-target memory: none\n");
+    }
+    if (surf_cpu_n) {
+        fprintf(f, "# CPU access to render-target memory (count over the "
+                   "run; target address and size, read/write, whether the "
+                   "GPU had drawn it since RAM was last current, guest code "
+                   "address, 0 = DMA)\n");
+    }
+    for (int i = 0; i < surf_cpu_n; i++) {
+        SurfCpu *e = &surf_cpu[i];
+        fprintf(f, "surf-cpu %" PRIu64 " %s: surf %08x %ux%u %s%s pc %08"
+                   PRIx64 "\n",
+                e->count, e->write ? "write" : "read", e->addr, e->w, e->h,
+                e->color ? "color" : "zeta", e->dirty ? " gpu-drawn" : "",
+                e->pc);
     }
     if (surf_site_n) {
         fprintf(f, "# surface downloads (GPU to RAM) and uploads (RAM to "

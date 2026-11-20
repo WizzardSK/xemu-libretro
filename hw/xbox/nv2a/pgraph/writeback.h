@@ -38,6 +38,7 @@
 
 #define PGRAPH_WB_LIVE_RANGES 16
 #define PGRAPH_WB_DISCARD_SPANS 8
+#define PGRAPH_WB_LIVE_EVICTIONS 120
 
 typedef struct PGRAPHWritebackRange {
     hwaddr addr;
@@ -46,6 +47,11 @@ typedef struct PGRAPHWritebackRange {
 
 typedef struct PGRAPHWritebackState {
     PGRAPHWritebackRange live[PGRAPH_WB_LIVE_RANGES];
+    /* eager writebacks each live range caused since a reader last proved
+     * it live: at PGRAPH_WB_LIVE_EVICTIONS it is forgotten (Conker: one
+     * read while an area loads kept a depth buffer evicted 90 times a
+     * second written back until the next rebuild) */
+    unsigned int live_evictions[PGRAPH_WB_LIVE_RANGES];
     unsigned int live_w;
     PGRAPHWritebackRange discarded[PGRAPH_WB_DISCARD_SPANS];
     unsigned int discarded_w;

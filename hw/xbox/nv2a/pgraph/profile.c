@@ -289,6 +289,37 @@ void nv2a_surf_cpu_note(uint32_t addr, unsigned w, unsigned h, bool color,
     qemu_mutex_unlock(&s2t_miss_lock);
 }
 
+typedef struct SmallPass {
+    uint32_t addr;
+    unsigned w, h;
+    uint64_t n[5];
+} SmallPass;
+static SmallPass small_pass[32];
+static int small_pass_n;
+
+void nv2a_small_pass_note(uint32_t addr, unsigned w, unsigned h, int kind)
+{
+    if (!qatomic_read(&nv2a_prof_surf_on)) {
+        return;
+    }
+    s2t_miss_lock_once();
+    qemu_mutex_lock(&s2t_miss_lock);
+    int i;
+    for (i = 0; i < small_pass_n; i++) {
+        if (small_pass[i].addr == addr && small_pass[i].w == w &&
+            small_pass[i].h == h) {
+            break;
+        }
+    }
+    if (i == small_pass_n && small_pass_n < (int)ARRAY_SIZE(small_pass)) {
+        small_pass[small_pass_n++] = (SmallPass){ addr, w, h, { 0 } };
+    }
+    if (i < small_pass_n) {
+        small_pass[i].n[kind]++;
+    }
+    qemu_mutex_unlock(&s2t_miss_lock);
+}
+
 typedef struct SurfRead {
     uint32_t frame, addr, crc;
     bool drawn;
@@ -389,6 +420,7 @@ void nv2a_s2t_miss_reset(void)
     surf_evict_n = 0;
     surf_cpu_n = 0;
     surf_read_n = 0;
+    small_pass_n = 0;
     display_gpu_n = display_ram_n = 0;
     qemu_mutex_unlock(&s2t_miss_lock);
 }
@@ -438,6 +470,16 @@ void nv2a_s2t_miss_dump(FILE *f)
         for (uint64_t i = display_ram_n - n; i < display_ram_n; i++) {
             DisplayRam *e = &display_ram[i % ARRAY_SIZE(display_ram)];
             fprintf(f, "display-ram %u %08x\n", e->frame, e->addr);
+        }
+        fprintf(f, "# draws into small swizzled colour targets (count over "
+                   "the run: draws without and with depth test, of those "
+                   "with depth write, depth clears, colour clears)\n");
+        for (int i = 0; i < small_pass_n; i++) {
+            SmallPass *e = &small_pass[i];
+            fprintf(f, "small-pass %08x %ux%u: draws %" PRIu64 " ztest %"
+                       PRIu64 " zwrite %" PRIu64 " zclear %" PRIu64
+                       " cclear %" PRIu64 "\n", e->addr, e->w, e->h,
+                    e->n[0], e->n[1], e->n[4], e->n[2], e->n[3]);
         }
         fprintf(f, "# CPU reads of small color targets, in order, the last "
                    "%u of %" PRIu64 " (frame, target, checksum of its RAM "

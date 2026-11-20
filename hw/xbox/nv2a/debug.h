@@ -197,6 +197,10 @@ void nv2a_display_note(uint32_t frame, uint32_t addr, bool from_ram);
 /* the bound colour target's anti-aliasing and swizzle for the next
  * nv2a_surf_evict_note (aa | swizzled << 8 | 1 << 16; 0 = none) */
 extern uint32_t nv2a_evict_color_info;
+/* diagnostic: draws and clears into small swizzled colour targets (kind 0
+ * draw without depth test, 1 draw with depth test, 2 depth clear, 3 colour
+ * clear, 4 draw with depth write) */
+void nv2a_small_pass_note(uint32_t addr, unsigned w, unsigned h, int kind);
 void nv2a_s2t_miss_dump(FILE *f);
 int nv2a_profile_get_counter_value(unsigned int cnt);
 void nv2a_profile_increment(void);

@@ -3417,6 +3417,18 @@ void pgraph_vk_draw_end(NV2AState *d)
         return;
     }
 
+    if (r->color_binding && r->color_binding->swizzle &&
+        r->color_binding->width * r->color_binding->height <= 64 * 64) {
+        nv2a_small_pass_note(r->color_binding->vram_addr,
+                             r->color_binding->width,
+                             r->color_binding->height, depth_test ? 1 : 0);
+        if (depth_test && (control_0 & NV_PGRAPH_CONTROL_0_ZWRITEENABLE)) {
+            nv2a_small_pass_note(r->color_binding->vram_addr,
+                                 r->color_binding->width,
+                                 r->color_binding->height, 4);
+        }
+    }
+
     pgraph_vk_flush_draw(d);
 
     if (vk_cost_probe_active(pg)) {
@@ -3758,6 +3770,19 @@ void pgraph_vk_clear_surface(NV2AState *d, uint32_t parameter)
     // FIXME: If doing a full surface clear, mark the surface for full clear
     // and we can just do the clear as part of the surface load.
     pgraph_vk_surface_update(d, true, write_color, write_zeta);
+    if (r->color_binding && r->color_binding->swizzle &&
+        r->color_binding->width * r->color_binding->height <= 64 * 64) {
+        if (write_zeta) {
+            nv2a_small_pass_note(r->color_binding->vram_addr,
+                                 r->color_binding->width,
+                                 r->color_binding->height, 2);
+        }
+        if (write_color) {
+            nv2a_small_pass_note(r->color_binding->vram_addr,
+                                 r->color_binding->width,
+                                 r->color_binding->height, 3);
+        }
+    }
 
     SurfaceBinding *binding = r->color_binding ?: r->zeta_binding;
     if (!binding) {

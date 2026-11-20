@@ -558,8 +558,9 @@ void pgraph_vk_process_pending_downloads(NV2AState *d)
         }
     }
     QTAILQ_FOREACH(surface, &r->surfaces, entry) {
-        VK_SURF_SITE();
-        download_surface(d, surface, false);
+        if (surface->download_pending) {
+            pgraph_vk_surface_download_if_dirty(d, surface);
+        }
     }
 
     qatomic_set(&r->downloads_pending, false);
@@ -2000,9 +2001,34 @@ static bool check_surface_compatibility(SurfaceBinding const *s1,
 void (pgraph_vk_surface_download_if_dirty)(NV2AState *d,
                                            SurfaceBinding *surface)
 {
-    if (surface->draw_dirty) {
-        download_surface(d, surface, true);
+    if (!surface->draw_dirty) {
+        return;
     }
+    /* An older parked image of overlapping memory, still owed to RAM, must
+     * reach RAM before this younger one: written later, it would put the
+     * older content back over the newer (Conker: a ring of small targets,
+     * expired and recreated at the same addresses, read back by the CPU;
+     * its textures flickered at a scaled resolution). Oldest first; each
+     * materialisation settles its own older debts the same way. As
+     * parallel-xbox 4384afd does. */
+    PGRAPHVkState *r = d->pgraph.vk_renderer_state;
+    for (;;) {
+        SurfaceBinding *older = NULL, *s;
+        QTAILQ_FOREACH(s, &r->invalid_surfaces, entry) {
+            if (s != surface && s->writeback_owed &&
+                s->draw_time < surface->draw_time &&
+                check_surface_overlaps_range(s, surface->vram_addr,
+                                             surface->size) &&
+                (!older || s->draw_time < older->draw_time)) {
+                older = s;
+            }
+        }
+        if (!older) {
+            break;
+        }
+        parked_materialize(d, older);
+    }
+    download_surface(d, surface, true);
 }
 
 void (pgraph_vk_upload_surface_data)(NV2AState *d, SurfaceBinding *surface,

@@ -2555,8 +2555,15 @@ static inline bool zeta_covers_color(PGRAPHVkState *r, const SurfaceBinding *zet
         return true;
     }
     /* All surfaces here share one resolution scale (surface_scale_factor),
-     * so only the anti-aliasing mode has to match. */
-    return !zeta->swizzle && !color->swizzle &&
+     * so only the anti-aliasing mode has to match. A small swizzled colour
+     * pass keeps the large linear depth buffer too (Conker draws seven
+     * 32x32 swizzled targets with its 640x480 depth buffer's address every
+     * frame): evicting it sent the whole depth buffer through RAM and back
+     * twice a frame, which at a scaled resolution brings it back at 1x
+     * precision, and surfaces flickered from the depth fights. On the
+     * hardware that pass writes the first bytes of the depth memory in
+     * swizzled order; here it writes the corner of the depth image. */
+    return !zeta->swizzle &&
            zeta->shape.anti_aliasing == color->shape.anti_aliasing;
 }
 

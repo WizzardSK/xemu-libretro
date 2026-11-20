@@ -552,6 +552,48 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "bilinear"
     },
+    /* Test toggles of the 2D Elements Upscaling heuristic, for this test
+     * branch only (NNshi) */
+    {
+        "xemu_2d_rule_rt",
+        "2D Heuristic: Render Targets Count",
+        NULL,
+        "Test option. With Nearest Neighbor, a render target drawn as a texture (a game's frame scaled into the shown one) also counts as 2D.",
+        NULL,
+        "video",
+        { { "on", "ON" }, { "off", "OFF" }, { NULL, NULL } },
+        "on"
+    },
+    {
+        "xemu_2d_rule_mip",
+        "2D Heuristic: Require No Mipmaps",
+        NULL,
+        "Test option. With Nearest Neighbor, only textures without mipmaps count as 2D.",
+        NULL,
+        "video",
+        { { "on", "ON" }, { "off", "OFF" }, { NULL, NULL } },
+        "on"
+    },
+    {
+        "xemu_2d_rule_depth",
+        "2D Heuristic: Require Depth Test Off",
+        NULL,
+        "Test option. With Nearest Neighbor, only draws without depth test count as 2D.",
+        NULL,
+        "video",
+        { { "on", "ON" }, { "off", "OFF" }, { NULL, NULL } },
+        "on"
+    },
+    {
+        "xemu_2d_rule_blend",
+        "2D Heuristic: Require Blending",
+        NULL,
+        "Test option. With Nearest Neighbor, only draws with blending on count as 2D (UI is usually blended, skies usually are not).",
+        NULL,
+        "video",
+        { { "off", "OFF" }, { "on", "ON" }, { NULL, NULL } },
+        "off"
+    },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
         "xemu_subpixel_offset",

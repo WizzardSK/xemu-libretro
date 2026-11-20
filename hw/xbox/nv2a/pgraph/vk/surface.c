@@ -93,6 +93,11 @@ static unsigned int scale_for_size(PGRAPHState *pg, unsigned int w,
                                    unsigned int h)
 {
     unsigned int t = pg->surface_scale_threshold;
+    if (t == UINT_MAX) {
+        /* Auto: anything smaller than the frame the game shows (its larger
+         * side; nothing until a frame was shown) */
+        t = pg->display_fb_size ? pg->display_fb_size - 1 : 0;
+    }
     return (t && pg->surface_scale_base > 1 && MAX(w, h) <= t) ?
                1 : pg->surface_scale_base;
 }

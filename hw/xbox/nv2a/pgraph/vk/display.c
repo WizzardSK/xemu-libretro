@@ -1615,6 +1615,8 @@ void pgraph_vk_render_display(PGRAPHState *pg)
         !surface->height) {
         return;
     }
+    /* for the Upscaling Threshold's Auto setting */
+    pg->display_fb_size = MAX(surface->width, surface->height);
 
     unsigned int width = 0, height = 0;
     d->vga.get_resolution(&d->vga, (int *)&width, (int *)&height);

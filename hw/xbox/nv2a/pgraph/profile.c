@@ -336,10 +336,12 @@ typedef struct SurfEvict {
     uint32_t addr, naddr;
     unsigned w, h, pitch, cfmt, zfmt, aa, nw, nh, npitch, ncfmt, nzfmt, naa;
     unsigned cw, ch;
+    uint32_t cinfo;
     bool color, ncolor;
     uint64_t count;
 } SurfEvict;
 static SurfEvict surf_evict[32];
+uint32_t nv2a_evict_color_info;
 static int surf_evict_n;
 
 void nv2a_surf_evict_note(const char *why, uint32_t addr, unsigned w,
@@ -353,7 +355,9 @@ void nv2a_surf_evict_note(const char *why, uint32_t addr, unsigned w,
         return;
     }
     SurfEvict n = { why, addr, naddr, w, h, pitch, cfmt, zfmt, aa, nw, nh,
-                    npitch, ncfmt, nzfmt, naa, cw, ch, color, ncolor, 1 };
+                    npitch, ncfmt, nzfmt, naa, cw, ch, nv2a_evict_color_info,
+                    color, ncolor, 1 };
+    nv2a_evict_color_info = 0;
     s2t_miss_lock_once();
     qemu_mutex_lock(&s2t_miss_lock);
     for (int i = 0; i < surf_evict_n; i++) {
@@ -363,7 +367,8 @@ void nv2a_surf_evict_note(const char *why, uint32_t addr, unsigned w,
             e->pitch == pitch && e->npitch == npitch && e->color == color &&
             e->ncolor == ncolor && e->zfmt == zfmt && e->nzfmt == nzfmt &&
             e->cfmt == cfmt && e->ncfmt == ncfmt && e->aa == aa &&
-            e->naa == naa && e->cw == cw && e->ch == ch) {
+            e->naa == naa && e->cw == cw && e->ch == ch &&
+            e->cinfo == n.cinfo) {
             e->count++;
             qemu_mutex_unlock(&s2t_miss_lock);
             return;
@@ -491,7 +496,12 @@ void nv2a_s2t_miss_dump(FILE *f)
                 e->ncolor ? "color" : "zeta", e->ncolor ? e->ncfmt : e->nzfmt,
                 e->naa);
         if (e->cw) {
-            fprintf(f, " (color bound %ux%u)", e->cw, e->ch);
+            fprintf(f, " (color bound %ux%u", e->cw, e->ch);
+            if (e->cinfo) {
+                fprintf(f, " aa %u%s", e->cinfo & 0xff,
+                        (e->cinfo >> 8) & 1 ? " swizzled" : " linear");
+            }
+            fputc(')', f);
         }
         fputc('\n', f);
     }

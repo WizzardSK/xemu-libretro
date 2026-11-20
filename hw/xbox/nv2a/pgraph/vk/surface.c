@@ -2771,6 +2771,9 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
                     handoff_old = surface;
                     QTAILQ_REMOVE(&r->surfaces, surface, entry);
                 } else {
+                    nv2a_evict_color_info = r->color_binding ?
+                        (r->color_binding->shape.anti_aliasing |
+                         (r->color_binding->swizzle << 8) | 1u << 16) : 0;
                     nv2a_surf_evict_note(
                         why, surface->vram_addr, surface->width, surface->height,
                         surface->pitch, surface->shape.color_format,
@@ -2795,6 +2798,9 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
         }
         if (!hn && handoff_old) {
             /* for the profile: only an eviction through RAM is listed */
+            nv2a_evict_color_info = r->color_binding ?
+                (r->color_binding->shape.anti_aliasing |
+                 (r->color_binding->swizzle << 8) | 1u << 16) : 0;
             nv2a_surf_evict_note(
                 evict_why, handoff_old->vram_addr, handoff_old->width,
                 handoff_old->height,

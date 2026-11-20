@@ -194,6 +194,9 @@ void nv2a_surf_cpu_note(uint32_t addr, unsigned w, unsigned h, bool color,
 void nv2a_surf_read_note(uint32_t frame, uint32_t addr, uint32_t crc,
                          bool drawn);
 void nv2a_display_note(uint32_t frame, uint32_t addr, bool from_ram);
+/* the bound colour target's anti-aliasing and swizzle for the next
+ * nv2a_surf_evict_note (aa | swizzled << 8 | 1 << 16; 0 = none) */
+extern uint32_t nv2a_evict_color_info;
 void nv2a_s2t_miss_dump(FILE *f);
 int nv2a_profile_get_counter_value(unsigned int cnt);
 void nv2a_profile_increment(void);

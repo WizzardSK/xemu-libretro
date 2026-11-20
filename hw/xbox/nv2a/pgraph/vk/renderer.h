@@ -158,11 +158,6 @@ typedef struct SurfaceBinding {
     /* Guest CPU reads of this surface's RAM; consumed by the eviction
      * dead-writeback predicate (pgraph_writeback_dead). */
     unsigned int cpu_reads;
-    /* Evicted at a scaled resolution with RAM made current: a checksum of
-     * that RAM, so a re-bind of the same shape that finds the RAM
-     * unchanged keeps the scaled image instead of a 1x upload */
-    uint64_t shelf_hash;
-    bool shelf_valid;
     /* Lazy writeback: eviction writeback owed, run only if a texture
      * load, CPU access or savevm reads that RAM (image kept meanwhile). */
     bool writeback_owed;

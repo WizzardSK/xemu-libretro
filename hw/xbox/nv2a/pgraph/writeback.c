@@ -26,14 +26,25 @@ static bool wb_range_overlaps(const PGRAPHWritebackRange *r, hwaddr addr,
     return r->size && !(addr >= r->addr + r->size || r->addr >= addr + size);
 }
 
-static bool writeback_range_is_live(PGRAPHState *pg, hwaddr addr, size_t size)
+/* Whether a range is live, for an eviction about to write it back: each
+ * live range it overlaps counts one more eager writeback, and one that went
+ * PGRAPH_WB_LIVE_EVICTIONS of them without a reader proving it live again
+ * is forgotten. That is safe: a forgotten range's evictions are owed to
+ * their first reader, which writes them back then and learns it again. */
+static bool G_GNUC_UNUSED writeback_range_is_live(PGRAPHState *pg, hwaddr addr, size_t size)
 {
+    PGRAPHWritebackState *wb = &pg->writeback;
+    bool live = false;
     for (unsigned int i = 0; i < PGRAPH_WB_LIVE_RANGES; i++) {
-        if (wb_range_overlaps(&pg->writeback.live[i], addr, size)) {
-            return true;
+        if (wb_range_overlaps(&wb->live[i], addr, size)) {
+            live = true;
+            if (++wb->live_evictions[i] >= PGRAPH_WB_LIVE_EVICTIONS) {
+                wb->live[i].size = 0;
+                wb->live_evictions[i] = 0;
+            }
         }
     }
-    return false;
+    return live;
 }
 
 bool pgraph_writeback_dead(NV2AState *d, hwaddr addr, size_t size,
@@ -42,9 +53,10 @@ bool pgraph_writeback_dead(NV2AState *d, hwaddr addr, size_t size,
     if (cpu_reads != 0) {
         return false;
     }
-    if (writeback_range_is_live(&d->pgraph, addr, size)) {
-        return false; /* a consumer read this range before */
-    }
+    /* No list of ranges a reader once proved live (eager writebacks for
+     * them): every eviction is owed to its first reader, which writes it
+     * back then. Conker kept a depth buffer evicted 90 times a second in
+     * that list, written back and uploaded again each time. */
     hwaddr scan = d->pcrtc.start;
     if (scan >= addr && scan < addr + size) {
         return false; /* the displayed framebuffer -- must be preserved */
@@ -59,11 +71,13 @@ void pgraph_writeback_learn_live(PGRAPHState *pg, hwaddr addr, size_t size)
     for (unsigned int i = 0; i < PGRAPH_WB_LIVE_RANGES; i++) {
         if (wb->live[i].size && wb->live[i].addr == addr &&
             wb->live[i].size == size) {
+            wb->live_evictions[i] = 0; /* proven live again */
             return; /* already known */
         }
     }
-    wb->live[wb->live_w % PGRAPH_WB_LIVE_RANGES] =
-        (PGRAPHWritebackRange){ .addr = addr, .size = size };
+    unsigned int i = wb->live_w % PGRAPH_WB_LIVE_RANGES;
+    wb->live[i] = (PGRAPHWritebackRange){ .addr = addr, .size = size };
+    wb->live_evictions[i] = 0;
     wb->live_w++;
 }
 

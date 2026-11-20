@@ -94,18 +94,9 @@ static unsigned int scale_for_size(PGRAPHState *pg, unsigned int w,
 {
     unsigned int t = pg->surface_scale_threshold;
     if (t == UINT_MAX) {
-        /* Auto: anything smaller than the game's frame (its larger side;
-         * nothing until a frame was shown). That is the shown frame, or
-         * the frame the game draws and scales into it, when it is over
-         * three quarters of its size each way (R: Racing Evolution:
-         * 512x448 in a 640x480 frame, so 511; a half-size bloom buffer
-         * blended into the frame is not one) */
-        unsigned int fb = pg->display_fb_size, src = pg->scene_src;
-        if (src && (src >> 16) * 4 > pg->display_fb_w * 3 &&
-            (src & 0xffff) * 4 > pg->display_fb_h * 3) {
-            fb = MAX(src >> 16, src & 0xffff);
-        }
-        t = fb ? fb - 1 : 0;
+        /* Auto: below the game's frame, as display.c settled it (nothing
+         * until then) */
+        t = pg->auto_threshold;
     }
     return (t && pg->surface_scale_base > 1 && MAX(w, h) <= t) ?
                1 : pg->surface_scale_base;

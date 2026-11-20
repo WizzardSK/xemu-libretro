@@ -352,6 +352,11 @@ typedef struct PGRAPHState {
      * the current frame, scene_src_age counts frames without one */
     hwaddr display_fb_addr;
     unsigned int scene_src, scene_src_frame, scene_src_age;
+    /* Auto's threshold in use (0: none yet), and the one the shown frames
+     * ask for and for how many frames in a row: it is taken over only
+     * after 60 frames, with all render targets rebuilt, as a change of
+     * the option does (targets of one frame may not mix scales) */
+    unsigned int auto_threshold, auto_candidate, auto_candidate_frames;
     uint8_t *scale_buf;
 
     PGRAPHWritebackState writeback;

@@ -1628,6 +1628,37 @@ void pgraph_vk_render_display(PGRAPHState *pg)
     } else if (pg->scene_src && ++pg->scene_src_age > 30) {
         pg->scene_src = 0;
     }
+    {
+        /* Auto: anything smaller than the game's frame (its larger side).
+         * That is the shown frame, or the frame the game draws and scales
+         * into it, when it is over three quarters of its size each way (R:
+         * Racing Evolution: 512x448 in a 640x480 frame, so 511; a
+         * half-size bloom buffer blended into the frame is not one). A new
+         * value has to hold for 60 frames, then the render targets are
+         * rebuilt for it (from the emulation loop, which holds the BQL) */
+        unsigned int fb = pg->display_fb_size, src = pg->scene_src;
+        if (src && (src >> 16) * 4 > surface->width * 3 &&
+            (src & 0xffff) * 4 > surface->height * 3) {
+            fb = MAX(src >> 16, src & 0xffff);
+        }
+        unsigned int want = fb - 1;
+        if (want == pg->auto_threshold) {
+            pg->auto_candidate_frames = 0;
+        } else if (want != pg->auto_candidate) {
+            pg->auto_candidate = want;
+            pg->auto_candidate_frames = 1;
+        } else if (++pg->auto_candidate_frames >= 60) {
+            pg->auto_threshold = want;
+            pg->auto_candidate_frames = 0;
+#ifdef LIBRETRO
+            if (pg->surface_scale_threshold == UINT_MAX) {
+                extern bool xemu_libretro_auto_threshold_changed;
+                __atomic_store_n(&xemu_libretro_auto_threshold_changed, true,
+                                 __ATOMIC_RELAXED);
+            }
+#endif
+        }
+    }
 #ifdef LIBRETRO
     {
         /* the overlay's fourth line, every 20 frames */

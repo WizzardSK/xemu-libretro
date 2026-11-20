@@ -1434,6 +1434,9 @@ unsigned int xemu_libretro_scale_threshold;
 /* set from the frontend thread, applied by the emulation loop, which holds
  * the BQL that nv2a_set_surface_scale_factor lets go of */
 static bool scale_threshold_changed;
+/* Auto's threshold settled on a new value (nv2a display): rebuild the same
+ * way */
+bool xemu_libretro_auto_threshold_changed;
 
 /* The running title's ID and the dashboard's video settings, as the guest
  * has them now: read on the emulation thread, which holds the BQL the
@@ -2283,6 +2286,12 @@ static void *emu_thread_func(void *opaque)
 
         main_loop_wait(false);
         rescale_after_start();
+        if (qatomic_xchg(&xemu_libretro_auto_threshold_changed, false) &&
+            use_vulkan) {
+            LRLOG_INFO("[xemu] Upscaling Threshold Auto settled on a new "
+                       "value: rebuilding render targets\n");
+            nv2a_set_surface_scale_factor(opt_surface_scale);
+        }
         if (qatomic_xchg(&scale_threshold_changed, false)) {
             LRLOG_INFO("[xemu] Upscaling Threshold %u: rebuilding render "
                        "targets\n",

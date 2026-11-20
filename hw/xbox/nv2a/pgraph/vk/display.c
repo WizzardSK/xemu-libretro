@@ -1617,6 +1617,18 @@ void pgraph_vk_render_display(PGRAPHState *pg)
     }
     /* for the Upscaling Threshold's Auto setting */
     pg->display_fb_size = MAX(surface->width, surface->height);
+#ifdef LIBRETRO
+    {
+        /* the overlay's fourth line, every 20 frames */
+        extern unsigned int xemu_libretro_osd_fb;
+        static unsigned int n;
+        if (n++ % 20 == 0) {
+            __atomic_store_n(&xemu_libretro_osd_fb,
+                             surface->width << 16 | surface->height,
+                             __ATOMIC_RELAXED);
+        }
+    }
+#endif
 
     unsigned int width = 0, height = 0;
     d->vga.get_resolution(&d->vga, (int *)&width, (int *)&height);

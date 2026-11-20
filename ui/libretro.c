@@ -1751,7 +1751,9 @@ static void update_variables(void)
         unsigned int thr = 0;
         if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
             var.value) {
-            thr = (unsigned int)atoi(var.value);
+            /* Auto: below the shown frame's size (surface.c) */
+            thr = !strcmp(var.value, "auto") ? UINT_MAX :
+                                               (unsigned int)atoi(var.value);
         }
         if (thr != qatomic_read(&xemu_libretro_scale_threshold)) {
             qatomic_set(&xemu_libretro_scale_threshold, thr);

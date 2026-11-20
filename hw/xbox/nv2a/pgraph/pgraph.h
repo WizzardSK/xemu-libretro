@@ -342,6 +342,9 @@ typedef struct PGRAPHState {
      * a render target (its larger side) is drawn at 1x instead (0 = off) */
     unsigned int surface_scale_base;
     unsigned int surface_scale_threshold;
+    /* Vulkan, threshold Auto: the larger side of the frame last shown (0 =
+     * none yet) */
+    unsigned int display_fb_size;
     uint8_t *scale_buf;
 
     PGRAPHWritebackState writeback;

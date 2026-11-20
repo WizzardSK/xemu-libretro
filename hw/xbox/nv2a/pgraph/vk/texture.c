@@ -1673,11 +1673,12 @@ static void resolve_unit_sampler(PGRAPHState *pg, int texture_idx,
     /* 2D Elements Upscaling, Nearest Neighbor: a heuristic for UI, menus
      * and loading screens, magnified without the game's filter once the
      * internal resolution is above 1x. A draw counts as 2D when the depth
-     * test is off and the texture has no mipmaps; a render target drawn as
-     * a texture never does (a 512x448 frame scaled into a 640x480 one
-     * would get uneven pixels). */
+     * test is off and the texture has no mipmaps, a render target drawn as
+     * a texture too (NNshi: menus were missed without it; a frame scaled
+     * into a bigger one gets uneven pixels then). */
+    (void)render_target;
     if (qatomic_read(&xemu_libretro_2d_nearest) &&
-        pg->surface_scale_factor > 1 && !render_target &&
+        pg->surface_scale_factor > 1 &&
         state->levels <= 1 && !state->cubemap &&
         !(pgraph_reg_r(pg, NV_PGRAPH_CONTROL_0) &
           NV_PGRAPH_CONTROL_0_ZENABLE)) {

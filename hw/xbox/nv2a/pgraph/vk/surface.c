@@ -910,45 +910,14 @@ static bool parked_settle_for_create(NV2AState *d, SurfaceBinding *neu)
     return true;
 }
 
-/* A quick checksum of a surface's RAM (64-bit words, then the tail). */
-static uint64_t surface_ram_hash(NV2AState *d, const SurfaceBinding *s)
-{
-    const uint8_t *p = d->vram_ptr + s->vram_addr;
-    size_t n = s->size;
-    uint64_t h = 0x9E3779B97F4A7C15ull ^ n;
-    size_t i = 0;
-    for (; i + 8 <= n; i += 8) {
-        uint64_t w;
-        memcpy(&w, p + i, 8);
-        h = (h ^ w) * 0x100000001B3ull;
-        h ^= h >> 29;
-    }
-    for (; i < n; i++) {
-        h = (h ^ p[i]) * 0x100000001B3ull;
-    }
-    return h;
-}
-
 /* Evict a binding: its content is written back to RAM now, or, when that
  * writeback looks dead, owed to the first reader of the RAM instead. */
 static void evict_surface(NV2AState *d, SurfaceBinding *s)
 {
     PGRAPHVkState *r = d->pgraph.vk_renderer_state;
 
-    s->shelf_valid = false;
     if (!pgraph_writeback_dead(d, s->vram_addr, s->size, s->cpu_reads)) {
         pgraph_vk_surface_download_if_dirty(d, s);
-        /* Scaled: RAM only holds the 1x picture of the image. Remember
-         * it, so the same buffer bound again with that RAM untouched gets
-         * this image back (get_shelved_surface) rather than a 1x upload.
-         * Conker binds its 640x480 depth buffer's memory as a 32x32 depth
-         * buffer about twice a frame: the round trip through RAM brought
-         * the depth back at 1x precision and surfaces z-fought (xemu#575,
-         * as hakuX bbbcf13 shelves them). */
-        if (s->scale != 1 && s->width && s->height) {
-            s->shelf_hash = surface_ram_hash(d, s);
-            s->shelf_valid = true;
-        }
     } else {
         pgraph_writeback_record_discard(&d->pgraph, s->vram_addr, s->size);
         parked_supersede_owed(r, s->vram_addr, s->size);
@@ -1987,32 +1956,6 @@ static bool check_invalid_surface_is_compatibile(SurfaceBinding *surface,
            surface->host_fmt.usage == target->host_fmt.usage;
 }
 
-/* An evicted image of exactly this buffer whose RAM nobody changed since
- * (evict_surface): its scaled content is still the truth. */
-static SurfaceBinding *get_shelved_surface(NV2AState *d,
-                                           SurfaceBinding *target)
-{
-    PGRAPHVkState *r = d->pgraph.vk_renderer_state;
-    SurfaceBinding *s, *next;
-    QTAILQ_FOREACH_SAFE(s, &r->invalid_surfaces, entry, next) {
-        if (!s->shelf_valid || s->writeback_owed || s->handoff_src ||
-            !s->image || s->vram_addr != target->vram_addr ||
-            s->size != target->size || s->pitch != target->pitch ||
-            s->color != target->color || s->swizzle != target->swizzle ||
-            !check_invalid_surface_is_compatibile(s, target)) {
-            continue;
-        }
-        s->shelf_valid = false;
-        if (surface_ram_hash(d, s) != s->shelf_hash) {
-            return NULL; /* RAM changed: upload from it as before */
-        }
-        pgraph_vk_surface_ensure_attachment_layout(&d->pgraph, s);
-        QTAILQ_REMOVE(&r->invalid_surfaces, s, entry);
-        return s;
-    }
-    return NULL;
-}
-
 static SurfaceBinding *
 get_any_compatible_invalid_surface(PGRAPHVkState *r, SurfaceBinding *target)
 {
@@ -2930,20 +2873,8 @@ static void update_surface_part(NV2AState *d, bool upload, bool color)
                     target.initialized = true;
                 }
             }
-            surface = NULL;
-            if (!hn && !kind_src && target.upload_pending) {
-                surface = get_shelved_surface(d, &target);
-                if (surface) {
-                    /* its image holds the content: no upload */
-                    migrate_surface_image(&target, surface);
-                    target.upload_pending = false;
-                    target.initialized = true;
-                }
-            }
+            surface = get_any_compatible_invalid_surface(r, &target);
             if (surface) {
-                /* the shelved binding's memory is reused below */
-            } else if ((surface = get_any_compatible_invalid_surface(
-                            r, &target))) {
                 migrate_surface_image(&target, surface);
             } else {
                 surface = g_malloc(sizeof(SurfaceBinding));

@@ -31,7 +31,7 @@ static bool wb_range_overlaps(const PGRAPHWritebackRange *r, hwaddr addr,
  * PGRAPH_WB_LIVE_EVICTIONS of them without a reader proving it live again
  * is forgotten. That is safe: a forgotten range's evictions are owed to
  * their first reader, which writes them back then and learns it again. */
-static bool writeback_range_is_live(PGRAPHState *pg, hwaddr addr, size_t size)
+static bool G_GNUC_UNUSED writeback_range_is_live(PGRAPHState *pg, hwaddr addr, size_t size)
 {
     PGRAPHWritebackState *wb = &pg->writeback;
     bool live = false;
@@ -53,9 +53,10 @@ bool pgraph_writeback_dead(NV2AState *d, hwaddr addr, size_t size,
     if (cpu_reads != 0) {
         return false;
     }
-    if (writeback_range_is_live(&d->pgraph, addr, size)) {
-        return false; /* a consumer read this range before */
-    }
+    /* No list of ranges a reader once proved live (eager writebacks for
+     * them): every eviction is owed to its first reader, which writes it
+     * back then. Conker kept a depth buffer evicted 90 times a second in
+     * that list, written back and uploaded again each time. */
     hwaddr scan = d->pcrtc.start;
     if (scan >= addr && scan < addr + size) {
         return false; /* the displayed framebuffer -- must be preserved */

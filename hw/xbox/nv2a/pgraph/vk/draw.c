@@ -2960,6 +2960,11 @@ void pgraph_vk_begin_command_buffer(PGRAPHState *pg)
 
 /* Dynamic state is emitted when its registers change, and after every
  * pipeline bind (binding a pipeline with static state undefines it). */
+/* Experiment (Conker): draws into a small swizzled colour target that test
+ * depth without writing it, i.e. against whatever the depth memory held,
+ * run without the depth test. */
+static bool dyn_last_small;
+
 static void emit_dynamic_state(PGRAPHState *pg, bool force)
 {
     PGRAPHVkState *r = pg->vk_renderer_state;
@@ -2984,7 +2989,11 @@ static void emit_dynamic_state(PGRAPHState *pg, bool force)
                         get_primitive_topology(pg) :
                         VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 
-    if (!force && r->dyn_last.valid && r->dyn_last.blend == blend &&
+    const bool small = r->color_binding && r->color_binding->swizzle &&
+        r->color_binding->width * r->color_binding->height <= 64 * 64 &&
+        !(control_0 & NV_PGRAPH_CONTROL_0_ZWRITEENABLE);
+    if (!force && r->dyn_last.valid && dyn_last_small == small &&
+        r->dyn_last.blend == blend &&
         r->dyn_last.blendcolor == blendcolor &&
         r->dyn_last.control_0 == control_0 &&
         r->dyn_last.control_1 == control_1 &&
@@ -2994,6 +3003,7 @@ static void emit_dynamic_state(PGRAPHState *pg, bool force)
         return;
     }
 
+    dyn_last_small = small;
     float blend_constant[4];
     pgraph_argb_pack32_to_rgba_float(blendcolor, blend_constant);
     vkCmdSetBlendConstants(cmd, blend_constant);
@@ -3043,7 +3053,7 @@ static void emit_dynamic_state(PGRAPHState *pg, bool force)
         bool stencil_test = control_1 & NV_PGRAPH_CONTROL_1_STENCIL_TEST_ENABLE;
         uint32_t zfunc = GET_MASK(control_0, NV_PGRAPH_CONTROL_0_ZFUNC);
         assert(zfunc < ARRAY_SIZE(pgraph_depth_func_vk_map));
-        vkCmdSetDepthTestEnableEXT(cmd, depth_test);
+        vkCmdSetDepthTestEnableEXT(cmd, depth_test && !small);
         vkCmdSetDepthWriteEnableEXT(
             cmd, !!(control_0 & NV_PGRAPH_CONTROL_0_ZWRITEENABLE));
         vkCmdSetDepthCompareOpEXT(cmd, pgraph_depth_func_vk_map[zfunc]);

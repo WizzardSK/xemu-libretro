@@ -335,7 +335,13 @@ typedef struct PGRAPHState {
     } renderer_switch_phase;
     QemuEvent renderer_switch_complete;
 
+    /* The scale of the render target being drawn (Vulkan: the bound
+     * target's own scale, see surface_scale_base) */
     unsigned int surface_scale_factor;
+    /* Vulkan: the configured internal resolution, and the size up to which
+     * a render target (its larger side) is drawn at 1x instead (0 = off) */
+    unsigned int surface_scale_base;
+    unsigned int surface_scale_threshold;
     uint8_t *scale_buf;
 
     PGRAPHWritebackState writeback;

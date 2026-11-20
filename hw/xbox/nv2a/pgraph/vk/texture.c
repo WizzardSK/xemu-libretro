@@ -755,9 +755,8 @@ static void copy_zeta_surface_to_texture(PGRAPHState *pg, SurfaceBinding *surfac
     trace_nv2a_pgraph_surface_render_to_texture(
         surface->vram_addr, surface->width, surface->height);
 
-    unsigned int scaled_width = surface->width,
-                 scaled_height = surface->height;
-    pgraph_apply_scaling_factor(pg, &scaled_width, &scaled_height);
+    unsigned int scaled_width = surface->width * surface->scale,
+                 scaled_height = surface->height * surface->scale;
     /* Before the recording below: growing settles everything. */
     pgraph_vk_buffer_ensure_capacity(pg, BUFFER_COMPUTE_DST,
                                      (VkDeviceSize)scaled_width *
@@ -769,7 +768,7 @@ static void copy_zeta_surface_to_texture(PGRAPHState *pg, SurfaceBinding *surfac
     /* Native depth: the copy/pack/upload chain below runs at cw x ch
      * (native when the scratch blit is in play, scaled otherwise). */
     VkImage znative_scratch = VK_NULL_HANDLE;
-    if (pg->surface_scale_factor > 1) {
+    if (surface->scale > 1) {
         znative_scratch = znative_get_scratch(pg, surface->host_fmt.vk_format,
                                               surface->width, surface->height);
     }
@@ -1093,8 +1092,8 @@ static void record_surface_copy(PGRAPHState *pg, VkCommandBuffer cmd,
         .extent.height = surface->height,
         .extent.depth = 1,
     };
-    pgraph_apply_scaling_factor(pg, &region.extent.width,
-                                &region.extent.height);
+    region.extent.width *= surface->scale;
+    region.extent.height *= surface->scale;
     vkCmdCopyImage(cmd, surface->image,
                    VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, texture->image,
                    texture->current_layout, 1, &region);
@@ -1936,13 +1935,13 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
      * taking the slot here is what makes the two decisions agree, since a
      * slot, once taken, stays. */
     bool znative_zeta = surface_to_texture && !surface->color &&
-                        pg->surface_scale_factor > 1 &&
+                        surface->scale > 1 &&
                         znative_get_scratch(pg, surface->host_fmt.vk_format,
                                             surface->width, surface->height) !=
                             VK_NULL_HANDLE;
     if ((surface_to_texture || surface_to_texture_cube) &&
-        pg->surface_scale_factor > 1 && !znative_zeta) {
-        key.scale = pg->surface_scale_factor;
+        surface->scale > 1 && !znative_zeta) {
+        key.scale = surface->scale;
     }
 
     uint64_t key_hash = fast_hash((void*)&key, sizeof(key));
@@ -2114,8 +2113,8 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
     };
 
     if ((surface_to_texture || surface_to_texture_cube) && !znative_zeta) {
-        pgraph_apply_scaling_factor(pg, &image_create_info.extent.width,
-                                        &image_create_info.extent.height);
+        image_create_info.extent.width *= surface->scale;
+        image_create_info.extent.height *= surface->scale;
     }
 
     if (s2t_borrow) {

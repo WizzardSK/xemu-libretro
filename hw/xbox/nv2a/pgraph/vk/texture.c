@@ -1651,6 +1651,13 @@ static void sampler_cache_destroy(PGRAPHVkState *r)
     r->sampler_cache_n = 0;
 }
 
+#ifdef LIBRETRO
+/* 2D Elements Upscaling: Nearest Neighbor (ui/libretro.c) */
+extern int xemu_libretro_2d_nearest;
+#else
+static int xemu_libretro_2d_nearest;
+#endif
+
 /* Resolve the unit's sampler for the texture just bound. Both exits of
  * create_texture must call it, the cache hit too, or the unit keeps the
  * sampler of the last texture created on it. */
@@ -1658,9 +1665,25 @@ static void resolve_unit_sampler(PGRAPHState *pg, int texture_idx,
                                  const TextureShape *state, uint32_t filter,
                                  uint32_t address,
                                  uint32_t border_color_pack32,
-                                 uint32_t max_anisotropy)
+                                 uint32_t max_anisotropy,
+                                 bool render_target)
 {
     PGRAPHVkState *r = pg->vk_renderer_state;
+
+    /* 2D Elements Upscaling, Nearest Neighbor: a heuristic for UI, menus
+     * and loading screens, magnified without the game's filter once the
+     * internal resolution is above 1x. A draw counts as 2D when the depth
+     * test is off and the texture has no mipmaps; a render target drawn as
+     * a texture never does (a 512x448 frame scaled into a 640x480 one
+     * would get uneven pixels). */
+    if (qatomic_read(&xemu_libretro_2d_nearest) &&
+        pg->surface_scale_factor > 1 && !render_target &&
+        state->levels <= 1 && !state->cubemap &&
+        !(pgraph_reg_r(pg, NV_PGRAPH_CONTROL_0) &
+          NV_PGRAPH_CONTROL_0_ZENABLE)) {
+        /* magnification by a box filter: nearest */
+        SET_MASK(filter, NV_PGRAPH_TEXFILTER0_MAG, 1);
+    }
 
     /* Sampler state (filter, address, border, anisotropy) stays out of the
      * image key, as on GL: one image serves every sampler it is read with. */
@@ -2083,7 +2106,8 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
         }
 
         resolve_unit_sampler(pg, texture_idx, &state, filter, address,
-                             border_color_pack32, max_anisotropy);
+                             border_color_pack32, max_anisotropy,
+                             surface_to_texture || surface_to_texture_cube);
 
         NV2A_VK_DGROUP_END();
         return;
@@ -2198,7 +2222,8 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
     }
 
     resolve_unit_sampler(pg, texture_idx, &state, filter, address,
-                         border_color_pack32, max_anisotropy);
+                         border_color_pack32, max_anisotropy,
+                         surface_to_texture || surface_to_texture_cube);
 
     NV2A_VK_DGROUP_END();
 }

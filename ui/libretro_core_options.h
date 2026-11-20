@@ -537,6 +537,21 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "0"
     },
+    /* Bilinear (the game's own texture filter) by default (NNshi) */
+    {
+        "xemu_2d_upscaling",
+        "2D Elements Upscaling",
+        NULL,
+        "With an Internal Resolution Scale above 1x, how 2D elements such as menus, HUD and loading screens are enlarged. Bilinear keeps the game's own texture filter, which looks soft at higher resolutions. Nearest Neighbor keeps their pixels sharp. It is a guess at what is 2D (drawn without depth test, from a texture without mipmaps), so some 3D surfaces may turn blocky too. Vulkan only.",
+        NULL,
+        "video",
+        {
+            { "bilinear", "Bilinear" },
+            { "nearest",  "Nearest Neighbor" },
+            { NULL, NULL },
+        },
+        "bilinear"
+    },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
         "xemu_subpixel_offset",

@@ -289,6 +289,36 @@ void nv2a_surf_cpu_note(uint32_t addr, unsigned w, unsigned h, bool color,
     qemu_mutex_unlock(&s2t_miss_lock);
 }
 
+typedef struct Surf1x {
+    uint32_t addr;
+    unsigned w, h;
+    bool color;
+    uint64_t count;
+} Surf1x;
+static Surf1x surf_1x[64];
+static int surf_1x_n;
+
+void nv2a_surf_1x_note(uint32_t addr, unsigned w, unsigned h, bool color)
+{
+    if (!qatomic_read(&nv2a_prof_surf_on)) {
+        return;
+    }
+    s2t_miss_lock_once();
+    qemu_mutex_lock(&s2t_miss_lock);
+    for (int i = 0; i < surf_1x_n; i++) {
+        Surf1x *e = &surf_1x[i];
+        if (e->addr == addr && e->w == w && e->h == h && e->color == color) {
+            e->count++;
+            qemu_mutex_unlock(&s2t_miss_lock);
+            return;
+        }
+    }
+    if (surf_1x_n < (int)ARRAY_SIZE(surf_1x)) {
+        surf_1x[surf_1x_n++] = (Surf1x){ addr, w, h, color, 1 };
+    }
+    qemu_mutex_unlock(&s2t_miss_lock);
+}
+
 typedef struct SurfEvict {
     const char *why;
     uint32_t addr, naddr;
@@ -341,6 +371,7 @@ void nv2a_s2t_miss_reset(void)
     surf_site_n = 0;
     surf_evict_n = 0;
     surf_cpu_n = 0;
+    surf_1x_n = 0;
     qemu_mutex_unlock(&s2t_miss_lock);
 }
 
@@ -380,6 +411,16 @@ void nv2a_s2t_miss_dump(FILE *f)
     }
     if (qatomic_read(&nv2a_prof_surf_on) && !surf_evict_n) {
         fprintf(f, "# render targets evicted: none\n");
+    }
+    if (qatomic_read(&nv2a_prof_surf_on)) {
+        fprintf(f, "# render targets drawn at 1x by the Upscaling Threshold "
+                   "(count of creations over the run; address, size, "
+                   "color/zeta)%s\n", surf_1x_n ? "" : ": none");
+        for (int i = 0; i < surf_1x_n; i++) {
+            Surf1x *e = &surf_1x[i];
+            fprintf(f, "surf-1x %" PRIu64 " %08x %ux%u %s\n", e->count,
+                    e->addr, e->w, e->h, e->color ? "color" : "zeta");
+        }
     }
     if (qatomic_read(&nv2a_prof_surf_on) && !surf_cpu_n) {
         fprintf(f, "# CPU access to render-target memory: none\n");

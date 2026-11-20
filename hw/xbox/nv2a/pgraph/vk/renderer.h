@@ -158,6 +158,9 @@ typedef struct SurfaceBinding {
     /* Guest CPU reads of this surface's RAM; consumed by the eviction
      * dead-writeback predicate (pgraph_writeback_dead). */
     unsigned int cpu_reads;
+    /* this target's resolution scale: the internal resolution, or 1 below
+     * the Upscaling Threshold */
+    unsigned int scale;
     /* Evicted at a scaled resolution with RAM made current: a checksum of
      * that RAM, so a re-bind of the same shape that finds the RAM
      * unchanged keeps the scaled image instead of a 1x upload */

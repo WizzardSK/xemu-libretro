@@ -132,6 +132,7 @@ void pgraph_vk_image_blit(NV2AState *d)
             surf_src != NULL &&
             (gdst = pgraph_vk_surface_get(d, dest_addr)) != NULL &&
             gdst != surf_src && surf_src->color && gdst->color &&
+            surf_src->scale == gdst->scale &&
             !surf_src->swizzle && !gdst->swizzle &&
             surf_src->host_fmt.vk_format == gdst->host_fmt.vk_format &&
             bytes_per_pixel == surf_src->fmt.bytes_per_pixel &&
@@ -157,7 +158,7 @@ void pgraph_vk_image_blit(NV2AState *d)
                 }
             }
 
-            unsigned int scale = pg->surface_scale_factor;
+            unsigned int scale = surf_src->scale;
             VkCommandBuffer cmd = pgraph_vk_begin_nondraw_commands(pg);
 
             pgraph_vk_transition_image_layout(

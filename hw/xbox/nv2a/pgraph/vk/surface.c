@@ -31,6 +31,12 @@
 #include "renderer.h"
 #include <math.h>
 
+#ifdef LIBRETRO
+extern unsigned int xemu_libretro_scale_threshold;
+#else
+static unsigned int xemu_libretro_scale_threshold;
+#endif
+
 const int num_invalid_surfaces_to_keep = 10;  // FIXME: Make automatic
 const int max_surface_frame_time_delta = 5;
 
@@ -69,13 +75,43 @@ void pgraph_vk_set_surface_scale_factor(NV2AState *d, unsigned int scale)
 
 unsigned int pgraph_vk_get_surface_scale_factor(NV2AState *d)
 {
-    return d->pgraph.surface_scale_factor; // FIXME: Move internal to renderer
+    return d->pgraph.surface_scale_base; // FIXME: Move internal to renderer
 }
 
 void pgraph_vk_reload_surface_scale_factor(PGRAPHState *pg)
 {
     int factor = g_config.display.quality.surface_scale;
-    pg->surface_scale_factor = MAX(factor, 1);
+    pg->surface_scale_base = MAX(factor, 1);
+    pg->surface_scale_factor = pg->surface_scale_base;
+    pg->surface_scale_threshold =
+        qatomic_read(&xemu_libretro_scale_threshold);
+}
+
+/* The scale a new render target of this size gets: the internal
+ * resolution, or 1x when its larger side is within the threshold. */
+static unsigned int scale_for_size(PGRAPHState *pg, unsigned int w,
+                                   unsigned int h)
+{
+    unsigned int t = pg->surface_scale_threshold;
+    return (t && pg->surface_scale_base > 1 && MAX(w, h) <= t) ?
+               1 : pg->surface_scale_base;
+}
+
+/* Draws, viewports, scissors, clears and the shader uniforms read
+ * surface_scale_factor: it follows the bound target. */
+static void update_draw_scale(PGRAPHState *pg)
+{
+    PGRAPHVkState *r = pg->vk_renderer_state;
+    const SurfaceBinding *b = r->color_binding ? r->color_binding :
+                                                 r->zeta_binding;
+    pg->surface_scale_factor = b ? b->scale : pg->surface_scale_base;
+}
+
+static inline void surface_scale_dims(const SurfaceBinding *s,
+                                      unsigned int *w, unsigned int *h)
+{
+    *w *= s->scale;
+    *h *= s->scale;
 }
 
 // FIXME: Move to common
@@ -196,7 +232,7 @@ static void download_surface_to_buffer(NV2AState *d, SurfaceBinding *surface,
         pgraph_vk_finish(pg, VK_FINISH_REASON_SURFACE_DOWN);
     }
 
-    bool downscale = (pg->surface_scale_factor != 1);
+    bool downscale = (surface->scale != 1);
 
     trace_nv2a_pgraph_surface_download(
         surface->color ? "COLOR" : "ZETA",
@@ -210,14 +246,14 @@ static void download_surface_to_buffer(NV2AState *d, SurfaceBinding *surface,
     uint8_t *swizzle_buf = pixels;
     if (surface->swizzle) {
         // FIXME: Swizzle in shader
-        assert(pg->surface_scale_factor == 1 || downscale);
+        assert(surface->scale == 1 || downscale);
         swizzle_buf = (uint8_t *)g_malloc(surface->size);
         gl_read_buf = swizzle_buf;
     }
 
     unsigned int scaled_width = surface->width,
                  scaled_height = surface->height;
-    pgraph_apply_scaling_factor(pg, &scaled_width, &scaled_height);
+    surface_scale_dims(surface, &scaled_width, &scaled_height);
     if (use_compute_to_convert_depth_stencil_format) {
         /* Depth and stencil planes side by side, before the aux recording
          * that reads them. */
@@ -725,6 +761,7 @@ static void bind_surface(PGRAPHVkState *r, SurfaceBinding *surface)
     }
 
     r->framebuffer_dirty = true;
+    update_draw_scale(&g_nv2a->pgraph);
 }
 
 static void unbind_surface(NV2AState *d, bool color)
@@ -743,6 +780,7 @@ static void unbind_surface(NV2AState *d, bool color)
             r->framebuffer_dirty = true;
         }
     }
+    update_draw_scale(pg);
 }
 
 static void invalidate_surface(NV2AState *d, SurfaceBinding *surface)
@@ -902,7 +940,7 @@ static void evict_surface(NV2AState *d, SurfaceBinding *s)
          * buffer about twice a frame: the round trip through RAM brought
          * the depth back at 1x precision and surfaces z-fought (xemu#575,
          * as hakuX bbbcf13 shelves them). */
-        if (d->pgraph.surface_scale_factor != 1 && s->width && s->height) {
+        if (s->scale != 1 && s->width && s->height) {
             s->shelf_hash = surface_ram_hash(d, s);
             s->shelf_valid = true;
         }
@@ -951,6 +989,7 @@ static bool surface_kind_switch_ok(PGRAPHVkState *r, const SurfaceBinding *old,
 {
     if (old->color == t->color || old->vram_addr != t->vram_addr ||
         old->width != t->width || old->height != t->height ||
+        old->scale != t->scale ||
         old->pitch != t->pitch || old->swizzle || t->swizzle ||
         old->shape.anti_aliasing != t->shape.anti_aliasing ||
         old->fmt.bytes_per_pixel != 4 || t->fmt.bytes_per_pixel != 4 ||
@@ -1323,7 +1362,7 @@ static void surface_kind_switch(PGRAPHState *pg, SurfaceBinding *src,
     nv2a_profile_inc_counter(NV2A_PROF_SURF_KIND_SWITCH);
 
     unsigned int w = dst->width, h = dst->height;
-    pgraph_apply_scaling_factor(pg, &w, &h);
+    surface_scale_dims(dst, &w, &h);
 
     /* sampled views of src: depth and stencil apart, or its color view */
     VkImageView v0, v1 = VK_NULL_HANDLE;
@@ -1477,6 +1516,7 @@ static bool handoff_place(const SurfaceBinding *s, const SurfaceBinding *t,
                           int *dx, int *dy)
 {
     if (s->color != t->color || s->swizzle || t->swizzle ||
+        s->scale != t->scale ||
         s->pitch != t->pitch || !t->pitch ||
         s->fmt.bytes_per_pixel != t->fmt.bytes_per_pixel ||
         s->host_fmt.vk_format != t->host_fmt.vk_format ||
@@ -1616,7 +1656,7 @@ static void handoff_copy(PGRAPHState *pg, VkCommandBuffer cmd,
     if (x1 <= x0 || y1 <= y0) {
         return;
     }
-    unsigned int sf = pg->surface_scale_factor;
+    unsigned int sf = t->scale;
     VkImageCopy region = {
         .srcSubresource.aspectMask = s->host_fmt.aspect,
         .srcSubresource.layerCount = 1,
@@ -1822,7 +1862,7 @@ static void create_surface_image(PGRAPHState *pg, SurfaceBinding *surface)
 
     unsigned int width = surface->width ? surface->width : 1;
     unsigned int height = surface->height ? surface->height : 1;
-    pgraph_apply_scaling_factor(pg, &width, &height);
+    surface_scale_dims(surface, &width, &height);
 
     assert(!surface->image);
     assert(!surface->image_scratch);
@@ -2040,7 +2080,7 @@ static bool check_surface_compatibility(SurfaceBinding const *s1,
                                         SurfaceBinding const *s2, bool strict)
 {
     bool format_compatible =
-        (s1->color == s2->color) &&
+        (s1->color == s2->color) && (s1->scale == s2->scale) &&
         (s1->host_fmt.vk_format == s2->host_fmt.vk_format) &&
         (s1->pitch == s2->pitch);
     if (!format_compatible) {
@@ -2134,7 +2174,7 @@ void (pgraph_vk_upload_surface_data)(NV2AState *d, SurfaceBinding *surface,
         surface->host_fmt.vk_format == VK_FORMAT_D32_SFLOAT_S8_UINT) {
         /* The unpacked planes, before the aux recording that writes them. */
         unsigned int cw = surface->width, ch = surface->height;
-        pgraph_apply_scaling_factor(pg, &cw, &ch);
+        surface_scale_dims(surface, &cw, &ch);
         pgraph_vk_buffer_ensure_capacity(pg, BUFFER_COMPUTE_DST,
                                          (VkDeviceSize)cw * ch * 8);
         /* The unpack takes a compute descriptor set: with none left, a
@@ -2207,7 +2247,7 @@ void (pgraph_vk_upload_surface_data)(NV2AState *d, SurfaceBinding *surface,
 
 
     unsigned int scaled_width = surface->width, scaled_height = surface->height;
-    pgraph_apply_scaling_factor(pg, &scaled_width, &scaled_height);
+    surface_scale_dims(surface, &scaled_width, &scaled_height);
 
     if (use_compute_to_convert_depth_stencil_format) {
 
@@ -2362,7 +2402,7 @@ void (pgraph_vk_upload_surface_data)(NV2AState *d, SurfaceBinding *surface,
         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
     pgraph_vk_surface_left_shader_read(&d->pgraph, surface);
 
-    bool upscale = pg->surface_scale_factor > 1 &&
+    bool upscale = surface->scale > 1 &&
                    !use_compute_to_convert_depth_stencil_format;
 
     if (upscale) {
@@ -2508,6 +2548,12 @@ static void populate_surface_binding_target_sized(NV2AState *d, bool color,
     target->width = width;
     target->height = height;
     target->pitch = surface->pitch;
+    /* a depth buffer is drawn with its colour target: it takes its scale */
+    target->scale = (!color && r->color_binding) ? r->color_binding->scale :
+                    scale_for_size(pg, width, height);
+    if (target->scale == 1 && pg->surface_scale_base > 1) {
+        nv2a_surf_1x_note(target->vram_addr, width, height, color);
+    }
     target->size = height * MAX(surface->pitch, width * fmt.bytes_per_pixel);
     target->upload_pending = true;
     target->download_pending = false;
@@ -2605,14 +2651,18 @@ static inline bool zeta_covers_color(PGRAPHVkState *r, const SurfaceBinding *zet
     if (!color) {
         return true;
     }
+    /* one framebuffer: both attachments at the same resolution scale */
+    if (zeta->scale != color->scale) {
+        return false;
+    }
     if (zeta->width < color->width || zeta->height < color->height) {
         return false;
     }
     if (zeta->width == color->width && zeta->height == color->height) {
         return true;
     }
-    /* All surfaces here share one resolution scale (surface_scale_factor),
-     * so only the anti-aliasing mode has to match. */
+    /* Same scale (checked above): only the anti-aliasing mode has to
+     * match. */
     return !zeta->swizzle && !color->swizzle &&
            zeta->shape.anti_aliasing == color->shape.anti_aliasing;
 }
@@ -3205,5 +3255,5 @@ void pgraph_vk_surface_flush(NV2AState *d)
     prune_invalid_surfaces(r, 0);
 
     pgraph_vk_reload_surface_scale_factor(pg);
-    pgraph_vk_reserve_compute_buffers(pg, pg->surface_scale_factor);
+    pgraph_vk_reserve_compute_buffers(pg, pg->surface_scale_base);
 }

@@ -1039,7 +1039,7 @@ static void update_uniforms(PGRAPHState *pg, SurfaceBinding *surface)
          * overlay's FMVs came out upside down (Forza Motorsport, KOTOR, GTA
          * SA; NNshi, XieTieqiang #2) */
         {
-            float z = 1.0f / pg->surface_scale_factor;
+            float z = 1.0f / surface->scale;
             float flip_y = r->display.height * z - pvideo->out_y -
                            pvideo->out_height;
             uniform2f(l, uniform_index(l, "pvideo_in_pos"), pvideo->in_s / 16.f,
@@ -1055,7 +1055,7 @@ static void update_uniforms(PGRAPHState *pg, SurfaceBinding *surface)
         uniform4f(l, uniform_index(l, "pvideo_pos"), pvideo->out_x,
                   pvideo->out_y, pvideo->out_width, pvideo->out_height);
         uniform4f(l, uniform_index(l, "pvideo_scale"), pvideo->scale_x,
-                  pvideo->scale_y, 1.0f / pg->surface_scale_factor, 1.0);
+                  pvideo->scale_y, 1.0f / surface->scale, 1.0);
 #endif
     }
 }
@@ -1631,7 +1631,8 @@ void pgraph_vk_render_display(PGRAPHState *pg)
     if (width > surface->width)   width  = surface->width;
     if (height > surface->height) height = surface->height;
 
-    pgraph_apply_scaling_factor(pg, &width, &height);
+    width *= surface->scale;
+    height *= surface->scale;
 
     PGRAPHVkDisplayState *disp = &r->display;
     if (!disp->image || disp->width != width || disp->height != height) {

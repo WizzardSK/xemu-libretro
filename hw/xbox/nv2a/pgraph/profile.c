@@ -289,6 +289,48 @@ void nv2a_surf_cpu_note(uint32_t addr, unsigned w, unsigned h, bool color,
     qemu_mutex_unlock(&s2t_miss_lock);
 }
 
+typedef struct SurfRead {
+    uint32_t frame, addr, crc;
+    bool drawn;
+} SurfRead;
+static SurfRead surf_read[1024];
+static uint64_t surf_read_n;
+
+void nv2a_surf_read_note(uint32_t frame, uint32_t addr, uint32_t crc,
+                         bool drawn)
+{
+    if (!qatomic_read(&nv2a_prof_surf_on)) {
+        return;
+    }
+    s2t_miss_lock_once();
+    qemu_mutex_lock(&s2t_miss_lock);
+    surf_read[surf_read_n++ % ARRAY_SIZE(surf_read)] =
+        (SurfRead){ frame, addr, crc, drawn };
+    qemu_mutex_unlock(&s2t_miss_lock);
+}
+
+typedef struct DisplayRam {
+    uint32_t frame, addr;
+} DisplayRam;
+static DisplayRam display_ram[256];
+static uint64_t display_gpu_n, display_ram_n;
+
+void nv2a_display_note(uint32_t frame, uint32_t addr, bool from_ram)
+{
+    if (!qatomic_read(&nv2a_prof_surf_on)) {
+        return;
+    }
+    s2t_miss_lock_once();
+    qemu_mutex_lock(&s2t_miss_lock);
+    if (from_ram) {
+        display_ram[display_ram_n++ % ARRAY_SIZE(display_ram)] =
+            (DisplayRam){ frame, addr };
+    } else {
+        display_gpu_n++;
+    }
+    qemu_mutex_unlock(&s2t_miss_lock);
+}
+
 typedef struct SurfEvict {
     const char *why;
     uint32_t addr, naddr;
@@ -341,6 +383,8 @@ void nv2a_s2t_miss_reset(void)
     surf_site_n = 0;
     surf_evict_n = 0;
     surf_cpu_n = 0;
+    surf_read_n = 0;
+    display_gpu_n = display_ram_n = 0;
     qemu_mutex_unlock(&s2t_miss_lock);
 }
 
@@ -380,6 +424,28 @@ void nv2a_s2t_miss_dump(FILE *f)
     }
     if (qatomic_read(&nv2a_prof_surf_on) && !surf_evict_n) {
         fprintf(f, "# render targets evicted: none\n");
+    }
+    if (qatomic_read(&nv2a_prof_surf_on)) {
+        fprintf(f, "# displayed frames: %" PRIu64 " from the GPU image, %"
+                   PRIu64 " rebuilt from RAM first (the last of those: "
+                   "frame, framebuffer)\n", display_gpu_n, display_ram_n);
+        uint64_t n = MIN(display_ram_n, ARRAY_SIZE(display_ram));
+        for (uint64_t i = display_ram_n - n; i < display_ram_n; i++) {
+            DisplayRam *e = &display_ram[i % ARRAY_SIZE(display_ram)];
+            fprintf(f, "display-ram %u %08x\n", e->frame, e->addr);
+        }
+        fprintf(f, "# CPU reads of small color targets, in order, the last "
+                   "%u of %" PRIu64 " (frame, target, checksum of its RAM "
+                   "once the read was served, drawn = the GPU had drawn it "
+                   "since RAM was last current)\n",
+                (unsigned)MIN(surf_read_n, ARRAY_SIZE(surf_read)),
+                surf_read_n);
+        n = MIN(surf_read_n, ARRAY_SIZE(surf_read));
+        for (uint64_t i = surf_read_n - n; i < surf_read_n; i++) {
+            SurfRead *e = &surf_read[i % ARRAY_SIZE(surf_read)];
+            fprintf(f, "surf-read %u %08x %08x%s\n", e->frame, e->addr,
+                    e->crc, e->drawn ? " drawn" : "");
+        }
     }
     if (qatomic_read(&nv2a_prof_surf_on) && !surf_cpu_n) {
         fprintf(f, "# CPU access to render-target memory: none\n");

@@ -188,6 +188,12 @@ void nv2a_surf_site_note(int kind, const char *func, int line, uint32_t addr,
  * address (the start of the translated block, so near the access) */
 void nv2a_surf_cpu_note(uint32_t addr, unsigned w, unsigned h, bool color,
                         bool write, bool dirty, uint64_t pc);
+/* With the surface list on (a diagnostic): each CPU read of a small color
+ * target in order, with a checksum of its RAM once the read was served,
+ * and each displayed frame, from the GPU image or rebuilt from RAM */
+void nv2a_surf_read_note(uint32_t frame, uint32_t addr, uint32_t crc,
+                         bool drawn);
+void nv2a_display_note(uint32_t frame, uint32_t addr, bool from_ram);
 void nv2a_s2t_miss_dump(FILE *f);
 int nv2a_profile_get_counter_value(unsigned int cnt);
 void nv2a_profile_increment(void);

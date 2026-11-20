@@ -595,6 +595,16 @@ static void surface_access_callback(void *opaque, MemoryRegion *mr, hwaddr addr,
 
     PGRAPHVkState *r = d->pgraph.vk_renderer_state;
     bool wait_for_downloads = false;
+    /* the diagnostic: small color targets this read touches, checksummed
+     * once the read is served */
+    struct {
+        hwaddr addr;
+        unsigned w, h, pitch, bpp;
+        bool drawn;
+    } diag[8];
+    int diag_n = 0;
+    const bool diag_on = !write && qatomic_read(&nv2a_prof_surf_on);
+    const uint32_t diag_frame = d->pgraph.frame_time;
 
     SurfaceBinding *surface;
     QTAILQ_FOREACH(surface, &r->surfaces, entry) {
@@ -603,6 +613,18 @@ static void surface_access_callback(void *opaque, MemoryRegion *mr, hwaddr addr,
         }
 
         hwaddr offset = addr - surface->vram_addr;
+
+        if (diag_on && surface->color && diag_n < ARRAY_SIZE(diag) &&
+            surface->width * surface->height <= 256 * 256 &&
+            addr >= surface->vram_addr) {
+            diag[diag_n].addr = surface->vram_addr;
+            diag[diag_n].w = surface->width;
+            diag[diag_n].h = surface->height;
+            diag[diag_n].pitch = surface->pitch;
+            diag[diag_n].bpp = surface->fmt.bytes_per_pixel;
+            diag[diag_n].drawn = surface->draw_dirty;
+            diag_n++;
+        }
 
         if (qatomic_read(&nv2a_prof_surf_on)) {
             CPUState *cs = current_cpu;
@@ -669,6 +691,19 @@ static void surface_access_callback(void *opaque, MemoryRegion *mr, hwaddr addr,
         if (bql) {
             bql_lock();
         }
+    }
+
+    for (int i = 0; i < diag_n; i++) {
+        /* FNV-1a over the target's pixels in RAM, row by row */
+        uint32_t h = 2166136261u;
+        for (unsigned y = 0; y < diag[i].h; y++) {
+            const uint8_t *row = d->vram_ptr + diag[i].addr +
+                                 (hwaddr)y * diag[i].pitch;
+            for (unsigned x = 0; x < diag[i].w * diag[i].bpp; x++) {
+                h = (h ^ row[x]) * 16777619u;
+            }
+        }
+        nv2a_surf_read_note(diag_frame, diag[i].addr, h, diag[i].drawn);
     }
 }
 

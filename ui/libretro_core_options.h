@@ -542,7 +542,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_2d_upscaling",
         "2D Elements Upscaling",
         NULL,
-        "With an Internal Resolution Scale above 1x, how 2D elements such as menus, HUD and loading screens are enlarged. Bilinear keeps the game's own texture filter, which looks soft at higher resolutions. Nearest Neighbor keeps their pixels sharp. It is a guess at what is 2D (a blended draw from a texture without mipmaps that is not a render target, without depth test or facing the screen), so some 3D surfaces may turn blocky too. Vulkan only.",
+        "With an Internal Resolution Scale above 1x, how 2D elements such as menus, HUD and loading screens are enlarged. Bilinear keeps the game's own texture filter, which looks soft at higher resolutions. Nearest Neighbor keeps their pixels sharp. It is a guess at what is 2D: textures drawn unrotated, without perspective, at one or a whole number of pixels per texel at the game's resolution, so UI drawn at other scales stays soft. Vulkan only.",
         NULL,
         "video",
         {

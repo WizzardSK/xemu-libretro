@@ -1599,13 +1599,13 @@ static MString* psh_convert(struct PixelShader *ps)
                              * divisor to a positive minimum reproduces
                              * exactly that. */
                             /* 2D Elements Upscaling, Nearest Neighbor
-                             * (nn2dCtl, set per draw by the renderer):
-                             * bit i = the stage's draw passed the CPU-side
-                             * rules; the coordinate then snaps to the centre
-                             * of a guest texel where the texture is
-                             * magnified, and with bit 4 only where the
-                             * triangle has one depth at all three corners
-                             * (screen-parallel). The condition is
+                             * (nn2dCtl bit i, set by the renderer): the
+                             * coordinate snaps to the centre of a guest
+                             * texel where the texture is drawn unrotated,
+                             * at the same scale on both axes, at a whole
+                             * number of the game's pixels per texel (1x,
+                             * 2x...), and without perspective (one w at
+                             * all three corners). The condition is
                              * uniform, so the derivatives are defined. */
                             mstring_append_fmt(
                                 vars,
@@ -1613,15 +1613,14 @@ static MString* psh_convert(struct PixelShader *ps)
                                 "vec2 tc%d = tp%d.xy / max(tp%d.z, 1e-15);\n"
                                 "if ((nn2dCtl & %du) != 0u) {\n"
                                 "  vec2 nnSz = vec2(textureSize(texSamp%d, 0));\n"
-                                "  vec2 nnDx = dFdx(tc%d) * nnSz, nnDy = dFdy(tc%d) * nnSz;\n"
-                                "  bool nnOk = max(abs(nnDx.x) + abs(nnDy.x),"
-                                " abs(nnDx.y) + abs(nnDy.y)) < 1.0;\n"
-                                "  if ((nn2dCtl & 16u) != 0u) {\n"
-                                "    nnOk = nnOk && vtxPos0.z == vtxPos1.z &&"
-                                " vtxPos0.z == vtxPos2.z && vtxPos0.w == vtxPos1.w &&"
-                                " vtxPos0.w == vtxPos2.w;\n"
-                                "  }\n"
                                 "  vec2 nnG = nnSz / nn2dTexScale[%d];\n"
+                                "  vec2 gs = vec2(surfaceScale);\n"
+                                "  vec2 ex = dFdx(tc%d) * nnG * gs.x, ey = dFdy(tc%d) * nnG * gs.y;\n"
+                                "  float nnK = 1.0 / max(abs(ex.x), 1e-6);\n"
+                                "  bool nnOk = abs(ex.y) < 0.01 && abs(ey.x) < 0.01 &&"
+                                " abs(abs(ex.x) - abs(ey.y)) < 0.02 * abs(ex.x) &&"
+                                " nnK > 0.95 && abs(nnK - round(nnK)) < 0.05 &&"
+                                " vtxPos0.w == vtxPos1.w && vtxPos0.w == vtxPos2.w;\n"
                                 "  if (nnOk) {\n"
                                 "    tc%d = (floor(tc%d * nnG) + 0.5) / nnG;\n"
                                 "  }\n"

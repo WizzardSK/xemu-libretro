@@ -834,30 +834,24 @@ extern int xemu_libretro_2d_nearest;
 static int xemu_libretro_2d_nearest;
 #endif
 
-/* nn2dCtl for this draw (glsl/psh.c): bit i = texture stage i counts as 2D,
- * bit 4 = only where the triangle is flat. What counts (NNshi): a texture
- * that is not a render target and has no mipmaps, drawn with blending on,
- * and either without depth test or from a triangle with one depth at all
- * three corners. With Bilinear this returns at the first test. */
+/* nn2dCtl for this draw (glsl/psh.c): bit i = texture stage i may be
+ * drawn with Nearest Neighbor; the shader decides per pixel (1:1 or a
+ * whole-number scale, unrotated, no perspective). With Bilinear this
+ * returns at the first test. */
 static uint32_t nn2d_ctl(PGRAPHState *pg)
 {
     PGRAPHVkState *r = pg->vk_renderer_state;
 
     if (!qatomic_read(&xemu_libretro_2d_nearest) ||
-        pg->surface_scale_factor <= 1 ||
-        !(pgraph_reg_r(pg, NV_PGRAPH_BLEND) & NV_PGRAPH_BLEND_EN)) {
+        pg->surface_scale_factor <= 1) {
         return 0;
     }
     uint32_t ctl = 0;
     for (int i = 0; i < 4; i++) {
-        /* eligible (bit 0), not a render target (bit 1), no mipmaps (bit 2) */
-        if (r->nn2d_tex[i] == 1) {
+        /* eligible: not a cubemap (bit 0) */
+        if (r->nn2d_tex[i] & 1) {
             ctl |= 1u << i;
         }
-    }
-    if (ctl && (pgraph_reg_r(pg, NV_PGRAPH_CONTROL_0) &
-                NV_PGRAPH_CONTROL_0_ZENABLE)) {
-        ctl |= 16;
     }
     return ctl;
 }

@@ -245,6 +245,11 @@ static void nv2a_totals_reset(void)
 #define PACE_MAX 65536
 static int64_t *pace_flip_us, *pace_host_us;
 static uint8_t *pace_host_new;
+/* per host frame: when retro_run began, and how long its wait for the
+ * guest's vblank (and flip) and the renderer's sync took */
+static int64_t *pace_host_entry;
+static int32_t *pace_host_vwait, *pace_host_sync;
+static int64_t pace_cur_entry, pace_cur_vwait, pace_cur_sync;
 static uint32_t pace_flip_n, pace_host_n;
 static int64_t pace_start_us;
 static void pace_reset(void)
@@ -253,6 +258,9 @@ static void pace_reset(void)
         pace_flip_us = g_new(int64_t, PACE_MAX);
         pace_host_us = g_new(int64_t, PACE_MAX);
         pace_host_new = g_new(uint8_t, PACE_MAX);
+        pace_host_entry = g_new(int64_t, PACE_MAX);
+        pace_host_vwait = g_new(int32_t, PACE_MAX);
+        pace_host_sync = g_new(int32_t, PACE_MAX);
     }
     __atomic_store_n(&pace_flip_n, 0, __ATOMIC_RELAXED);
     pace_host_n = 0;
@@ -271,6 +279,9 @@ static void pace_host(int64_t now_us, uint64_t new_frames)
     if (pace_host_us && pace_host_n < PACE_MAX) {
         pace_host_us[pace_host_n] = now_us;
         pace_host_new[pace_host_n] = new_frames > 255 ? 255 : (uint8_t)new_frames;
+        pace_host_entry[pace_host_n] = pace_cur_entry;
+        pace_host_vwait[pace_host_n] = (int32_t)pace_cur_vwait;
+        pace_host_sync[pace_host_n] = (int32_t)pace_cur_sync;
         pace_host_n++;
     }
 }
@@ -333,9 +344,12 @@ static void pace_dump(const char *path)
     for (uint32_t i = 0; i < nf; i++) {
         fprintf(f, "flip %" PRId64 "\n", pace_flip_us[i] - pace_start_us);
     }
-    fprintf(f, "# every host frame: host <us> <new guest frames>\n");
+    fprintf(f, "# every host frame: host <us> <new guest frames> <retro_run start us> "
+            "<vblank+flip wait us> <renderer sync us>\n");
     for (uint32_t i = 0; i < nh; i++) {
-        fprintf(f, "host %" PRId64 " %u\n", pace_host_us[i] - pace_start_us, pace_host_new[i]);
+        fprintf(f, "host %" PRId64 " %u %" PRId64 " %d %d\n", pace_host_us[i] - pace_start_us,
+                pace_host_new[i], pace_host_entry[i] - pace_start_us,
+                pace_host_vwait[i], pace_host_sync[i]);
     }
     fclose(f);
 }
@@ -4458,6 +4472,8 @@ static void libretro_vblank_bh(void *opaque)
 RETRO_API void retro_run(void)
 {
     static int run_count = 0;
+    pace_cur_entry = g_get_monotonic_time();
+    pace_cur_vwait = pace_cur_sync = 0;
     /* Where the time of a run goes, over the last 300 runs: the whole run
      * from the previous one's start, the wait for the renderer to draw the
      * display, and the frontend's video and audio callbacks. For telling a
@@ -4707,11 +4723,14 @@ RETRO_API void retro_run(void)
 
             xemu_libretro_vk.frame_index = index;
             if (!vk_renderer_parked) {
+                const int64_t pace_w0 = g_get_monotonic_time();
                 wait_for_vblank_handled();
                 st_t = g_get_monotonic_time();
+                pace_cur_vwait = st_t - pace_w0;
                 nv2a_get_framebuffer_surface();
                 nv2a_release_framebuffer_surface();
                 st_t = g_get_monotonic_time() - st_t;
+                pace_cur_sync = st_t;
                 st_sync_sum += st_t;
                 st_sync_max = MAX(st_sync_max, st_t);
             }

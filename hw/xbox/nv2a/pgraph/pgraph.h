@@ -342,24 +342,6 @@ typedef struct PGRAPHState {
      * a render target (its larger side) is drawn at 1x instead (0 = off) */
     unsigned int surface_scale_base;
     unsigned int surface_scale_threshold;
-    /* Vulkan, threshold Auto: the larger side of the frame last shown (0 =
-     * none yet) */
-    unsigned int display_fb_size, display_fb_w, display_fb_h;
-    /* ... and the frame the game draws before it is scaled to that one:
-     * the largest render target sampled as a texture while drawing into
-     * the shown frame (R: Racing Evolution draws 512x448 and scales it to
-     * 640x480), its width << 16 | height; scene_src_frame collects it over
-     * the current frame, scene_src_age counts frames without one */
-    hwaddr display_fb_addr;
-    unsigned int scene_src, scene_src_frame, scene_src_age;
-    /* Vulkan, threshold Auto: the render targets recognised as bloom
-     * (display.c), drawn at 1x when created again (surface.c); new ones
-     * since the last rebuild, and frames since it */
-    struct {
-        hwaddr addr;
-        unsigned int w, h;
-    } bloom[64];
-    unsigned int bloom_count, bloom_new, bloom_rebuild_age;
     uint8_t *scale_buf;
 
     PGRAPHWritebackState writeback;

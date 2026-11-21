@@ -267,7 +267,6 @@ static void nv2a_totals_dump(const char *path)
 unsigned int xemu_libretro_osd_fps100;
 unsigned int xemu_libretro_osd_guest_fps100;
 unsigned int xemu_libretro_osd_idle100;
-unsigned int xemu_libretro_osd_fb;
 /* hw/xbox/nv2a/pfifo.c: the PFIFO thread's waits for work while on */
 extern bool xemu_lr_nv2a_idle_track;
 extern int64_t xemu_lr_nv2a_idle_ns;
@@ -1436,9 +1435,6 @@ int xemu_libretro_2d_nearest;
 /* set from the frontend thread, applied by the emulation loop, which holds
  * the BQL that nv2a_set_surface_scale_factor lets go of */
 static bool scale_threshold_changed;
-/* Auto's threshold settled on a new value (nv2a display): rebuild the same
- * way */
-bool xemu_libretro_auto_threshold_changed;
 
 /* The running title's ID and the dashboard's video settings, as the guest
  * has them now: read on the emulation thread, which holds the BQL the
@@ -1757,9 +1753,7 @@ static void update_variables(void)
         unsigned int thr = 0;
         if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
             var.value) {
-            /* Auto: bloom targets at 1x (display.c, surface.c) */
-            thr = !strcmp(var.value, "auto") ? UINT_MAX :
-                                               (unsigned int)atoi(var.value);
+            thr = (unsigned int)atoi(var.value);
         }
         if (thr != qatomic_read(&xemu_libretro_scale_threshold)) {
             qatomic_set(&xemu_libretro_scale_threshold, thr);
@@ -2295,12 +2289,6 @@ static void *emu_thread_func(void *opaque)
 
         main_loop_wait(false);
         rescale_after_start();
-        if (qatomic_xchg(&xemu_libretro_auto_threshold_changed, false) &&
-            use_vulkan) {
-            LRLOG_INFO("[xemu] Upscaling Threshold Auto found new bloom "
-                       "targets: rebuilding render targets\n");
-            nv2a_set_surface_scale_factor(opt_surface_scale);
-        }
         if (qatomic_xchg(&scale_threshold_changed, false)) {
             LRLOG_INFO("[xemu] Upscaling Threshold %u: rebuilding render "
                        "targets\n",

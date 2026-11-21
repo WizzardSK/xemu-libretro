@@ -3285,22 +3285,6 @@ static void begin_draw(PGRAPHState *pg)
 
     if (pg->clearing) {
         end_render_pass(r);
-    } else if (pg->surface_scale_threshold == UINT_MAX &&
-               pg->surface_scale_base > 1 && r->color_binding) {
-        /* Upscaling Threshold Auto: bloom is drawn only from other render
-         * targets and without depth test (display.c decides per frame) */
-        SurfaceBinding *c = r->color_binding;
-        c->bloom_draws++;
-        if (!c->bloom_no) {
-            bool rt = false;
-            for (int i = 0; i < NV2A_MAX_TEXTURES; i++) {
-                rt |= (r->nn2d_tex[i] & 2) != 0;
-            }
-            if (!rt || (pgraph_reg_r(pg, NV_PGRAPH_CONTROL_0) &
-                        NV_PGRAPH_CONTROL_0_ZENABLE)) {
-                c->bloom_no = true;
-            }
-        }
     }
 
     bool must_bind_pipeline = r->pipeline_binding_changed;

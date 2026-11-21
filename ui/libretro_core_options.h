@@ -514,12 +514,11 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_scale_threshold",
         "Upscaling Threshold",
         NULL,
-        "With an Internal Resolution Scale above 1x, render targets whose larger side is at or below this size are drawn at 1x. Small buffers such as bloom, glow or reflection passes then match the original look instead of turning into sharp, blocky artifacts. Auto: render targets recognised as bloom (smaller than the game's frame, drawn only from other render targets and without depth test) are drawn at 1x; it takes effect a moment after they first appear. Vulkan only. Changing it rebuilds the render targets.",
+        "With an Internal Resolution Scale above 1x, render targets whose larger side is at or below this size are drawn at 1x. Small buffers such as bloom, glow or reflection passes then match the original look instead of turning into sharp, blocky artifacts. Vulkan only. Changing it rebuilds the render targets.",
         NULL,
         "video",
         {
             { "0",   "OFF" },
-            { "auto", "Auto" },
             { "16",  "16" },
             { "32",  "32" },
             { "64",  "64" },
@@ -533,6 +532,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "448", "448" },
             { "512", "512" },
             { "640", "640" },
+            { "720", "720" },
             { NULL, NULL },
         },
         "0"

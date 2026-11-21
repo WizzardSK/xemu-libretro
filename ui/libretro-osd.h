@@ -33,10 +33,6 @@ extern unsigned int xemu_libretro_osd_guest_fps100;
  * work (not for a flip's vblank or for reports); the third line */
 extern unsigned int xemu_libretro_osd_idle100;
 
-/* The frame the game shows, its width << 16 | height (Vulkan display,
- * taken every 20 frames); the fourth line, as "640x480" */
-extern unsigned int xemu_libretro_osd_fb;
-
 /* One guest frame's render time, in microseconds: from the flip of the frame
  * before to this frame's FLIP_STALL, where it starts to wait for the vblank */
 void xemu_libretro_osd_frame(int64_t render_us);
@@ -65,7 +61,6 @@ static inline const uint8_t *xemu_libretro_osd_glyph(char c)
     static const uint8_t letter_n[5] = { 5, 7, 7, 5, 5 };
     static const uint8_t letter_v[5] = { 5, 5, 5, 5, 2 };
     static const uint8_t percent[5] = { 5, 1, 2, 4, 5 };
-    static const uint8_t letter_x[5] = { 0, 5, 2, 5, 0 };
     switch (c) {
     case ':': return colon;
     case '%': return percent;
@@ -81,7 +76,6 @@ static inline const uint8_t *xemu_libretro_osd_glyph(char c)
     case 'P': return letter_p;
     case 'S': return letter_s;
     case 'U': return letter_u;
-    case 'x': return letter_x;
     }
     static const uint8_t digits[10][5] = {
         { 7, 5, 5, 5, 7 }, { 2, 6, 2, 2, 7 }, { 7, 1, 7, 4, 7 },
@@ -114,9 +108,7 @@ static inline void xemu_libretro_osd_draw(int height, int pass,
         __atomic_load_n(&xemu_libretro_osd_guest_fps100, __ATOMIC_RELAXED);
     const unsigned int idle100 =
         __atomic_load_n(&xemu_libretro_osd_idle100, __ATOMIC_RELAXED);
-    const unsigned int fb =
-        __atomic_load_n(&xemu_libretro_osd_fb, __ATOMIC_RELAXED);
-    char buf[4][24];
+    char buf[3][24];
     /* FPS: the game's flips per second (standalone xemu's FPS); GPU: the
      * rate its render time allows (standalone's MSPF) */
     snprintf(buf[0], sizeof(buf[0]), "FPS: %u.%02u", guest100 / 100,
@@ -125,12 +117,10 @@ static inline void xemu_libretro_osd_draw(int height, int pass,
              fps100 % 100);
     snprintf(buf[2], sizeof(buf[2]), "NV2A IDLE: %u.%u%%", idle100 / 100,
              idle100 % 100 / 10);
-    const int lines = fb ? 4 : 3;
-    snprintf(buf[3], sizeof(buf[3]), "%ux%u", fb >> 16, fb & 0xffff);
     int s = height / 200;
     s = s < 2 ? 2 : (s > 10 ? 10 : s);
     const int o = s / 3 > 0 ? s / 3 : 1;
-    for (int line = 0; line < lines; line++) {
+    for (int line = 0; line < 3; line++) {
     const char *text = buf[line];
     int x = 2 * s;
     const int y = 2 * s + line * 7 * s;

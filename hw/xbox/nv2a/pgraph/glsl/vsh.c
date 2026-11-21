@@ -388,6 +388,16 @@ MString *pgraph_glsl_gen_vsh(const VshState *state, GenVshGlslOptions opts)
         // by truncating (not flooring).
         "vec2 roundScreenCoords(vec2 pos) {\n"
         "  return trunc(pos * 16.0f) / 16.0f;\n"
+        "}\n"
+        // Above 1x: a vertex exactly on a half pixel is one the game moved by
+        // D3D's half-pixel offset (screen-aligned quads: UI, post-process
+        // passes, render-target copies). It is moved as Subpixel Offset
+        // Scaling moves the whole picture, so its edges and texture reads
+        // line up as at 1x; other vertices (3D geometry) stay where they are.
+        "vec2 halfPixelShift(vec2 pos) {\n"
+        "  if (pointScale <= 1.0) return pos;\n"
+        "  vec2 d = vec2((0.5 * (pointScale - 1.0) + 0.25) / pointScale);\n"
+        "  return pos - mix(vec2(0.0), d, equal(fract(pos), vec2(0.5)));\n"
         "}\n");
 
     pgraph_glsl_get_vtx_header(header, opts.vulkan || opts.locations,

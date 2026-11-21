@@ -272,6 +272,33 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        "Upscaling Threshold",
+        NULL,
+        "With an Internal Resolution Scale above 1x, render targets whose larger side is at or below this size are drawn at 1x. Small buffers such as bloom, glow or reflection passes then match the original look instead of turning into sharp, blocky artifacts. Vulkan only. Changing it rebuilds the render targets.",
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -507,6 +534,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+        "0"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {

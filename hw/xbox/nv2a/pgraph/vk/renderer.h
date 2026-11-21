@@ -158,6 +158,9 @@ typedef struct SurfaceBinding {
     /* Guest CPU reads of this surface's RAM; consumed by the eviction
      * dead-writeback predicate (pgraph_writeback_dead). */
     unsigned int cpu_reads;
+    /* this target's resolution scale: the internal resolution, or 1 below
+     * the Upscaling Threshold */
+    unsigned int scale;
     /* Lazy writeback: eviction writeback owed, run only if a texture
      * load, CPU access or savevm reads that RAM (image kept meanwhile). */
     bool writeback_owed;

@@ -335,7 +335,23 @@ typedef struct PGRAPHState {
     } renderer_switch_phase;
     QemuEvent renderer_switch_complete;
 
+    /* The scale of the render target being drawn (Vulkan: the bound
+     * target's own scale, see surface_scale_base) */
     unsigned int surface_scale_factor;
+    /* Vulkan: the configured internal resolution, and the size up to which
+     * a render target (its larger side) is drawn at 1x instead (0 = off) */
+    unsigned int surface_scale_base;
+    unsigned int surface_scale_threshold;
+    /* Vulkan, overlay: the larger side of the frame last shown (0 =
+     * none yet) */
+    unsigned int display_fb_size, display_fb_w, display_fb_h;
+    /* ... and the frame the game draws before it is scaled to that one:
+     * the largest render target sampled as a texture while drawing into
+     * the shown frame (R: Racing Evolution draws 512x448 and scales it to
+     * 640x480), its width << 16 | height; scene_src_frame collects it over
+     * the current frame, scene_src_age counts frames without one */
+    hwaddr display_fb_addr;
+    unsigned int scene_src, scene_src_frame, scene_src_age;
     uint8_t *scale_buf;
 
     PGRAPHWritebackState writeback;

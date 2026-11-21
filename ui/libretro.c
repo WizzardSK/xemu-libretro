@@ -267,6 +267,7 @@ static void nv2a_totals_dump(const char *path)
 unsigned int xemu_libretro_osd_fps100;
 unsigned int xemu_libretro_osd_guest_fps100;
 unsigned int xemu_libretro_osd_idle100;
+unsigned int xemu_libretro_osd_fb;
 /* hw/xbox/nv2a/pfifo.c: the PFIFO thread's waits for work while on */
 extern bool xemu_lr_nv2a_idle_track;
 extern int64_t xemu_lr_nv2a_idle_ns;
@@ -1427,6 +1428,12 @@ static bool opt_overscan_crop = true; /* Auto */
 int xemu_libretro_overscan_crop;
 /* Subpixel Offset Scaling, read by both renderers when they draw */
 int xemu_libretro_subpixel_offset;
+/* Upscaling Threshold: render targets up to this size drawn at 1x (Vulkan,
+ * pgraph_vk_reload_surface_scale_factor) */
+unsigned int xemu_libretro_scale_threshold;
+/* set from the frontend thread, applied by the emulation loop, which holds
+ * the BQL that nv2a_set_surface_scale_factor lets go of */
+static bool scale_threshold_changed;
 
 /* The running title's ID and the dashboard's video settings, as the guest
  * has them now: read on the emulation thread, which holds the BQL the
@@ -1738,6 +1745,25 @@ static void update_variables(void)
     qatomic_set(&xemu_libretro_subpixel_offset,
                 environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
                 var.value && !strcmp(var.value, "on"));
+
+    var.key = "xemu_scale_threshold";
+    var.value = NULL;
+    {
+        unsigned int thr = 0;
+        if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
+            var.value) {
+            thr = (unsigned int)atoi(var.value);
+        }
+        if (thr != qatomic_read(&xemu_libretro_scale_threshold)) {
+            qatomic_set(&xemu_libretro_scale_threshold, thr);
+            /* running: rebuild the render targets with the new sizes, as a
+             * change of the internal resolution does (emulation loop) */
+            if (game_loaded && use_vulkan) {
+                qatomic_set(&scale_threshold_changed, true);
+            }
+        }
+    }
+
 
     var.key = "xemu_hdd_trim";
     var.value = NULL;
@@ -2256,6 +2282,12 @@ static void *emu_thread_func(void *opaque)
 
         main_loop_wait(false);
         rescale_after_start();
+        if (qatomic_xchg(&scale_threshold_changed, false)) {
+            LRLOG_INFO("[xemu] Upscaling Threshold %u: rebuilding render "
+                       "targets\n",
+                       qatomic_read(&xemu_libretro_scale_threshold));
+            nv2a_set_surface_scale_factor(opt_surface_scale);
+        }
 
         /* Check for snapshot requests from RetroArch thread */
         if (snapshot_request != SNAPSHOT_NONE) {

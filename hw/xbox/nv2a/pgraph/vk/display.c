@@ -1039,7 +1039,7 @@ static void update_uniforms(PGRAPHState *pg, SurfaceBinding *surface)
          * overlay's FMVs came out upside down (Forza Motorsport, KOTOR, GTA
          * SA; NNshi, XieTieqiang #2) */
         {
-            float z = 1.0f / pg->surface_scale_factor;
+            float z = 1.0f / surface->scale;
             float flip_y = r->display.height * z - pvideo->out_y -
                            pvideo->out_height;
             uniform2f(l, uniform_index(l, "pvideo_in_pos"), pvideo->in_s / 16.f,
@@ -1055,7 +1055,7 @@ static void update_uniforms(PGRAPHState *pg, SurfaceBinding *surface)
         uniform4f(l, uniform_index(l, "pvideo_pos"), pvideo->out_x,
                   pvideo->out_y, pvideo->out_width, pvideo->out_height);
         uniform4f(l, uniform_index(l, "pvideo_scale"), pvideo->scale_x,
-                  pvideo->scale_y, 1.0f / pg->surface_scale_factor, 1.0);
+                  pvideo->scale_y, 1.0f / surface->scale, 1.0);
 #endif
     }
 }
@@ -1615,6 +1615,37 @@ void pgraph_vk_render_display(PGRAPHState *pg)
         !surface->height) {
         return;
     }
+    /* for the overlay's fourth line: the shown frame, and the game's frame
+     * scaled into it this frame (kept 30 frames without one) */
+    pg->display_fb_size = MAX(surface->width, surface->height);
+    pg->display_fb_addr = surface->vram_addr;
+    pg->display_fb_w = surface->width;
+    pg->display_fb_h = surface->height;
+    if (pg->scene_src_frame) {
+        pg->scene_src = pg->scene_src_frame;
+        pg->scene_src_frame = 0;
+        pg->scene_src_age = 0;
+    } else if (pg->scene_src && ++pg->scene_src_age > 30) {
+        pg->scene_src = 0;
+    }
+#ifdef LIBRETRO
+    {
+        /* the overlay's fourth line, every 20 frames */
+        extern unsigned int xemu_libretro_osd_fb;
+        static unsigned int n;
+        if (n++ % 20 == 0) {
+            /* the game's own frame when it scales one into the shown
+             * frame, else the shown frame */
+            unsigned int src = pg->scene_src;
+            bool big = src && (src >> 16) * 4 > surface->width * 3 &&
+                       (src & 0xffff) * 4 > surface->height * 3;
+            __atomic_store_n(&xemu_libretro_osd_fb,
+                             big ? src :
+                                 surface->width << 16 | surface->height,
+                             __ATOMIC_RELAXED);
+        }
+    }
+#endif
 
     unsigned int width = 0, height = 0;
     d->vga.get_resolution(&d->vga, (int *)&width, (int *)&height);
@@ -1631,7 +1662,8 @@ void pgraph_vk_render_display(PGRAPHState *pg)
     if (width > surface->width)   width  = surface->width;
     if (height > surface->height) height = surface->height;
 
-    pgraph_apply_scaling_factor(pg, &width, &height);
+    width *= surface->scale;
+    height *= surface->scale;
 
     PGRAPHVkDisplayState *disp = &r->display;
     if (!disp->image || disp->width != width || disp->height != height) {

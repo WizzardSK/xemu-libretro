@@ -542,7 +542,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_2d_upscaling",
         "2D Elements Upscaling",
         NULL,
-        "With an Internal Resolution Scale above 1x, how 2D elements such as menus, HUD and loading screens are enlarged. Bilinear keeps the game's own texture filter, which looks soft at higher resolutions. Nearest Neighbor keeps their pixels sharp. It is a guess at what is 2D (drawn without depth test, from a texture without mipmaps), so some 3D surfaces may turn blocky too. Vulkan only.",
+        "With an Internal Resolution Scale above 1x, how 2D elements such as menus, HUD and loading screens are enlarged. Bilinear keeps the game's own texture filter, which looks soft at higher resolutions. Nearest Neighbor keeps their pixels sharp. It is a guess at what is 2D (a blended draw from a texture without mipmaps that is not a render target, without depth test or facing the screen), so some 3D surfaces may turn blocky too. Vulkan only.",
         NULL,
         "video",
         {
@@ -551,58 +551,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { NULL, NULL },
         },
         "bilinear"
-    },
-    /* Test toggles of the 2D Elements Upscaling heuristic, for this test
-     * branch only (NNshi) */
-    {
-        "xemu_2d_rule_rt",
-        "2D Heuristic: Render Targets",
-        NULL,
-        "Test option. With Nearest Neighbor, whether a render target drawn as a texture (a game's frame scaled into the shown one) can count as 2D.",
-        NULL,
-        "video",
-        { { "on", "Included" }, { "off", "Excluded" }, { NULL, NULL } },
-        "on"
-    },
-    {
-        "xemu_2d_rule_mip",
-        "2D Heuristic: Mipmapped Textures",
-        NULL,
-        "Test option. With Nearest Neighbor, whether textures with mipmaps can count as 2D.",
-        NULL,
-        "video",
-        { { "on", "Excluded" }, { "off", "Included" }, { NULL, NULL } },
-        "on"
-    },
-    {
-        "xemu_2d_rule_depth",
-        "2D Heuristic: Depth-Tested Draws",
-        NULL,
-        "Test option. With Nearest Neighbor, whether draws with the depth test on can count as 2D. Only Flat: only triangles with the same depth at all three corners (facing the screen), as UI drawn at a fixed depth is; 3D surfaces at an angle are left out.",
-        NULL,
-        "video",
-        { { "on", "Excluded" }, { "off", "Included" }, { "flat", "Only Flat" }, { NULL, NULL } },
-        "on"
-    },
-    {
-        "xemu_2d_rule_blend",
-        "2D Heuristic: Blending",
-        NULL,
-        "Test option. With Nearest Neighbor, whether only draws with blending on count as 2D (UI is usually blended, skies usually are not).",
-        NULL,
-        "video",
-        { { "off", "Not Required" }, { "on", "Required" }, { NULL, NULL } },
-        "off"
-    },
-    {
-        "xemu_2d_rule_align",
-        "2D Heuristic: 1:1 Texels Only",
-        NULL,
-        "Test option. With Nearest Neighbor, only pixels where the texture is drawn unrotated at one texel per pixel of the game's resolution count as 2D. UI is usually drawn that way; skies, suns and ground textures are not.",
-        NULL,
-        "video",
-        { { "off", "OFF" }, { "on", "ON" }, { NULL, NULL } },
-        "off"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {

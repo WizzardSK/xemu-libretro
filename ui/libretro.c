@@ -1433,9 +1433,6 @@ int xemu_libretro_subpixel_offset;
 unsigned int xemu_libretro_scale_threshold;
 /* 2D Elements Upscaling: Nearest Neighbor (Vulkan, texture.c) */
 int xemu_libretro_2d_nearest;
-/* its heuristic's test toggles (texture.c): bit 0 render targets, 1 no
- * mipmaps, 2 depth test off, 3 blending */
-int xemu_libretro_2d_rules = 7;
 /* set from the frontend thread, applied by the emulation loop, which holds
  * the BQL that nv2a_set_surface_scale_factor lets go of */
 static bool scale_threshold_changed;
@@ -1780,34 +1777,6 @@ static void update_variables(void)
                 environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
                 var.value && !strcmp(var.value, "nearest"));
 
-    {
-        /* bits: 0 render targets, 1 mipmapped excluded, 2 depth-tested
-         * excluded, 3 blending required, 4 depth-tested only when flat
-         * ("flat" of xemu_2d_rule_depth), 5 aligned 1:1 only */
-        static const char *const keys[6] = {
-            "xemu_2d_rule_rt", "xemu_2d_rule_mip", "xemu_2d_rule_depth",
-            "xemu_2d_rule_blend", NULL, "xemu_2d_rule_align",
-        };
-        static const int defaults = 7;
-        int rules = 0;
-        for (int i = 0; i < 6; i++) {
-            if (!keys[i]) {
-                continue;
-            }
-            var.key = keys[i];
-            var.value = NULL;
-            bool on = (defaults >> i) & 1;
-            if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
-                var.value) {
-                on = !strcmp(var.value, "on");
-                if (i == 2 && !strcmp(var.value, "flat")) {
-                    rules |= 16;
-                }
-            }
-            rules |= on << i;
-        }
-        qatomic_set(&xemu_libretro_2d_rules, rules);
-    }
 
     var.key = "xemu_hdd_trim";
     var.value = NULL;

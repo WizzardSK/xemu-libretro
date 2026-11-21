@@ -828,54 +828,36 @@ static bool vk_apply_uniform_updates(PGRAPHVkState *r,
 }
 
 #ifdef LIBRETRO
-/* 2D Elements Upscaling: Nearest Neighbor, and the test toggles of its
- * heuristic (ui/libretro.c): bit 0 render targets count, bit 1 mipmapped
- * textures excluded, bit 2 depth-tested draws excluded, bit 3 blending
- * required, bit 4 depth-tested draws count only when flat, bit 5 only
- * axis-aligned 1:1 texel mapping counts */
+/* 2D Elements Upscaling: Nearest Neighbor (ui/libretro.c) */
 extern int xemu_libretro_2d_nearest;
-extern int xemu_libretro_2d_rules;
 #else
 static int xemu_libretro_2d_nearest;
-static int xemu_libretro_2d_rules = 7;
 #endif
 
-/* nn2dCtl for this draw: the stages whose texture and draw state pass the
- * CPU-side rules in bits 0-3, the per-pixel rules in bits 4-5 */
+/* nn2dCtl for this draw (glsl/psh.c): bit i = texture stage i counts as 2D,
+ * bit 4 = only where the triangle is flat. What counts (NNshi): a texture
+ * that is not a render target and has no mipmaps, drawn with blending on,
+ * and either without depth test or from a triangle with one depth at all
+ * three corners. With Bilinear this returns at the first test. */
 static uint32_t nn2d_ctl(PGRAPHState *pg)
 {
     PGRAPHVkState *r = pg->vk_renderer_state;
-    int rules = qatomic_read(&xemu_libretro_2d_rules);
 
     if (!qatomic_read(&xemu_libretro_2d_nearest) ||
-        pg->surface_scale_factor <= 1) {
-        return 0;
-    }
-    bool depth = pgraph_reg_r(pg, NV_PGRAPH_CONTROL_0) &
-                 NV_PGRAPH_CONTROL_0_ZENABLE;
-    if (depth && (rules & 4)) {
-        return 0;
-    }
-    if ((rules & 8) &&
+        pg->surface_scale_factor <= 1 ||
         !(pgraph_reg_r(pg, NV_PGRAPH_BLEND) & NV_PGRAPH_BLEND_EN)) {
         return 0;
     }
     uint32_t ctl = 0;
     for (int i = 0; i < 4; i++) {
-        uint8_t f = r->nn2d_tex[i];
-        if ((f & 1) && (!(f & 2) || (rules & 1)) &&
-            (!(f & 4) || !(rules & 2))) {
+        /* eligible (bit 0), not a render target (bit 1), no mipmaps (bit 2) */
+        if (r->nn2d_tex[i] == 1) {
             ctl |= 1u << i;
         }
     }
-    if (!ctl) {
-        return 0;
-    }
-    if (depth && (rules & 16)) {
+    if (ctl && (pgraph_reg_r(pg, NV_PGRAPH_CONTROL_0) &
+                NV_PGRAPH_CONTROL_0_ZENABLE)) {
         ctl |= 16;
-    }
-    if (rules & 32) {
-        ctl |= 32;
     }
     return ctl;
 }

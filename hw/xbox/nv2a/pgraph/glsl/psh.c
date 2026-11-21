@@ -1603,11 +1603,9 @@ static MString* psh_convert(struct PixelShader *ps)
                              * bit i = the stage's draw passed the CPU-side
                              * rules; the coordinate then snaps to the centre
                              * of a guest texel where the texture is
-                             * magnified, and where the per-pixel rules hold:
-                             * bit 4 = the triangle must have one depth at all
-                             * three corners (screen-parallel), bit 5 = the
-                             * texture must map axis-aligned at about one
-                             * texel per guest pixel. The condition is
+                             * magnified, and with bit 4 only where the
+                             * triangle has one depth at all three corners
+                             * (screen-parallel). The condition is
                              * uniform, so the derivatives are defined. */
                             mstring_append_fmt(
                                 vars,
@@ -1624,19 +1622,13 @@ static MString* psh_convert(struct PixelShader *ps)
                                 " vtxPos0.w == vtxPos2.w;\n"
                                 "  }\n"
                                 "  vec2 nnG = nnSz / nn2dTexScale[%d];\n"
-                                "  if ((nn2dCtl & 32u) != 0u) {\n"
-                                "    vec2 gs = vec2(surfaceScale);\n"
-                                "    vec2 ex = dFdx(tc%d) * nnG * gs.x, ey = dFdy(tc%d) * nnG * gs.y;\n"
-                                "    nnOk = nnOk && abs(ex.y) < 0.02 && abs(ey.x) < 0.02 &&"
-                                " abs(abs(ex.x) - 1.0) < 0.1 && abs(abs(ey.y) - 1.0) < 0.1;\n"
-                                "  }\n"
                                 "  if (nnOk) {\n"
                                 "    tc%d = (floor(tc%d * nnG) + 0.5) / nnG;\n"
                                 "  }\n"
                                 "}\n"
                                 "vec4 t%d = texture(texSamp%d, tc%d);\n",
                                 i, tex_remap, i, i, i, i, 1 << i, i, i, i,
-                                i, i, i, i, i, i, i, i);
+                                i, i, i, i, i, i);
                         }
                     } else if (ps->state->dim_tex[i] == 3) {
                         mstring_append_fmt(vars, "vec4 t%d = textureProj(texSamp%d, vec4(pT%d.xy, 0.0, pT%d.w));\n",

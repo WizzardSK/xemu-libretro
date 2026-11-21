@@ -2395,7 +2395,9 @@ static bool write_bundled_hdd(const char *path)
  * other (one language or another) are deleted from the file to choose.
  * Bundled with them: the 16:9 database of XboxGraphicalPatches' OgXHD tool
  * (wdb.dat), one "<game> (16-9 Widescreen, OgXHD).wdb" per title ID, listed
- * for that title ID in any region and applied as OgXHD does (xbe_apply_wdb). */
+ * for that title ID or the game's name in any region, unless a 16:9 patch is
+ * listed already (widescreen_listed), and applied as OgXHD does
+ * (xbe_apply_wdb). */
 
 #define XISO_SECTOR 2048
 #define XBE_PATCH_CLUSTER 65536
@@ -2630,6 +2632,35 @@ static bool patch_is_for(const char *file, uint32_t title_id, const char *title_
     return false;
 }
 
+/* xdb has a game of the name in this patch file's name */
+static bool xdb_knows(const char *file)
+{
+    g_autofree char *game = patch_game(file);
+    g_autofree char *norm = patch_name_norm(game);
+    for (size_t i = 0; i < ARRAY_SIZE(libretro_xdb_titles); i++) {
+        if (!strcmp(libretro_xdb_titles[i].name, norm)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/* A 16:9 patch among those listed: a bundled one from the 16-9 Widescreen
+ * folder or OgXHD, or a file of the user's named as one */
+static bool widescreen_listed(GPtrArray *files)
+{
+    for (guint j = 0; j < files->len; j++) {
+        const char *f = files->pdata[j];
+        const LibretroBundledPatch *b = bundled_patch(f);
+        g_autofree char *lower = g_ascii_strdown(f, -1);
+        if ((b && b->widescreen) || strstr(lower, "widescreen") ||
+            strstr(lower, "16-9") || strstr(lower, "16x9") || strstr(lower, "16:9")) {
+            return true;
+        }
+    }
+    return false;
+}
+
 /* g_ptr_array_sort hands pointers to the elements */
 static gint patch_name_cmp(gconstpointer a, gconstpointer b)
 {
@@ -2819,10 +2850,19 @@ static void patch_manager_load(const char *image, bool chihiro)
             for (guint j = 0; j < patch_files->len && !have; j++) {
                 have = !g_ascii_strcasecmp(patch_files->pdata[j], bn);
             }
-            /* a .wdb by its title ID: its bytes to find check the release */
+            /* a .wdb (OgXHD) by the game's name, as the others, or by its
+             * title ID when xdb does not know its name: wdb.dat has wrong
+             * IDs (TimeSplitters 2 45530009, the North American XBE
+             * 4553000A; Blood Omen 2 04553006; The Matrix: Path of Neo and
+             * Medal of Honor: Frontline swapped). Its bytes to find check
+             * the release. Left out when a 16:9 patch is listed already,
+             * which does the same (JSRF, SpongeBob, Conker; NNshi) */
             const bool wdb = g_str_has_suffix(lower, ".wdb");
             const bool listed =
-                wdb ? libretro_bundled_patches[i].title_id == title_id
+                wdb ? (patch_is_for(bn, title_id, title_norm) ||
+                       (libretro_bundled_patches[i].title_id == title_id &&
+                        !xdb_knows(bn))) &&
+                      !widescreen_listed(patch_files)
                     : ((g_str_has_suffix(lower, ".ips") && north_america) ||
                        g_str_has_suffix(lower, ".bps")) &&
                       !strstr(lower, "apply to") && patch_is_for(bn, title_id, title_norm);

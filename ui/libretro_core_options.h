@@ -299,6 +299,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "720", "720" },
             { NULL, NULL },
         },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -534,8 +536,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { NULL, NULL },
         },
         "auto"
-    },
-        "0"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {

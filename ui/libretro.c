@@ -267,6 +267,7 @@ static void nv2a_totals_dump(const char *path)
 unsigned int xemu_libretro_osd_fps100;
 unsigned int xemu_libretro_osd_guest_fps100;
 unsigned int xemu_libretro_osd_idle100;
+unsigned int xemu_libretro_osd_fb;
 /* hw/xbox/nv2a/pfifo.c: the PFIFO thread's waits for work while on */
 extern bool xemu_lr_nv2a_idle_track;
 extern int64_t xemu_lr_nv2a_idle_ns;

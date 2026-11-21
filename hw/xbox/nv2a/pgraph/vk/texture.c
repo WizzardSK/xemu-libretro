@@ -1897,6 +1897,21 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
         }
     }
 
+    /* The overlay's game frame: a render target drawn as a texture into the
+     * shown frame is the game's own frame before its final scaling */
+    {
+        PGRAPHVkState *rs = pg->vk_renderer_state;
+        if (surface_to_texture && surface->color && rs->color_binding &&
+            surface != rs->color_binding &&
+            rs->color_binding->vram_addr == pg->display_fb_addr) {
+            unsigned int a = surface->width * surface->height;
+            unsigned int f = pg->scene_src_frame;
+            if (a > (f >> 16) * (f & 0xffff)) {
+                pg->scene_src_frame = surface->width << 16 | surface->height;
+            }
+        }
+    }
+
     /* A cubemap whose six faces are live, compatible color surfaces takes
      * them by GPU copy. */
     if (!surface_to_texture && state.cubemap && state.levels == 1) {

@@ -1781,19 +1781,28 @@ static void update_variables(void)
                 var.value && !strcmp(var.value, "nearest"));
 
     {
-        static const char *const keys[4] = {
+        /* bits: 0 render targets, 1 mipmapped excluded, 2 depth-tested
+         * excluded, 3 blending required, 4 depth-tested only when flat
+         * ("flat" of xemu_2d_rule_depth), 5 aligned 1:1 only */
+        static const char *const keys[6] = {
             "xemu_2d_rule_rt", "xemu_2d_rule_mip", "xemu_2d_rule_depth",
-            "xemu_2d_rule_blend",
+            "xemu_2d_rule_blend", NULL, "xemu_2d_rule_align",
         };
         static const int defaults = 7;
         int rules = 0;
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
+            if (!keys[i]) {
+                continue;
+            }
             var.key = keys[i];
             var.value = NULL;
             bool on = (defaults >> i) & 1;
             if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
                 var.value) {
                 on = !strcmp(var.value, "on");
+                if (i == 2 && !strcmp(var.value, "flat")) {
+                    rules |= 16;
+                }
             }
             rules |= on << i;
         }

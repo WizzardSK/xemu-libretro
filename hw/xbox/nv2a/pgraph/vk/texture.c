@@ -1651,17 +1651,6 @@ static void sampler_cache_destroy(PGRAPHVkState *r)
     r->sampler_cache_n = 0;
 }
 
-#ifdef LIBRETRO
-/* 2D Elements Upscaling: Nearest Neighbor, and the test toggles of its
- * heuristic: bit 0 render targets count, bit 1 no mipmaps required, bit 2
- * depth test off required, bit 3 blending required (ui/libretro.c) */
-extern int xemu_libretro_2d_nearest;
-extern int xemu_libretro_2d_rules;
-#else
-static int xemu_libretro_2d_nearest;
-static int xemu_libretro_2d_rules = 7;
-#endif
-
 /* Resolve the unit's sampler for the texture just bound. Both exits of
  * create_texture must call it, the cache hit too, or the unit keeps the
  * sampler of the last texture created on it. */
@@ -1674,24 +1663,11 @@ static void resolve_unit_sampler(PGRAPHState *pg, int texture_idx,
 {
     PGRAPHVkState *r = pg->vk_renderer_state;
 
-    /* 2D Elements Upscaling, Nearest Neighbor: a heuristic for UI, menus
-     * and loading screens, magnified without the game's filter once the
-     * internal resolution is above 1x. Which draws count as 2D is for the
-     * testers to find out (NNshi), from four toggles: render targets drawn
-     * as textures count or not; the texture must have no mipmaps; the
-     * depth test must be off; blending must be on. */
-    int rules = qatomic_read(&xemu_libretro_2d_rules);
-    if (qatomic_read(&xemu_libretro_2d_nearest) &&
-        pg->surface_scale_factor > 1 && !state->cubemap &&
-        (!render_target || (rules & 1)) &&
-        (!(rules & 2) || state->levels <= 1) &&
-        (!(rules & 4) || !(pgraph_reg_r(pg, NV_PGRAPH_CONTROL_0) &
-                           NV_PGRAPH_CONTROL_0_ZENABLE)) &&
-        (!(rules & 8) || (pgraph_reg_r(pg, NV_PGRAPH_BLEND) &
-                          NV_PGRAPH_BLEND_EN))) {
-        /* magnification by a box filter: nearest */
-        SET_MASK(filter, NV_PGRAPH_TEXFILTER0_MAG, 1);
-    }
+    /* 2D Elements Upscaling: the texture's facts for the 2D rules, which
+     * are applied per draw in the shader (shaders.c, glsl/psh.c) */
+    r->nn2d_tex[texture_idx] = (state->cubemap ? 0 : 1) |
+                               (render_target ? 2 : 0) |
+                               (state->levels > 1 ? 4 : 0);
 
     /* Sampler state (filter, address, border, anisotropy) stays out of the
      * image key, as on GL: one image serves every sampler it is read with. */

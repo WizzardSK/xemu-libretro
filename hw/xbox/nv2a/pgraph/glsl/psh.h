@@ -113,6 +113,8 @@ bool pgraph_glsl_psh_canonicalize_dynamic(PshState *state);
     DECL(S, depthFactor, float, 1)  \
     DECL(S, depthOffset, float, 1)  \
     DECL(S, fogColor, vec4, 1)      \
+    DECL(S, nn2dCtl, uint, 1)       \
+    DECL(S, nn2dTexScale, float, 4) \
     DECL(S, surfaceScale, ivec2, 1) \
     DECL(S, texScale, float, 4)     \
     DECL(S, twoSideSel, uint, 1)

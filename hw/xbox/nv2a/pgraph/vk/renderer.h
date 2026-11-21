@@ -682,6 +682,10 @@ typedef struct PGRAPHVkState {
     /* Split samplers: sampler state leaves the image cache key; each
      * unit's sampler is resolved at bind time. */
     VkSampler texture_unit_sampler[NV2A_MAX_TEXTURES];
+    /* 2D Elements Upscaling: the bound texture's part of the 2D rules,
+     * bit 0 eligible (not a cubemap), bit 1 render target, bit 2
+     * mipmapped (resolve_unit_sampler) */
+    uint8_t nn2d_tex[NV2A_MAX_TEXTURES];
     /* The renderer's samplers: a handful of distinct sampler states per
      * game, tiny objects, never evicted (destroyed at finalize). */
     struct {

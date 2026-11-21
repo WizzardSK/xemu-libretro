@@ -238,6 +238,108 @@ static void nv2a_totals_reset(void)
     nv2a_totals_start_us = g_get_monotonic_time();
     nv2a_s2t_miss_reset();
 }
+/* Frame pacing while the profiler is on (NNshi, Skip TLB microstutter): the
+ * time of every guest flip (PFIFO thread) and, for every host frame
+ * (retro_run), its time and how many new guest frames it showed. One store
+ * each into arrays made once; written to the profile's file at the end. */
+#define PACE_MAX 65536
+static int64_t *pace_flip_us, *pace_host_us;
+static uint8_t *pace_host_new;
+static uint32_t pace_flip_n, pace_host_n;
+static int64_t pace_start_us;
+static void pace_reset(void)
+{
+    if (!pace_flip_us) {
+        pace_flip_us = g_new(int64_t, PACE_MAX);
+        pace_host_us = g_new(int64_t, PACE_MAX);
+        pace_host_new = g_new(uint8_t, PACE_MAX);
+    }
+    __atomic_store_n(&pace_flip_n, 0, __ATOMIC_RELAXED);
+    pace_host_n = 0;
+    pace_start_us = g_get_monotonic_time();
+}
+static void pace_flip(int64_t now_us)
+{
+    const uint32_t i = __atomic_load_n(&pace_flip_n, __ATOMIC_RELAXED);
+    if (pace_flip_us && i < PACE_MAX) {
+        pace_flip_us[i] = now_us;
+        __atomic_store_n(&pace_flip_n, i + 1, __ATOMIC_RELEASE);
+    }
+}
+static void pace_host(int64_t now_us, uint64_t new_frames)
+{
+    if (pace_host_us && pace_host_n < PACE_MAX) {
+        pace_host_us[pace_host_n] = now_us;
+        pace_host_new[pace_host_n] = new_frames > 255 ? 255 : (uint8_t)new_frames;
+        pace_host_n++;
+    }
+}
+static void pace_hist(FILE *f, const char *what, const int64_t *t, uint32_t n)
+{
+    unsigned int hist[52] = { 0 };
+    int64_t gap[10] = { 0 }, at[10] = { 0 };
+    for (uint32_t i = 1; i < n; i++) {
+        const int64_t d = t[i] - t[i - 1];
+        hist[d >= 50000 ? 51 : d / 1000]++;
+        for (int k = 0; k < 10; k++) {
+            if (d > gap[k]) {
+                memmove(gap + k + 1, gap + k, (9 - k) * sizeof(*gap));
+                memmove(at + k + 1, at + k, (9 - k) * sizeof(*at));
+                gap[k] = d;
+                at[k] = t[i - 1] - pace_start_us;
+                break;
+            }
+        }
+    }
+    fprintf(f, "# %s: %u, interval histogram (ms: count)\n", what, n);
+    for (int b = 0; b < 52; b++) {
+        if (hist[b]) {
+            char range[16];
+            snprintf(range, sizeof(range), b == 51 ? ">=50" : "%d-%d", b, b + 1);
+            fprintf(f, "%s %s %u\n", what, range, hist[b]);
+        }
+    }
+    fprintf(f, "# %s: longest intervals (ms, at s into the run)\n", what);
+    for (int k = 0; k < 10 && gap[k]; k++) {
+        fprintf(f, "%s gap %.2f at %.3f\n", what, gap[k] / 1000.0, at[k] / 1e6);
+    }
+}
+static void pace_dump(const char *path)
+{
+    if (!path || !*path || !pace_flip_us) {
+        return;
+    }
+    FILE *f = g_fopen(path, "a");
+    if (!f) {
+        return;
+    }
+    const uint32_t nf = __atomic_load_n(&pace_flip_n, __ATOMIC_ACQUIRE);
+    const uint32_t nh = pace_host_n;
+    pace_hist(f, "flip", pace_flip_us, nf);
+    pace_hist(f, "host", pace_host_us, nh);
+    unsigned int by_new[4] = { 0 }, judder = 0;
+    for (uint32_t i = 0; i < nh; i++) {
+        by_new[MIN(pace_host_new[i], 3)]++;
+        /* a host frame with nothing new next to one with two or more */
+        if (i && ((pace_host_new[i] == 0 && pace_host_new[i - 1] >= 2) ||
+                  (pace_host_new[i] >= 2 && pace_host_new[i - 1] == 0))) {
+            judder++;
+        }
+    }
+    fprintf(f, "# host frames by new guest frames shown: 0: %u, 1: %u, 2: %u, 3+: %u; "
+            "0 next to 2+: %u\n", by_new[0], by_new[1], by_new[2], by_new[3], judder);
+    /* every frame, for plotting: us since the profiler came on */
+    fprintf(f, "# every guest flip: flip <us>\n");
+    for (uint32_t i = 0; i < nf; i++) {
+        fprintf(f, "flip %" PRId64 "\n", pace_flip_us[i] - pace_start_us);
+    }
+    fprintf(f, "# every host frame: host <us> <new guest frames>\n");
+    for (uint32_t i = 0; i < nh; i++) {
+        fprintf(f, "host %" PRId64 " %u\n", pace_host_us[i] - pace_start_us, pace_host_new[i]);
+    }
+    fclose(f);
+}
+
 /* Debug > Profiler: Renderer Counters */
 static bool opt_prof_counters;
 static void nv2a_totals_dump(const char *path)
@@ -304,6 +406,7 @@ void xemu_libretro_osd_frame(int64_t render_us)
     __atomic_add_fetch(&osd_run_render_us, render_us > 0 ? render_us : 0,
                        __ATOMIC_RELAXED);
     __atomic_store_n(&osd_run_last_ns, now_ns, __ATOMIC_RELAXED);
+    pace_flip(now_ns / 1000);
     if (now_ns > idle_start) {
         const int64_t idle = __atomic_load_n(&xemu_lr_nv2a_idle_ns, __ATOMIC_RELAXED);
         __atomic_store_n(&xemu_libretro_osd_idle100,
@@ -4235,6 +4338,7 @@ RETRO_API void retro_unload_game(void)
         prof_running = false;
         xemu_lr_prof_stop(prof_log, path, header);
         nv2a_totals_dump(path);
+        pace_dump(path);
     }
 
     if (emu_thread_running) {
@@ -4487,12 +4591,14 @@ RETRO_API void retro_run(void)
             prof_running = true;
             xemu_lr_prof_start();
             nv2a_totals_reset();
+            pace_reset();
         } else if (!on && prof_running) {
             g_autofree char *header = NULL;
             g_autofree char *path = prof_file(&header);
             prof_running = false;
             xemu_lr_prof_stop(prof_log, path, header);
             nv2a_totals_dump(path);
+            pace_dump(path);
         }
     }
 
@@ -4610,10 +4716,14 @@ RETRO_API void retro_run(void)
                 st_sync_max = MAX(st_sync_max, st_t);
             }
 
-            if (!vk_renderer_parked &&
+            const bool got = !vk_renderer_parked &&
                 nv2a_vk_libretro_get_frame(index, &image, &view, &format,
-                                           &frame_w, &frame_h, &count) &&
-                count != last_count) {
+                                           &frame_w, &frame_h, &count);
+            if (prof_running) {
+                pace_host(g_get_monotonic_time(),
+                          got && count > last_count ? count - last_count : 0);
+            }
+            if (got && count != last_count) {
                 last_count = count;
                 last_w = (unsigned)frame_w;
                 last_h = (unsigned)frame_h;

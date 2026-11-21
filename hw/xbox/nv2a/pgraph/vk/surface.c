@@ -87,19 +87,26 @@ void pgraph_vk_reload_surface_scale_factor(PGRAPHState *pg)
         qatomic_read(&xemu_libretro_scale_threshold);
 }
 
-/* The scale a new render target of this size gets: the internal
- * resolution, or 1x when its larger side is within the threshold. */
-static unsigned int scale_for_size(PGRAPHState *pg, unsigned int w,
-                                   unsigned int h)
+/* The scale a new render target gets: the internal resolution, or 1x when
+ * its larger side is within the threshold, or with Auto when it was
+ * recognised as bloom (display.c). */
+static unsigned int scale_for_size(PGRAPHState *pg, hwaddr addr,
+                                   unsigned int w, unsigned int h)
 {
     unsigned int t = pg->surface_scale_threshold;
-    if (t == UINT_MAX) {
-        /* Auto: below the game's frame, as display.c settled it (nothing
-         * until then) */
-        t = pg->auto_threshold;
+    if (pg->surface_scale_base <= 1 || !t) {
+        return pg->surface_scale_base;
     }
-    return (t && pg->surface_scale_base > 1 && MAX(w, h) <= t) ?
-               1 : pg->surface_scale_base;
+    if (t == UINT_MAX) {
+        for (unsigned int i = 0; i < pg->bloom_count; i++) {
+            if (pg->bloom[i].addr == addr && pg->bloom[i].w == w &&
+                pg->bloom[i].h == h) {
+                return 1;
+            }
+        }
+        return pg->surface_scale_base;
+    }
+    return MAX(w, h) <= t ? 1 : pg->surface_scale_base;
 }
 
 /* Draws, viewports, scissors, clears and the shader uniforms read
@@ -2498,7 +2505,7 @@ static void populate_surface_binding_target_sized(NV2AState *d, bool color,
     target->pitch = surface->pitch;
     /* a depth buffer is drawn with its colour target: it takes its scale */
     target->scale = (!color && r->color_binding) ? r->color_binding->scale :
-                    scale_for_size(pg, width, height);
+                    scale_for_size(pg, target->vram_addr, width, height);
     if (target->scale == 1 && pg->surface_scale_base > 1) {
         nv2a_surf_1x_note(target->vram_addr, width, height, color);
     }

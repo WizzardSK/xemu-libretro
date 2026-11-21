@@ -2287,6 +2287,7 @@ void pgraph_vk_bind_textures(NV2AState *d)
         if (!pgraph_is_texture_enabled(pg, i)) {
             r->texture_bindings[i] = &r->dummy_texture;
             r->texture_unit_sampler[i] = r->dummy_texture.sampler;
+            r->nn2d_tex[i] = 0;
             /* Cleared so a unit left off does not rerun this loop. */
             pg->texture_dirty[i] = false;
             continue;

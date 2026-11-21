@@ -161,6 +161,11 @@ typedef struct SurfaceBinding {
     /* this target's resolution scale: the internal resolution, or 1 below
      * the Upscaling Threshold */
     unsigned int scale;
+    /* Upscaling Threshold Auto, this frame: draws into this colour target,
+     * and whether one of them had a depth test or read no render target
+     * (then it is not bloom) */
+    unsigned int bloom_draws;
+    bool bloom_no;
     /* Lazy writeback: eviction writeback owed, run only if a texture
      * load, CPU access or savevm reads that RAM (image kept meanwhile). */
     bool writeback_owed;

@@ -1628,34 +1628,53 @@ void pgraph_vk_render_display(PGRAPHState *pg)
     } else if (pg->scene_src && ++pg->scene_src_age > 30) {
         pg->scene_src = 0;
     }
-    {
-        /* Auto: anything smaller than the game's frame (its larger side).
-         * That is the shown frame, or the frame the game draws and scales
-         * into it, when it is over three quarters of its size each way (R:
-         * Racing Evolution: 512x448 in a 640x480 frame, so 511; a
-         * half-size bloom buffer blended into the frame is not one). A new
-         * value has to hold for 60 frames, then the render targets are
-         * rebuilt for it (from the emulation loop, which holds the BQL) */
-        unsigned int fb = pg->display_fb_size, src = pg->scene_src;
-        if (src && (src >> 16) * 4 > surface->width * 3 &&
-            (src & 0xffff) * 4 > surface->height * 3) {
-            fb = MAX(src >> 16, src & 0xffff);
+    if (pg->surface_scale_threshold == UINT_MAX &&
+        pg->surface_scale_base > 1) {
+        /* Upscaling Threshold Auto: a colour target that was drawn into
+         * this frame only from other render targets and without depth test,
+         * and is smaller than the game's frame, is bloom (downsample and
+         * blur passes). It is drawn at 1x once the targets are rebuilt;
+         * new ones are collected for 30 frames first, then rebuilt from the
+         * emulation loop, which holds the BQL. The shown frame and a frame
+         * the game scales into it never count. */
+        unsigned int fw = surface->width, fh = surface->height;
+        unsigned int src = pg->scene_src;
+        if (src && (src >> 16) * 4 > fw * 3 && (src & 0xffff) * 4 > fh * 3) {
+            fw = src >> 16;
+            fh = src & 0xffff;
         }
-        unsigned int want = fb - 1;
-        if (want == pg->auto_threshold) {
-            pg->auto_candidate_frames = 0;
-        } else if (want != pg->auto_candidate) {
-            pg->auto_candidate = want;
-            pg->auto_candidate_frames = 1;
-        } else if (++pg->auto_candidate_frames >= 60) {
-            pg->auto_threshold = want;
-            pg->auto_candidate_frames = 0;
-#ifdef LIBRETRO
-            if (pg->surface_scale_threshold == UINT_MAX) {
-                extern bool xemu_libretro_auto_threshold_changed;
-                __atomic_store_n(&xemu_libretro_auto_threshold_changed, true,
-                                 __ATOMIC_RELAXED);
+        SurfaceBinding *s;
+        QTAILQ_FOREACH(s, &r->surfaces, entry) {
+            if (s->color && s->bloom_draws && !s->bloom_no && s->scale > 1 &&
+                s != surface && !(s->width >= fw && s->height >= fh) &&
+                (s->width << 16 | s->height) != src &&
+                pg->bloom_count < ARRAY_SIZE(pg->bloom)) {
+                unsigned int i;
+                for (i = 0; i < pg->bloom_count; i++) {
+                    if (pg->bloom[i].addr == s->vram_addr &&
+                        pg->bloom[i].w == s->width &&
+                        pg->bloom[i].h == s->height) {
+                        break;
+                    }
+                }
+                if (i == pg->bloom_count) {
+                    pg->bloom[i].addr = s->vram_addr;
+                    pg->bloom[i].w = s->width;
+                    pg->bloom[i].h = s->height;
+                    pg->bloom_count++;
+                    pg->bloom_new++;
+                }
             }
+            s->bloom_draws = 0;
+            s->bloom_no = false;
+        }
+        if (pg->bloom_new && ++pg->bloom_rebuild_age >= 30) {
+            pg->bloom_new = 0;
+            pg->bloom_rebuild_age = 0;
+#ifdef LIBRETRO
+            extern bool xemu_libretro_auto_threshold_changed;
+            __atomic_store_n(&xemu_libretro_auto_threshold_changed, true,
+                             __ATOMIC_RELAXED);
 #endif
         }
     }

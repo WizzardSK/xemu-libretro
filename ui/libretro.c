@@ -1757,7 +1757,7 @@ static void update_variables(void)
         unsigned int thr = 0;
         if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
             var.value) {
-            /* Auto: below the shown frame's size (surface.c) */
+            /* Auto: bloom targets at 1x (display.c, surface.c) */
             thr = !strcmp(var.value, "auto") ? UINT_MAX :
                                                (unsigned int)atoi(var.value);
         }
@@ -2297,8 +2297,8 @@ static void *emu_thread_func(void *opaque)
         rescale_after_start();
         if (qatomic_xchg(&xemu_libretro_auto_threshold_changed, false) &&
             use_vulkan) {
-            LRLOG_INFO("[xemu] Upscaling Threshold Auto settled on a new "
-                       "value: rebuilding render targets\n");
+            LRLOG_INFO("[xemu] Upscaling Threshold Auto found new bloom "
+                       "targets: rebuilding render targets\n");
             nv2a_set_surface_scale_factor(opt_surface_scale);
         }
         if (qatomic_xchg(&scale_threshold_changed, false)) {

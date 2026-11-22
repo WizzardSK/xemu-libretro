@@ -4146,8 +4146,11 @@ static void copy_remapped_attributes_to_inline_buffer(PGRAPHState *pg,
         return;
     }
 
+    /* remap_unaligned_attributes reserved the space at a 16-byte boundary,
+     * which the copy starts at; checked at 256 it failed whenever the
+     * staging buffer's end lay between the two (Driv3r, NNshi) */
     assert(pgraph_vk_buffer_has_space_for(pg, BUFFER_VERTEX_INLINE_STAGING,
-                                          remap.buffer_space_required, 256));
+                                          remap.buffer_space_required, 16));
 
     // FIXME: SIMD memcpy
     // FIXME: Caching

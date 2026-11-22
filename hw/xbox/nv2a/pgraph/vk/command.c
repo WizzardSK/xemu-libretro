@@ -91,6 +91,7 @@ void pgraph_vk_queue_submit(PGRAPHVkState *r, uint32_t count,
 #ifdef LIBRETRO
     xemu_libretro_vk_lock_queue();
 #endif
+    pgraph_vk_crumbs_submit(r, count, submits);
     VK_CHECK(vkQueueSubmit(r->queue, count, submits, fence));
 #ifdef LIBRETRO
     xemu_libretro_vk_unlock_queue();
@@ -198,6 +199,7 @@ void pgraph_vk_init_command_buffers(PGRAPHState *pg)
 
     create_command_pool(pg);
     create_command_buffers(pg);
+    pgraph_vk_crumbs_init(r);
 
     /* Frame GPU timestamps (draw.c pgraph_vk_frame_gpu_*), host-reset. */
     r->frame_gpu.pool = VK_NULL_HANDLE;
@@ -250,6 +252,7 @@ void pgraph_vk_finalize_command_buffers(PGRAPHState *pg)
         vkDestroyFence(r->device, r->slot_fence[s], NULL);
         vkDestroySemaphore(r->device, r->slot_sem[s], NULL);
     }
+    pgraph_vk_crumbs_finalize(r);
     destroy_command_buffers(pg);
     if (r->frame_gpu.pool != VK_NULL_HANDLE) {
         vkDestroyQueryPool(r->device, r->frame_gpu.pool, NULL);

@@ -565,6 +565,21 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "auto"
     },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        "Vulkan: Device Lost Report (Restart)",
+        NULL,
+        "When the GPU is lost (VK_ERROR_DEVICE_LOST), writes system/xemu/xemu_device_lost.txt: the call that failed, the last submits, and the work the GPU was doing when it was lost. The renderer marks every draw, clear, upload, conversion and render pass in GPU memory for it (AMD buffer markers, Nvidia checkpoints), and adds the driver's fault description where it has one. Slows rendering a little. Taken when the content starts.",
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
         "xemu_subpixel_offset",

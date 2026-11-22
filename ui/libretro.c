@@ -479,6 +479,8 @@ static bool opt_chihiro_freeplay = true;
 /* Video > Vulkan Fast Paths: which of the renderer's fast-path features the
  * shared device may get (xemu_vk_create_device) */
 static bool opt_vk_gpl = false, opt_vk_dynamic = true;
+/* Debug > Vulkan: Device Lost Report, taken when the device is made */
+static bool opt_vk_lost_report;
 /* Vulkan Fast Paths Auto: decided by the GPU's vendor when the device is
  * made (above) */
 static bool opt_vk_auto = true;
@@ -1112,6 +1114,7 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
     enum {
         EXT_CUSTOM_BORDER, EXT_MEMORY_BUDGET, EXT_EDS, EXT_EDS3,
         EXT_VERTEX_INPUT, EXT_PIPELINE_LIBRARY, EXT_GPL,
+        EXT_BUFFER_MARKER, EXT_CHECKPOINTS, EXT_DEVICE_FAULT,
     };
     static const char *const own_exts[] = {
         [EXT_CUSTOM_BORDER] = VK_EXT_CUSTOM_BORDER_COLOR_EXTENSION_NAME,
@@ -1121,6 +1124,10 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
         [EXT_VERTEX_INPUT] = VK_EXT_VERTEX_INPUT_DYNAMIC_STATE_EXTENSION_NAME,
         [EXT_PIPELINE_LIBRARY] = VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME,
         [EXT_GPL] = VK_EXT_GRAPHICS_PIPELINE_LIBRARY_EXTENSION_NAME,
+        /* Vulkan: Device Lost Report's (pgraph/vk/crumbs.c) */
+        [EXT_BUFFER_MARKER] = VK_AMD_BUFFER_MARKER_EXTENSION_NAME,
+        [EXT_CHECKPOINTS] = VK_NV_DEVICE_DIAGNOSTIC_CHECKPOINTS_EXTENSION_NAME,
+        [EXT_DEVICE_FAULT] = "VK_EXT_device_fault",
     };
     bool own_ext_enabled[G_N_ELEMENTS(own_exts)] = { false };
     bool own_ext_listed[G_N_ELEMENTS(own_exts)] = { false };
@@ -1220,10 +1227,23 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
         .pNext = &hqr_q,
     };
     const bool query_v13 = api >= VK_API_VERSION_1_3;
+#ifdef VK_EXT_device_fault
+    VkPhysicalDeviceFaultFeaturesEXT fault_q = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FAULT_FEATURES_EXT,
+        .pNext = query_v13 ? (void *)&v13_q : (void *)&hqr_q,
+    };
+    const bool query_fault = own_ext_enabled[EXT_DEVICE_FAULT];
+    VkPhysicalDeviceFeatures2 features2_q = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
+        .pNext = query_fault ? (void *)&fault_q :
+                 query_v13 ? (void *)&v13_q : (void *)&hqr_q,
+    };
+#else
     VkPhysicalDeviceFeatures2 features2_q = {
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
         .pNext = query_v13 ? (void *)&v13_q : (void *)&hqr_q,
     };
+#endif
     if (p_vkGetPhysicalDeviceFeatures2) {
         p_vkGetPhysicalDeviceFeatures2(gpu, &features2_q);
     }
@@ -1245,6 +1265,13 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
                            eds3_q.extendedDynamicState3ColorWriteMask;
     const bool dyn_vertex_input = opt_vk_dynamic && own_ext_enabled[EXT_VERTEX_INPUT] &&
                                   vids_q.vertexInputDynamicState;
+#ifdef VK_EXT_device_fault
+    const bool device_fault = opt_vk_lost_report &&
+                              own_ext_enabled[EXT_DEVICE_FAULT] &&
+                              fault_q.deviceFault;
+#else
+    const bool device_fault = false;
+#endif
     const bool pipeline_library = opt_vk_gpl && own_ext_enabled[EXT_PIPELINE_LIBRARY] &&
                                   own_ext_enabled[EXT_GPL] &&
                                   gpl_q.graphicsPipelineLibrary;
@@ -1261,6 +1288,11 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
             [EXT_VERTEX_INPUT] = dyn_vertex_input,
             [EXT_PIPELINE_LIBRARY] = pipeline_library,
             [EXT_GPL] = pipeline_library,
+            [EXT_BUFFER_MARKER] = opt_vk_lost_report &&
+                                  own_ext_enabled[EXT_BUFFER_MARKER],
+            [EXT_CHECKPOINTS] = opt_vk_lost_report &&
+                                own_ext_enabled[EXT_CHECKPOINTS],
+            [EXT_DEVICE_FAULT] = device_fault,
         };
         for (unsigned k = 0; k < G_N_ELEMENTS(own_exts); k++) {
             if (use[k] && !own_ext_listed[k]) {
@@ -1329,6 +1361,16 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
         custom_border_features.pNext = next;
         next = &custom_border_features;
     }
+#ifdef VK_EXT_device_fault
+    VkPhysicalDeviceFaultFeaturesEXT fault_features = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FAULT_FEATURES_EXT,
+        .deviceFault = VK_TRUE,
+    };
+    if (device_fault) {
+        fault_features.pNext = next;
+        next = &fault_features;
+    }
+#endif
     VkDeviceCreateInfo device_ci = {
         .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
         .pNext = next,
@@ -1381,6 +1423,18 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
     xemu_libretro_vk.pipeline_library = pipeline_library;
     xemu_libretro_vk.host_query_reset = host_query_reset;
     xemu_libretro_vk.shader_demote = shader_demote;
+    xemu_libretro_vk.lost_report = opt_vk_lost_report && system_dir[0];
+    if (xemu_libretro_vk.lost_report) {
+        snprintf(xemu_libretro_vk.lost_report_path,
+                 sizeof(xemu_libretro_vk.lost_report_path),
+                 "%s/xemu/xemu_device_lost.txt", system_dir);
+        xemu_libretro_vk.buffer_marker = own_ext_enabled[EXT_BUFFER_MARKER];
+        xemu_libretro_vk.checkpoints = own_ext_enabled[EXT_CHECKPOINTS];
+        xemu_libretro_vk.device_fault = device_fault;
+        LRLOG_INFO("[xemu] Vulkan: Device Lost Report on (buffer markers %d, checkpoints %d, device fault %d)\n",
+                   own_ext_enabled[EXT_BUFFER_MARKER],
+                   own_ext_enabled[EXT_CHECKPOINTS], device_fault);
+    }
     xemu_libretro_vk.active = true;
 
     LRLOG_INFO("[xemu] Vulkan: device shared with the frontend, queue family %u (%s), %u extensions\n",
@@ -1396,6 +1450,11 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
 static const VkApplicationInfo *xemu_vk_get_application_info(void)
 {
     return &xemu_vk_app_info;
+}
+
+void xemu_libretro_vk_log_error(const char *msg)
+{
+    LRLOG_ERROR("[xemu] %s\n", msg);
 }
 
 void xemu_libretro_vk_lock_queue(void)
@@ -2039,6 +2098,12 @@ static void update_variables(void)
         opt_vk_gpl = !strcmp(var.value, "all") || !strcmp(var.value, "no_dyn");
         opt_vk_dynamic = !strcmp(var.value, "all") || !strcmp(var.value, "no_gpl");
     }
+
+    var.key = "xemu_vk_lost_report";
+    var.value = NULL;
+    opt_vk_lost_report = environ_cb &&
+                         environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
+                         var.value && !strcmp(var.value, "enabled");
 
     var.key = "xemu_chihiro_gun_aim";
     var.value = NULL;

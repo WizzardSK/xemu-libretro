@@ -51,6 +51,11 @@ typedef struct XemuLibretroVk {
     bool pipeline_library;
     bool host_query_reset;
     bool shader_demote;
+    /* Debug > Vulkan: Device Lost Report (pgraph/vk/crumbs.c): on, with the
+     * file it writes, and which of its extensions the device has */
+    bool lost_report;
+    char lost_report_path[4096];
+    bool buffer_marker, checkpoints, device_fault;
 
     /* Which of the frame images the next display render fills: the
      * frontend's sync index, set by retro_run before it asks for a frame */
@@ -71,6 +76,8 @@ extern int xemu_libretro_overscan_crop;
 /* The frontend's queue lock, around every use of a shared queue; no-ops
  * while the renderer has a queue of its own */
 void xemu_libretro_vk_lock_queue(void);
+/* An error line in RetroArch's log (stderr goes nowhere on Windows) */
+void xemu_libretro_vk_log_error(const char *msg);
 void xemu_libretro_vk_unlock_queue(void);
 
 /* The frame image of a sync index: an image on the shared device, in

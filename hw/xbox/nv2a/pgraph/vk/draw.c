@@ -2401,6 +2401,16 @@ static void begin_render_pass(PGRAPHState *pg)
         .clearValueCount = 0,
         .pClearValues = NULL,
     };
+    pgraph_vk_crumb(r, r->command_buffer,
+                    "render pass: color %08" HWADDR_PRIx " %ux%u, zeta %08"
+                    HWADDR_PRIx " %ux%u, area %ux%u",
+                    r->color_binding ? r->color_binding->vram_addr : 0,
+                    r->color_binding ? r->color_binding->width : 0,
+                    r->color_binding ? r->color_binding->height : 0,
+                    r->zeta_binding ? r->zeta_binding->vram_addr : 0,
+                    r->zeta_binding ? r->zeta_binding->width : 0,
+                    r->zeta_binding ? r->zeta_binding->height : 0,
+                    vp_width, vp_height);
     vkCmdBeginRenderPass(r->command_buffer, &render_pass_begin_info,
                          VK_SUBPASS_CONTENTS_INLINE);
     r->in_render_pass = true;

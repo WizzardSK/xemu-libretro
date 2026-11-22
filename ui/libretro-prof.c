@@ -35,6 +35,7 @@
 #include "ui/libretro-prof.h"
 
 bool xemu_lr_prof_pfifo_on;
+bool xemu_lr_prof_vcpu_on;
 #include <glib/gstdio.h>
 
 #if defined(_WIN32)
@@ -59,7 +60,7 @@ typedef struct ProfTarget {
 static ProfTarget prof_vcpu = { .name = "vCPU" };
 static ProfTarget prof_pfifo = { .name = "pfifo" };
 /* sampled this run (Debug > Profiler: PFIFO/PGRAPH, read at start) */
-static bool prof_pfifo_run;
+static bool prof_pfifo_run, prof_vcpu_run;
 static HANDLE prof_thread;
 static volatile LONG prof_stop;
 static GPtrArray *prof_modules;    /* module names, index = slot */
@@ -250,7 +251,9 @@ static DWORD WINAPI prof_fn(LPVOID arg)
     LARGE_INTEGER due = { .QuadPart = -10000 };
 
     while (!prof_stop) {
-        prof_sample(&prof_vcpu);
+        if (prof_vcpu_run) {
+            prof_sample(&prof_vcpu);
+        }
         if (prof_pfifo_run) {
             prof_sample(&prof_pfifo);
         }
@@ -286,8 +289,14 @@ void xemu_lr_prof_start(void)
     if (!prof_vcpu.h || prof_thread) {
         return;
     }
-    prof_core_text();
+    /* Debug > Profiler: vCPU and Profiler: PFIFO/PGRAPH pick the threads;
+     * with neither, nothing is sampled */
+    prof_vcpu_run = qatomic_read(&xemu_lr_prof_vcpu_on);
     prof_pfifo_run = qatomic_read(&xemu_lr_prof_pfifo_on);
+    if (!prof_vcpu_run && !prof_pfifo_run) {
+        return;
+    }
+    prof_core_text();
     prof_target_init(&prof_vcpu);
     prof_target_init(&prof_pfifo);
     prof_tbsize = g_hash_table_new(NULL, NULL);
@@ -421,6 +430,15 @@ void xemu_lr_prof_stop(XemuLrProfLog log, const char *path,
         if (!prof_vcpu.h) {
             log("vCPU profile: no vCPU thread registered\n");
         }
+        /* nothing sampled: the file still gets the run's description, for
+         * the sections the other Profiler options add after it */
+        f = path && *path ? g_fopen(path, "w") : NULL;
+        if (f) {
+            if (header) {
+                fputs(header, f);
+            }
+            fclose(f);
+        }
         return;
     }
     prof_stop = 1;
@@ -435,7 +453,9 @@ void xemu_lr_prof_stop(XemuLrProfLog log, const char *path,
     if (f && header) {
         fputs(header, f);
     }
-    prof_report(&prof_vcpu, log, f);
+    if (prof_vcpu_run) {
+        prof_report(&prof_vcpu, log, f);
+    }
     if (!prof_pfifo_run) {
         /* off in Debug: no section */
     } else if (prof_pfifo.h) {

@@ -424,7 +424,21 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_mspf_overlay",
         "Profiler (F10)",
         NULL,
-        "Shows three lines in the top left corner. FPS: the frames per second the game shows, as in standalone xemu's video debug overlay, over its last 60 frames. GPU: the frame rate the game could reach from the time it takes to draw a frame (standalone's MSPF), averaged over its last 60 frames and updated every 20 frames; valid only when the GPU is what limits the game. NV2A IDLE: the share of time since the profiler was turned on that the GPU thread waited for the game to send work; high while the frame rate is below the game's target means the CPU is what limits it. F10 on the keyboard turns the profiler on or off, and each time it comes on NV2A IDLE starts over. On Windows, while it is on the core also samples where the CPU emulation spends its time (this slows it slightly), and when it goes off writes the shares to RetroArch's log and every sample to system/xemu/<commit> <game>.txt (the same run again overwrites it). On every system that file starts with the core's version, the game, the settings that matter for speed and the run's average FPS, GPU and NV2A IDLE; the Profiler options below add more to it. While on, the core also writes to RetroArch's log every 300 runs how the guest's frames and the frontend's runs lined up. Takes effect right away.",
+        "Shows three lines in the top left corner. FPS: the frames per second the game shows, as in standalone xemu's video debug overlay, over its last 60 frames. GPU: the frame rate the game could reach from the time it takes to draw a frame (standalone's MSPF), averaged over its last 60 frames and updated every 20 frames; valid only when the GPU is what limits the game. NV2A IDLE: the share of time since the profiler was turned on that the GPU thread waited for the game to send work; high while the frame rate is below the game's target means the CPU is what limits it. F10 on the keyboard turns the profiler on or off, and each time it comes on NV2A IDLE starts over. With one of the Profiler options below on, turning the profiler off writes a file to system/xemu/<commit> <game>.txt (the same run again overwrites it): the core's version, the game, the settings that matter for speed and the run's average FPS, GPU and NV2A IDLE, then what those options add. With none of them on, there is only the overlay and no file. While on, the core also writes to RetroArch's log every 300 runs how the guest's frames and the frontend's runs lined up. Takes effect right away.",
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_vcpu",
+        "Profiler: vCPU",
+        NULL,
+        "Windows: with the profiler on, the core samples where the CPU emulation spends its time (this slows it slightly), and when it goes off writes the shares to RetroArch's log and every sample to the profile file. Read when the profiler comes on.",
         NULL,
         "debug",
         {
@@ -481,6 +495,20 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "Profiler: Surface Downloads and Uploads",
         NULL,
         "Vulkan: the profile file lists the render targets read back into RAM and written back to the GPU, by the part of the renderer that asked for it, with each render target's address, size and format. Also the render targets evicted, with why and the target that replaced them.",
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        "Profiler: Frame Pacing",
+        NULL,
+        "With the profiler on, the core records the time of every frame the game flips and of every frame it hands to RetroArch, with how many new game frames each showed, when its run began and how long it waited for the game and the renderer. The profile file gets the intervals' histograms, the longest ones, and every frame. Read when the profiler comes on.",
         NULL,
         "debug",
         {

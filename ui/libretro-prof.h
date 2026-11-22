@@ -17,6 +17,9 @@ void xemu_lr_prof_pfifo(void);
 /* Debug > Profiler: PFIFO/PGRAPH: the GPU thread is sampled too (read when
  * the profiler comes on) */
 extern bool xemu_lr_prof_pfifo_on;
+/* Debug > Profiler: vCPU: the CPU emulation is sampled (read when the
+ * profiler comes on) */
+extern bool xemu_lr_prof_vcpu_on;
 /* The profiler came on: start sampling */
 void xemu_lr_prof_start(void);
 /* The profiler went off (or the game closes): stop, log the shares and

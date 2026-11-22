@@ -238,8 +238,128 @@ static void nv2a_totals_reset(void)
     nv2a_totals_start_us = g_get_monotonic_time();
     nv2a_s2t_miss_reset();
 }
+/* Frame pacing while the profiler is on (NNshi, Skip TLB microstutter): the
+ * time of every guest flip (PFIFO thread) and, for every host frame
+ * (retro_run), its time and how many new guest frames it showed. One store
+ * each into arrays made once; written to the profile's file at the end. */
+#define PACE_MAX 65536
+static int64_t *pace_flip_us, *pace_host_us;
+static uint8_t *pace_host_new;
+/* per host frame: when retro_run began, and how long its wait for the
+ * guest's vblank (and flip) and the renderer's sync took */
+static int64_t *pace_host_entry;
+static int32_t *pace_host_vwait, *pace_host_sync;
+static int64_t pace_cur_entry, pace_cur_vwait, pace_cur_sync;
+static uint32_t pace_flip_n, pace_host_n;
+static int64_t pace_start_us;
+static void pace_reset(void)
+{
+    if (!pace_flip_us) {
+        pace_flip_us = g_new(int64_t, PACE_MAX);
+        pace_host_us = g_new(int64_t, PACE_MAX);
+        pace_host_new = g_new(uint8_t, PACE_MAX);
+        pace_host_entry = g_new(int64_t, PACE_MAX);
+        pace_host_vwait = g_new(int32_t, PACE_MAX);
+        pace_host_sync = g_new(int32_t, PACE_MAX);
+    }
+    __atomic_store_n(&pace_flip_n, 0, __ATOMIC_RELAXED);
+    pace_host_n = 0;
+    pace_start_us = g_get_monotonic_time();
+}
+/* Debug > Profiler: Frame Pacing, taken when the profiler comes on */
+static bool pace_on;
+static void pace_flip(int64_t now_us)
+{
+    const uint32_t i = __atomic_load_n(&pace_flip_n, __ATOMIC_RELAXED);
+    if (__atomic_load_n(&pace_on, __ATOMIC_RELAXED) && pace_flip_us && i < PACE_MAX) {
+        pace_flip_us[i] = now_us;
+        __atomic_store_n(&pace_flip_n, i + 1, __ATOMIC_RELEASE);
+    }
+}
+static void pace_host(int64_t now_us, uint64_t new_frames)
+{
+    if (__atomic_load_n(&pace_on, __ATOMIC_RELAXED) && pace_host_us && pace_host_n < PACE_MAX) {
+        pace_host_us[pace_host_n] = now_us;
+        pace_host_new[pace_host_n] = new_frames > 255 ? 255 : (uint8_t)new_frames;
+        pace_host_entry[pace_host_n] = pace_cur_entry;
+        pace_host_vwait[pace_host_n] = (int32_t)pace_cur_vwait;
+        pace_host_sync[pace_host_n] = (int32_t)pace_cur_sync;
+        pace_host_n++;
+    }
+}
+static void pace_hist(FILE *f, const char *what, const int64_t *t, uint32_t n)
+{
+    unsigned int hist[52] = { 0 };
+    int64_t gap[10] = { 0 }, at[10] = { 0 };
+    for (uint32_t i = 1; i < n; i++) {
+        const int64_t d = t[i] - t[i - 1];
+        hist[d >= 50000 ? 51 : d / 1000]++;
+        for (int k = 0; k < 10; k++) {
+            if (d > gap[k]) {
+                memmove(gap + k + 1, gap + k, (9 - k) * sizeof(*gap));
+                memmove(at + k + 1, at + k, (9 - k) * sizeof(*at));
+                gap[k] = d;
+                at[k] = t[i - 1] - pace_start_us;
+                break;
+            }
+        }
+    }
+    fprintf(f, "# %s: %u, interval histogram (ms: count)\n", what, n);
+    for (int b = 0; b < 52; b++) {
+        if (hist[b]) {
+            char range[16];
+            snprintf(range, sizeof(range), b == 51 ? ">=50" : "%d-%d", b, b + 1);
+            fprintf(f, "%s %s %u\n", what, range, hist[b]);
+        }
+    }
+    fprintf(f, "# %s: longest intervals (ms, at s into the run)\n", what);
+    for (int k = 0; k < 10 && gap[k]; k++) {
+        fprintf(f, "%s gap %.2f at %.3f\n", what, gap[k] / 1000.0, at[k] / 1e6);
+    }
+}
+static void pace_dump(const char *path)
+{
+    if (!path || !*path || !pace_flip_us || !__atomic_load_n(&pace_on, __ATOMIC_RELAXED)) {
+        return;
+    }
+    FILE *f = g_fopen(path, "a");
+    if (!f) {
+        return;
+    }
+    const uint32_t nf = __atomic_load_n(&pace_flip_n, __ATOMIC_ACQUIRE);
+    const uint32_t nh = pace_host_n;
+    pace_hist(f, "flip", pace_flip_us, nf);
+    pace_hist(f, "host", pace_host_us, nh);
+    unsigned int by_new[4] = { 0 }, judder = 0;
+    for (uint32_t i = 0; i < nh; i++) {
+        by_new[MIN(pace_host_new[i], 3)]++;
+        /* a host frame with nothing new next to one with two or more */
+        if (i && ((pace_host_new[i] == 0 && pace_host_new[i - 1] >= 2) ||
+                  (pace_host_new[i] >= 2 && pace_host_new[i - 1] == 0))) {
+            judder++;
+        }
+    }
+    fprintf(f, "# host frames by new guest frames shown: 0: %u, 1: %u, 2: %u, 3+: %u; "
+            "0 next to 2+: %u\n", by_new[0], by_new[1], by_new[2], by_new[3], judder);
+    /* every frame, for plotting: us since the profiler came on */
+    fprintf(f, "# every guest flip: flip <us>\n");
+    for (uint32_t i = 0; i < nf; i++) {
+        fprintf(f, "flip %" PRId64 "\n", pace_flip_us[i] - pace_start_us);
+    }
+    fprintf(f, "# every host frame: host <us> <new guest frames> <retro_run start us> "
+            "<vblank+flip wait us> <renderer sync us>\n");
+    for (uint32_t i = 0; i < nh; i++) {
+        fprintf(f, "host %" PRId64 " %u %" PRId64 " %d %d\n", pace_host_us[i] - pace_start_us,
+                pace_host_new[i], pace_host_entry[i] - pace_start_us,
+                pace_host_vwait[i], pace_host_sync[i]);
+    }
+    fclose(f);
+}
+
 /* Debug > Profiler: Renderer Counters */
 static bool opt_prof_counters;
+/* Debug > Profiler: Frame Pacing and Profiler: vCPU */
+static bool opt_prof_pacing, opt_prof_vcpu;
 static void nv2a_totals_dump(const char *path)
 {
     extern uint64_t nv2a_profile_totals[NV2A_PROF__COUNT];
@@ -304,6 +424,7 @@ void xemu_libretro_osd_frame(int64_t render_us)
     __atomic_add_fetch(&osd_run_render_us, render_us > 0 ? render_us : 0,
                        __ATOMIC_RELAXED);
     __atomic_store_n(&osd_run_last_ns, now_ns, __ATOMIC_RELAXED);
+    pace_flip(now_ns / 1000);
     if (now_ns > idle_start) {
         const int64_t idle = __atomic_load_n(&xemu_lr_nv2a_idle_ns, __ATOMIC_RELAXED);
         __atomic_store_n(&xemu_libretro_osd_idle100,
@@ -1788,10 +1909,10 @@ static void update_variables(void)
     {
         static const char *const keys[] = {
             "xemu_prof_pfifo", "xemu_prof_counters", "xemu_prof_s2t",
-            "xemu_prof_surf",
+            "xemu_prof_surf", "xemu_prof_pacing", "xemu_prof_vcpu",
         };
-        bool on[4];
-        for (int i = 0; i < 4; i++) {
+        bool on[6];
+        for (int i = 0; i < 6; i++) {
             var.key = keys[i];
             var.value = NULL;
             on[i] = environ_cb &&
@@ -1802,6 +1923,8 @@ static void update_variables(void)
         opt_prof_counters = on[1];
         qatomic_set(&nv2a_prof_s2t_on, on[2]);
         qatomic_set(&nv2a_prof_surf_on, on[3]);
+        opt_prof_pacing = on[4];
+        opt_prof_vcpu = on[5];
     }
 
     var.key = "xemu_video_aspect";
@@ -4206,8 +4329,8 @@ static char *prof_file(char **header)
         "anisotropic %ux, subpixel offset %s\n"
         "# CPU boost %s, hardware FPU %s, memory %d MB, APU DSP %s, DSP JIT %s\n"
         "# run: %.1f s, average FPS %.2f, GPU (MSPF as a frame rate) %.2f, NV2A idle %u.%u%%\n"
-        "# profiler: PFIFO waits %s, renderer counters %s, missed render targets %s, "
-        "surface downloads and uploads %s\n",
+        "# profiler: vCPU %s, PFIFO waits %s, renderer counters %s, missed render targets %s, "
+        "surface downloads and uploads %s, frame pacing %s\n",
         xemu_version, commit, base, (unsigned)qatomic_read(&guest_title_id),
         use_vulkan ? "Vulkan" : "OpenGL", opt_surface_scale, fast,
         qatomic_read(&xemu_min_anisotropy),
@@ -4218,11 +4341,32 @@ static char *prof_file(char **header)
         span > 0 && flips > 1 ? (flips - 1) * 1e9 / span : 0.0,
         render > 0 ? flips * 1e6 / render : 0.0,
         idle100 / 100, idle100 % 100 / 10,
+        opt_prof_vcpu ? "on" : "off",
         qatomic_read(&xemu_lr_prof_pfifo_on) ? "on" : "off",
         opt_prof_counters ? "on" : "off",
         qatomic_read(&nv2a_prof_s2t_on) ? "on" : "off",
-        qatomic_read(&nv2a_prof_surf_on) ? "on" : "off");
+        qatomic_read(&nv2a_prof_surf_on) ? "on" : "off",
+        opt_prof_pacing ? "on" : "off");
     return g_build_filename(dir, name, NULL);
+}
+
+/* The profiler went off (or the game closes): the vCPU's and GPU thread's
+ * shares to the log, and the file with whatever the Profiler options asked
+ * for. With none of them on, the overlay was all that was wanted: no file
+ * (NNshi). */
+static void prof_end(void)
+{
+    const bool file = opt_prof_vcpu || opt_prof_pacing || opt_prof_counters ||
+                      qatomic_read(&xemu_lr_prof_pfifo_on) ||
+                      qatomic_read(&nv2a_prof_s2t_on) ||
+                      qatomic_read(&nv2a_prof_surf_on);
+    g_autofree char *header = NULL;
+    g_autofree char *path = file ? prof_file(&header) : NULL;
+    prof_running = false;
+    xemu_lr_prof_stop(prof_log, path, header);
+    nv2a_totals_dump(path);
+    pace_dump(path);
+    __atomic_store_n(&pace_on, false, __ATOMIC_RELAXED);
 }
 
 RETRO_API void retro_unload_game(void)
@@ -4230,11 +4374,7 @@ RETRO_API void retro_unload_game(void)
     LRLOG_INFO("[xemu] retro_unload_game\n");
 
     if (prof_running) {
-        g_autofree char *header = NULL;
-        g_autofree char *path = prof_file(&header);
-        prof_running = false;
-        xemu_lr_prof_stop(prof_log, path, header);
-        nv2a_totals_dump(path);
+        prof_end();
     }
 
     if (emu_thread_running) {
@@ -4354,6 +4494,8 @@ static void libretro_vblank_bh(void *opaque)
 RETRO_API void retro_run(void)
 {
     static int run_count = 0;
+    pace_cur_entry = g_get_monotonic_time();
+    pace_cur_vwait = pace_cur_sync = 0;
     /* Where the time of a run goes, over the last 300 runs: the whole run
      * from the previous one's start, the wait for the renderer to draw the
      * display, and the frontend's video and audio callbacks. For telling a
@@ -4485,14 +4627,15 @@ RETRO_API void retro_run(void)
         const bool on = __atomic_load_n(&opt_internal_fps, __ATOMIC_RELAXED);
         if (on && !prof_running) {
             prof_running = true;
+            qatomic_set(&xemu_lr_prof_vcpu_on, opt_prof_vcpu);
             xemu_lr_prof_start();
             nv2a_totals_reset();
+            __atomic_store_n(&pace_on, opt_prof_pacing, __ATOMIC_RELAXED);
+            if (opt_prof_pacing) {
+                pace_reset();
+            }
         } else if (!on && prof_running) {
-            g_autofree char *header = NULL;
-            g_autofree char *path = prof_file(&header);
-            prof_running = false;
-            xemu_lr_prof_stop(prof_log, path, header);
-            nv2a_totals_dump(path);
+            prof_end();
         }
     }
 
@@ -4601,19 +4744,26 @@ RETRO_API void retro_run(void)
 
             xemu_libretro_vk.frame_index = index;
             if (!vk_renderer_parked) {
+                const int64_t pace_w0 = g_get_monotonic_time();
                 wait_for_vblank_handled();
                 st_t = g_get_monotonic_time();
+                pace_cur_vwait = st_t - pace_w0;
                 nv2a_get_framebuffer_surface();
                 nv2a_release_framebuffer_surface();
                 st_t = g_get_monotonic_time() - st_t;
+                pace_cur_sync = st_t;
                 st_sync_sum += st_t;
                 st_sync_max = MAX(st_sync_max, st_t);
             }
 
-            if (!vk_renderer_parked &&
+            const bool got = !vk_renderer_parked &&
                 nv2a_vk_libretro_get_frame(index, &image, &view, &format,
-                                           &frame_w, &frame_h, &count) &&
-                count != last_count) {
+                                           &frame_w, &frame_h, &count);
+            if (prof_running) {
+                pace_host(g_get_monotonic_time(),
+                          got && count > last_count ? count - last_count : 0);
+            }
+            if (got && count != last_count) {
                 last_count = count;
                 last_w = (unsigned)frame_w;
                 last_h = (unsigned)frame_h;

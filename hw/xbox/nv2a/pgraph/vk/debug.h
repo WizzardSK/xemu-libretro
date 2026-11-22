@@ -46,13 +46,20 @@ extern int nv2a_vk_dgroup_indent;
         assert(nv2a_vk_dgroup_indent >= 0); \
     } while (0)
 
-#define VK_CHECK(x)                                           \
-    do {                                                      \
-        VkResult vk_result = (x);                             \
-        if (vk_result != VK_SUCCESS) {                        \
-            fprintf(stderr, "vk_result = %d\n", vk_result);   \
-        }                                                     \
-        assert(vk_result == VK_SUCCESS && "vk check failed"); \
+/* A lost device writes the device lost report (crumbs.c) before the assert */
+void pgraph_vk_device_lost(const char *call, const char *file, int line,
+                           int result);
+
+#define VK_CHECK(x)                                                     \
+    do {                                                                \
+        VkResult vk_result = (x);                                       \
+        if (vk_result != VK_SUCCESS) {                                  \
+            fprintf(stderr, "vk_result = %d\n", vk_result);             \
+            if (vk_result == VK_ERROR_DEVICE_LOST) {                    \
+                pgraph_vk_device_lost(#x, __FILE__, __LINE__, vk_result); \
+            }                                                           \
+        }                                                               \
+        assert(vk_result == VK_SUCCESS && "vk check failed");           \
     } while (0)
 
 void pgraph_vk_debug_frame_terminator(void);

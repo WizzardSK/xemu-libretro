@@ -110,7 +110,14 @@ jobs:
           AR: ${{ env.CROSSAR }}
 
       - name: Build
-        run: ninja -C build xemu_libretro.dll 2>&1 | tail -200
+        run: |
+          # the errors first: tail alone showed only the warnings of the
+          # compiles still running when one failed
+          set +o pipefail; rc=0
+          ninja -C build xemu_libretro.dll > build.log 2>&1 || rc=$?
+          grep -a -B2 -A15 -E "FAILED:|error:" build.log | head -200
+          tail -60 build.log
+          exit $rc
 
       - name: Collect
         run: |
@@ -177,7 +184,14 @@ jobs:
           LIBRARY_PATH: /usr/lib/${{ matrix.arch }}-linux-gnu
 
       - name: Build
-        run: ninja -C build xemu_libretro.so 2>&1 | tail -200
+        run: |
+          # the errors first: tail alone showed only the warnings of the
+          # compiles still running when one failed
+          set +o pipefail; rc=0
+          ninja -C build xemu_libretro.so > build.log 2>&1 || rc=$?
+          grep -a -B2 -A15 -E "FAILED:|error:" build.log | head -200
+          tail -60 build.log
+          exit $rc
 
       # libslirp is not in every frontend's runtime (Flatpak
       # RetroArch's, for one), so it goes next to the core, found through

@@ -73,6 +73,12 @@ void pgraph_vk_debug_frame_terminator(void)
 void pgraph_vk_insert_debug_marker(PGRAPHVkState *r, VkCommandBuffer cmd,
                                    float color[4], const char *format, ...)
 {
+    if (pgraph_vk_crumbs_on()) {
+        va_list args;
+        va_start(args, format);
+        pgraph_vk_crumb_v(r, cmd, format, args);
+        va_end(args);
+    }
     if (!r->debug_utils_extension_enabled) {
         return;
     }
@@ -97,6 +103,12 @@ void pgraph_vk_insert_debug_marker(PGRAPHVkState *r, VkCommandBuffer cmd,
 void pgraph_vk_begin_debug_marker(PGRAPHVkState *r, VkCommandBuffer cmd,
                                   float color[4], const char *format, ...)
 {
+    if (pgraph_vk_crumbs_on()) {
+        va_list args;
+        va_start(args, format);
+        pgraph_vk_crumb_v(r, cmd, format, args);
+        va_end(args);
+    }
     if (!r->debug_utils_extension_enabled) {
         return;
     }
@@ -123,6 +135,7 @@ void pgraph_vk_begin_debug_marker(PGRAPHVkState *r, VkCommandBuffer cmd,
 
 void pgraph_vk_end_debug_marker(PGRAPHVkState *r, VkCommandBuffer cmd)
 {
+    pgraph_vk_crumb(r, cmd, "end");
     if (!r->debug_utils_extension_enabled) {
         return;
     }

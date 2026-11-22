@@ -804,6 +804,17 @@ void pgraph_vk_begin_debug_marker(PGRAPHVkState *r, VkCommandBuffer cmd,
                                   float color[4], const char *format, ...) G_GNUC_PRINTF(4, 5);
 void pgraph_vk_end_debug_marker(PGRAPHVkState *r, VkCommandBuffer cmd);
 
+// crumbs.c: breadcrumbs for the device lost report
+void pgraph_vk_crumbs_init(PGRAPHVkState *r);
+void pgraph_vk_crumbs_finalize(PGRAPHVkState *r);
+bool pgraph_vk_crumbs_on(void);
+void pgraph_vk_crumb(PGRAPHVkState *r, VkCommandBuffer cmd, const char *fmt,
+                     ...) G_GNUC_PRINTF(3, 4);
+void pgraph_vk_crumb_v(PGRAPHVkState *r, VkCommandBuffer cmd,
+                       const char *fmt, va_list ap);
+void pgraph_vk_crumbs_submit(PGRAPHVkState *r, uint32_t count,
+                             const VkSubmitInfo *submits);
+
 // instance.c
 void pgraph_vk_init_instance(PGRAPHState *pg, Error **errp);
 void pgraph_vk_finalize_instance(PGRAPHState *pg);

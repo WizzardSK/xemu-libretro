@@ -33,6 +33,7 @@
 
 #include "qemu/osdep.h"
 #include "qemu/thread.h"
+#include <glib/gstdio.h>
 #include "renderer.h"
 #include "debug.h"
 

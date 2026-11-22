@@ -1616,6 +1616,8 @@ int xemu_libretro_subpixel_offset;
 /* Upscaling Threshold: render targets up to this size drawn at 1x (Vulkan,
  * pgraph_vk_reload_surface_scale_factor) */
 unsigned int xemu_libretro_scale_threshold;
+/* Texture Upscaling: Nearest Neighbor (Vulkan, texture.c) */
+int xemu_libretro_texture_nearest;
 /* set from the frontend thread, applied by the emulation loop, which holds
  * the BQL that nv2a_set_surface_scale_factor lets go of */
 static bool scale_threshold_changed;
@@ -2103,6 +2105,12 @@ static void update_variables(void)
         opt_vk_gpl = !strcmp(var.value, "all") || !strcmp(var.value, "no_dyn");
         opt_vk_dynamic = !strcmp(var.value, "all") || !strcmp(var.value, "no_gpl");
     }
+
+    var.key = "xemu_texture_upscaling";
+    var.value = NULL;
+    qatomic_set(&xemu_libretro_texture_nearest,
+                environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
+                var.value && !strcmp(var.value, "nearest"));
 
     var.key = "xemu_vk_lost_report";
     var.value = NULL;

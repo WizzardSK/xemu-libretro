@@ -1654,6 +1654,13 @@ static void sampler_cache_destroy(PGRAPHVkState *r)
 /* Resolve the unit's sampler for the texture just bound. Both exits of
  * create_texture must call it, the cache hit too, or the unit keeps the
  * sampler of the last texture created on it. */
+#ifdef LIBRETRO
+/* Texture Upscaling: Nearest Neighbor (ui/libretro.c) */
+extern int xemu_libretro_texture_nearest;
+#else
+static int xemu_libretro_texture_nearest;
+#endif
+
 static void resolve_unit_sampler(PGRAPHState *pg, int texture_idx,
                                  const TextureShape *state, uint32_t filter,
                                  uint32_t address,
@@ -1661,6 +1668,16 @@ static void resolve_unit_sampler(PGRAPHState *pg, int texture_idx,
                                  uint32_t max_anisotropy)
 {
     PGRAPHVkState *r = pg->vk_renderer_state;
+
+    /* Texture Upscaling, Nearest Neighbor: above 1x every texture is
+     * magnified by a box filter (nearest) instead of the game's filter, with
+     * no exceptions - a test switch to tell artifacts of bilinear edge
+     * sampling from the rest (NNshi). Only the sampler changes, not the
+     * shaders; the sampler cache keys on the filter, so it applies at once. */
+    if (qatomic_read(&xemu_libretro_texture_nearest) &&
+        pg->surface_scale_factor > 1) {
+        SET_MASK(filter, NV_PGRAPH_TEXFILTER0_MAG, 1);
+    }
 
     /* Sampler state (filter, address, border, anisotropy) stays out of the
      * image key, as on GL: one image serves every sampler it is read with. */

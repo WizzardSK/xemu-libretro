@@ -299,6 +299,22 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "720", "720" },
             { NULL, NULL },
         },
+    /* Auto by default: Nearest Neighbor is a test switch for finding
+     * upscaling artifacts (NNshi) */
+    {
+        "xemu_texture_upscaling",
+        "Texture Upscaling",
+        NULL,
+        "With an Internal Resolution Scale above 1x, how textures are magnified. \"Auto\" uses the filter the game asks for. \"Nearest Neighbor\" magnifies every texture without filtering, with no exceptions: a test switch to tell upscaling artifacts caused by bilinear sampling at texture edges from the rest. Vulkan only.",
+        NULL,
+        "video",
+        {
+            { "auto",    "Auto" },
+            { "nearest", "Nearest Neighbor" },
+            { NULL, NULL },
+        },
+        "auto"
+    },
         "0"
     },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */

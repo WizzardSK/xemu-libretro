@@ -565,6 +565,22 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "auto"
     },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        "Vulkan: Renderer Queue (Restart)",
+        NULL,
+        "Where the renderer submits its GPU work when the GPU has a second queue in RetroArch's queue family. \"Own\" uses that second queue, so the renderer doesn't wait while RetroArch presents. \"RetroArch's\" shares RetroArch's queue, for tools that capture a frame (RenderDoc) and may not handle two queues. Taken when the content starts.",
+        NULL,
+        "debug",
+        {
+            { "own",      "Own" },
+            { "frontend", "RetroArch's" },
+            { NULL, NULL },
+        },
+        "own"
+    },
     /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
     {
         "xemu_vk_lost_report",

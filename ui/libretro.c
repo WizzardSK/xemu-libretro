@@ -481,6 +481,8 @@ static bool opt_chihiro_freeplay = true;
 static bool opt_vk_gpl = false, opt_vk_dynamic = true;
 /* Debug > Vulkan: Device Lost Report, taken when the device is made */
 static bool opt_vk_lost_report;
+/* Debug > Vulkan: Renderer Queue: RetroArch's instead of one of its own */
+static bool opt_vk_frontend_queue;
 /* Vulkan Fast Paths Auto: decided by the GPU's vendor when the device is
  * made (above) */
 static bool opt_vk_auto = true;
@@ -1155,7 +1157,10 @@ static bool xemu_vk_create_device(struct retro_vulkan_context *context,
     /* A queue of its own for the renderer where the family has a second
      * one: it submits many times a frame, and the frontend holds its queue's
      * lock while it presents */
-    const bool own_queue = family_queues >= 2;
+    /* Debug > Vulkan: Renderer Queue can put it on the frontend's queue
+     * (RenderDoc lost the device right after frames handed over from a
+     * queue of the renderer's own, NNshi) */
+    const bool own_queue = family_queues >= 2 && !opt_vk_frontend_queue;
     const float priorities[2] = { 1.0f, 1.0f };
     VkDeviceQueueCreateInfo queue_ci = {
         .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
@@ -2104,6 +2109,12 @@ static void update_variables(void)
     opt_vk_lost_report = environ_cb &&
                          environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
                          var.value && !strcmp(var.value, "enabled");
+
+    var.key = "xemu_vk_renderer_queue";
+    var.value = NULL;
+    opt_vk_frontend_queue = environ_cb &&
+                            environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
+                            var.value && !strcmp(var.value, "frontend");
 
     var.key = "xemu_chihiro_gun_aim";
     var.value = NULL;

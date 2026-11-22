@@ -317,6 +317,21 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "auto"
     },
+    /* Off by default: a test switch for upscaling artifacts (NNshi) */
+    {
+        "xemu_half_pixel_offset",
+        "Half-Pixel Offset",
+        NULL,
+        "With an Internal Resolution Scale above 1x, vertices that lie exactly on a half pixel - where games put screen-aligned quads for UI, post-processing and render-target copies, following Direct3D's half-pixel offset - are moved the way Subpixel Offset Scaling moves the whole picture, so their edges and texture reads line up as at 1x. Other geometry stays where it is. Turning it on or off compiles new shaders.",
+        NULL,
+        "video",
+        {
+            { "disabled", "OFF" },
+            { "enabled",  "ON" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",

@@ -87,6 +87,9 @@ typedef struct {
     bool is_fixed_function;
     FixedFunctionVshState fixed_function;
     ProgrammableVshState programmable;
+
+    /* Half-Pixel Offset (libretro option), set only above 1x */
+    bool half_pixel_shift;
 } VshState;
 
 void pgraph_glsl_set_vsh_state(PGRAPHState *pg, VshState *state);

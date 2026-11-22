@@ -187,6 +187,13 @@ static void set_programmable_vsh_state(PGRAPHState *pg,
     }
 }
 
+#ifdef LIBRETRO
+/* Half-Pixel Offset (ui/libretro.c) */
+extern int xemu_libretro_half_pixel;
+#else
+static int xemu_libretro_half_pixel;
+#endif
+
 void pgraph_glsl_set_vsh_state(PGRAPHState *pg, VshState *vsh)
 {
     bool vertex_program = GET_MASK(pgraph_reg_r(pg, NV_PGRAPH_CSV0_D),
@@ -230,6 +237,8 @@ void pgraph_glsl_set_vsh_state(PGRAPHState *pg, VshState *vsh)
     }
 
     vsh->is_fixed_function = fixed_function;
+    vsh->half_pixel_shift = qatomic_read(&xemu_libretro_half_pixel) &&
+                            pg->surface_scale_factor > 1;
     if (fixed_function) {
         set_fixed_function_vsh_state(pg, &vsh->fixed_function);
     } else {
@@ -389,6 +398,20 @@ MString *pgraph_glsl_gen_vsh(const VshState *state, GenVshGlslOptions opts)
         "vec2 roundScreenCoords(vec2 pos) {\n"
         "  return trunc(pos * 16.0f) / 16.0f;\n"
         "}\n");
+    /* Half-Pixel Offset: above 1x, a vertex exactly on a half pixel is one
+     * the game moved by D3D's half-pixel offset (screen-aligned quads: UI,
+     * post-process passes, render-target copies). It is moved as Subpixel
+     * Offset Scaling moves the whole picture, so its edges and texture reads
+     * line up as at 1x; other vertices (3D geometry) stay. Off, the shader
+     * text is what it was without the option. */
+    if (state->half_pixel_shift) {
+        mstring_append(header,
+            "vec2 halfPixelShift(vec2 pos) {\n"
+            "  vec2 d = vec2((0.5 * (pointScale - 1.0) + 0.25) / pointScale);\n"
+            "  return pos - mix(vec2(0.0), d, equal(fract(pos), vec2(0.5)));\n"
+            "}\n"
+            "#define roundScreenCoords(p) halfPixelShift(roundScreenCoords(p))\n");
+    }
 
     pgraph_glsl_get_vtx_header(header, opts.vulkan || opts.locations,
                                state->smooth_shading, false,

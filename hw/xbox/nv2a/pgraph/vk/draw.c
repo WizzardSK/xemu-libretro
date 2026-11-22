@@ -2660,12 +2660,22 @@ void pgraph_vk_finish(PGRAPHState *pg, FinishReason finish_reason)
         }
 
         VK_CHECK(vkBeginCommandBuffer(sync_cmd, &sync_begin_info));
+        pgraph_vk_crumb(r, sync_cmd,
+                        "staging sync: index %zu, inline vertices %zu, "
+                        "uniforms %zu bytes",
+                        (size_t)r->storage_buffers[BUFFER_INDEX_STAGING]
+                            .buffer_offset,
+                        (size_t)r->storage_buffers[BUFFER_VERTEX_INLINE_STAGING]
+                            .buffer_offset,
+                        (size_t)r->storage_buffers[BUFFER_UNIFORM_STAGING]
+                            .buffer_offset);
         sync_staging_buffer(pg, sync_cmd, BUFFER_INDEX_STAGING, BUFFER_INDEX);
         sync_staging_buffer(pg, sync_cmd, BUFFER_VERTEX_INLINE_STAGING,
                                 BUFFER_VERTEX_INLINE);
         sync_staging_buffer(pg, sync_cmd, BUFFER_UNIFORM_STAGING,
                             BUFFER_UNIFORM);
         flush_memory_buffer(pg, sync_cmd);
+        pgraph_vk_crumb(r, sync_cmd, "staging sync end");
         VK_CHECK(vkEndCommandBuffer(sync_cmd));
 
         VkPipelineStageFlags wait_stage = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;

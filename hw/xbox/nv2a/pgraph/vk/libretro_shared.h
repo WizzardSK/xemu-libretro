@@ -78,6 +78,8 @@ extern int xemu_libretro_overscan_crop;
 void xemu_libretro_vk_lock_queue(void);
 /* An error line in RetroArch's log (stderr goes nowhere on Windows) */
 void xemu_libretro_vk_log_error(const char *msg);
+/* An event in the device lost report's timeline (pgraph/vk/crumbs.c) */
+void pgraph_vk_crumbs_note(const char *fmt, ...);
 void xemu_libretro_vk_unlock_queue(void);
 
 /* The frame image of a sync index: an image on the shared device, in

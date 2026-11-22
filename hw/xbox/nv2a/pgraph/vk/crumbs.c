@@ -57,6 +57,7 @@ typedef struct SubmitRec {
     uint8_t nbuf;
     uint8_t buf[4];
     uint32_t first[4], last[4]; /* breadcrumb ids; first > last: none */
+    char note[80];      /* a host event instead (pgraph_vk_crumbs_note) */
 } SubmitRec;
 
 static struct {
@@ -282,6 +283,25 @@ void pgraph_vk_crumbs_submit(PGRAPHVkState *r, uint32_t count,
     qemu_mutex_unlock(&cr.lock);
 }
 
+/* A host-side event in the submit timeline: a frame handed to the frontend */
+void pgraph_vk_crumbs_note(const char *fmt, ...)
+{
+    va_list ap;
+
+    if (!cr.on) {
+        return;
+    }
+    qemu_mutex_lock(&cr.lock);
+    SubmitRec *s = &cr.submits[cr.submit_seq % SUBMIT_RING];
+    memset(s, 0, sizeof(*s));
+    s->seq = ++cr.submit_seq;
+    s->time_us = g_get_monotonic_time();
+    va_start(ap, fmt);
+    vsnprintf(s->note, sizeof(s->note), fmt, ap);
+    va_end(ap);
+    qemu_mutex_unlock(&cr.lock);
+}
+
 static const Crumb *crumb_get(uint32_t id)
 {
     const Crumb *c = &cr.ring[id % CRUMB_RING];
@@ -462,6 +482,11 @@ void pgraph_vk_device_lost(const char *call, const char *file, int line,
             r->device_props.apiVersion);
     fprintf(f, "# %s (%d) returned by %s\n#   at %s:%d\n",
             result_name(result), result, call, file, line);
+#ifdef LIBRETRO
+    fprintf(f, "# queue: %s\n", xemu_libretro_vk.queue_shared
+                                     ? "RetroArch's (shared)"
+                                     : "the renderer's own");
+#endif
     fprintf(f, "# renderer submits %u, breadcrumbs %u, render pass open %d, "
                "aux in flight %d\n",
             r->submit_count, cr.next_id - 1, r->in_render_pass,
@@ -474,6 +499,11 @@ void pgraph_vk_device_lost(const char *call, const char *file, int line,
             break;
         }
         const SubmitRec *s = &cr.submits[(cr.submit_seq - 1 - k) % SUBMIT_RING];
+        if (s->note[0]) {
+            fprintf(f, "  %" PRIu64 ", %.1f ms ago: %s\n", s->seq,
+                    (now - s->time_us) / 1000.0, s->note);
+            continue;
+        }
         fprintf(f, "  submit %" PRIu64 ", %.1f ms ago:", s->seq,
                 (now - s->time_us) / 1000.0);
         for (int i = 0; i < s->nbuf; i++) {

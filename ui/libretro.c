@@ -4875,6 +4875,10 @@ RETRO_API void retro_run(void)
                 };
                 vulkan_if->set_image(vulkan_if->handle, &retro_vk_image, 0,
                                      NULL, VK_QUEUE_FAMILY_IGNORED);
+                pgraph_vk_crumbs_note("frame %llu (image %d, %dx%d) handed "
+                                      "to RetroArch",
+                                      (unsigned long long)count, index,
+                                      frame_w, frame_h);
                 st_new_frames++;
                 st_t = g_get_monotonic_time();
                 video_cb(RETRO_HW_FRAME_BUFFER_VALID, last_w, last_h, 0);

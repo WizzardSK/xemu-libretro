@@ -4759,6 +4759,34 @@ RETRO_API void retro_run(void)
             const bool got = !vk_renderer_parked &&
                 nv2a_vk_libretro_get_frame(index, &image, &view, &format,
                                            &frame_w, &frame_h, &count);
+            /* A steady hand-over: a new frame goes to the frontend at the
+             * same point of every run, the running average of the runs
+             * that waited for the guest (capped at 8 ms). Normally the
+             * run waits ~1.3 ms for the game to take the vblank and ~3 ms
+             * for the renderer; when the vCPU was idle it takes the
+             * vblank at once and the frame is ready ~3.5 ms sooner. Handed
+             * over then, it came 13 ms after the previous one and the next
+             * 20 ms after it (Burnout 3 with Skip TLB, NNshi's traces).
+             * Only waits, never makes a frame later than the average. */
+            if (got && count != last_count) {
+                static int64_t ho_avg;
+                const int64_t el = g_get_monotonic_time() - pace_cur_entry;
+                if (pace_cur_vwait > 0 && el < 20000) {
+                    ho_avg = ho_avg ? (ho_avg * 15 + el) / 16 : el;
+                }
+                const int64_t target = MIN(ho_avg, 8000);
+                if (el < target - 200) {
+                    const int64_t until = pace_cur_entry + target;
+                    int64_t now = g_get_monotonic_time();
+                    /* sleep most of it, spin the last 1.5 ms (Windows
+                     * sleeps in 1 ms+ steps) */
+                    if (until - now > 1500) {
+                        g_usleep(until - now - 1500);
+                    }
+                    while ((now = g_get_monotonic_time()) < until) {
+                    }
+                }
+            }
             if (prof_running) {
                 pace_host(g_get_monotonic_time(),
                           got && count > last_count ? count - last_count : 0);

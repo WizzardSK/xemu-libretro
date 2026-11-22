@@ -299,6 +299,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "720", "720" },
             { NULL, NULL },
         },
+        "0"
+    },
     /* Auto by default: Nearest Neighbor is a test switch for finding
      * upscaling artifacts (NNshi) */
     {
@@ -314,8 +316,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { NULL, NULL },
         },
         "auto"
-    },
-        "0"
     },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {

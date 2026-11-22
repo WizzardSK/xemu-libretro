@@ -106,6 +106,9 @@ struct TCGLabelQemuLdst {
     TCGReg datahi_reg;      /* reg index for high word to be loaded or stored */
     const tcg_insn_unit *raddr;   /* addr of the next IR of qemu_ld/st IR */
     tcg_insn_unit *label_ptr[2]; /* label pointers to be updated */
+    int memo_slot;          /* 1 + the TLB memo slot the lookup fills, or 0 */
+    bool memo_shared;       /* the fast path checked the memo, not the TLB */
+    const tcg_insn_unit *memo_access;   /* memo_shared: the access insn */
     QSIMPLEQ_ENTRY(TCGLabelQemuLdst) next;
 };
 
@@ -1124,6 +1127,9 @@ typedef struct TCGOutOpSubtract {
                     TCGReg a0, tcg_target_long a1, TCGReg a2);
 } TCGOutOpSubtract;
 
+#ifdef TCG_TARGET_TLB_MEMO
+#include "tcg-tlbm.c.inc"
+#endif
 #include "tcg-target.c.inc"
 
 #ifndef CONFIG_TCG_INTERPRETER
@@ -6242,6 +6248,10 @@ static void tcg_reg_alloc_call(TCGContext *s, TCGOp *op)
     TCGRegSet allocated_regs = s->reserved_regs;
     int i;
 
+#ifdef TCG_TARGET_TLB_MEMO
+    /* Arguments may use the memo registers: a call ends the memo. */
+    allocated_regs &= ~tlbm_call_regs;
+#endif
     /*
      * Move inputs into place in reverse order,
      * so that we place stacked arguments first.
@@ -6269,6 +6279,10 @@ static void tcg_reg_alloc_call(TCGContext *s, TCGOp *op)
             g_assert_not_reached();
         }
     }
+#ifdef TCG_TARGET_TLB_MEMO
+    /* Reserved again: the clobber below empties them; nothing else uses them. */
+    allocated_regs |= tlbm_call_regs;
+#endif
 
     /* Mark dead temporaries and free the associated registers.  */
     for (i = nb_oargs; i < nb_iargs + nb_oargs; i++) {
@@ -7060,6 +7074,9 @@ int tcg_gen_code(TCGContext *s, TranslationBlock *tb, uint64_t pc_start)
     s->gen_insn_data =
         tcg_malloc(sizeof(uint64_t) * s->gen_tb->icount * INSN_START_WORDS);
 
+#ifdef TCG_TARGET_TLB_MEMO
+    tcg_tlbm_plan(s);
+#endif
     tcg_out_tb_start(s);
 
     num_insns = -1;
@@ -7111,6 +7128,9 @@ int tcg_gen_code(TCGContext *s, TranslationBlock *tb, uint64_t pc_start)
         case INDEX_op_set_label:
             tcg_reg_alloc_bb_end(s, s->reserved_regs);
             tcg_out_label(s, arg_label(op->args[0]));
+#ifdef TCG_TARGET_TLB_MEMO
+            tcg_tlbm_forget(s);
+#endif
             break;
         case INDEX_op_call:
             assert_carry_dead(s);

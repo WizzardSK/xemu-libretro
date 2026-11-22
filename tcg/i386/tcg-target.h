@@ -88,4 +88,13 @@ typedef enum {
     TCG_REG_CALL_STACK = TCG_REG_ESP
 } TCGReg;
 
+
+/*
+ * Softmmu TLB walks shared within straight-line code (tcg/tcg-tlbm.c.inc);
+ * x86_64 hosts only, from xemu-macos.
+ */
+#ifdef __x86_64__
+#define TCG_TARGET_TLB_MEMO 1
+#endif
+
 #endif

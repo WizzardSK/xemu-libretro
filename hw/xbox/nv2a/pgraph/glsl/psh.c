@@ -1865,12 +1865,16 @@ static MString* psh_convert(struct PixelShader *ps)
 
             /* Clamp Textures: above 1x, a draw that maps one texel to one
              * native pixel, axis-aligned (UI, menus, full-screen images, as
-             * the UV derivatives show), reads the nearest texel centre inside
-             * the texture, so it looks as at 1x: no neighbour in an atlas
-             * and no wrap past the texture's edge bleeds into its border
-             * pixels (Splinter Cell's menu icons, Dynasty Warriors 3's menu
-             * stripes). Every other draw samples as the game asks. Off, the
-             * shader text is what it was without the option. */
+             * the UV derivatives show), reads the centre of the texel the
+             * native pixel is in, so it looks as at 1x: a read at a texel
+             * centre takes nothing from its neighbours, so no neighbour in
+             * an atlas and no wrap past the texture's edge bleeds into its
+             * border pixels (Splinter Cell's menu icons, Dynasty Warriors
+             * 3's menu stripes). Not clamped into the texture: a tiled
+             * texture (UV past 1.0, Splinter Cell's LCD grid) keeps
+             * repeating through the sampler. Every other draw samples as
+             * the game asks. Off, the shader text is what it was without
+             * the option. */
             if (ps->state->clamp_tex_scale &&
                 ps->tex_modes[i] == PS_TEXTUREMODES_PROJECT2D &&
                 !ps->state->shadow_map[i] && ps->state->dim_tex[i] == 2 &&
@@ -1886,8 +1890,7 @@ static MString* psh_convert(struct PixelShader *ps)
                     "               abs(length(dy) - s) < e &&\n"
                     "               min(abs(dx.x), abs(dx.y)) < e &&\n"
                     "               min(abs(dy.x), abs(dy.y)) < e;\n"
-                    "    vec2 c = one ? (clamp(floor(t), vec2(0.0), sz - 1.0)"
-                    " + 0.5) / sz : uv;\n"
+                    "    vec2 c = one ? (floor(t) + 0.5) / sz : uv;\n"
                     "    return textureGrad(texSamp%d, c, dFdx(uv), dFdy(uv));\n"
                     "}\n",
                     i, i, ps->state->clamp_tex_scale, i);

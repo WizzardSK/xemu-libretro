@@ -322,12 +322,13 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_half_pixel_offset",
         "Half-Pixel Offset",
         NULL,
-        "With an Internal Resolution Scale above 1x, vertices that lie exactly on a half pixel - where games put screen-aligned quads for UI, post-processing and render-target copies, following Direct3D's half-pixel offset - are moved the way Subpixel Offset Scaling moves the whole picture, so their edges and texture reads line up as at 1x. Other geometry stays where it is. Turning it on or off compiles new shaders.",
+        "With an Internal Resolution Scale above 1x, vertices that lie exactly on a half pixel - where games put screen-aligned quads for UI, post-processing and render-target copies, following Direct3D's half-pixel offset - are moved the way Subpixel Offset Scaling moves the whole picture, so their edges and texture reads line up as at 1x. \"X and Y\": vertices with both coordinates on a half pixel. \"2D Only\": those that are also where the game put them, without a 3D transform (pre-transformed screen-space quads). Other geometry stays where it is. Changing it compiles new shaders.",
         NULL,
         "video",
         {
             { "disabled", "OFF" },
-            { "enabled",  "ON" },
+            { "enabled",  "X and Y" },
+            { "2d",       "2D Only" },
             { NULL, NULL },
         },
         "disabled"

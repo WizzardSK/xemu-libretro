@@ -2112,9 +2112,12 @@ static void update_variables(void)
 
     var.key = "xemu_half_pixel_offset";
     var.value = NULL;
-    qatomic_set(&xemu_libretro_half_pixel,
-                environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
-                var.value && !strcmp(var.value, "enabled"));
+    {
+        int hp = 0;
+        if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+            hp = !strcmp(var.value, "enabled") ? 1 : !strcmp(var.value, "2d") ? 2 : 0;
+        qatomic_set(&xemu_libretro_half_pixel, hp);
+    }
 
     var.key = "xemu_clamp_textures";
     var.value = NULL;

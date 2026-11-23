@@ -237,8 +237,8 @@ void pgraph_glsl_set_vsh_state(PGRAPHState *pg, VshState *vsh)
     }
 
     vsh->is_fixed_function = fixed_function;
-    vsh->half_pixel_shift = qatomic_read(&xemu_libretro_half_pixel) &&
-                            pg->surface_scale_factor > 1;
+    vsh->half_pixel_shift = pg->surface_scale_factor > 1 ?
+                            qatomic_read(&xemu_libretro_half_pixel) : 0;
     if (fixed_function) {
         set_fixed_function_vsh_state(pg, &vsh->fixed_function);
     } else {
@@ -398,19 +398,25 @@ MString *pgraph_glsl_gen_vsh(const VshState *state, GenVshGlslOptions opts)
         "vec2 roundScreenCoords(vec2 pos) {\n"
         "  return trunc(pos * 16.0f) / 16.0f;\n"
         "}\n");
-    /* Half-Pixel Offset: above 1x, a vertex exactly on a half pixel is one
-     * the game moved by D3D's half-pixel offset (screen-aligned quads: UI,
+    /* Half-Pixel Offset: above 1x, a vertex on a half pixel is one the game
+     * moved by D3D's half-pixel offset (screen-aligned quads: UI,
      * post-process passes, render-target copies). It is moved as Subpixel
      * Offset Scaling moves the whole picture, so its edges and texture reads
-     * line up as at 1x; other vertices (3D geometry) stay. Off, the shader
-     * text is what it was without the option. */
+     * line up as at 1x. 1 "x and y": both coordinates on n.5 (one alone hit
+     * moving 3D vertices: flicker, wobble). 2 "2D only": also the vertex left
+     * where its input put it (|pos - v0.xy| <= 0.5): a pre-transformed
+     * quad, never a transformed 3D vertex. Off, the shader text is what it
+     * was without the option (NNshi). */
     if (state->half_pixel_shift) {
-        mstring_append(header,
-            "vec2 halfPixelShift(vec2 pos) {\n"
+        mstring_append_fmt(header,
+            "vec2 halfPixelShift(vec2 pos, vec2 inPos) {\n"
             "  vec2 d = vec2((0.5 * (pointScale - 1.0) + 0.25) / pointScale);\n"
-            "  return pos - mix(vec2(0.0), d, equal(fract(pos), vec2(0.5)));\n"
+            "  bool hit = all(equal(fract(pos), vec2(0.5)))%s;\n"
+            "  return hit ? pos - d : pos;\n"
             "}\n"
-            "#define roundScreenCoords(p) halfPixelShift(roundScreenCoords(p))\n");
+            "#define roundScreenCoords(p) halfPixelShift(roundScreenCoords(p), v0.xy)\n",
+            state->half_pixel_shift == 2 ?
+                " &&\n      all(lessThanEqual(abs(pos - inPos), vec2(0.5625)))" : "");
     }
 
     pgraph_glsl_get_vtx_header(header, opts.vulkan || opts.locations,

@@ -88,8 +88,9 @@ typedef struct {
     FixedFunctionVshState fixed_function;
     ProgrammableVshState programmable;
 
-    /* Half-Pixel Offset (libretro option), set only above 1x */
-    bool half_pixel_shift;
+    /* Half-Pixel Offset (libretro option), set only above 1x: 0 off,
+     * 1 x and y on a half pixel, 2 that and the vertex not transformed */
+    uint8_t half_pixel_shift;
 } VshState;
 
 void pgraph_glsl_set_vsh_state(PGRAPHState *pg, VshState *state);

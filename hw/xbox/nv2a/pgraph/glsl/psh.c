@@ -1870,9 +1870,11 @@ static MString* psh_convert(struct PixelShader *ps)
              * centre takes nothing from its neighbours, so no neighbour in
              * an atlas and no wrap past the texture's edge bleeds into its
              * border pixels (Splinter Cell's menu icons, Dynasty Warriors
-             * 3's menu stripes). Not clamped into the texture: a tiled
-             * texture (UV past 1.0, Splinter Cell's LCD grid) keeps
-             * repeating through the sampler. Every other draw samples as
+             * 3's menu stripes). A pixel at most one texel past the
+             * texture's edge (the draw's border row or column, DW3's splash)
+             * reads the edge texel, not the opposite side; further out it is
+             * left to the sampler, so a tiled texture (UV well past 1.0,
+             * Splinter Cell's LCD grid) keeps repeating. Every other draw samples as
              * the game asks. Off, the shader text is what it was without
              * the option. */
             if (ps->state->clamp_tex_scale &&
@@ -1890,7 +1892,9 @@ static MString* psh_convert(struct PixelShader *ps)
                     "               abs(length(dy) - s) < e &&\n"
                     "               min(abs(dx.x), abs(dx.y)) < e &&\n"
                     "               min(abs(dy.x), abs(dy.y)) < e;\n"
-                    "    vec2 c = one ? (floor(t) + 0.5) / sz : uv;\n"
+                    "    vec2 f = floor(t), fc = clamp(f, vec2(0.0), sz - 1.0);\n"
+                    "    f = mix(f, fc, lessThanEqual(abs(f - fc), vec2(1.0)));\n"
+                    "    vec2 c = one ? (f + 0.5) / sz : uv;\n"
                     "    return textureGrad(texSamp%d, c, dFdx(uv), dFdy(uv));\n"
                     "}\n",
                     i, i, ps->state->clamp_tex_scale, i);

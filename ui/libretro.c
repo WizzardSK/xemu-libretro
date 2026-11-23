@@ -2122,9 +2122,12 @@ static void update_variables(void)
 
     var.key = "xemu_clamp_textures";
     var.value = NULL;
-    qatomic_set(&xemu_libretro_clamp_textures,
-                environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
-                var.value && !strcmp(var.value, "enabled"));
+    {
+        int ct = 0;
+        if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+            ct = !strcmp(var.value, "enabled") ? 1 : !strcmp(var.value, "scaled") ? 2 : 0;
+        qatomic_set(&xemu_libretro_clamp_textures, ct);
+    }
 
     var.key = "xemu_texture_upscaling";
     var.value = NULL;

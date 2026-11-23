@@ -84,6 +84,10 @@ typedef struct PshState {
     /* Clamp Textures (libretro option): the Internal Resolution Scale while
      * it is on and above 1x, else 0 */
     uint8_t clamp_tex_scale;
+    /* 1 "1:1": only draws at one texel per native pixel; 2 "1:1 + Scaled
+     * 2D": also scaled axis-aligned draws of a flat triangle (all three
+     * vertices at one z and w: UI, text), read at the native pixel's centre */
+    uint8_t clamp_tex_mode;
 } PshState;
 
 void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state);

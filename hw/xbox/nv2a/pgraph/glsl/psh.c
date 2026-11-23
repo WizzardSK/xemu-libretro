@@ -195,6 +195,8 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
     state->clamp_tex_scale =
         qatomic_read(&xemu_libretro_clamp_textures) &&
         pg->surface_scale_factor > 1 ? MIN(pg->surface_scale_factor, 255) : 0;
+    state->clamp_tex_mode = state->clamp_tex_scale ?
+                            qatomic_read(&xemu_libretro_clamp_textures) : 0;
     state->window_clip_exclusive = pgraph_reg_r(pg, NV_PGRAPH_SETUPRASTER) &
                                    NV_PGRAPH_SETUPRASTER_WINDOWCLIPTYPE;
     state->combiner_control = pgraph_reg_r(pg, NV_PGRAPH_COMBINECTL);
@@ -1891,13 +1893,38 @@ static MString* psh_convert(struct PixelShader *ps)
                     "    bool one = abs(length(dx) - s) < e &&\n"
                     "               abs(length(dy) - s) < e &&\n"
                     "               min(abs(dx.x), abs(dx.y)) < e &&\n"
-                    "               min(abs(dy.x), abs(dy.y)) < e;\n"
+                    "               min(abs(dy.x), abs(dy.y)) < e;\n",
+                    i, i, ps->state->clamp_tex_scale);
+                /* 1:1 + Scaled 2D: a scaled draw (DW3's text at 16 texels
+                 * on 14 pixels, KOTOR's stretched bars) that is
+                 * axis-aligned and flat - its triangle's vertices share one
+                 * z and one w, as UI quads do and 3D surfaces do not - reads
+                 * where the native pixel's centre does, with the game's
+                 * filter and the native gradients: the picture of 1x,
+                 * scaled up, nothing from beside it that 1x would not show
+                 * (NNshi) */
+                if (ps->state->clamp_tex_mode == 2) {
+                    mstring_append_fmt(preflight,
+                        "    vec2 ax = abs(dx), ay = abs(dy);\n"
+                        "    bool axis = min(ax.x, ax.y) <= 1e-3 * max(ax.x, ax.y) &&\n"
+                        "                min(ay.x, ay.y) <= 1e-3 * max(ay.x, ay.y);\n"
+                        "    bool flat2d = all(equal(vtxPos0.zw, vtxPos1.zw)) &&\n"
+                        "                  all(equal(vtxPos1.zw, vtxPos2.zw));\n"
+                        "    if (!one && axis && flat2d) {\n"
+                        "        vec2 o = (floor(gl_FragCoord.xy * s) + 0.5) / s - gl_FragCoord.xy;\n"
+                        "        vec2 gx = dFdx(uv), gy = dFdy(uv);\n"
+                        "        return textureGrad(texSamp%d, uv + gx * o.x + gy * o.y,\n"
+                        "                           gx / s, gy / s);\n"
+                        "    }\n",
+                        i);
+                }
+                mstring_append_fmt(preflight,
                     "    vec2 f = floor(t), fc = clamp(f, vec2(0.0), sz - 1.0);\n"
                     "    f = mix(f, fc, lessThanEqual(abs(f - fc), vec2(1.0)));\n"
                     "    vec2 c = one ? (f + 0.5) / sz : uv;\n"
                     "    return textureGrad(texSamp%d, c, dFdx(uv), dFdy(uv));\n"
                     "}\n",
-                    i, i, ps->state->clamp_tex_scale, i);
+                    i);
             }
 
             /* As this means a texture fetch does happen, do alphakill */

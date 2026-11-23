@@ -27,9 +27,19 @@
  * seed files and dictionary, must not move. */
 QEMU_BUILD_BUG_ON(sizeof(GeomState) != 20);
 
+#ifdef LIBRETRO
+/* Half-Pixel Offset (ui/libretro.c) */
+extern int xemu_libretro_half_pixel;
+#else
+static int xemu_libretro_half_pixel;
+#endif
+
 void pgraph_glsl_set_geom_state(PGRAPHState *pg, GeomState *state)
 {
     state->primitive_mode = (enum ShaderPrimitiveMode)pg->primitive_mode;
+
+    state->half_pixel = pg->surface_scale_factor > 1 &&
+                        qatomic_read(&xemu_libretro_half_pixel) == 3;
 
     state->polygon_front_mode = (enum ShaderPolygonMode)GET_MASK(
         pgraph_reg_r(pg, NV_PGRAPH_SETUPRASTER),
@@ -127,6 +137,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
     const char *layout_out = NULL;
     const char *body = NULL;
     const char *provoking_index = "0";
+    int num_in = 0;
 
     /* TODO: frontface/backface culling for polygon modes POLY_MODE_LINE and
      * POLY_MODE_POINT.
@@ -139,6 +150,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
         provoking_index = state->first_vertex_is_provoking ? "0" : "1";
         need_linez = true;
         layout_in = "layout(lines) in;\n";
+        num_in = 2;
         if (state->wide_lines) {
             need_wide = true;
             layout_out = "layout(triangle_strip, max_vertices = 4) out;\n";
@@ -162,6 +174,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
         }
         need_triz = true;
         layout_in = "layout(triangles) in;\n";
+        num_in = 3;
         if (polygon_mode == POLY_MODE_FILL) {
             layout_out = "layout(triangle_strip, max_vertices = 3) out;\n";
             body = "  mat4 pz = calc_triz(v[0], v[1], v[2]);\n"
@@ -192,6 +205,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
         provoking_index = "3";
         need_quadz = true;
         layout_in = "layout(lines_adjacency) in;\n";
+        num_in = 4;
         if (polygon_mode == POLY_MODE_FILL) {
             layout_out = "layout(triangle_strip, max_vertices = 6) out;\n";
             body = "  mat4 pz, pz2;\n"
@@ -232,6 +246,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
         provoking_index = "3";
         need_quadz = true;
         layout_in = "layout(lines_adjacency) in;\n";
+        num_in = 4;
         if (polygon_mode == POLY_MODE_FILL) {
             layout_out = "layout(triangle_strip, max_vertices = 6) out;\n";
             body = "  if ((gl_PrimitiveIDIn & 1) != 0) { return; }\n"
@@ -276,6 +291,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
             provoking_index = "v[2]";
             need_triz = true;
             layout_in = "layout(triangles) in;\n";
+            num_in = 3;
             layout_out = "layout(triangle_strip, max_vertices = 3) out;\n";
             body = "  mat4 pz = calc_triz(v[0], v[1], v[2]);\n"
                    "  emit_vertex(v[0], pz);\n"
@@ -291,6 +307,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
              * wrong.
              */
             layout_in = "layout(lines) in;\n";
+            num_in = 2;
             layout_out = "layout(line_strip, max_vertices = 2) out;\n";
             body = "  emit_line(0, 1, 0.0);\n";
         } else {
@@ -314,7 +331,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                          "%s"
                          "%s"
                          "\n"
-                         "#define v_vtxPos v_vtxPos0\n"
+                         "#define v_vtxPos %s\n"
                          "\n",
                          opts.vulkan ? 450 : (opts.locations ? 410 : 400),
                          opts.vulkan ? "" :
@@ -326,11 +343,44 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                              "  vec4 gl_Position;\n"
                              "  float gl_PointSize;\n"
                              "};\n\n",
-                         layout_in, layout_out);
+                         layout_in, layout_out,
+                         state->half_pixel ? "gsPos" : "v_vtxPos0");
     pgraph_glsl_get_vtx_header(output, opts.vulkan || opts.locations,
                                state->smooth_shading, true, true, true);
     pgraph_glsl_get_vtx_header(output, opts.vulkan || opts.locations,
                                state->smooth_shading, false, false, false);
+
+    /* Half-Pixel Offset "Per Triangle": the vertex shader leaves the
+     * positions unshifted and passes the shift in vtxPos1 (xy: clip space per
+     * unit of w, zw: native pixels; the geometry shader rewrites vtxPos1
+     * anyway). Shifted only when every vertex of the primitive has x and y
+     * on n.5: a screen-aligned quad has all its corners there, a moving 3D
+     * triangle almost never all three at once (NNshi). */
+    const char *pos_pre = "gl_in[", *pos_post = "].gl_Position";
+    char hp_body[48] = "";
+    if (state->half_pixel) {
+        pos_pre = "gsClip[";
+        pos_post = "]";
+        mstring_append_fmt(output,
+            "vec4 gsPos[%d];\n"
+            "vec4 gsClip[%d];\n"
+            "void hp_init() {\n"
+            "  bool hit = true;\n"
+            "  for (int i = 0; i < %d; i++) {\n"
+            "    hit = hit && all(equal(fract(v_vtxPos0[i].xy), vec2(0.5)));\n"
+            "  }\n"
+            "  for (int i = 0; i < %d; i++) {\n"
+            "    gsPos[i] = v_vtxPos0[i];\n"
+            "    gsClip[i] = gl_in[i].gl_Position;\n"
+            "    if (hit) {\n"
+            "      gsPos[i].xy -= v_vtxPos1[i].zw;\n"
+            "      gsClip[i].xy -= v_vtxPos1[i].xy * gsClip[i].w;\n"
+            "    }\n"
+            "  }\n"
+            "}\n",
+            num_in, num_in, num_in, num_in);
+        snprintf(hp_body, sizeof(hp_body), "  hp_init();\n");
+    }
 
     char vertex_order_buf[80];
     const char *vertex_order_body = "";
@@ -363,7 +413,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
     mstring_append_fmt(
         output,
         "void emit_vertex(int index, mat4 pz) {\n"
-        "  gl_Position = gl_in[index].gl_Position;\n"
+        "  gl_Position = %sindex%s;\n"
         "  gl_PointSize = gl_in[index].gl_PointSize;\n"
         "  vtxD0 = v_vtxD0[%s];\n"
         "  vtxD1 = v_vtxD1[%s];\n"
@@ -380,6 +430,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
         "  triMZ = (isnan(pz[3].x) || isinf(pz[3].x)) ? 0.0 : pz[3].x;\n"
         "  EmitVertex();\n"
         "}\n",
+        pos_pre, pos_post,
         provoking_index,
         provoking_index,
         provoking_index,
@@ -487,8 +538,8 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
             "  vec2 delta = v_vtxPos[i1].xy - v_vtxPos[i0].xy;\n"
             "  vec2 v2 = vec2(-delta.y, delta.x) + v_vtxPos[i0].xy;\n"
             "  mat4 pz = mat4(v_vtxPos[i0], v_vtxPos[i1], v2, v_vtxPos[i0].zw, dz, vec3(0.0));\n"
-            "  vec4 p0 = gl_in[i0].gl_Position;\n"
-            "  vec4 p1 = gl_in[i1].gl_Position;\n"
+            "  vec4 p0 = %si0%s;\n"
+            "  vec4 p1 = %si1%s;\n"
             "  vec2 s0 = p0.xy / p0.w;\n"
             "  vec2 s1 = p1.xy / p1.w;\n"
             "  vec2 d = (s1 - s0) * gsSurfaceSize;\n"
@@ -508,7 +559,8 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
             "  emit_wide_vertex(i1, pz, vec4((s1 - off) * p1.w, p1.zw));\n"
             "  EndPrimitive();\n"
             "}\n",
-            provoking_index, provoking_index, provoking_index, provoking_index);
+            provoking_index, provoking_index, provoking_index, provoking_index,
+            pos_pre, pos_post, pos_pre, pos_post);
     }
 
     if (need_quadz) {
@@ -525,8 +577,9 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                        "void main() {\n"
                        "%s"
                        "%s"
+                       "%s"
                        "}\n",
-                       vertex_order_body, body);
+                       hp_body, vertex_order_body, body);
 
     return output;
 }

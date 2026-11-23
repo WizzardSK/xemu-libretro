@@ -239,6 +239,12 @@ void pgraph_glsl_set_vsh_state(PGRAPHState *pg, VshState *vsh)
     vsh->is_fixed_function = fixed_function;
     vsh->half_pixel_shift = pg->surface_scale_factor > 1 ?
                             qatomic_read(&xemu_libretro_half_pixel) : 0;
+    /* "Per Triangle" needs the geometry shader, which points don't get:
+     * a point is its own primitive, so the per-vertex rule is the same. */
+    if (vsh->half_pixel_shift == 3 &&
+        pg->primitive_mode == PRIM_TYPE_POINTS) {
+        vsh->half_pixel_shift = 1;
+    }
     if (fixed_function) {
         set_fixed_function_vsh_state(pg, &vsh->fixed_function);
     } else {
@@ -405,9 +411,16 @@ MString *pgraph_glsl_gen_vsh(const VshState *state, GenVshGlslOptions opts)
      * line up as at 1x. 1 "x and y": both coordinates on n.5 (one alone hit
      * moving 3D vertices: flicker, wobble). 2 "2D only": also the vertex left
      * where its input put it (|pos - v0.xy| <= 0.5): a pre-transformed
-     * quad, never a transformed 3D vertex. Off, the shader text is what it
-     * was without the option (NNshi). */
-    if (state->half_pixel_shift) {
+     * quad, never a transformed 3D vertex. 3 "per triangle": the vertex
+     * stays where it is and passes the shift in vtxPos1; the geometry shader
+     * moves the primitive only when all its vertices are on n.5 (geom.c).
+     * Off, the shader text is what it was without the option (NNshi). */
+    if (state->half_pixel_shift == 3) {
+        mstring_append(header,
+            "vec2 halfPixelD() {\n"
+            "  return vec2((0.5 * (pointScale - 1.0) + 0.25) / pointScale);\n"
+            "}\n");
+    } else if (state->half_pixel_shift) {
         mstring_append_fmt(header,
             "vec2 halfPixelShift(vec2 pos, vec2 inPos) {\n"
             "  vec2 d = vec2((0.5 * (pointScale - 1.0) + 0.25) / pointScale);\n"
@@ -630,6 +643,11 @@ MString *pgraph_glsl_gen_vsh(const VshState *state, GenVshGlslOptions opts)
                    "  triMZ = 0.0;\n"
                    "  gl_PointSize = oPts.x;\n"
     );
+    if (state->half_pixel_shift == 3) {
+        mstring_append(body,
+                       "  vtxPos1 = vec4(2.0 * halfPixelD() / surfaceSize,\n"
+                       "                 halfPixelD());\n");
+    }
 
     if (state->is_fixed_function && state->fixed_function.csv0c_dynamic) {
         mstring_append(body,

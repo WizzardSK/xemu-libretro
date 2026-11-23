@@ -36,7 +36,12 @@ typedef struct {
      * geometry shader draws each segment as a rectangle. Lives in the
      * padding byte: the key keeps its size and every recorded seed. */
     bool wide_lines;
-    short tri_rot0;
+    int8_t tri_rot0;
+    /* Half-Pixel Offset "Per Triangle": the primitive is shifted only when
+     * all its vertices are on a half pixel. Takes the high byte of the old
+     * short tri_rot0 (always 0), so the key keeps its size and old seeds
+     * read as off. */
+    uint8_t half_pixel;
     short tri_rot1;
 } GeomState;
 

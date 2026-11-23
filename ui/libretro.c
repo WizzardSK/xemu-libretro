@@ -2115,7 +2115,8 @@ static void update_variables(void)
     {
         int hp = 0;
         if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
-            hp = !strcmp(var.value, "enabled") ? 1 : !strcmp(var.value, "2d") ? 2 : 0;
+            hp = !strcmp(var.value, "enabled") ? 1 : !strcmp(var.value, "2d") ? 2 :
+                 !strcmp(var.value, "triangle") ? 3 : 0;
         qatomic_set(&xemu_libretro_half_pixel, hp);
     }
 

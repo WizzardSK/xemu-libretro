@@ -1903,19 +1903,27 @@ static MString* psh_convert(struct PixelShader *ps)
                  * filter and the native gradients: the picture of 1x,
                  * scaled up, nothing from beside it that 1x would not show
                  * (NNshi) */
-                if (ps->state->clamp_tex_mode == 2) {
+                /* 3 "Scaled 2D, Low-Res": as 2, but only textures with at
+                 * most 1.5 texels per 1x pixel. An upscaled render target
+                 * (a game's 3D picture shown by a flat full-screen quad,
+                 * post-processing) holds about scale texels per 1x pixel;
+                 * read at 1x points it lost its resolution and looked
+                 * blockier than native (NNshi, 28cf6a3). */
+                if (ps->state->clamp_tex_mode >= 2) {
                     mstring_append_fmt(preflight,
                         "    vec2 ax = abs(dx), ay = abs(dy);\n"
                         "    bool axis = min(ax.x, ax.y) <= 1e-3 * max(ax.x, ax.y) &&\n"
                         "                min(ay.x, ay.y) <= 1e-3 * max(ay.x, ay.y);\n"
                         "    bool flat2d = all(equal(vtxPos0.zw, vtxPos1.zw)) &&\n"
                         "                  all(equal(vtxPos1.zw, vtxPos2.zw));\n"
-                        "    if (!one && axis && flat2d) {\n"
+                        "    if (!one && axis && flat2d%s) {\n"
                         "        vec2 o = (floor(gl_FragCoord.xy * s) + 0.5) / s - gl_FragCoord.xy;\n"
                         "        vec2 gx = dFdx(uv), gy = dFdy(uv);\n"
                         "        return textureGrad(texSamp%d, uv + gx * o.x + gy * o.y,\n"
                         "                           gx / s, gy / s);\n"
                         "    }\n",
+                        ps->state->clamp_tex_mode == 3 ?
+                            " &&\n        max(length(dx), length(dy)) <= 1.5 * s" : "",
                         i);
                 }
                 mstring_append_fmt(preflight,

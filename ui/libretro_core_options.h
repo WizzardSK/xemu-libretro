@@ -339,13 +339,14 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_clamp_textures",
         "Clamp Textures",
         NULL,
-        "With an Internal Resolution Scale above 1x, textures drawn one texel per pixel without scaling or rotation - UI, menus, full-screen images - are read from the nearest texel inside the texture, so they look as at 1x: neighbouring images in a texture atlas and the opposite edge of a repeating texture no longer bleed into their borders. \"1:1 + Scaled 2D\" also takes scaled, unrotated draws whose vertices all lie at one depth (UI, text): they are read where the 1x pixel's centre is, so they look as at 1x. Everything else is sampled as the game asks. Changing it compiles new shaders.",
+        "With an Internal Resolution Scale above 1x, textures drawn one texel per pixel without scaling or rotation - UI, menus, full-screen images - are read from the nearest texel inside the texture, so they look as at 1x: neighbouring images in a texture atlas and the opposite edge of a repeating texture no longer bleed into their borders. \"1:1 + Scaled 2D\" also takes scaled, unrotated draws whose vertices all lie at one depth (UI, text): they are read where the 1x pixel's centre is, so they look as at 1x. \"Low-Res\" leaves out textures with more than 1.5 texels per 1x pixel, such as pictures the game rendered at the upscaled resolution. Everything else is sampled as the game asks. Changing it compiles new shaders.",
         NULL,
         "video",
         {
             { "disabled", "OFF" },
             { "enabled",  "1:1" },
             { "scaled",   "1:1 + Scaled 2D" },
+            { "lowres",   "1:1 + Scaled 2D, Low-Res" },
             { NULL, NULL },
         },
         "disabled"

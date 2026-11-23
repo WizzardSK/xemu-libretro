@@ -86,7 +86,9 @@ typedef struct PshState {
     uint8_t clamp_tex_scale;
     /* 1 "1:1": only draws at one texel per native pixel; 2 "1:1 + Scaled
      * 2D": also scaled axis-aligned draws of a flat triangle (all three
-     * vertices at one z and w: UI, text), read at the native pixel's centre */
+     * vertices at one z and w: UI, text), read at the native pixel's centre;
+     * 3 "Scaled 2D, Low-Res": 2 for textures of at most 1.5 texels per 1x
+     * pixel only (not upscaled render targets) */
     uint8_t clamp_tex_mode;
 } PshState;
 

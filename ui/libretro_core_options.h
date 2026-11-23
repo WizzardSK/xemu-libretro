@@ -332,6 +332,21 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "disabled"
     },
+    /* Off by default: a test switch for upscaling artifacts (NNshi) */
+    {
+        "xemu_clamp_textures",
+        "Clamp Textures",
+        NULL,
+        "With an Internal Resolution Scale above 1x, textures drawn one texel per pixel without scaling or rotation - UI, menus, full-screen images - are read from the nearest texel inside the texture, so they look as at 1x: neighbouring images in a texture atlas and the opposite edge of a repeating texture no longer bleed into their borders. Everything else is sampled as the game asks. Turning it on or off compiles new shaders.",
+        NULL,
+        "video",
+        {
+            { "enabled",  "ON" },
+            { "disabled", "OFF" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",

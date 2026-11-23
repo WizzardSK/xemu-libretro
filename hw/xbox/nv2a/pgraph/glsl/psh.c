@@ -183,8 +183,18 @@ static uint32_t get_color_key_mask_for_texture(PGRAPHState *pg, int i)
     return get_colorkey_mask(color_format);
 }
 
+#ifdef LIBRETRO
+/* Clamp Textures (ui/libretro.c) */
+extern int xemu_libretro_clamp_textures;
+#else
+static int xemu_libretro_clamp_textures;
+#endif
+
 void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
 {
+    state->clamp_tex_scale =
+        qatomic_read(&xemu_libretro_clamp_textures) &&
+        pg->surface_scale_factor > 1 ? MIN(pg->surface_scale_factor, 255) : 0;
     state->window_clip_exclusive = pgraph_reg_r(pg, NV_PGRAPH_SETUPRASTER) &
                                    NV_PGRAPH_SETUPRASTER_WINDOWCLIPTYPE;
     state->combiner_control = pgraph_reg_r(pg, NV_PGRAPH_COMBINECTL);
@@ -1598,12 +1608,21 @@ static MString* psh_convert(struct PixelShader *ps)
                              * edge (VC3 decor lightmaps). Clamping the
                              * divisor to a positive minimum reproduces
                              * exactly that. */
-                            mstring_append_fmt(
-                                vars,
-                                "vec3 tp%d = %s(pT%d.xyw);\n"
-                                "vec4 t%d = texture(texSamp%d,"
-                                " tp%d.xy / max(tp%d.z, 1e-15));\n",
-                                i, tex_remap, i, i, i, i, i);
+                            if (ps->state->clamp_tex_scale) {
+                                mstring_append_fmt(
+                                    vars,
+                                    "vec3 tp%d = %s(pT%d.xyw);\n"
+                                    "vec4 t%d = clampTex%d("
+                                    "tp%d.xy / max(tp%d.z, 1e-15));\n",
+                                    i, tex_remap, i, i, i, i, i);
+                            } else {
+                                mstring_append_fmt(
+                                    vars,
+                                    "vec3 tp%d = %s(pT%d.xyw);\n"
+                                    "vec4 t%d = texture(texSamp%d,"
+                                    " tp%d.xy / max(tp%d.z, 1e-15));\n",
+                                    i, tex_remap, i, i, i, i, i);
+                            }
                         }
                     } else if (ps->state->dim_tex[i] == 3) {
                         mstring_append_fmt(vars, "vec4 t%d = textureProj(texSamp%d, vec4(pT%d.xy, 0.0, pT%d.w));\n",
@@ -1843,6 +1862,36 @@ static MString* psh_convert(struct PixelShader *ps)
                 mstring_append_fmt(preflight, "layout(binding = %d) ", ps->opts.tex_binding + i);
             }
             mstring_append_fmt(preflight, "uniform %s texSamp%d;\n", sampler_type, i);
+
+            /* Clamp Textures: above 1x, a draw that maps one texel to one
+             * native pixel, axis-aligned (UI, menus, full-screen images, as
+             * the UV derivatives show), reads the nearest texel centre inside
+             * the texture, so it looks as at 1x: no neighbour in an atlas
+             * and no wrap past the texture's edge bleeds into its border
+             * pixels (Splinter Cell's menu icons, Dynasty Warriors 3's menu
+             * stripes). Every other draw samples as the game asks. Off, the
+             * shader text is what it was without the option. */
+            if (ps->state->clamp_tex_scale &&
+                ps->tex_modes[i] == PS_TEXTUREMODES_PROJECT2D &&
+                !ps->state->shadow_map[i] && ps->state->dim_tex[i] == 2 &&
+                !ps->state->tex_cubemap[i] &&
+                ps->state->conv_tex[i] != CONVOLUTION_FILTER_GAUSSIAN &&
+                ps->state->conv_tex[i] != CONVOLUTION_FILTER_QUINCUNX) {
+                mstring_append_fmt(preflight,
+                    "vec4 clampTex%d(vec2 uv) {\n"
+                    "    vec2 sz = vec2(textureSize(texSamp%d, 0));\n"
+                    "    vec2 t = uv * sz, dx = dFdx(t), dy = dFdy(t);\n"
+                    "    float s = 1.0 / %d.0, e = 0.01 * s;\n"
+                    "    bool one = abs(length(dx) - s) < e &&\n"
+                    "               abs(length(dy) - s) < e &&\n"
+                    "               min(abs(dx.x), abs(dx.y)) < e &&\n"
+                    "               min(abs(dy.x), abs(dy.y)) < e;\n"
+                    "    vec2 c = one ? (clamp(floor(t), vec2(0.0), sz - 1.0)"
+                    " + 0.5) / sz : uv;\n"
+                    "    return textureGrad(texSamp%d, c, dFdx(uv), dFdy(uv));\n"
+                    "}\n",
+                    i, i, ps->state->clamp_tex_scale, i);
+            }
 
             /* As this means a texture fetch does happen, do alphakill */
             if (ps->state->alpha_dynamic) {

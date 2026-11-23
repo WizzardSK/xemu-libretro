@@ -80,6 +80,10 @@ typedef struct PshState {
 
     unsigned int surface_zeta_format;
     enum PshDepthFormat depth_format;
+
+    /* Clamp Textures (libretro option): the Internal Resolution Scale while
+     * it is on and above 1x, else 0 */
+    uint8_t clamp_tex_scale;
 } PshState;
 
 void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state);

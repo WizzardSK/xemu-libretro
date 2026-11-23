@@ -1863,14 +1863,17 @@ static MString* psh_convert(struct PixelShader *ps)
             }
             mstring_append_fmt(preflight, "uniform %s texSamp%d;\n", sampler_type, i);
 
-            /* Clamp Textures: above 1x, a draw that maps one texel to one
-             * native pixel, axis-aligned (UI, menus, full-screen images, as
-             * the UV derivatives show), reads the nearest texel centre inside
-             * the texture, so it looks as at 1x: no neighbour in an atlas
-             * and no wrap past the texture's edge bleeds into its border
-             * pixels (Splinter Cell's menu icons, Dynasty Warriors 3's menu
-             * stripes). Every other draw samples as the game asks. Off, the
-             * shader text is what it was without the option. */
+            /* Clamp Textures: above 1x, an axis-aligned draw (UI, menus,
+             * text, full-screen images, as the UV derivatives show) samples
+             * as at 1x. One texel per native pixel: the centre of the texel
+             * the fragment is in, so no neighbour in an atlas bleeds in
+             * (Splinter Cell's menu icons). Scaled: the point the native
+             * pixel's centre samples, with the game's filter (DW3/DW5 text).
+             * Up to half a texel past the texture's edge reads the edge texel,
+             * not the other side of a repeating texture (Dynasty Warriors
+             * 3's menu stripes). Rotated or perspective draws sample as the
+             * game asks. Off, the shader text is what it was without the
+             * option. */
             if (ps->state->clamp_tex_scale &&
                 ps->tex_modes[i] == PS_TEXTUREMODES_PROJECT2D &&
                 !ps->state->shadow_map[i] && ps->state->dim_tex[i] == 2 &&
@@ -1879,18 +1882,35 @@ static MString* psh_convert(struct PixelShader *ps)
                 ps->state->conv_tex[i] != CONVOLUTION_FILTER_QUINCUNX) {
                 mstring_append_fmt(preflight,
                     "vec4 clampTex%d(vec2 uv) {\n"
+                    "    const float S = %d.0;\n"
                     "    vec2 sz = vec2(textureSize(texSamp%d, 0));\n"
                     "    vec2 t = uv * sz, dx = dFdx(t), dy = dFdy(t);\n"
-                    "    float s = 1.0 / %d.0, e = 0.01 * s;\n"
-                    "    bool one = abs(length(dx) - s) < e &&\n"
-                    "               abs(length(dy) - s) < e &&\n"
-                    "               min(abs(dx.x), abs(dx.y)) < e &&\n"
-                    "               min(abs(dy.x), abs(dy.y)) < e;\n"
-                    "    vec2 c = one ? (clamp(floor(t), vec2(0.0), sz - 1.0)"
-                    " + 0.5) / sz : uv;\n"
-                    "    return textureGrad(texSamp%d, c, dFdx(uv), dFdy(uv));\n"
+                    "    vec2 gx = dFdx(uv), gy = dFdy(uv);\n"
+                    "    float lx = length(dx), ly = length(dy);\n"
+                    /* axis-aligned: each screen axis moves along one texture axis */
+                    "    bool aligned = lx > 0.0 && ly > 0.0 &&\n"
+                    "        min(abs(dx.x), abs(dx.y)) < 0.001 * lx &&\n"
+                    "        min(abs(dy.x), abs(dy.y)) < 0.001 * ly;\n"
+                    "    if (!aligned) return textureGrad(texSamp%d, uv, gx, gy);\n"
+                    "    vec2 c;\n"
+                    "    if (abs(lx * S - 1.0) < 0.01 && abs(ly * S - 1.0) < 0.01) {\n"
+                    /* one texel per native pixel: the texel the fragment is in */
+                    "        c = floor(t) + 0.5;\n"
+                    "    } else {\n"
+                    /* scaled: where the native pixel's centre samples, as at 1x */
+                    "        vec2 fc = gl_FragCoord.xy;\n"
+                    "        vec2 cn = (floor(fc / S) + 0.5) * S;\n"
+                    "        c = t + dx * (cn.x - fc.x) + dy * (cn.y - fc.y);\n"
+                    "        gx *= S; gy *= S;\n"
+                    "    }\n"
+                    /* up to half a texel past the texture's edge: its edge
+                     * texel, not the other side (a real tiling goes further) */
+                    "    c = mix(c, clamp(c, vec2(0.5), sz - 0.5),\n"
+                    "            vec2(greaterThanEqual(c, vec2(-0.5))) *\n"
+                    "            vec2(lessThanEqual(c, sz + 0.5)));\n"
+                    "    return textureGrad(texSamp%d, c / sz, gx, gy);\n"
                     "}\n",
-                    i, i, ps->state->clamp_tex_scale, i);
+                    i, ps->state->clamp_tex_scale, i, i, i);
             }
 
             /* As this means a texture fetch does happen, do alphakill */

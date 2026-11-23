@@ -398,22 +398,19 @@ MString *pgraph_glsl_gen_vsh(const VshState *state, GenVshGlslOptions opts)
         "vec2 roundScreenCoords(vec2 pos) {\n"
         "  return trunc(pos * 16.0f) / 16.0f;\n"
         "}\n");
-    /* Half-Pixel Offset: above 1x, a vertex with x and y both exactly on a
-     * half pixel and w = 1 is one the game placed in screen space with D3D's
-     * half-pixel offset (screen-aligned quads: UI, post-process passes,
-     * render-target copies). It is moved as Subpixel Offset Scaling moves the
-     * whole picture, so its edges and texture reads line up as at 1x. 3D
-     * vertices stay: testing each coordinate alone moved a moving vertex
-     * whenever one axis passed a half pixel (flicker, wobble; NNshi). Off,
-     * the shader text is what it was without the option. */
+    /* Half-Pixel Offset: above 1x, a vertex exactly on a half pixel is one
+     * the game moved by D3D's half-pixel offset (screen-aligned quads: UI,
+     * post-process passes, render-target copies). It is moved as Subpixel
+     * Offset Scaling moves the whole picture, so its edges and texture reads
+     * line up as at 1x; other vertices (3D geometry) stay. Off, the shader
+     * text is what it was without the option. */
     if (state->half_pixel_shift) {
         mstring_append(header,
-            "vec2 halfPixelShift(vec2 pos, float w) {\n"
+            "vec2 halfPixelShift(vec2 pos) {\n"
             "  vec2 d = vec2((0.5 * (pointScale - 1.0) + 0.25) / pointScale);\n"
-            "  bool screen = all(equal(fract(pos), vec2(0.5))) && w == 1.0;\n"
-            "  return screen ? pos - d : pos;\n"
+            "  return pos - mix(vec2(0.0), d, equal(fract(pos), vec2(0.5)));\n"
             "}\n"
-            "#define roundScreenCoords(p) halfPixelShift(roundScreenCoords(p), oPos.w)\n");
+            "#define roundScreenCoords(p) halfPixelShift(roundScreenCoords(p))\n");
     }
 
     pgraph_glsl_get_vtx_header(header, opts.vulkan || opts.locations,

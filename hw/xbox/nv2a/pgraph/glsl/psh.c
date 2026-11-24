@@ -1954,8 +1954,8 @@ static MString* psh_convert(struct PixelShader *ps)
                  * as in KOTOR's dialog boxes, whose fourth corner of each
                  * tile sits at another depth: half of every tile was read
                  * unclamped and a grey line from the tile's opposite edge
-                 * showed, NNshi) of at most 1.5 texels per 1x pixel, 1:1
-                 * ones included, takes
+                 * showed, NNshi), 1:1 ones and minified ones included,
+                 * takes
                  * its texture coordinate at the centre of the 1x pixel and
                  * on a 1/64 texel grid, as 1x computes it. A point-sampled
                  * draw whose 1x pixel centres fall exactly on texel edges
@@ -1967,7 +1967,12 @@ static MString* psh_convert(struct PixelShader *ps)
                  * interpolated coordinate lands a hair below the edge, and
                  * taking the one after it moved the text a whole 1x pixel
                  * down. A 1:1 draw then reads that texel's centre, as mode
-                 * 1. */
+                 * 1. No limit on texels per pixel (Low-Res's 1.5 kept the
+                 * upscaled render targets out, which are now left out by
+                 * clamp_tex_rt): KOTOR's name entry squeezes a 16x16 border
+                 * texture, repeating, into 4-5 pixel corners and outlines,
+                 * and read at each fine pixel their edges took texels from
+                 * the opposite side, dots beside every key (NNshi). */
                 if (ps->state->clamp_tex_mode == 4) {
                     mstring_append_fmt(preflight,
                         "    vec2 ax = abs(dx), ay = abs(dy);\n"
@@ -1975,7 +1980,7 @@ static MString* psh_convert(struct PixelShader *ps)
                         "                min(ay.x, ay.y) <= 1e-3 * max(ay.x, ay.y);\n"
                         "    bool flat2d = vtxPos0.w == vtxPos1.w && vtxPos1.w == vtxPos2.w;\n"
                         "    vec2 gx = dFdx(uv), gy = dFdy(uv);\n"
-                        "    if (axis && flat2d && max(length(dx), length(dy)) <= 1.5 * s) {\n"
+                        "    if (axis && flat2d) {\n"
                         "        vec2 o = (floor(gl_FragCoord.xy * s) + 0.5) / s - gl_FragCoord.xy;\n"
                         "        t = round((t + dx * o.x + dy * o.y) * 64.0) / 64.0 - 1.0 / 128.0;\n"
                         "        if (!one) {\n"

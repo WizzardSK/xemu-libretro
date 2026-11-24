@@ -307,7 +307,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_texture_upscaling",
         "Texture Upscaling",
         NULL,
-        "With an Internal Resolution Scale above 1x, how textures are magnified. \"Auto\" uses the filter the game asks for. \"Nearest Neighbor\" magnifies every texture without filtering, with no exceptions: a test switch to tell upscaling artifacts caused by bilinear sampling at texture edges from the rest. Vulkan only.",
+        "With an Internal Resolution Scale above 1x, how textures are magnified. \"Auto\" uses the filter the game asks for. \"Nearest Neighbor\" magnifies every texture without filtering except the game's own upscaled render targets (bloom, blur, the 3D picture): a test switch to tell upscaling artifacts caused by bilinear sampling at texture edges from the rest. Vulkan only.",
         NULL,
         "video",
         {
@@ -342,7 +342,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_clamp_textures",
         "Clamp Textures",
         NULL,
-        "With an Internal Resolution Scale above 1x, textures drawn one texel per pixel without scaling or rotation - UI, menus, full-screen images - are read from the nearest texel inside the texture, so they look as at 1x: neighbouring images in a texture atlas and the opposite edge of a repeating texture no longer bleed into their borders. \"1:1 + Scaled 2D\" also takes scaled, unrotated draws whose vertices all lie at one depth (UI, text): they are read where the 1x pixel's centre is, so they look as at 1x. \"Low-Res\" leaves out textures with more than 1.5 texels per 1x pixel, such as pictures the game rendered at the upscaled resolution. \"1x Pixel Centres\" is \"Low-Res\" with 1:1 draws included: every flat, unrotated draw takes its texture coordinate at the centre of the 1x pixel, so a point-sampled one shows the texel 1x shows (text that sits half a 1x pixel off when upscaled). Everything else is sampled as the game asks. Changing it compiles new shaders.",
+        "With an Internal Resolution Scale above 1x, textures drawn one texel per pixel without scaling or rotation - UI, menus, full-screen images - are read from the nearest texel inside the texture, so they look as at 1x: neighbouring images in a texture atlas and the opposite edge of a repeating texture no longer bleed into their borders. \"1:1 + Scaled 2D\" also takes scaled, unrotated draws whose vertices all lie at one depth (UI, text): they are read where the 1x pixel's centre is, so they look as at 1x. \"Low-Res\" leaves out textures with more than 1.5 texels per 1x pixel, such as pictures the game rendered at the upscaled resolution. \"1x Pixel Centres\" is \"Low-Res\" with 1:1 draws included: every unrotated draw without perspective takes its texture coordinate at the centre of the 1x pixel, so a point-sampled one shows the texel 1x shows (text that sits half a 1x pixel off when upscaled). The game's own upscaled render targets (bloom, blur, the 3D picture) are never clamped. Everything else is sampled as the game asks. Changing it compiles new shaders.",
         NULL,
         "video",
         {

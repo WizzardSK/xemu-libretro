@@ -141,6 +141,13 @@ bool pgraph_glsl_check_shader_state_dirty(PGRAPHState *pg,
         return true;
     }
 
+    /* Clamp Textures leaves upscaled render targets alone: a unit that
+     * switches between one and a normal texture needs the other shader */
+    if (state->psh.clamp_tex_scale &&
+        pg->tex_units_scaled != state->psh.clamp_tex_rt) {
+        return true;
+    }
+
     for (int i = 0; i < 4; i++) {
         if (pgraph_is_reg_dirty(pg, NV_PGRAPH_TEXCTL0_0 + i * 4) ||
             signed_g8b8_address_dirty(pg, i) ||

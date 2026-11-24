@@ -342,6 +342,9 @@ typedef struct PGRAPHState {
      * texture of the next draw is an upscaled surface (set by the renderer
      * with its textures, before the shaders) */
     bool half_pixel_reads_scaled;
+    /* Clamp Textures: bit n, texture unit n of the next draw is an upscaled
+     * surface (set with half_pixel_reads_scaled) */
+    uint8_t tex_units_scaled;
     /* Vulkan: the configured internal resolution, and the size up to which
      * a render target (its larger side) is drawn at 1x instead (0 = off) */
     unsigned int surface_scale_base;

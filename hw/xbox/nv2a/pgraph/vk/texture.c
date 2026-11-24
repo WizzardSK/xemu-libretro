@@ -1671,11 +1671,15 @@ static void resolve_unit_sampler(PGRAPHState *pg, int texture_idx,
 
     /* Texture Upscaling, Nearest Neighbor: above 1x every texture is
      * magnified by a box filter (nearest) instead of the game's filter, with
-     * no exceptions - a test switch to tell artifacts of bilinear edge
-     * sampling from the rest (NNshi). Only the sampler changes, not the
-     * shaders; the sampler cache keys on the filter, so it applies at once. */
+     * one exception: an upscaled render target (bloom, blur, the 3D picture)
+     * keeps the game's filter (NNshi) - a test switch to tell artifacts of
+     * bilinear edge sampling from the rest. Only the sampler changes, not
+     * the shaders; the sampler cache keys on the filter, so it applies at
+     * once. */
     if (qatomic_read(&xemu_libretro_texture_nearest) &&
-        pg->surface_scale_factor > 1) {
+        pg->surface_scale_factor > 1 &&
+        !(r->texture_bindings[texture_idx] &&
+          r->texture_bindings[texture_idx]->key.scale > 1)) {
         SET_MASK(filter, NV_PGRAPH_TEXFILTER0_MAG, 1);
     }
 

@@ -199,6 +199,7 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
         pg->surface_scale_factor > 1 ? MIN(pg->surface_scale_factor, 255) : 0;
     state->clamp_tex_mode = state->clamp_tex_scale ?
                             qatomic_read(&xemu_libretro_clamp_textures) : 0;
+    state->clamp_tex_rt = state->clamp_tex_scale ? pg->tex_units_scaled : 0;
     {
         enum ShaderPrimitiveMode prim = pg->primitive_mode;
         bool fill = GET_MASK(pgraph_reg_r(pg, NV_PGRAPH_SETUPRASTER),
@@ -1914,6 +1915,7 @@ static MString* psh_convert(struct PixelShader *ps)
              * the game asks. Off, the shader text is what it was without
              * the option. */
             if (ps->state->clamp_tex_scale &&
+                !(ps->state->clamp_tex_rt & (1 << i)) &&
                 ps->tex_modes[i] == PS_TEXTUREMODES_PROJECT2D &&
                 !ps->state->shadow_map[i] && ps->state->dim_tex[i] == 2 &&
                 !ps->state->tex_cubemap[i] &&
@@ -1943,8 +1945,13 @@ static MString* psh_convert(struct PixelShader *ps)
                  * post-processing) holds about scale texels per 1x pixel;
                  * read at 1x points it lost its resolution and looked
                  * blockier than native (NNshi, 28cf6a3). */
-                /* 4 "1x Pixel Centres": every flat, axis-aligned draw of at
-                 * most 1.5 texels per 1x pixel, 1:1 ones included, takes
+                /* 4 "1x Pixel Centres": every axis-aligned draw without
+                 * perspective (its three vertices at one w; z may differ,
+                 * as in KOTOR's dialog boxes, whose fourth corner of each
+                 * tile sits at another depth: half of every tile was read
+                 * unclamped and a grey line from the tile's opposite edge
+                 * showed, NNshi) of at most 1.5 texels per 1x pixel, 1:1
+                 * ones included, takes
                  * its texture coordinate at the centre of the 1x pixel and
                  * on a 1/64 texel grid, as 1x computes it. A point-sampled
                  * draw whose 1x pixel centres fall exactly on texel edges
@@ -1962,8 +1969,7 @@ static MString* psh_convert(struct PixelShader *ps)
                         "    vec2 ax = abs(dx), ay = abs(dy);\n"
                         "    bool axis = min(ax.x, ax.y) <= 1e-3 * max(ax.x, ax.y) &&\n"
                         "                min(ay.x, ay.y) <= 1e-3 * max(ay.x, ay.y);\n"
-                        "    bool flat2d = all(equal(vtxPos0.zw, vtxPos1.zw)) &&\n"
-                        "                  all(equal(vtxPos1.zw, vtxPos2.zw));\n"
+                        "    bool flat2d = vtxPos0.w == vtxPos1.w && vtxPos1.w == vtxPos2.w;\n"
                         "    vec2 gx = dFdx(uv), gy = dFdy(uv);\n"
                         "    if (axis && flat2d && max(length(dx), length(dy)) <= 1.5 * s) {\n"
                         "        vec2 o = (floor(gl_FragCoord.xy * s) + 0.5) / s - gl_FragCoord.xy;\n"

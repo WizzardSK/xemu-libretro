@@ -2120,7 +2120,8 @@ static void update_variables(void)
             hp = !strcmp(var.value, "enabled") ? 1 : !strcmp(var.value, "2d") ? 2 :
                  !strcmp(var.value, "triangle") ? 3 :
                  !strcmp(var.value, "triangle_quads") ? 4 :
-                 !strcmp(var.value, "native2d") ? 5 : 0;
+                 !strcmp(var.value, "native2d") ? 5 :
+                 !strcmp(var.value, "triangle_content") ? 6 : 0;
         qatomic_set(&xemu_libretro_half_pixel, hp);
     }
 

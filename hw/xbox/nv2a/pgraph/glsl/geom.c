@@ -70,7 +70,7 @@ static unsigned int draw_vertices(PGRAPHState *pg)
  * it away from where it is at 1x. */
 bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode)
 {
-    if (mode == 3) {
+    if (mode == 3 || mode == 6) {
         return true;
     }
     if (mode != 4) {
@@ -91,6 +91,9 @@ int pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
     }
     if (mode == 5) {
         return 2;   /* "Native Edges, 2D", see pgraph_glsl_gen_geom */
+    }
+    if (mode == 6) {
+        return 3;   /* "Per Triangle, Content Kept", see pgraph_glsl_gen_geom */
     }
     return pgraph_glsl_half_pixel_draw(pg, mode) ? 1 : 0;
 }
@@ -435,7 +438,8 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                              "  float gl_PointSize;\n"
                              "};\n\n",
                          layout_in, layout_out,
-                         state->half_pixel == 1 ? "gsPos" : "v_vtxPos0");
+                         (state->half_pixel == 1 || state->half_pixel == 3) ?
+                             "gsPos" : "v_vtxPos0");
     pgraph_glsl_get_vtx_header(output, opts.vulkan || opts.locations,
                                state->smooth_shading, true, true, true);
     pgraph_glsl_get_vtx_header(output, opts.vulkan || opts.locations,
@@ -447,9 +451,20 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
      * anyway). Shifted only when every vertex of the primitive has x and y
      * on n.5: a screen-aligned quad has all its corners there, a moving 3D
      * triangle almost never all three at once (NNshi). */
+    /* "Per Triangle, Content Kept" (half_pixel 3) moves the primitive the
+     * same way, and gives each moved vertex the texture coordinates, colours
+     * and fog the primitive had at its new place: only the edges move, every
+     * pixel inside reads what it read unmoved. Moving the content too pulled
+     * textured UI half a 1x pixel up and left of where 1x draws it (JSRF's
+     * HUD), while an untextured bar has only edges to move (JSRF's
+     * letterbox). The values come from the plane through the first three
+     * vertices, in screen space, without perspective: exact for a flat 2D
+     * primitive (one w), which is what the rule catches; a line has no plane
+     * and moves whole. */
+    const bool hp_keep = state->half_pixel == 3 && num_in >= 3;
     const char *pos_pre = "gl_in[", *pos_post = "].gl_Position";
     char hp_body[48] = "";
-    if (state->half_pixel == 1) {
+    if (state->half_pixel == 1 || state->half_pixel == 3) {
         pos_pre = "gsClip[";
         pos_post = "]";
         mstring_append_fmt(output,
@@ -468,8 +483,57 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
             "      gsClip[i].xy -= v_vtxPos1[i].xy * gsClip[i].w;\n"
             "    }\n"
             "  }\n"
+            "%s"
             "}\n",
-            num_in, num_in, num_in, num_in);
+            num_in, num_in, num_in, num_in,
+            hp_keep ? "  hp_keep(hit);\n" : "");
+        if (hp_keep) {
+            /* declared before hp_init, which calls it; flat colours come
+             * from one vertex and stay as they are */
+            const char *col = state->smooth_shading ? "HP_COLOR" : "HP_FLAT";
+            MString *keep = mstring_from_fmt(
+                "vec4 gsvtxD0[%d], gsvtxD1[%d], gsvtxB0[%d], gsvtxB1[%d];\n"
+                "vec4 gsvtxT0[%d], gsvtxT1[%d], gsvtxT2[%d], gsvtxT3[%d];\n"
+                "float gsFog[%d];\n"
+                "#define HP_AT(a, i) (a[i] + st.x * (a[1] - a[0]) + st.y * (a[2] - a[0]))\n"
+                "#define HP_COLOR(a, i) clamp(HP_AT(a, i), 0.0, 1.0)\n"
+                "#define HP_FLAT(a, i) a[i]\n"
+                "void hp_keep(bool hit) {\n"
+                "  vec2 st = vec2(0.0);\n"
+                "  if (hit) {\n"
+                "    vec2 e1 = v_vtxPos0[1].xy - v_vtxPos0[0].xy;\n"
+                "    vec2 e2 = v_vtxPos0[2].xy - v_vtxPos0[0].xy;\n"
+                "    vec2 m = -v_vtxPos1[0].zw;\n"
+                "    float det = e1.x * e2.y - e1.y * e2.x;\n"
+                "    if (abs(det) > 1e-6) {\n"
+                "      st = vec2(m.x * e2.y - m.y * e2.x,\n"
+                "                e1.x * m.y - e1.y * m.x) / det;\n"
+                "    }\n"
+                "  }\n"
+                "  for (int i = 0; i < %d; i++) {\n"
+                "    gsvtxD0[i] = %s(v_vtxD0, i);\n"
+                "    gsvtxD1[i] = %s(v_vtxD1, i);\n"
+                "    gsvtxB0[i] = %s(v_vtxB0, i);\n"
+                "    gsvtxB1[i] = %s(v_vtxB1, i);\n"
+                "    gsvtxT0[i] = HP_AT(v_vtxT0, i);\n"
+                "    gsvtxT1[i] = HP_AT(v_vtxT1, i);\n"
+                "    gsvtxT2[i] = HP_AT(v_vtxT2, i);\n"
+                "    gsvtxT3[i] = HP_AT(v_vtxT3, i);\n"
+                "    gsFog[i] = HP_AT(v_vtxFog, i);\n"
+                "  }\n"
+                "}\n",
+                num_in, num_in, num_in, num_in, num_in, num_in, num_in,
+                num_in, num_in, num_in, col, col, col, col);
+            /* hp_init was just appended: put hp_keep in front of it */
+            const char *all = mstring_get_str(output);
+            const char *at = strstr(all, "vec4 gsPos[");
+            assert(at);
+            MString *re = mstring_from_fmt("%.*s%s%s", (int)(at - all), all,
+                                           mstring_get_str(keep), at);
+            mstring_unref(keep);
+            mstring_unref(output);
+            output = re;
+        }
         snprintf(hp_body, sizeof(hp_body), "  hp_init();\n");
     }
 
@@ -500,21 +564,22 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
     if (state->smooth_shading) {
         provoking_index = "index";
     }
+    const char *hp_attr = hp_keep ? "gs" : "v_";
 
     mstring_append_fmt(
         output,
         "void emit_vertex(int index, mat4 pz) {\n"
         "  gl_Position = %sindex%s;\n"
         "  gl_PointSize = gl_in[index].gl_PointSize;\n"
-        "  vtxD0 = v_vtxD0[%s];\n"
-        "  vtxD1 = v_vtxD1[%s];\n"
-        "  vtxB0 = v_vtxB0[%s];\n"
-        "  vtxB1 = v_vtxB1[%s];\n"
-        "  vtxFog = v_vtxFog[index];\n"
-        "  vtxT0 = v_vtxT0[index];\n"
-        "  vtxT1 = v_vtxT1[index];\n"
-        "  vtxT2 = v_vtxT2[index];\n"
-        "  vtxT3 = v_vtxT3[index];\n"
+        "  vtxD0 = %svtxD0[%s];\n"
+        "  vtxD1 = %svtxD1[%s];\n"
+        "  vtxB0 = %svtxB0[%s];\n"
+        "  vtxB1 = %svtxB1[%s];\n"
+        "  vtxFog = %s[index];\n"
+        "  vtxT0 = %svtxT0[index];\n"
+        "  vtxT1 = %svtxT1[index];\n"
+        "  vtxT2 = %svtxT2[index];\n"
+        "  vtxT3 = %svtxT3[index];\n"
         "  vtxPos0 = pz[0];\n"
         "  vtxPos1 = pz[1];\n"
         "  vtxPos2 = pz[2];\n"
@@ -522,10 +587,12 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
         "  EmitVertex();\n"
         "}\n",
         pos_pre, pos_post,
-        provoking_index,
-        provoking_index,
-        provoking_index,
-        provoking_index);
+        hp_attr, provoking_index,
+        hp_attr, provoking_index,
+        hp_attr, provoking_index,
+        hp_attr, provoking_index,
+        hp_keep ? "gsFog" : "v_vtxFog",
+        hp_attr, hp_attr, hp_attr, hp_attr);
 
     if (need_triz || need_quadz) {
         mstring_append(

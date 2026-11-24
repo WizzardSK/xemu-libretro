@@ -40,7 +40,9 @@ typedef struct {
     /* Half-Pixel Offset: 1 "Per Triangle", the primitive is shifted only
      * when all its vertices are on a half pixel; 2 "Native Edges, 2D", a flat
      * filled primitive is grown by half a native pixel (the pixel shader
-     * keeps the fine pixels of native pixels whose centre is inside). Takes the high byte of the old
+     * keeps the fine pixels of native pixels whose centre is inside); 3 "Per
+     * Triangle, Content Kept", shifted as 1 with texture coordinates, colours
+     * and fog taken from the new place (only the edges move). Takes the high byte of the old
      * short tri_rot0 (always 0), so the key keeps its size and old seeds
      * read as off. */
     uint8_t half_pixel;
@@ -53,8 +55,9 @@ typedef struct GenGeomGlslOptions {
 } GenGeomGlslOptions;
 
 void pgraph_glsl_set_geom_state(PGRAPHState *pg, GeomState *geom);
-/* Half-Pixel Offset "Per Triangle" (3) and "Per Triangle, Quads / Render
- * Targets" (4): whether this draw may be moved at all */
+/* Half-Pixel Offset "Per Triangle" (3), "Per Triangle, Quads / Render
+ * Targets" (4) and "Per Triangle, Content Kept" (6): whether this draw may be
+ * moved at all */
 bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode);
 /* GeomState.half_pixel for the pending draw: in mode 4 it changes from draw
  * to draw without any register changing (shaders.c checks it) */

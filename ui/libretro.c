@@ -201,6 +201,8 @@ enum {
     SNAPSHOT_LOAD,
 };
 static volatile int snapshot_request = SNAPSHOT_NONE;
+static void load_pending_state(void);
+static void drop_pending_state(void);
 /* The frontend's buffer the request saves into or loads from */
 static void *snapshot_buf;
 static size_t snapshot_len;
@@ -4484,6 +4486,8 @@ static void prof_end(void)
 RETRO_API void retro_unload_game(void)
 {
     LRLOG_INFO("[xemu] retro_unload_game\n");
+    /* a state never loaded does not carry over to the next content */
+    drop_pending_state();
 
     if (prof_running) {
         prof_end();
@@ -4788,6 +4792,8 @@ RETRO_API void retro_run(void)
         return;
     }
 
+    load_pending_state();
+
     update_aspect();
     update_overscan_crop();
 
@@ -5059,6 +5065,10 @@ static bool snapshot_dispatch(int request_type, void *buf, size_t len, int timeo
     snapshot_buf = buf;
     snapshot_len = len;
     snapshot_request = request_type;
+    /* With the frontend paused the machine is stopped and the emulation
+     * thread sleeps in main_loop_wait(): woken, it takes the request at once
+     * instead of after the dispatch timed out (NNshi). */
+    qemu_notify_event();
 
     /* Wait for the emu thread to process it */
     if (qemu_sem_timedwait(&snapshot_done_sem, timeout_ms) != 0) {
@@ -5096,10 +5106,50 @@ RETRO_API bool retro_serialize(void *data, size_t size)
     return true;
 }
 
+/* A state loaded before the machine is up - RetroArch's "Load State" next
+ * to "Run" calls retro_unserialize right after retro_load_game - is kept and
+ * loaded by the first retro_run that finds the machine and its renderer
+ * ready; refused, the game just started from the beginning (NNshi). */
+static void *pending_state;
+static size_t pending_state_len;
+
+static void drop_pending_state(void)
+{
+    g_free(pending_state);
+    pending_state = NULL;
+    pending_state_len = 0;
+}
+
+static void load_pending_state(void)
+{
+    void *data = pending_state;
+    size_t len = pending_state_len;
+    if (!data) {
+        return;
+    }
+    pending_state = NULL;
+    pending_state_len = 0;
+    if (!snapshot_dispatch(SNAPSHOT_LOAD, data, len, 30000)) {
+        LRLOG_INFO("[xemu] retro_unserialize: the state given before the "
+                   "start did not load\n");
+    } else {
+        LRLOG_INFO("[xemu] retro_unserialize: the state given before the "
+                   "start is loaded\n");
+    }
+    g_free(data);
+}
+
 RETRO_API bool retro_unserialize(const void *data, size_t size)
 {
-    if (!emu_initialized || !data)
+    if (!data)
         return false;
+    if (!emu_initialized || !context_ready) {
+        g_free(pending_state);
+        pending_state = g_memdup2(data, size);
+        pending_state_len = size;
+        LRLOG_INFO("[xemu] retro_unserialize: kept until the machine is up\n");
+        return true;
+    }
     if (!snapshot_dispatch(SNAPSHOT_LOAD, (void *)data, size, 30000)) {
         LRLOG_INFO("[xemu] retro_unserialize: load failed\n");
         return false;

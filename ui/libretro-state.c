@@ -88,8 +88,18 @@ bool lr_state_save(void *data, size_t size, Error **errp)
     }
 
     global_state_store();
-    /* the GPU halts and puts what it drew back in the guest's RAM */
-    vm_stop(RUN_STATE_SAVE_VM);
+    /* The GPU halts and puts what it drew back in the guest's RAM. With the
+     * frontend paused the machine is already stopped, and vm_stop() then
+     * tells the devices nothing: nv2a neither wrote its surfaces back nor
+     * took the FIFO lock its post_save releases, and releasing a lock nobody
+     * held hung its thread, and RetroArch with it (NNshi: saving from the
+     * paused quick menu). The devices are told directly; the run state stays
+     * PAUSED, which has no transition to SAVE_VM. */
+    if (runstate_is_live(saved_state)) {
+        vm_stop(RUN_STATE_SAVE_VM);
+    } else {
+        vm_state_notify(false, RUN_STATE_SAVE_VM);
+    }
     bdrv_drain_all_begin();
 
     bioc = qio_channel_buffer_new(size - sizeof(hdr));

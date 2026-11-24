@@ -97,7 +97,7 @@ typedef struct PshState {
      * pixels whose centre it contains (geom.c grows it by half a native
      * pixel). In the struct's padding: the size and old seeds stay. */
     uint8_t native_edges;
-    /* Clamp Textures: bit n, texture unit n is an upscaled render target
+    /* Clamp Textures: bit n, texture unit n is a render target
      * (bloom, blur, the 3D picture), which no mode touches (NNshi). In the
      * last padding byte: the size stays. */
     uint8_t clamp_tex_rt;

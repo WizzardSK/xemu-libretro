@@ -328,12 +328,17 @@ void pgraph_gl_draw_begin(NV2AState *d)
         /* Half-Pixel Offset mode 4 moves draws that read an upscaled
          * surface */
         pg->half_pixel_reads_scaled = false;
-        pg->tex_units_scaled = 0;
+        pg->tex_units_rt = 0;
         for (int i = 0; i < NV2A_MAX_TEXTURES; i++) {
-            if (pgraph_is_texture_enabled(pg, i) && r->texture_binding[i] &&
-                r->texture_binding[i]->scale > 1) {
+            if (!pgraph_is_texture_enabled(pg, i) || !r->texture_binding[i]) {
+                continue;
+            }
+            if (r->texture_binding[i]->scale > 1) {
                 pg->half_pixel_reads_scaled = true;
-                pg->tex_units_scaled |= 1 << i;
+            }
+            /* draw_time is set only for a texture from a surface */
+            if (r->texture_binding[i]->draw_time) {
+                pg->tex_units_rt |= 1 << i;
             }
         }
         pgraph_gl_bind_shaders(pg);

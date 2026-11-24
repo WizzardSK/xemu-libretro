@@ -199,7 +199,7 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
         pg->surface_scale_factor > 1 ? MIN(pg->surface_scale_factor, 255) : 0;
     state->clamp_tex_mode = state->clamp_tex_scale ?
                             qatomic_read(&xemu_libretro_clamp_textures) : 0;
-    state->clamp_tex_rt = state->clamp_tex_scale ? pg->tex_units_scaled : 0;
+    state->clamp_tex_rt = state->clamp_tex_scale ? pg->tex_units_rt : 0;
     {
         enum ShaderPrimitiveMode prim = pg->primitive_mode;
         bool fill = GET_MASK(pgraph_reg_r(pg, NV_PGRAPH_SETUPRASTER),
@@ -1645,7 +1645,11 @@ static MString* psh_convert(struct PixelShader *ps)
                              * edge (VC3 decor lightmaps). Clamping the
                              * divisor to a positive minimum reproduces
                              * exactly that. */
-                            if (ps->state->clamp_tex_scale) {
+                            /* the same test as for clampTex's definition
+                             * below: a render target has none (the shader
+                             * failed to compile, NNshi) */
+                            if (ps->state->clamp_tex_scale &&
+                                !(ps->state->clamp_tex_rt & (1 << i))) {
                                 mstring_append_fmt(
                                     vars,
                                     "vec3 tp%d = %s(pT%d.xyw);\n"

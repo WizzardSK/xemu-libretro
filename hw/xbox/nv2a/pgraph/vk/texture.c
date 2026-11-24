@@ -1655,7 +1655,7 @@ static void sampler_cache_destroy(PGRAPHVkState *r)
  * create_texture must call it, the cache hit too, or the unit keeps the
  * sampler of the last texture created on it. */
 #ifdef LIBRETRO
-/* Texture Upscaling: Nearest Neighbor (ui/libretro.c) */
+/* Texture Filtering: Nearest Neighbor (ui/libretro.c) */
 extern int xemu_libretro_texture_nearest;
 #else
 static int xemu_libretro_texture_nearest;
@@ -1669,18 +1669,20 @@ static void resolve_unit_sampler(PGRAPHState *pg, int texture_idx,
 {
     PGRAPHVkState *r = pg->vk_renderer_state;
 
-    /* Texture Upscaling, Nearest Neighbor: above 1x every texture is
-     * magnified by a box filter (nearest) instead of the game's filter, with
-     * one exception: an upscaled render target (bloom, blur, the 3D picture)
+    /* Texture Filtering, Nearest Neighbor: at any resolution every texture
+     * is read with the box filter (nearest) instead of the game's, magnified
+     * and minified, its mipmap mode kept (tent 2/4/6 -> box 1/3/5, the
+     * convolution -> box). A render target (bloom, blur, the 3D picture)
      * keeps the game's filter (NNshi) - a test switch to tell artifacts of
-     * bilinear edge sampling from the rest. Only the sampler changes, not
-     * the shaders; the sampler cache keys on the filter, so it applies at
-     * once. */
+     * bilinear sampling from the rest. Only the sampler changes, not the
+     * shaders; the sampler cache keys on the filter, so it applies at once. */
     if (qatomic_read(&xemu_libretro_texture_nearest) &&
-        pg->surface_scale_factor > 1 &&
         !(r->texture_bindings[texture_idx] &&
-          r->texture_bindings[texture_idx]->key.scale > 1)) {
+          r->texture_bindings[texture_idx]->from_surface)) {
+        static const uint8_t box_min[8] = { 0, 1, 1, 3, 3, 5, 5, 1 };
+        unsigned int min = GET_MASK(filter, NV_PGRAPH_TEXFILTER0_MIN);
         SET_MASK(filter, NV_PGRAPH_TEXFILTER0_MAG, 1);
+        SET_MASK(filter, NV_PGRAPH_TEXFILTER0_MIN, box_min[min & 7]);
     }
 
     /* Sampler state (filter, address, border, anisotropy) stays out of the
@@ -2067,6 +2069,7 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
     }
 
     if (binding_found) {
+        snode->from_surface = surface_to_texture_cube || surface_to_texture;
         if (surface_to_texture_cube) {
             unsigned int maxdt = 0;
             for (int f = 0; f < 6; f++) {
@@ -2205,6 +2208,7 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
     set_texture_label(pg, snode);
 
     r->texture_bindings[texture_idx] = snode;
+    snode->from_surface = surface_to_texture_cube || s2t_borrow || surface_to_texture;
 
     if (surface_to_texture_cube) {
         copy_cube_faces_to_texture(pg, cube_faces, snode);

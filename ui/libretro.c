@@ -1618,7 +1618,7 @@ int xemu_libretro_subpixel_offset;
 /* Upscaling Threshold: render targets up to this size drawn at 1x (Vulkan,
  * pgraph_vk_reload_surface_scale_factor) */
 unsigned int xemu_libretro_scale_threshold;
-/* Texture Upscaling: Nearest Neighbor (Vulkan, texture.c) */
+/* Texture Filtering: Nearest Neighbor (Vulkan, texture.c) */
 int xemu_libretro_texture_nearest;
 /* Half-Pixel Offset (pgraph/glsl/vsh.c) */
 int xemu_libretro_half_pixel;

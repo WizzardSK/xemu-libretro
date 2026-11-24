@@ -1951,8 +1951,12 @@ static MString* psh_convert(struct PixelShader *ps)
                  * (KOTOR's menu text) shows one texel per 1x pixel at 1x;
                  * read at each fine pixel, half of every 1x pixel showed
                  * the texel beside it and the text moved half a 1x pixel,
-                 * with any other mode (NNshi). A 1:1 draw then reads that
-                 * texel's centre, as mode 1. */
+                 * with any other mode (NNshi). A centre exactly on a texel
+                 * edge takes the texel before it, as 1x does: its
+                 * interpolated coordinate lands a hair below the edge, and
+                 * taking the one after it moved the text a whole 1x pixel
+                 * down. A 1:1 draw then reads that texel's centre, as mode
+                 * 1. */
                 if (ps->state->clamp_tex_mode == 4) {
                     mstring_append_fmt(preflight,
                         "    vec2 ax = abs(dx), ay = abs(dy);\n"
@@ -1963,7 +1967,7 @@ static MString* psh_convert(struct PixelShader *ps)
                         "    vec2 gx = dFdx(uv), gy = dFdy(uv);\n"
                         "    if (axis && flat2d && max(length(dx), length(dy)) <= 1.5 * s) {\n"
                         "        vec2 o = (floor(gl_FragCoord.xy * s) + 0.5) / s - gl_FragCoord.xy;\n"
-                        "        t = round((t + dx * o.x + dy * o.y) * 64.0) / 64.0;\n"
+                        "        t = round((t + dx * o.x + dy * o.y) * 64.0) / 64.0 - 1.0 / 128.0;\n"
                         "        if (!one) {\n"
                         "            return textureGrad(texSamp%d, t / sz, gx / s, gy / s);\n"
                         "        }\n"

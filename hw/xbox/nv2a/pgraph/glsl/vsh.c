@@ -239,11 +239,18 @@ void pgraph_glsl_set_vsh_state(PGRAPHState *pg, VshState *vsh)
     vsh->is_fixed_function = fixed_function;
     vsh->half_pixel_shift = pg->surface_scale_factor > 1 ?
                             qatomic_read(&xemu_libretro_half_pixel) : 0;
+    /* Mode 4 ("Per Triangle, Quads / Render Targets") shares mode 3's vertex
+     * shader; the geometry shader state decides which draws move (geom.c) */
+    if (vsh->half_pixel_shift == 4) {
+        vsh->half_pixel_shift = 3;
+    }
     /* "Per Triangle" needs the geometry shader, which points don't get:
-     * a point is its own primitive, so the per-vertex rule is the same. */
+     * a point is its own primitive, so the per-vertex rule is the same -
+     * in mode 4 only for a draw that qualifies. */
     if (vsh->half_pixel_shift == 3 &&
         pg->primitive_mode == PRIM_TYPE_POINTS) {
-        vsh->half_pixel_shift = 1;
+        vsh->half_pixel_shift = pgraph_glsl_half_pixel_draw(pg,
+            qatomic_read(&xemu_libretro_half_pixel)) ? 1 : 0;
     }
     if (fixed_function) {
         set_fixed_function_vsh_state(pg, &vsh->fixed_function);

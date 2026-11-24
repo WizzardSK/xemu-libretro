@@ -51,6 +51,12 @@ typedef struct GenGeomGlslOptions {
 } GenGeomGlslOptions;
 
 void pgraph_glsl_set_geom_state(PGRAPHState *pg, GeomState *geom);
+/* Half-Pixel Offset "Per Triangle" (3) and "Per Triangle, Quads / Render
+ * Targets" (4): whether this draw may be moved at all */
+bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode);
+/* GeomState.half_pixel for the pending draw: in mode 4 it changes from draw
+ * to draw without any register changing (shaders.c checks it) */
+bool pgraph_glsl_geom_half_pixel(PGRAPHState *pg);
 
 bool pgraph_glsl_need_geom(const GeomState *state);
 

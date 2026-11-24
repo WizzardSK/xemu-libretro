@@ -34,12 +34,67 @@ extern int xemu_libretro_half_pixel;
 static int xemu_libretro_half_pixel;
 #endif
 
+/* The vertices the pending draw sends, whichever way it sends them */
+static unsigned int draw_vertices(PGRAPHState *pg)
+{
+    if (pg->draw_arrays_length) {
+        unsigned int n = 0;
+        for (unsigned int i = 0; i < pg->draw_arrays_length; i++) {
+            n += pg->draw_arrays_count[i];
+        }
+        return n;
+    }
+    if (pg->inline_elements_length) {
+        return pg->inline_elements_length;
+    }
+    if (pg->inline_buffer_length) {
+        return pg->inline_buffer_length;
+    }
+    if (pg->inline_array_length) {
+        unsigned int size = 0;
+        for (int i = 0; i < NV2A_VERTEXSHADER_ATTRIBUTES; i++) {
+            if (pg->vertex_attributes[i].count) {
+                size += pgraph_inline_attr_size(&pg->vertex_attributes[i]);
+            }
+        }
+        return size ? pg->inline_array_length * 4 / size : 0;
+    }
+    return 0;
+}
+
+/* Mode 4 narrows mode 3 to the draws NNshi's captures showed needing it: a
+ * single quad (at most 4 vertices: a full-screen pass, DW3's menu strips,
+ * JSRF's shadow pass) or a draw reading an upscaled surface (WMMT2's car).
+ * A batch of quads from normal textures is a sprite list the game already
+ * put on the pixel grid (JSRF's HUD, its spray-can count): moving it moved
+ * it away from where it is at 1x. */
+bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode)
+{
+    if (mode == 3) {
+        return true;
+    }
+    if (mode != 4) {
+        return false;
+    }
+    if (pg->half_pixel_reads_scaled) {
+        return true;
+    }
+    unsigned int n = draw_vertices(pg);
+    return n > 0 && n <= 4;
+}
+
+bool pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
+{
+    return pg->surface_scale_factor > 1 &&
+           pgraph_glsl_half_pixel_draw(pg,
+                                       qatomic_read(&xemu_libretro_half_pixel));
+}
+
 void pgraph_glsl_set_geom_state(PGRAPHState *pg, GeomState *state)
 {
     state->primitive_mode = (enum ShaderPrimitiveMode)pg->primitive_mode;
 
-    state->half_pixel = pg->surface_scale_factor > 1 &&
-                        qatomic_read(&xemu_libretro_half_pixel) == 3;
+    state->half_pixel = pgraph_glsl_geom_half_pixel(pg);
 
     state->polygon_front_mode = (enum ShaderPolygonMode)GET_MASK(
         pgraph_reg_r(pg, NV_PGRAPH_SETUPRASTER),

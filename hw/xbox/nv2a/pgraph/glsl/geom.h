@@ -37,8 +37,10 @@ typedef struct {
      * padding byte: the key keeps its size and every recorded seed. */
     bool wide_lines;
     int8_t tri_rot0;
-    /* Half-Pixel Offset "Per Triangle": the primitive is shifted only when
-     * all its vertices are on a half pixel. Takes the high byte of the old
+    /* Half-Pixel Offset: 1 "Per Triangle", the primitive is shifted only
+     * when all its vertices are on a half pixel; 2 "Native Edges, 2D", a flat
+     * filled primitive is grown by half a native pixel (the pixel shader
+     * keeps the fine pixels of native pixels whose centre is inside). Takes the high byte of the old
      * short tri_rot0 (always 0), so the key keeps its size and old seeds
      * read as off. */
     uint8_t half_pixel;
@@ -56,7 +58,7 @@ void pgraph_glsl_set_geom_state(PGRAPHState *pg, GeomState *geom);
 bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode);
 /* GeomState.half_pixel for the pending draw: in mode 4 it changes from draw
  * to draw without any register changing (shaders.c checks it) */
-bool pgraph_glsl_geom_half_pixel(PGRAPHState *pg);
+int pgraph_glsl_geom_half_pixel(PGRAPHState *pg);
 
 bool pgraph_glsl_need_geom(const GeomState *state);
 

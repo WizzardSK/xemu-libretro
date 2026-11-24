@@ -184,10 +184,12 @@ static uint32_t get_color_key_mask_for_texture(PGRAPHState *pg, int i)
 }
 
 #ifdef LIBRETRO
-/* Clamp Textures (ui/libretro.c) */
+/* Clamp Textures, Half-Pixel Offset (ui/libretro.c) */
 extern int xemu_libretro_clamp_textures;
+extern int xemu_libretro_half_pixel;
 #else
 static int xemu_libretro_clamp_textures;
+static int xemu_libretro_half_pixel;
 #endif
 
 void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
@@ -197,6 +199,18 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
         pg->surface_scale_factor > 1 ? MIN(pg->surface_scale_factor, 255) : 0;
     state->clamp_tex_mode = state->clamp_tex_scale ?
                             qatomic_read(&xemu_libretro_clamp_textures) : 0;
+    {
+        enum ShaderPrimitiveMode prim = pg->primitive_mode;
+        bool fill = GET_MASK(pgraph_reg_r(pg, NV_PGRAPH_SETUPRASTER),
+                             NV_PGRAPH_SETUPRASTER_FRONTFACEMODE) ==
+                    POLY_MODE_FILL;
+        state->native_edges =
+            qatomic_read(&xemu_libretro_half_pixel) == 5 &&
+            pg->surface_scale_factor > 1 && fill &&
+            (prim == PRIM_TYPE_TRIANGLES || prim == PRIM_TYPE_TRIANGLE_STRIP ||
+             prim == PRIM_TYPE_TRIANGLE_FAN || prim == PRIM_TYPE_QUADS ||
+             prim == PRIM_TYPE_QUAD_STRIP || prim == PRIM_TYPE_POLYGON);
+    }
     state->window_clip_exclusive = pgraph_reg_r(pg, NV_PGRAPH_SETUPRASTER) &
                                    NV_PGRAPH_SETUPRASTER_WINDOWCLIPTYPE;
     state->combiner_control = pgraph_reg_r(pg, NV_PGRAPH_COMBINECTL);
@@ -1475,7 +1489,27 @@ static MString* psh_convert(struct PixelShader *ps)
      * (perspective-correct) and interpolates w instead of z. */
     mstring_append(
         clip,
-        "vec2 unscaled_xy = gl_FragCoord.xy / surfaceScale;\n"
+        "vec2 unscaled_xy = gl_FragCoord.xy / surfaceScale;\n");
+    if (ps->state->native_edges) {
+        /* 1x coverage: the native pixel's centre must be inside the flat
+         * triangle; nudged right and down by 1/1024 so that a centre on an
+         * edge goes to the triangle on its left/top, as at 1x */
+        mstring_append(
+            clip,
+            "if (all(equal(vtxPos0.zw, vtxPos1.zw)) &&\n"
+            "    all(equal(vtxPos1.zw, vtxPos2.zw))) {\n"
+            "  vec2 nc = floor(unscaled_xy) + vec2(0.5 + 1.0 / 1024.0);\n"
+            "  float n0 = area(nc, vtxPos1.xy, vtxPos2.xy);\n"
+            "  float n1 = area(nc, vtxPos2.xy, vtxPos0.xy);\n"
+            "  float n2 = area(nc, vtxPos0.xy, vtxPos1.xy);\n"
+            "  float nt = n0 + n1 + n2;\n"
+            "  if (n0 * nt < 0.0 || n1 * nt < 0.0 || n2 * nt < 0.0) {\n"
+            "    discard;\n"
+            "  }\n"
+            "}\n");
+    }
+    mstring_append(
+        clip,
         "precise float bc0 = area(unscaled_xy, vtxPos1.xy, vtxPos2.xy);\n"
         "precise float bc1 = area(unscaled_xy, vtxPos2.xy, vtxPos0.xy);\n"
         "precise float bc2 = area(unscaled_xy, vtxPos0.xy, vtxPos1.xy);\n");

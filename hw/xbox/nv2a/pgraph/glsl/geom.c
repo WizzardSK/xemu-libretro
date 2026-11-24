@@ -83,11 +83,16 @@ bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode)
     return n > 0 && n <= 4;
 }
 
-bool pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
+int pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
 {
-    return pg->surface_scale_factor > 1 &&
-           pgraph_glsl_half_pixel_draw(pg,
-                                       qatomic_read(&xemu_libretro_half_pixel));
+    int mode = qatomic_read(&xemu_libretro_half_pixel);
+    if (pg->surface_scale_factor <= 1) {
+        return 0;
+    }
+    if (mode == 5) {
+        return 2;   /* "Native Edges, 2D", see pgraph_glsl_gen_geom */
+    }
+    return pgraph_glsl_half_pixel_draw(pg, mode) ? 1 : 0;
 }
 
 void pgraph_glsl_set_geom_state(PGRAPHState *pg, GeomState *state)
@@ -147,6 +152,37 @@ static const char *get_vertex_order(int rot)
     } else {
         return "ivec3(1, 2, 0)";
     }
+}
+
+/* "Native Edges, 2D": every filled triangle of the body goes through
+ * emit_tri instead of three emit_vertex calls */
+static char *native_edges_body(const char *body)
+{
+    MString *out = mstring_new();
+    const char *p = body;
+    while (*p) {
+        char a[16], b[16], c[16], pz[16], pzb[16], pzc[16];
+        int n = 0;
+        if (sscanf(p, "  emit_vertex(%15[^,], %15[^)]);\n"
+                      "  emit_vertex(%15[^,], %15[^)]);\n"
+                      "  emit_vertex(%15[^,], %15[^)]);\n"
+                      "  EndPrimitive();\n%n",
+                   a, pz, b, pzb, c, pzc, &n) == 6 && n > 0 &&
+            !strcmp(pz, pzb) && !strcmp(pz, pzc)) {
+            mstring_append_fmt(out, "  emit_tri(%s, %s, %s, %s);\n", a, b, c, pz);
+            p += n;
+            continue;
+        }
+        const char *nl = strchr(p, '\n');
+        size_t len = nl ? (size_t)(nl - p + 1) : strlen(p);
+        char line[256];
+        snprintf(line, sizeof(line), "%.*s", (int)MIN(len, sizeof(line) - 1), p);
+        mstring_append(out, line);
+        p += len;
+    }
+    char *res = g_strdup(mstring_get_str(out));
+    mstring_unref(out);
+    return res;
 }
 
 bool pgraph_glsl_need_geom(const GeomState *state)
@@ -399,7 +435,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                              "  float gl_PointSize;\n"
                              "};\n\n",
                          layout_in, layout_out,
-                         state->half_pixel ? "gsPos" : "v_vtxPos0");
+                         state->half_pixel == 1 ? "gsPos" : "v_vtxPos0");
     pgraph_glsl_get_vtx_header(output, opts.vulkan || opts.locations,
                                state->smooth_shading, true, true, true);
     pgraph_glsl_get_vtx_header(output, opts.vulkan || opts.locations,
@@ -413,7 +449,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
      * triangle almost never all three at once (NNshi). */
     const char *pos_pre = "gl_in[", *pos_post = "].gl_Position";
     char hp_body[48] = "";
-    if (state->half_pixel) {
+    if (state->half_pixel == 1) {
         pos_pre = "gsClip[";
         pos_post = "]";
         mstring_append_fmt(output,
@@ -545,6 +581,86 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
         }
     }
 
+    /* "Native Edges, 2D" (half_pixel 2): a flat filled triangle (one z and
+     * w at all corners: UI, 2D) is grown by half a native pixel on every
+     * side, its outputs extrapolated to the new corners (linear: one w), so
+     * that every fine pixel of a native pixel whose centre lies inside is
+     * rasterized; the pixel shader discards the others (psh.c). At 1x a
+     * pixel is drawn when its centre is inside, so an edge on n.5 covers the
+     * whole pixel next to it; drawn at the real edge at Nx it left half a
+     * native pixel uncovered (JSRF's letterbox, NNshi). Nothing moves: the
+     * texture stays where the geometry puts it. */
+    char *native_body = NULL;
+    if (state->half_pixel == 2 && strstr(body, "emit_vertex(")) {
+        native_body = native_edges_body(body);
+        body = native_body;
+        /* colours as emit_vertex takes them: interpolated, or the provoking
+         * vertex's with flat shading */
+        char colours[512];
+        if (state->smooth_shading) {
+            snprintf(colours, sizeof(colours), "%s",
+                "    vtxD0 = l0 * v_vtxD0[i0] + l1 * v_vtxD0[i1] + l2 * v_vtxD0[i2];\n"
+                "    vtxD1 = l0 * v_vtxD1[i0] + l1 * v_vtxD1[i1] + l2 * v_vtxD1[i2];\n"
+                "    vtxB0 = l0 * v_vtxB0[i0] + l1 * v_vtxB0[i1] + l2 * v_vtxB0[i2];\n"
+                "    vtxB1 = l0 * v_vtxB1[i0] + l1 * v_vtxB1[i1] + l2 * v_vtxB1[i2];\n");
+        } else {
+            snprintf(colours, sizeof(colours),
+                     "    vtxD0 = v_vtxD0[%s];\n"
+                     "    vtxD1 = v_vtxD1[%s];\n"
+                     "    vtxB0 = v_vtxB0[%s];\n"
+                     "    vtxB1 = v_vtxB1[%s];\n",
+                     provoking_index, provoking_index, provoking_index,
+                     provoking_index);
+        }
+        mstring_append_fmt(
+            output,
+            "void emit_tri(int i0, int i1, int i2, mat4 pz) {\n"
+            "  vec2 P[3] = vec2[3](v_vtxPos[i0].xy, v_vtxPos[i1].xy, v_vtxPos[i2].xy);\n"
+            "  bool flat2d = all(equal(v_vtxPos[i0].zw, v_vtxPos[i1].zw)) &&\n"
+            "                all(equal(v_vtxPos[i1].zw, v_vtxPos[i2].zw));\n"
+            "  float A = (P[1].x - P[0].x) * (P[2].y - P[0].y) -\n"
+            "            (P[1].y - P[0].y) * (P[2].x - P[0].x);\n"
+            "  if (!flat2d || A == 0.0) {\n"
+            "    emit_vertex(i0, pz);\n"
+            "    emit_vertex(i1, pz);\n"
+            "    emit_vertex(i2, pz);\n"
+            "    EndPrimitive();\n"
+            "    return;\n"
+            "  }\n"
+            "  vec2 n[3];\n"
+            "  for (int k = 0; k < 3; k++) {\n"
+            "    vec2 e = P[(k + 1) %% 3] - P[k];\n"
+            "    n[k] = sign(A) * normalize(vec2(e.y, -e.x));\n"
+            "  }\n"
+            "  int I[3] = int[3](i0, i1, i2);\n"
+            "  for (int k = 0; k < 3; k++) {\n"
+            "    vec2 a = n[(k + 2) %% 3], b = n[k];\n"
+            "    vec2 E = P[k] + 0.5 * (a + b) / max(1.0 + dot(a, b), 0.0625);\n"
+            "    float l1 = ((E.x - P[0].x) * (P[2].y - P[0].y) -\n"
+            "                (E.y - P[0].y) * (P[2].x - P[0].x)) / A;\n"
+            "    float l2 = ((P[1].x - P[0].x) * (E.y - P[0].y) -\n"
+            "                (P[1].y - P[0].y) * (E.x - P[0].x)) / A;\n"
+            "    float l0 = 1.0 - l1 - l2;\n"
+            "    gl_Position = l0 * gl_in[i0].gl_Position + l1 * gl_in[i1].gl_Position +\n"
+            "                  l2 * gl_in[i2].gl_Position;\n"
+            "    gl_PointSize = gl_in[I[k]].gl_PointSize;\n"
+            "%s"
+            "    vtxFog = l0 * v_vtxFog[i0] + l1 * v_vtxFog[i1] + l2 * v_vtxFog[i2];\n"
+            "    vtxT0 = l0 * v_vtxT0[i0] + l1 * v_vtxT0[i1] + l2 * v_vtxT0[i2];\n"
+            "    vtxT1 = l0 * v_vtxT1[i0] + l1 * v_vtxT1[i1] + l2 * v_vtxT1[i2];\n"
+            "    vtxT2 = l0 * v_vtxT2[i0] + l1 * v_vtxT2[i1] + l2 * v_vtxT2[i2];\n"
+            "    vtxT3 = l0 * v_vtxT3[i0] + l1 * v_vtxT3[i1] + l2 * v_vtxT3[i2];\n"
+            "    vtxPos0 = pz[0];\n"
+            "    vtxPos1 = pz[1];\n"
+            "    vtxPos2 = pz[2];\n"
+            "    triMZ = (isnan(pz[3].x) || isinf(pz[3].x)) ? 0.0 : pz[3].x;\n"
+            "    EmitVertex();\n"
+            "  }\n"
+            "  EndPrimitive();\n"
+            "}\n",
+            colours);
+    }
+
     if (need_linez) {
         mstring_append(
             output,
@@ -635,6 +751,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                        "%s"
                        "}\n",
                        hp_body, vertex_order_body, body);
+    g_free(native_body);
 
     return output;
 }

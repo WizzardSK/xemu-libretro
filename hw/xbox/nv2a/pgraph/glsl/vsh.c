@@ -244,6 +244,11 @@ void pgraph_glsl_set_vsh_state(PGRAPHState *pg, VshState *vsh)
     if (vsh->half_pixel_shift == 4) {
         vsh->half_pixel_shift = 3;
     }
+    /* Mode 5 ("Native Edges, 2D") moves nothing: the geometry and pixel
+     * shaders reproduce the 1x coverage instead */
+    if (vsh->half_pixel_shift == 5) {
+        vsh->half_pixel_shift = 0;
+    }
     /* "Per Triangle" needs the geometry shader, which points don't get:
      * a point is its own primitive, so the per-vertex rule is the same -
      * in mode 4 only for a draw that qualifies. */

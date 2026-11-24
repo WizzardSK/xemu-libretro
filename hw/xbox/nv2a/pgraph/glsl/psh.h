@@ -90,6 +90,11 @@ typedef struct PshState {
      * 3 "Scaled 2D, Low-Res": 2 for textures of at most 1.5 texels per 1x
      * pixel only (not upscaled render targets) */
     uint8_t clamp_tex_mode;
+    /* Half-Pixel Offset "Native Edges, 2D" above 1x, for filled triangles
+     * and quads: a flat primitive keeps only the fine pixels of the native
+     * pixels whose centre it contains (geom.c grows it by half a native
+     * pixel). In the struct's padding: the size and old seeds stay. */
+    uint8_t native_edges;
 } PshState;
 
 void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state);

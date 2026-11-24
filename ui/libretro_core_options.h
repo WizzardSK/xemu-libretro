@@ -322,7 +322,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_half_pixel_offset",
         "Half-Pixel Offset",
         NULL,
-        "With an Internal Resolution Scale above 1x, vertices that lie exactly on a half pixel - where games put screen-aligned quads for UI, post-processing and render-target copies, following Direct3D's half-pixel offset - are moved the way Subpixel Offset Scaling moves the whole picture, so their edges and texture reads line up as at 1x. \"X and Y\": vertices with both coordinates on a half pixel. \"2D Only\": those that are also where the game put them, without a 3D transform (pre-transformed screen-space quads). \"Per Triangle\": a triangle (or line, or quad) whose vertices all have both coordinates on a half pixel is moved as a whole. \"Per Triangle, Quads / Render Targets\": the same, only in draws of a single quad or draws that read an upscaled render target, not in batches of sprites from normal textures (HUDs). Other geometry stays where it is. Changing it compiles new shaders.",
+        "With an Internal Resolution Scale above 1x, vertices that lie exactly on a half pixel - where games put screen-aligned quads for UI, post-processing and render-target copies, following Direct3D's half-pixel offset - are moved the way Subpixel Offset Scaling moves the whole picture, so their edges and texture reads line up as at 1x. \"X and Y\": vertices with both coordinates on a half pixel. \"2D Only\": those that are also where the game put them, without a 3D transform (pre-transformed screen-space quads). \"Per Triangle\": a triangle (or line, or quad) whose vertices all have both coordinates on a half pixel is moved as a whole. \"Per Triangle, Quads / Render Targets\": the same, only in draws of a single quad or draws that read an upscaled render target, not in batches of sprites from normal textures (HUDs). \"Native Edges, 2D\" moves nothing: a flat primitive (one depth, UI and 2D) covers exactly the 1x pixels whose centre it contains, as at 1x, while its content is drawn at the internal resolution. Other geometry stays where it is. Changing it compiles new shaders.",
         NULL,
         "video",
         {
@@ -331,6 +331,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "2d",       "2D Only" },
             { "triangle", "Per Triangle" },
             { "triangle_quads", "Per Triangle, Quads / Render Targets" },
+            { "native2d", "Native Edges, 2D" },
             { NULL, NULL },
         },
         "disabled"

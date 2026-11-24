@@ -137,7 +137,7 @@ bool pgraph_glsl_check_shader_state_dirty(PGRAPHState *pg,
         return true;
     }
 
-    if (pgraph_glsl_geom_half_pixel(pg) != !!state->geom.half_pixel) {
+    if (pgraph_glsl_geom_half_pixel(pg) != state->geom.half_pixel) {
         return true;
     }
 

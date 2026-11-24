@@ -88,7 +88,9 @@ typedef struct PshState {
      * 2D": also scaled axis-aligned draws of a flat triangle (all three
      * vertices at one z and w: UI, text), read at the native pixel's centre;
      * 3 "Scaled 2D, Low-Res": 2 for textures of at most 1.5 texels per 1x
-     * pixel only (not upscaled render targets) */
+     * pixel only (not upscaled render targets); 4 "1x Pixel Centres": every
+     * flat axis-aligned draw of such textures, 1:1 included, takes its
+     * texture coordinate at the 1x pixel's centre */
     uint8_t clamp_tex_mode;
     /* Half-Pixel Offset "Native Edges, 2D" above 1x, for filled triangles
      * and quads: a flat primitive keeps only the fine pixels of the native

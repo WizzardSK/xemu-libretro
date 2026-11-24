@@ -1943,7 +1943,34 @@ static MString* psh_convert(struct PixelShader *ps)
                  * post-processing) holds about scale texels per 1x pixel;
                  * read at 1x points it lost its resolution and looked
                  * blockier than native (NNshi, 28cf6a3). */
-                if (ps->state->clamp_tex_mode >= 2) {
+                /* 4 "1x Pixel Centres": every flat, axis-aligned draw of at
+                 * most 1.5 texels per 1x pixel, 1:1 ones included, takes
+                 * its texture coordinate at the centre of the 1x pixel and
+                 * on a 1/64 texel grid, as 1x computes it. A point-sampled
+                 * draw whose 1x pixel centres fall exactly on texel edges
+                 * (KOTOR's menu text) shows one texel per 1x pixel at 1x;
+                 * read at each fine pixel, half of every 1x pixel showed
+                 * the texel beside it and the text moved half a 1x pixel,
+                 * with any other mode (NNshi). A 1:1 draw then reads that
+                 * texel's centre, as mode 1. */
+                if (ps->state->clamp_tex_mode == 4) {
+                    mstring_append_fmt(preflight,
+                        "    vec2 ax = abs(dx), ay = abs(dy);\n"
+                        "    bool axis = min(ax.x, ax.y) <= 1e-3 * max(ax.x, ax.y) &&\n"
+                        "                min(ay.x, ay.y) <= 1e-3 * max(ay.x, ay.y);\n"
+                        "    bool flat2d = all(equal(vtxPos0.zw, vtxPos1.zw)) &&\n"
+                        "                  all(equal(vtxPos1.zw, vtxPos2.zw));\n"
+                        "    vec2 gx = dFdx(uv), gy = dFdy(uv);\n"
+                        "    if (axis && flat2d && max(length(dx), length(dy)) <= 1.5 * s) {\n"
+                        "        vec2 o = (floor(gl_FragCoord.xy * s) + 0.5) / s - gl_FragCoord.xy;\n"
+                        "        t = round((t + dx * o.x + dy * o.y) * 64.0) / 64.0;\n"
+                        "        if (!one) {\n"
+                        "            return textureGrad(texSamp%d, t / sz, gx / s, gy / s);\n"
+                        "        }\n"
+                        "    }\n", i);
+                }
+                if (ps->state->clamp_tex_mode == 2 ||
+                    ps->state->clamp_tex_mode == 3) {
                     mstring_append_fmt(preflight,
                         "    vec2 ax = abs(dx), ay = abs(dy);\n"
                         "    bool axis = min(ax.x, ax.y) <= 1e-3 * max(ax.x, ax.y) &&\n"

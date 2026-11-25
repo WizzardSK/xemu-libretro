@@ -1985,7 +1985,15 @@ static MString* psh_convert(struct PixelShader *ps)
                  * KOTOR's "p", whose quad starts at u -0.4375 at the
                  * atlas's left edge, had its blank column -1 turned into
                  * the stem at 0, one column too many (NNshi). */
-                if (ps->state->clamp_tex_mode == 4) {
+                /* 5 "1x Pixel Centres, Ties by W": as 4, but a centre
+                 * exactly on a texel edge takes the texel before it only in
+                 * a draw at w 1 (KOTOR's text); at any other w it takes the
+                 * one after it. Otogi 2's menu art, 1:1 and point-sampled at
+                 * w 2^64 with its 1x centres on texel edges, was a whole 1x
+                 * pixel right and down of 1x with mode 4: 1x took the texel
+                 * after the edge there (NNshi). Two games, one each way: a
+                 * test of whether w is what decides it. */
+                if (ps->state->clamp_tex_mode >= 4) {
                     mstring_append_fmt(preflight,
                         "    vec2 ax = abs(dx), ay = abs(dy);\n"
                         "    bool axis = min(ax.x, ax.y) <= 1e-3 * max(ax.x, ax.y) &&\n"
@@ -2003,11 +2011,15 @@ static MString* psh_convert(struct PixelShader *ps)
                         "        tlo = min(min(t0, t1), t2);\n"
                         "        thi = max(max(t0, t1), t2);\n"
                         "        vec2 o = (floor(gl_FragCoord.xy * s) + 0.5) / s - gl_FragCoord.xy;\n"
-                        "        t = round((t + dx * o.x + dy * o.y) * 64.0) / 64.0 - 1.0 / 128.0;\n"
+                        "        t = round((t + dx * o.x + dy * o.y) * 64.0) / 64.0 %s;\n"
                         "        if (!one) {\n"
                         "            return textureGrad(texSamp%d, t / sz, gx / s, gy / s);\n"
                         "        }\n"
-                        "    }\n", i);
+                        "    }\n",
+                        ps->state->clamp_tex_mode == 5 ?
+                            "+ (vtxPos0.w == 1.0 ? -1.0 : 1.0) / 128.0" :
+                            "- 1.0 / 128.0",
+                        i);
                 }
                 if (ps->state->clamp_tex_mode == 2 ||
                     ps->state->clamp_tex_mode == 3) {
@@ -2033,7 +2045,7 @@ static MString* psh_convert(struct PixelShader *ps)
                     "    vec2 c = one ? (f + 0.5) / sz : uv;\n"
                     "    return textureGrad(texSamp%d, c, dFdx(uv), dFdy(uv));\n"
                     "}\n",
-                    ps->state->clamp_tex_mode == 4 ?
+                    ps->state->clamp_tex_mode >= 4 ?
                         "    vec2 flo = floor(tlo + 1.0 / 64.0);\n"
                         "    f = clamp(f, flo, max(ceil(thi - 1.0 / 64.0) - 1.0, flo));\n" :
                         "    f = mix(f, fc, lessThanEqual(abs(f - fc), vec2(1.0)));\n",

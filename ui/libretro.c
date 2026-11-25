@@ -2134,7 +2134,8 @@ static void update_variables(void)
         if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
             ct = !strcmp(var.value, "enabled") ? 1 : !strcmp(var.value, "scaled") ? 2 :
                  !strcmp(var.value, "lowres") ? 3 :
-                 !strcmp(var.value, "centres") ? 4 : 0;
+                 !strcmp(var.value, "centres") ? 4 :
+                 !strcmp(var.value, "centres_w") ? 5 : 0;
         qatomic_set(&xemu_libretro_clamp_textures, ct);
     }
 

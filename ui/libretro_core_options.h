@@ -344,7 +344,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "xemu_clamp_textures",
         "Clamp Textures",
         NULL,
-        "With an Internal Resolution Scale above 1x, textures drawn one texel per pixel without scaling or rotation - UI, menus, full-screen images - are read from the nearest texel inside the texture, so they look as at 1x: neighbouring images in a texture atlas and the opposite edge of a repeating texture no longer bleed into their borders. \"1:1 + Scaled 2D\" also takes scaled, unrotated draws whose vertices all lie at one depth (UI, text): they are read where the 1x pixel's centre is, so they look as at 1x. \"Low-Res\" leaves out textures with more than 1.5 texels per 1x pixel, such as pictures the game rendered at the upscaled resolution. \"1x Pixel Centres\": every unrotated draw without perspective, 1:1, scaled or shrunk, takes its texture coordinate at the centre of the 1x pixel, so a point-sampled one shows the texel 1x shows (text that sits half a 1x pixel off when upscaled). The game's own render targets (bloom, blur, the 3D picture) are never clamped. Everything else is sampled as the game asks. Changing it compiles new shaders.",
+        "With an Internal Resolution Scale above 1x, textures drawn one texel per pixel without scaling or rotation - UI, menus, full-screen images - are read from the nearest texel inside the texture, so they look as at 1x: neighbouring images in a texture atlas and the opposite edge of a repeating texture no longer bleed into their borders. \"1:1 + Scaled 2D\" also takes scaled, unrotated draws whose vertices all lie at one depth (UI, text): they are read where the 1x pixel's centre is, so they look as at 1x. \"Low-Res\" leaves out textures with more than 1.5 texels per 1x pixel, such as pictures the game rendered at the upscaled resolution. \"1x Pixel Centres\": every unrotated draw without perspective, 1:1, scaled or shrunk, takes its texture coordinate at the centre of the 1x pixel, so a point-sampled one shows the texel 1x shows (text that sits half a 1x pixel off when upscaled). "Ties by W": as "1x Pixel Centres", but a 1x centre exactly on a texel edge takes the texel before it only in draws at w 1 and the texel after it otherwise. The game's own render targets (bloom, blur, the 3D picture) are never clamped. Everything else is sampled as the game asks. Changing it compiles new shaders.",
         NULL,
         "video",
         {
@@ -353,6 +353,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { "scaled",   "1:1 + Scaled 2D" },
             { "lowres",   "1:1 + Scaled 2D, Low-Res" },
             { "centres",  "1x Pixel Centres" },
+            { "centres_w", "1x Pixel Centres, Ties by W" },
             { NULL, NULL },
         },
         "disabled"

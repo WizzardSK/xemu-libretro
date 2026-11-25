@@ -1978,7 +1978,13 @@ static MString* psh_convert(struct PixelShader *ps)
                  * centre and that centre are drawn upscaled, though 1x
                  * draws none of that pixel, and read at the centre, on the
                  * edge, they took the row past it - the next glyph in
-                 * KOTOR's atlas, a spot under GENERATION's N (NNshi). */
+                 * KOTOR's atlas, a spot under GENERATION's N (NNshi). The
+                 * edge texel rule of the other modes (a pixel up to one
+                 * texel past the texture's edge reads the edge texel) is
+                 * left out: 1x wraps there with a repeating sampler, and
+                 * KOTOR's "p", whose quad starts at u -0.4375 at the
+                 * atlas's left edge, had its blank column -1 turned into
+                 * the stem at 0, one column too many (NNshi). */
                 if (ps->state->clamp_tex_mode == 4) {
                     mstring_append_fmt(preflight,
                         "    vec2 ax = abs(dx), ay = abs(dy);\n"
@@ -2023,14 +2029,14 @@ static MString* psh_convert(struct PixelShader *ps)
                 }
                 mstring_append_fmt(preflight,
                     "    vec2 f = floor(t), fc = clamp(f, vec2(0.0), sz - 1.0);\n"
-                    "    f = mix(f, fc, lessThanEqual(abs(f - fc), vec2(1.0)));\n"
                     "%s"
                     "    vec2 c = one ? (f + 0.5) / sz : uv;\n"
                     "    return textureGrad(texSamp%d, c, dFdx(uv), dFdy(uv));\n"
                     "}\n",
                     ps->state->clamp_tex_mode == 4 ?
                         "    vec2 flo = floor(tlo + 1.0 / 64.0);\n"
-                        "    f = clamp(f, flo, max(ceil(thi - 1.0 / 64.0) - 1.0, flo));\n" : "",
+                        "    f = clamp(f, flo, max(ceil(thi - 1.0 / 64.0) - 1.0, flo));\n" :
+                        "    f = mix(f, fc, lessThanEqual(abs(f - fc), vec2(1.0)));\n",
                     i);
             }
 

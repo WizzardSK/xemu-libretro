@@ -42,7 +42,8 @@ typedef struct {
      * filled primitive is grown by half a native pixel (the pixel shader
      * keeps the fine pixels of native pixels whose centre is inside); 3 "Per
      * Triangle, Content Kept", shifted as 1 with texture coordinates, colours
-     * and fog taken from the new place (only the edges move). Takes the high byte of the old
+     * and fog taken from the new place (only the edges move); 4 "Per Axis,
+     * Content Kept", as 3 with x and y decided each on its own. Takes the high byte of the old
      * short tri_rot0 (always 0), so the key keeps its size and old seeds
      * read as off. */
     uint8_t half_pixel;

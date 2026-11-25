@@ -70,7 +70,7 @@ static unsigned int draw_vertices(PGRAPHState *pg)
  * it away from where it is at 1x. */
 bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode)
 {
-    if (mode == 3 || mode == 6) {
+    if (mode == 3 || mode == 6 || mode == 7) {
         return true;
     }
     if (mode != 4) {
@@ -94,6 +94,9 @@ int pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
     }
     if (mode == 6) {
         return 3;   /* "Per Triangle, Content Kept", see pgraph_glsl_gen_geom */
+    }
+    if (mode == 7) {
+        return 4;   /* "Per Axis, Content Kept", see pgraph_glsl_gen_geom */
     }
     return pgraph_glsl_half_pixel_draw(pg, mode) ? 1 : 0;
 }
@@ -438,7 +441,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                              "  float gl_PointSize;\n"
                              "};\n\n",
                          layout_in, layout_out,
-                         (state->half_pixel == 1 || state->half_pixel == 3) ?
+                         (state->half_pixel == 1 || state->half_pixel >= 3) ?
                              "gsPos" : "v_vtxPos0");
     pgraph_glsl_get_vtx_header(output, opts.vulkan || opts.locations,
                                state->smooth_shading, true, true, true);
@@ -461,32 +464,62 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
      * vertices, in screen space, without perspective: exact for a flat 2D
      * primitive (one w), which is what the rule catches; a line has no plane
      * and moves whole. */
-    const bool hp_keep = state->half_pixel == 3 && num_in >= 3;
+    /* "Per Axis, Content Kept" (half_pixel 4): as 3, but each axis on its
+     * own - a primitive whose corners all have y on n.5 is moved in y, one
+     * whose corners all have x on n.5 in x. Panzer Dragoon Orta's splash
+     * has its top and bottom on y n.5 and its sides elsewhere (the panels
+     * scroll sideways): "Per Triangle" left it, and above its top edge a
+     * strip of what lay under it showed, a white line (NNshi). */
+    const bool per_axis = state->half_pixel == 4;
+    const bool hp_keep = (state->half_pixel == 3 || per_axis) && num_in >= 3;
     const char *pos_pre = "gl_in[", *pos_post = "].gl_Position";
     char hp_body[48] = "";
-    if (state->half_pixel == 1 || state->half_pixel == 3) {
+    if (state->half_pixel == 1 || state->half_pixel >= 3) {
         pos_pre = "gsClip[";
         pos_post = "]";
-        mstring_append_fmt(output,
-            "vec4 gsPos[%d];\n"
-            "vec4 gsClip[%d];\n"
-            "void hp_init() {\n"
-            "  bool hit = true;\n"
-            "  for (int i = 0; i < %d; i++) {\n"
-            "    hit = hit && all(equal(fract(v_vtxPos0[i].xy), vec2(0.5)));\n"
-            "  }\n"
-            "  for (int i = 0; i < %d; i++) {\n"
-            "    gsPos[i] = v_vtxPos0[i];\n"
-            "    gsClip[i] = gl_in[i].gl_Position;\n"
-            "    if (hit) {\n"
-            "      gsPos[i].xy -= v_vtxPos1[i].zw;\n"
-            "      gsClip[i].xy -= v_vtxPos1[i].xy * gsClip[i].w;\n"
-            "    }\n"
-            "  }\n"
-            "%s"
-            "}\n",
-            num_in, num_in, num_in, num_in,
-            hp_keep ? "  hp_keep(hit);\n" : "");
+        if (per_axis) {
+            mstring_append_fmt(output,
+                "vec4 gsPos[%d];\n"
+                "vec4 gsClip[%d];\n"
+                "void hp_init() {\n"
+                "  bvec2 hit = bvec2(true);\n"
+                "  for (int i = 0; i < %d; i++) {\n"
+                "    hit = bvec2(hit.x && fract(v_vtxPos0[i].x) == 0.5,\n"
+                "                hit.y && fract(v_vtxPos0[i].y) == 0.5);\n"
+                "  }\n"
+                "  vec2 hm = vec2(hit);\n"
+                "  for (int i = 0; i < %d; i++) {\n"
+                "    gsPos[i] = v_vtxPos0[i];\n"
+                "    gsClip[i] = gl_in[i].gl_Position;\n"
+                "    gsPos[i].xy -= v_vtxPos1[i].zw * hm;\n"
+                "    gsClip[i].xy -= v_vtxPos1[i].xy * gsClip[i].w * hm;\n"
+                "  }\n"
+                "%s"
+                "}\n",
+                num_in, num_in, num_in, num_in,
+                hp_keep ? "  hp_keep(hm);\n" : "");
+        } else {
+            mstring_append_fmt(output,
+                "vec4 gsPos[%d];\n"
+                "vec4 gsClip[%d];\n"
+                "void hp_init() {\n"
+                "  bool hit = true;\n"
+                "  for (int i = 0; i < %d; i++) {\n"
+                "    hit = hit && all(equal(fract(v_vtxPos0[i].xy), vec2(0.5)));\n"
+                "  }\n"
+                "  for (int i = 0; i < %d; i++) {\n"
+                "    gsPos[i] = v_vtxPos0[i];\n"
+                "    gsClip[i] = gl_in[i].gl_Position;\n"
+                "    if (hit) {\n"
+                "      gsPos[i].xy -= v_vtxPos1[i].zw;\n"
+                "      gsClip[i].xy -= v_vtxPos1[i].xy * gsClip[i].w;\n"
+                "    }\n"
+                "  }\n"
+                "%s"
+                "}\n",
+                num_in, num_in, num_in, num_in,
+                hp_keep ? "  hp_keep(hit);\n" : "");
+        }
         if (hp_keep) {
             /* declared before hp_init, which calls it; flat colours come
              * from one vertex and stay as they are */
@@ -498,12 +531,12 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                 "#define HP_AT(a, i) (a[i] + st.x * (a[1] - a[0]) + st.y * (a[2] - a[0]))\n"
                 "#define HP_COLOR(a, i) clamp(HP_AT(a, i), 0.0, 1.0)\n"
                 "#define HP_FLAT(a, i) a[i]\n"
-                "void hp_keep(bool hit) {\n"
+                "void hp_keep(%s) {\n"
                 "  vec2 st = vec2(0.0);\n"
-                "  if (hit) {\n"
+                "  if (%s) {\n"
                 "    vec2 e1 = v_vtxPos0[1].xy - v_vtxPos0[0].xy;\n"
                 "    vec2 e2 = v_vtxPos0[2].xy - v_vtxPos0[0].xy;\n"
-                "    vec2 m = -v_vtxPos1[0].zw;\n"
+                "    vec2 m = -v_vtxPos1[0].zw%s;\n"
                 "    float det = e1.x * e2.y - e1.y * e2.x;\n"
                 "    if (abs(det) > 1e-6) {\n"
                 "      st = vec2(m.x * e2.y - m.y * e2.x,\n"
@@ -523,7 +556,11 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                 "  }\n"
                 "}\n",
                 num_in, num_in, num_in, num_in, num_in, num_in, num_in,
-                num_in, num_in, num_in, col, col, col, col);
+                num_in, num_in,
+                per_axis ? "vec2 hm" : "bool hit",
+                per_axis ? "any(notEqual(hm, vec2(0.0)))" : "hit",
+                per_axis ? " * hm" : "",
+                num_in, col, col, col, col);
             /* hp_init was just appended: put hp_keep in front of it */
             const char *all = mstring_get_str(output);
             const char *at = strstr(all, "vec4 gsPos[");

@@ -1160,6 +1160,9 @@ DEF_METHOD(NV097, FLIP_STALL)
         qatomic_inc(&xemu_lr_flip_phase[bucket]);
         qatomic_inc(&xemu_lr_flips);
         xemu_lr_flip_stall_start_ns = now;
+        /* Shift+F10: RenderDoc captures from this flip to the next */
+        extern void xemu_lr_renderdoc_flip(void);
+        xemu_lr_renderdoc_flip();
     }
 #endif
 }

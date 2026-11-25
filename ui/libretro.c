@@ -4011,6 +4011,77 @@ RETRO_API void retro_deinit(void)
     use_vulkan = false;
 }
 
+/* Debug: Shift+F10 captures one guest frame in RenderDoc, from one of the
+ * game's flips to the next (pgraph.c calls xemu_lr_renderdoc_flip at each
+ * FLIP_STALL). RenderDoc's own capture key takes RetroArch's frames, which
+ * do not line up with the game's: NNshi needed 14 captures to land on one
+ * KOTOR frame. Only does something with RenderDoc injected; the API is
+ * looked up in the process, never loaded. RENDERDOC_API_1_1_2 is a table of
+ * function pointers: StartFrameCapture is entry 19, EndFrameCapture 21. */
+static void **rdoc_api;
+static int rdoc_state;          /* 0 idle, 1 armed, 2 capturing */
+
+static bool rdoc_lookup(void)
+{
+    typedef int (*get_api_t)(int version, void **out);
+    void *get = NULL;
+    if (rdoc_api) {
+        return true;
+    }
+#ifdef _WIN32
+    HMODULE m = GetModuleHandleA("renderdoc.dll");
+    if (m) {
+        get = (void *)GetProcAddress(m, "RENDERDOC_GetAPI");
+    }
+#else
+    void *m = dlopen("librenderdoc.so", RTLD_NOW | RTLD_NOLOAD);
+    if (m) {
+        get = dlsym(m, "RENDERDOC_GetAPI");
+    }
+#endif
+    if (!get || ((get_api_t)get)(10102, (void **)&rdoc_api) != 1) {
+        rdoc_api = NULL;
+    }
+    return rdoc_api != NULL;
+}
+
+void xemu_lr_renderdoc_flip(void)
+{
+    typedef void (*start_t)(void *device, void *wnd);
+    typedef unsigned (*end_t)(void *device, void *wnd);
+    const int s = qatomic_read(&rdoc_state);
+    if (s == 1) {
+        ((start_t)rdoc_api[19])(NULL, NULL);
+        qatomic_set(&rdoc_state, 2);
+    } else if (s == 2) {
+        const unsigned ok = ((end_t)rdoc_api[21])(NULL, NULL);
+        qatomic_set(&rdoc_state, 0);
+        LRLOG_INFO("[xemu] RenderDoc: one guest frame captured (%s)\n",
+                   ok ? "ok" : "failed");
+    }
+}
+
+static void lr_notify(const char *text, int ms)
+{
+    struct retro_message_ext msg = {
+        .msg = text,
+        .duration = ms,
+        .priority = 2,
+        .level = RETRO_LOG_INFO,
+        .target = RETRO_MESSAGE_TARGET_ALL,
+        .type = RETRO_MESSAGE_TYPE_NOTIFICATION,
+        .progress = -1,
+    };
+    unsigned msg_version = 0;
+    if (environ_cb(RETRO_ENVIRONMENT_GET_MESSAGE_INTERFACE_VERSION, &msg_version) &&
+        msg_version >= 1) {
+        environ_cb(RETRO_ENVIRONMENT_SET_MESSAGE_EXT, &msg);
+    } else {
+        struct retro_message old = { text, (unsigned)(ms * 60 / 1000) };
+        environ_cb(RETRO_ENVIRONMENT_SET_MESSAGE, &old);
+    }
+}
+
 /* A content refused at load: the reason as a notification and in the log */
 static void load_refused(const char *text)
 {
@@ -4713,11 +4784,22 @@ RETRO_API void retro_run(void)
         input_poll_cb();
     }
 
-    /* F10 turns Profiler (F10) on or off (NNshi) */
+    /* F10 turns Profiler (F10) on or off (NNshi); Shift+F10 captures one
+     * guest frame in RenderDoc (xemu_lr_renderdoc_flip) */
     if (input_state_cb) {
         static bool f10_down;
         const bool down = input_state_cb(0, RETRO_DEVICE_KEYBOARD, 0, RETROK_F10) != 0;
-        if (down && !f10_down) {
+        const bool shift =
+            input_state_cb(0, RETRO_DEVICE_KEYBOARD, 0, RETROK_LSHIFT) ||
+            input_state_cb(0, RETRO_DEVICE_KEYBOARD, 0, RETROK_RSHIFT);
+        if (down && !f10_down && shift) {
+            if (!rdoc_lookup()) {
+                lr_notify("RenderDoc capture: RenderDoc is not attached", 3000);
+            } else if (qatomic_read(&rdoc_state) == 0) {
+                qatomic_set(&rdoc_state, 1);
+                lr_notify("RenderDoc: capturing the next guest frame", 2000);
+            }
+        } else if (down && !f10_down) {
             __atomic_store_n(&opt_internal_fps,
                              !__atomic_load_n(&opt_internal_fps, __ATOMIC_RELAXED),
                              __ATOMIC_RELAXED);

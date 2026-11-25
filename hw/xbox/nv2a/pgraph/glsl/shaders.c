@@ -142,9 +142,11 @@ bool pgraph_glsl_check_shader_state_dirty(PGRAPHState *pg,
     }
 
     /* Clamp Textures leaves render targets alone: a unit that
-     * switches between one and a normal texture needs the other shader */
+     * switches between one and a normal texture needs the other shader
+     * (the low 4 bits; the high 4 follow the mag filter, which the
+     * TEXFILTER check below covers) */
     if (state->psh.clamp_tex_scale &&
-        pg->tex_units_rt != state->psh.clamp_tex_rt) {
+        pg->tex_units_rt != (state->psh.clamp_tex_rt & 0xf)) {
         return true;
     }
 

@@ -1972,7 +1972,13 @@ static MString* psh_convert(struct PixelShader *ps)
                  * clamp_tex_rt): KOTOR's name entry squeezes a 16x16 border
                  * texture, repeating, into 4-5 pixel corners and outlines,
                  * and read at each fine pixel their edges took texels from
-                 * the opposite side, dots beside every key (NNshi). */
+                 * the opposite side, dots beside every key (NNshi). A 1:1
+                 * draw's texel is kept inside the texels its triangle spans:
+                 * fine pixels between a bottom or right edge on a 1x pixel
+                 * centre and that centre are drawn upscaled, though 1x
+                 * draws none of that pixel, and read at the centre, on the
+                 * edge, they took the row past it - the next glyph in
+                 * KOTOR's atlas, a spot under GENERATION's N (NNshi). */
                 if (ps->state->clamp_tex_mode == 4) {
                     mstring_append_fmt(preflight,
                         "    vec2 ax = abs(dx), ay = abs(dy);\n"
@@ -1980,7 +1986,16 @@ static MString* psh_convert(struct PixelShader *ps)
                         "                min(ay.x, ay.y) <= 1e-3 * max(ay.x, ay.y);\n"
                         "    bool flat2d = vtxPos0.w == vtxPos1.w && vtxPos1.w == vtxPos2.w;\n"
                         "    vec2 gx = dFdx(uv), gy = dFdy(uv);\n"
+                        "    vec2 tlo = vec2(-1e9), thi = vec2(1e9);\n"
                         "    if (axis && flat2d) {\n"
+                        "        vec2 e0 = vtxPos0.xy / s - gl_FragCoord.xy;\n"
+                        "        vec2 e1 = vtxPos1.xy / s - gl_FragCoord.xy;\n"
+                        "        vec2 e2 = vtxPos2.xy / s - gl_FragCoord.xy;\n"
+                        "        vec2 t0 = t + dx * e0.x + dy * e0.y;\n"
+                        "        vec2 t1 = t + dx * e1.x + dy * e1.y;\n"
+                        "        vec2 t2 = t + dx * e2.x + dy * e2.y;\n"
+                        "        tlo = min(min(t0, t1), t2);\n"
+                        "        thi = max(max(t0, t1), t2);\n"
                         "        vec2 o = (floor(gl_FragCoord.xy * s) + 0.5) / s - gl_FragCoord.xy;\n"
                         "        t = round((t + dx * o.x + dy * o.y) * 64.0) / 64.0 - 1.0 / 128.0;\n"
                         "        if (!one) {\n"
@@ -2009,9 +2024,13 @@ static MString* psh_convert(struct PixelShader *ps)
                 mstring_append_fmt(preflight,
                     "    vec2 f = floor(t), fc = clamp(f, vec2(0.0), sz - 1.0);\n"
                     "    f = mix(f, fc, lessThanEqual(abs(f - fc), vec2(1.0)));\n"
+                    "%s"
                     "    vec2 c = one ? (f + 0.5) / sz : uv;\n"
                     "    return textureGrad(texSamp%d, c, dFdx(uv), dFdy(uv));\n"
                     "}\n",
+                    ps->state->clamp_tex_mode == 4 ?
+                        "    vec2 flo = floor(tlo + 1.0 / 64.0);\n"
+                        "    f = clamp(f, flo, max(ceil(thi - 1.0 / 64.0) - 1.0, flo));\n" : "",
                     i);
             }
 

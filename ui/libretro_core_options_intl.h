@@ -99,6 +99,8 @@ extern "C" {
 #define OPTION_VAL_8_AR NULL
 #define OPTION_VAL_9_AR NULL
 #define OPTION_VAL_10_AR NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_AR NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_AR NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_AR NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_AR NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_AR "الأصل"
@@ -125,6 +127,18 @@ extern "C" {
 #define XEMU_VP_WORKERS_INFO_0_AR NULL
 #define XEMU_MSPF_OVERLAY_LABEL_AR NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_AR NULL
+#define XEMU_PROF_VCPU_LABEL_AR NULL
+#define XEMU_PROF_VCPU_INFO_0_AR NULL
+#define XEMU_PROF_PFIFO_LABEL_AR NULL
+#define XEMU_PROF_PFIFO_INFO_0_AR NULL
+#define XEMU_PROF_COUNTERS_LABEL_AR NULL
+#define XEMU_PROF_COUNTERS_INFO_0_AR NULL
+#define XEMU_PROF_S2T_LABEL_AR NULL
+#define XEMU_PROF_S2T_INFO_0_AR NULL
+#define XEMU_PROF_SURF_LABEL_AR NULL
+#define XEMU_PROF_SURF_INFO_0_AR NULL
+#define XEMU_PROF_PACING_LABEL_AR NULL
+#define XEMU_PROF_PACING_INFO_0_AR NULL
 #define XEMU_CPU_BOOST_LABEL_AR NULL
 #define XEMU_CPU_BOOST_INFO_0_AR NULL
 #define XEMU_HARD_FPU_LABEL_AR NULL
@@ -135,6 +149,12 @@ extern "C" {
 #define OPTION_VAL_NO_GPL_AR NULL
 #define OPTION_VAL_NO_DYN_AR NULL
 #define OPTION_VAL_NONE_AR "لاشيء"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_AR NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_AR NULL
+#define OPTION_VAL_OWN_AR NULL
+#define OPTION_VAL_FRONTEND_AR NULL
+#define XEMU_VK_LOST_REPORT_LABEL_AR NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_AR NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_AR NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_AR NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_AR NULL
@@ -403,6 +423,35 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_AR,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_AR,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -537,6 +586,90 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_AR,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_AR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_AR,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_AR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_AR,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_AR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_AR,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_AR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_AR,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_AR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_AR,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_AR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_AR,
         NULL,
@@ -582,6 +715,37 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_AR,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_AR,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_AR },
+            { "frontend", OPTION_VAL_FRONTEND_AR },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_AR,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_AR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -908,6 +1072,8 @@ struct retro_core_options_v2 options_ar = {
 #define OPTION_VAL_8_AST NULL
 #define OPTION_VAL_9_AST NULL
 #define OPTION_VAL_10_AST NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_AST NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_AST NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_AST "Filtru anisotrópicu"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_AST NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_AST NULL
@@ -934,6 +1100,18 @@ struct retro_core_options_v2 options_ar = {
 #define XEMU_VP_WORKERS_INFO_0_AST NULL
 #define XEMU_MSPF_OVERLAY_LABEL_AST NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_AST NULL
+#define XEMU_PROF_VCPU_LABEL_AST NULL
+#define XEMU_PROF_VCPU_INFO_0_AST NULL
+#define XEMU_PROF_PFIFO_LABEL_AST NULL
+#define XEMU_PROF_PFIFO_INFO_0_AST NULL
+#define XEMU_PROF_COUNTERS_LABEL_AST NULL
+#define XEMU_PROF_COUNTERS_INFO_0_AST NULL
+#define XEMU_PROF_S2T_LABEL_AST NULL
+#define XEMU_PROF_S2T_INFO_0_AST NULL
+#define XEMU_PROF_SURF_LABEL_AST NULL
+#define XEMU_PROF_SURF_INFO_0_AST NULL
+#define XEMU_PROF_PACING_LABEL_AST NULL
+#define XEMU_PROF_PACING_INFO_0_AST NULL
 #define XEMU_CPU_BOOST_LABEL_AST NULL
 #define XEMU_CPU_BOOST_INFO_0_AST NULL
 #define XEMU_HARD_FPU_LABEL_AST NULL
@@ -944,6 +1122,12 @@ struct retro_core_options_v2 options_ar = {
 #define OPTION_VAL_NO_GPL_AST NULL
 #define OPTION_VAL_NO_DYN_AST NULL
 #define OPTION_VAL_NONE_AST NULL
+#define XEMU_VK_RENDERER_QUEUE_LABEL_AST NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_AST NULL
+#define OPTION_VAL_OWN_AST NULL
+#define OPTION_VAL_FRONTEND_AST NULL
+#define XEMU_VK_LOST_REPORT_LABEL_AST NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_AST NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_AST NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_AST NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_AST NULL
@@ -1212,6 +1396,35 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_AST,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_AST,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -1346,6 +1559,90 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_AST,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_AST,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_AST,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_AST,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_AST,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_AST,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_AST,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_AST,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_AST,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_AST,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_AST,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_AST,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_AST,
         NULL,
@@ -1391,6 +1688,37 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_AST,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_AST,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_AST },
+            { "frontend", OPTION_VAL_FRONTEND_AST },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_AST,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_AST,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -1717,6 +2045,8 @@ struct retro_core_options_v2 options_ast = {
 #define OPTION_VAL_8_BE NULL
 #define OPTION_VAL_9_BE NULL
 #define OPTION_VAL_10_BE NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_BE NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_BE NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_BE "Анізатропнае фільтраванне"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_BE NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_BE "Родная"
@@ -1743,6 +2073,18 @@ struct retro_core_options_v2 options_ast = {
 #define XEMU_VP_WORKERS_INFO_0_BE NULL
 #define XEMU_MSPF_OVERLAY_LABEL_BE NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_BE NULL
+#define XEMU_PROF_VCPU_LABEL_BE NULL
+#define XEMU_PROF_VCPU_INFO_0_BE NULL
+#define XEMU_PROF_PFIFO_LABEL_BE NULL
+#define XEMU_PROF_PFIFO_INFO_0_BE NULL
+#define XEMU_PROF_COUNTERS_LABEL_BE NULL
+#define XEMU_PROF_COUNTERS_INFO_0_BE NULL
+#define XEMU_PROF_S2T_LABEL_BE NULL
+#define XEMU_PROF_S2T_INFO_0_BE NULL
+#define XEMU_PROF_SURF_LABEL_BE NULL
+#define XEMU_PROF_SURF_INFO_0_BE NULL
+#define XEMU_PROF_PACING_LABEL_BE NULL
+#define XEMU_PROF_PACING_INFO_0_BE NULL
 #define XEMU_CPU_BOOST_LABEL_BE NULL
 #define XEMU_CPU_BOOST_INFO_0_BE NULL
 #define XEMU_HARD_FPU_LABEL_BE NULL
@@ -1753,6 +2095,12 @@ struct retro_core_options_v2 options_ast = {
 #define OPTION_VAL_NO_GPL_BE NULL
 #define OPTION_VAL_NO_DYN_BE NULL
 #define OPTION_VAL_NONE_BE "Няма"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_BE NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_BE NULL
+#define OPTION_VAL_OWN_BE NULL
+#define OPTION_VAL_FRONTEND_BE NULL
+#define XEMU_VK_LOST_REPORT_LABEL_BE NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_BE NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_BE NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_BE NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_BE NULL
@@ -2021,6 +2369,35 @@ struct retro_core_option_v2_definition option_defs_be[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_BE,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_BE,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -2155,6 +2532,90 @@ struct retro_core_option_v2_definition option_defs_be[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_BE,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_BE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_BE,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_BE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_BE,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_BE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_BE,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_BE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_BE,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_BE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_BE,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_BE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_BE,
         NULL,
@@ -2200,6 +2661,37 @@ struct retro_core_option_v2_definition option_defs_be[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_BE,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_BE,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_BE },
+            { "frontend", OPTION_VAL_FRONTEND_BE },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_BE,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_BE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -2526,6 +3018,8 @@ struct retro_core_options_v2 options_be = {
 #define OPTION_VAL_8_BG NULL
 #define OPTION_VAL_9_BG NULL
 #define OPTION_VAL_10_BG NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_BG NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_BG NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_BG NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_BG NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_BG NULL
@@ -2552,6 +3046,18 @@ struct retro_core_options_v2 options_be = {
 #define XEMU_VP_WORKERS_INFO_0_BG NULL
 #define XEMU_MSPF_OVERLAY_LABEL_BG NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_BG NULL
+#define XEMU_PROF_VCPU_LABEL_BG NULL
+#define XEMU_PROF_VCPU_INFO_0_BG NULL
+#define XEMU_PROF_PFIFO_LABEL_BG NULL
+#define XEMU_PROF_PFIFO_INFO_0_BG NULL
+#define XEMU_PROF_COUNTERS_LABEL_BG NULL
+#define XEMU_PROF_COUNTERS_INFO_0_BG NULL
+#define XEMU_PROF_S2T_LABEL_BG NULL
+#define XEMU_PROF_S2T_INFO_0_BG NULL
+#define XEMU_PROF_SURF_LABEL_BG NULL
+#define XEMU_PROF_SURF_INFO_0_BG NULL
+#define XEMU_PROF_PACING_LABEL_BG NULL
+#define XEMU_PROF_PACING_INFO_0_BG NULL
 #define XEMU_CPU_BOOST_LABEL_BG NULL
 #define XEMU_CPU_BOOST_INFO_0_BG NULL
 #define XEMU_HARD_FPU_LABEL_BG NULL
@@ -2562,6 +3068,12 @@ struct retro_core_options_v2 options_be = {
 #define OPTION_VAL_NO_GPL_BG NULL
 #define OPTION_VAL_NO_DYN_BG NULL
 #define OPTION_VAL_NONE_BG NULL
+#define XEMU_VK_RENDERER_QUEUE_LABEL_BG NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_BG NULL
+#define OPTION_VAL_OWN_BG NULL
+#define OPTION_VAL_FRONTEND_BG NULL
+#define XEMU_VK_LOST_REPORT_LABEL_BG NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_BG NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_BG NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_BG NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_BG NULL
@@ -2830,6 +3342,35 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_BG,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_BG,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -2964,6 +3505,90 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_BG,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_BG,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_BG,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_BG,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_BG,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_BG,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_BG,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_BG,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_BG,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_BG,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_BG,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_BG,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_BG,
         NULL,
@@ -3009,6 +3634,37 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_BG,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_BG,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_BG },
+            { "frontend", OPTION_VAL_FRONTEND_BG },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_BG,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_BG,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -3335,8 +3991,10 @@ struct retro_core_options_v2 options_bg = {
 #define OPTION_VAL_8_CA NULL
 #define OPTION_VAL_9_CA NULL
 #define OPTION_VAL_10_CA NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_CA "Llindar d'escalat"
+#define XEMU_SCALE_THRESHOLD_INFO_0_CA NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_CA "Filtre anisotròpic"
-#define XEMU_ANISOTROPIC_FILTERING_INFO_0_CA "El filtratge menys anisotròpic que obtenen les textures filtrades suaument del joc, cosa que manté les textures amb una inclinació nítida. El natiu deixa les textures pròpies del joc, que per a la majoria de jocs de Xbox no n'hi ha."
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_CA NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CA "Nativa"
 #define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_CA NULL
 #define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_CA NULL
@@ -3351,7 +4009,7 @@ struct retro_core_options_v2 options_bg = {
 #define OPTION_VAL_VGA_CA NULL
 #define XEMU_AUDIO_THREAD_LABEL_CA "Fil d'àudio (Cal reiniciar)"
 #define XEMU_AUDIO_THREAD_INFO_0_CA "Passa el so al fil d'àudio de RetroArch mentre l'APU el mescla, mentre el reprodueix de manera independent, en comptes de fer-ho amb un fotograma per fotograma: el so continua mentre els fotogrames s'aturen, com mentre els shaders compilen. Les compilacions de RetroArch anteriors al novembre del 2026 alenteixen el seu menú amb aquest valor quan la velocitat de fotogrames del menú (limitació de fotogrames) és la velocitat de visualització; allà, configureu-la a la velocitat de contingut."
-#define XEMU_USE_DSP_LABEL_CA NULL
+#define XEMU_USE_DSP_LABEL_CA "Emulació de APU DSP"
 #define XEMU_USE_DSP_INFO_0_CA NULL
 #define XEMU_DSP_JIT_LABEL_CA NULL
 #define XEMU_DSP_JIT_INFO_0_CA NULL
@@ -3359,9 +4017,21 @@ struct retro_core_options_v2 options_bg = {
 #define XEMU_HRTF_INFO_0_CA "Situa les veus 3D dels jocs que les utilitzen mitjançant funcions de transferència relacionades amb el cap —tal com es fa a la consola—, tant per a auriculars com per a altaveus estèreo."
 #define XEMU_VP_WORKERS_LABEL_CA "Fils del processador de veu (Cal reiniciar)"
 #define XEMU_VP_WORKERS_INFO_0_CA "Fils en què el processador de veu d'àudio mescla les veus. L'opció «Auto» n'utilitza un per cada nucli de la CPU."
-#define XEMU_MSPF_OVERLAY_LABEL_CA NULL
+#define XEMU_MSPF_OVERLAY_LABEL_CA "Perfil (F10)"
 #define XEMU_MSPF_OVERLAY_INFO_0_CA NULL
-#define XEMU_CPU_BOOST_LABEL_CA NULL
+#define XEMU_PROF_VCPU_LABEL_CA "Perfil: vCPU"
+#define XEMU_PROF_VCPU_INFO_0_CA NULL
+#define XEMU_PROF_PFIFO_LABEL_CA "Perfil: PFIFO/PGRAPH"
+#define XEMU_PROF_PFIFO_INFO_0_CA NULL
+#define XEMU_PROF_COUNTERS_LABEL_CA "Perfil: Comptador de renderitzador"
+#define XEMU_PROF_COUNTERS_INFO_0_CA NULL
+#define XEMU_PROF_S2T_LABEL_CA "Perfil: Objectius de renderitzadors perduts"
+#define XEMU_PROF_S2T_INFO_0_CA NULL
+#define XEMU_PROF_SURF_LABEL_CA NULL
+#define XEMU_PROF_SURF_INFO_0_CA NULL
+#define XEMU_PROF_PACING_LABEL_CA "Perfil: Espaiat de fotogrames"
+#define XEMU_PROF_PACING_INFO_0_CA NULL
+#define XEMU_CPU_BOOST_LABEL_CA "Accelerar el xip (Cal reiniciar)"
 #define XEMU_CPU_BOOST_INFO_0_CA NULL
 #define XEMU_HARD_FPU_LABEL_CA NULL
 #define XEMU_HARD_FPU_INFO_0_CA NULL
@@ -3371,9 +4041,15 @@ struct retro_core_options_v2 options_bg = {
 #define OPTION_VAL_NO_GPL_CA "No hi ha llibreries de pipeline"
 #define OPTION_VAL_NO_DYN_CA "Sense estats dinàmics"
 #define OPTION_VAL_NONE_CA "Cap"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_CA NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_CA NULL
+#define OPTION_VAL_OWN_CA "Propi"
+#define OPTION_VAL_FRONTEND_CA NULL
+#define XEMU_VK_LOST_REPORT_LABEL_CA NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_CA NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_CA "Escalat amb desplaçament subpíxel"
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_CA "Amb una escala de resolució interna superior a 1x, desplaça la imatge una fracció de píxel de manera que els píxels de la resolució més alta s'alineïn amb els originals. Soluciona l'efecte fantasma i les unions visibles en alguns jocs (Jade Empire, Blinx), però en fa fallar d'altres (Splinter Cell). L'opció desactivada manté el comportament anterior."
-#define XEMU_TLB_SKIP_IDLE_LABEL_CA NULL
+#define XEMU_TLB_SKIP_IDLE_LABEL_CA "Omet els modes TLB inactius"
 #define XEMU_TLB_SKIP_IDLE_INFO_0_CA NULL
 #define XEMU_RUMBLE_P1_LABEL_CA "Vibració (Jugador 1)"
 #define XEMU_RUMBLE_P1_INFO_0_CA "El comandament del jugador 1 vibra, tant amb els jocs d'Xbox com gràcies a la retroalimentació de força d'un joc de curses per a Chihiro. Si està apagat, no vibra en cap dels dos casos."
@@ -3639,6 +4315,35 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_CA,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_CA,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -3773,6 +4478,90 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_CA,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_CA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_CA,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_CA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_CA,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_CA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_CA,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_CA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_CA,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_CA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_CA,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_CA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_CA,
         NULL,
@@ -3818,6 +4607,37 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_CA,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_CA,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_CA },
+            { "frontend", OPTION_VAL_FRONTEND_CA },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_CA,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_CA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -4144,6 +4964,8 @@ struct retro_core_options_v2 options_ca = {
 #define OPTION_VAL_8_CHS NULL
 #define OPTION_VAL_9_CHS NULL
 #define OPTION_VAL_10_CHS NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_CHS NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_CHS NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_CHS "各向异性过滤"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_CHS NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CHS "原生"
@@ -4170,6 +4992,18 @@ struct retro_core_options_v2 options_ca = {
 #define XEMU_VP_WORKERS_INFO_0_CHS NULL
 #define XEMU_MSPF_OVERLAY_LABEL_CHS NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_CHS NULL
+#define XEMU_PROF_VCPU_LABEL_CHS NULL
+#define XEMU_PROF_VCPU_INFO_0_CHS NULL
+#define XEMU_PROF_PFIFO_LABEL_CHS NULL
+#define XEMU_PROF_PFIFO_INFO_0_CHS NULL
+#define XEMU_PROF_COUNTERS_LABEL_CHS NULL
+#define XEMU_PROF_COUNTERS_INFO_0_CHS NULL
+#define XEMU_PROF_S2T_LABEL_CHS NULL
+#define XEMU_PROF_S2T_INFO_0_CHS NULL
+#define XEMU_PROF_SURF_LABEL_CHS NULL
+#define XEMU_PROF_SURF_INFO_0_CHS NULL
+#define XEMU_PROF_PACING_LABEL_CHS NULL
+#define XEMU_PROF_PACING_INFO_0_CHS NULL
 #define XEMU_CPU_BOOST_LABEL_CHS NULL
 #define XEMU_CPU_BOOST_INFO_0_CHS NULL
 #define XEMU_HARD_FPU_LABEL_CHS NULL
@@ -4180,6 +5014,12 @@ struct retro_core_options_v2 options_ca = {
 #define OPTION_VAL_NO_GPL_CHS "禁用管线库"
 #define OPTION_VAL_NO_DYN_CHS "禁用动态状态"
 #define OPTION_VAL_NONE_CHS "无"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_CHS NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_CHS NULL
+#define OPTION_VAL_OWN_CHS NULL
+#define OPTION_VAL_FRONTEND_CHS NULL
+#define XEMU_VK_LOST_REPORT_LABEL_CHS NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_CHS NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_CHS NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_CHS NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_CHS NULL
@@ -4448,6 +5288,35 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_CHS,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_CHS,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -4582,6 +5451,90 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_CHS,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_CHS,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_CHS,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_CHS,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_CHS,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_CHS,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_CHS,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_CHS,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_CHS,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_CHS,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_CHS,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_CHS,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_CHS,
         NULL,
@@ -4627,6 +5580,37 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_CHS,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_CHS,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_CHS },
+            { "frontend", OPTION_VAL_FRONTEND_CHS },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_CHS,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_CHS,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -4953,6 +5937,8 @@ struct retro_core_options_v2 options_chs = {
 #define OPTION_VAL_8_CHT NULL
 #define OPTION_VAL_9_CHT NULL
 #define OPTION_VAL_10_CHT NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_CHT NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_CHT NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_CHT NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_CHT NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CHT "原始"
@@ -4979,6 +5965,18 @@ struct retro_core_options_v2 options_chs = {
 #define XEMU_VP_WORKERS_INFO_0_CHT NULL
 #define XEMU_MSPF_OVERLAY_LABEL_CHT NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_CHT NULL
+#define XEMU_PROF_VCPU_LABEL_CHT NULL
+#define XEMU_PROF_VCPU_INFO_0_CHT NULL
+#define XEMU_PROF_PFIFO_LABEL_CHT NULL
+#define XEMU_PROF_PFIFO_INFO_0_CHT NULL
+#define XEMU_PROF_COUNTERS_LABEL_CHT NULL
+#define XEMU_PROF_COUNTERS_INFO_0_CHT NULL
+#define XEMU_PROF_S2T_LABEL_CHT NULL
+#define XEMU_PROF_S2T_INFO_0_CHT NULL
+#define XEMU_PROF_SURF_LABEL_CHT NULL
+#define XEMU_PROF_SURF_INFO_0_CHT NULL
+#define XEMU_PROF_PACING_LABEL_CHT NULL
+#define XEMU_PROF_PACING_INFO_0_CHT NULL
 #define XEMU_CPU_BOOST_LABEL_CHT NULL
 #define XEMU_CPU_BOOST_INFO_0_CHT NULL
 #define XEMU_HARD_FPU_LABEL_CHT NULL
@@ -4989,6 +5987,12 @@ struct retro_core_options_v2 options_chs = {
 #define OPTION_VAL_NO_GPL_CHT NULL
 #define OPTION_VAL_NO_DYN_CHT NULL
 #define OPTION_VAL_NONE_CHT "無"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_CHT NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_CHT NULL
+#define OPTION_VAL_OWN_CHT NULL
+#define OPTION_VAL_FRONTEND_CHT NULL
+#define XEMU_VK_LOST_REPORT_LABEL_CHT NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_CHT NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_CHT NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_CHT NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_CHT NULL
@@ -5257,6 +6261,35 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_CHT,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_CHT,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -5391,6 +6424,90 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_CHT,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_CHT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_CHT,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_CHT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_CHT,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_CHT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_CHT,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_CHT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_CHT,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_CHT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_CHT,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_CHT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_CHT,
         NULL,
@@ -5436,6 +6553,37 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_CHT,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_CHT,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_CHT },
+            { "frontend", OPTION_VAL_FRONTEND_CHT },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_CHT,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_CHT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -5762,6 +6910,8 @@ struct retro_core_options_v2 options_cht = {
 #define OPTION_VAL_8_CS NULL
 #define OPTION_VAL_9_CS NULL
 #define OPTION_VAL_10_CS NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_CS NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_CS NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_CS "Anizotropní Filtrování"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_CS NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CS "Nativní"
@@ -5788,6 +6938,18 @@ struct retro_core_options_v2 options_cht = {
 #define XEMU_VP_WORKERS_INFO_0_CS NULL
 #define XEMU_MSPF_OVERLAY_LABEL_CS NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_CS NULL
+#define XEMU_PROF_VCPU_LABEL_CS NULL
+#define XEMU_PROF_VCPU_INFO_0_CS NULL
+#define XEMU_PROF_PFIFO_LABEL_CS NULL
+#define XEMU_PROF_PFIFO_INFO_0_CS NULL
+#define XEMU_PROF_COUNTERS_LABEL_CS NULL
+#define XEMU_PROF_COUNTERS_INFO_0_CS NULL
+#define XEMU_PROF_S2T_LABEL_CS NULL
+#define XEMU_PROF_S2T_INFO_0_CS NULL
+#define XEMU_PROF_SURF_LABEL_CS NULL
+#define XEMU_PROF_SURF_INFO_0_CS NULL
+#define XEMU_PROF_PACING_LABEL_CS NULL
+#define XEMU_PROF_PACING_INFO_0_CS NULL
 #define XEMU_CPU_BOOST_LABEL_CS NULL
 #define XEMU_CPU_BOOST_INFO_0_CS NULL
 #define XEMU_HARD_FPU_LABEL_CS NULL
@@ -5798,6 +6960,12 @@ struct retro_core_options_v2 options_cht = {
 #define OPTION_VAL_NO_GPL_CS NULL
 #define OPTION_VAL_NO_DYN_CS NULL
 #define OPTION_VAL_NONE_CS "Žádné"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_CS NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_CS NULL
+#define OPTION_VAL_OWN_CS NULL
+#define OPTION_VAL_FRONTEND_CS NULL
+#define XEMU_VK_LOST_REPORT_LABEL_CS NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_CS NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_CS NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_CS NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_CS NULL
@@ -6066,6 +7234,35 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_CS,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_CS,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -6200,6 +7397,90 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_CS,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_CS,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_CS,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_CS,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_CS,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_CS,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_CS,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_CS,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_CS,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_CS,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_CS,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_CS,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_CS,
         NULL,
@@ -6245,6 +7526,37 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_CS,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_CS,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_CS },
+            { "frontend", OPTION_VAL_FRONTEND_CS },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_CS,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_CS,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -6571,6 +7883,8 @@ struct retro_core_options_v2 options_cs = {
 #define OPTION_VAL_8_CY NULL
 #define OPTION_VAL_9_CY NULL
 #define OPTION_VAL_10_CY NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_CY NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_CY NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_CY NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_CY NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_CY NULL
@@ -6597,6 +7911,18 @@ struct retro_core_options_v2 options_cs = {
 #define XEMU_VP_WORKERS_INFO_0_CY NULL
 #define XEMU_MSPF_OVERLAY_LABEL_CY NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_CY NULL
+#define XEMU_PROF_VCPU_LABEL_CY NULL
+#define XEMU_PROF_VCPU_INFO_0_CY NULL
+#define XEMU_PROF_PFIFO_LABEL_CY NULL
+#define XEMU_PROF_PFIFO_INFO_0_CY NULL
+#define XEMU_PROF_COUNTERS_LABEL_CY NULL
+#define XEMU_PROF_COUNTERS_INFO_0_CY NULL
+#define XEMU_PROF_S2T_LABEL_CY NULL
+#define XEMU_PROF_S2T_INFO_0_CY NULL
+#define XEMU_PROF_SURF_LABEL_CY NULL
+#define XEMU_PROF_SURF_INFO_0_CY NULL
+#define XEMU_PROF_PACING_LABEL_CY NULL
+#define XEMU_PROF_PACING_INFO_0_CY NULL
 #define XEMU_CPU_BOOST_LABEL_CY NULL
 #define XEMU_CPU_BOOST_INFO_0_CY NULL
 #define XEMU_HARD_FPU_LABEL_CY NULL
@@ -6607,6 +7933,12 @@ struct retro_core_options_v2 options_cs = {
 #define OPTION_VAL_NO_GPL_CY NULL
 #define OPTION_VAL_NO_DYN_CY NULL
 #define OPTION_VAL_NONE_CY "Dim"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_CY NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_CY NULL
+#define OPTION_VAL_OWN_CY NULL
+#define OPTION_VAL_FRONTEND_CY NULL
+#define XEMU_VK_LOST_REPORT_LABEL_CY NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_CY NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_CY NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_CY NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_CY NULL
@@ -6875,6 +8207,35 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_CY,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_CY,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -7009,6 +8370,90 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_CY,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_CY,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_CY,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_CY,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_CY,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_CY,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_CY,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_CY,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_CY,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_CY,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_CY,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_CY,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_CY,
         NULL,
@@ -7054,6 +8499,37 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_CY,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_CY,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_CY },
+            { "frontend", OPTION_VAL_FRONTEND_CY },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_CY,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_CY,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -7380,6 +8856,8 @@ struct retro_core_options_v2 options_cy = {
 #define OPTION_VAL_8_DA NULL
 #define OPTION_VAL_9_DA NULL
 #define OPTION_VAL_10_DA NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_DA NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_DA NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_DA NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_DA NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_DA NULL
@@ -7406,6 +8884,18 @@ struct retro_core_options_v2 options_cy = {
 #define XEMU_VP_WORKERS_INFO_0_DA NULL
 #define XEMU_MSPF_OVERLAY_LABEL_DA NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_DA NULL
+#define XEMU_PROF_VCPU_LABEL_DA NULL
+#define XEMU_PROF_VCPU_INFO_0_DA NULL
+#define XEMU_PROF_PFIFO_LABEL_DA NULL
+#define XEMU_PROF_PFIFO_INFO_0_DA NULL
+#define XEMU_PROF_COUNTERS_LABEL_DA NULL
+#define XEMU_PROF_COUNTERS_INFO_0_DA NULL
+#define XEMU_PROF_S2T_LABEL_DA NULL
+#define XEMU_PROF_S2T_INFO_0_DA NULL
+#define XEMU_PROF_SURF_LABEL_DA NULL
+#define XEMU_PROF_SURF_INFO_0_DA NULL
+#define XEMU_PROF_PACING_LABEL_DA NULL
+#define XEMU_PROF_PACING_INFO_0_DA NULL
 #define XEMU_CPU_BOOST_LABEL_DA NULL
 #define XEMU_CPU_BOOST_INFO_0_DA NULL
 #define XEMU_HARD_FPU_LABEL_DA NULL
@@ -7416,6 +8906,12 @@ struct retro_core_options_v2 options_cy = {
 #define OPTION_VAL_NO_GPL_DA NULL
 #define OPTION_VAL_NO_DYN_DA NULL
 #define OPTION_VAL_NONE_DA NULL
+#define XEMU_VK_RENDERER_QUEUE_LABEL_DA NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_DA NULL
+#define OPTION_VAL_OWN_DA NULL
+#define OPTION_VAL_FRONTEND_DA NULL
+#define XEMU_VK_LOST_REPORT_LABEL_DA NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_DA NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_DA NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_DA NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_DA NULL
@@ -7684,6 +9180,35 @@ struct retro_core_option_v2_definition option_defs_da[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_DA,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_DA,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -7818,6 +9343,90 @@ struct retro_core_option_v2_definition option_defs_da[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_DA,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_DA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_DA,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_DA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_DA,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_DA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_DA,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_DA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_DA,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_DA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_DA,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_DA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_DA,
         NULL,
@@ -7863,6 +9472,37 @@ struct retro_core_option_v2_definition option_defs_da[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_DA,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_DA,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_DA },
+            { "frontend", OPTION_VAL_FRONTEND_DA },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_DA,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_DA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -8189,8 +9829,10 @@ struct retro_core_options_v2 options_da = {
 #define OPTION_VAL_8_DE "8× (5120 × 3840)"
 #define OPTION_VAL_9_DE "9× (5760 × 4320)"
 #define OPTION_VAL_10_DE "10× (6400 × 4800)"
+#define XEMU_SCALE_THRESHOLD_LABEL_DE NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_DE NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_DE "Anisotrope Filterung"
-#define XEMU_ANISOTROPIC_FILTERING_INFO_0_DE "Der geringste Grad an anisotroper Filterung, mit dem die Texturen des Spiels geglättet werden. Dadurch bleiben schräg dargestellte Texturen scharf. Bei „Nativ“ bleibt die spielinterne Einstellung erhalten, die bei den meisten Xbox-Spielen keiner Filterung entspricht."
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_DE NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_DE "Nativ"
 #define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_DE NULL
 #define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_DE NULL
@@ -8215,6 +9857,18 @@ struct retro_core_options_v2 options_da = {
 #define XEMU_VP_WORKERS_INFO_0_DE "Die Threads, auf denen der Audioprozessor die Stimmen mischt. Bei „Automatisch“ wird ein Thread pro CPU-Kern verwendet."
 #define XEMU_MSPF_OVERLAY_LABEL_DE NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_DE NULL
+#define XEMU_PROF_VCPU_LABEL_DE NULL
+#define XEMU_PROF_VCPU_INFO_0_DE NULL
+#define XEMU_PROF_PFIFO_LABEL_DE NULL
+#define XEMU_PROF_PFIFO_INFO_0_DE NULL
+#define XEMU_PROF_COUNTERS_LABEL_DE NULL
+#define XEMU_PROF_COUNTERS_INFO_0_DE NULL
+#define XEMU_PROF_S2T_LABEL_DE NULL
+#define XEMU_PROF_S2T_INFO_0_DE NULL
+#define XEMU_PROF_SURF_LABEL_DE NULL
+#define XEMU_PROF_SURF_INFO_0_DE NULL
+#define XEMU_PROF_PACING_LABEL_DE NULL
+#define XEMU_PROF_PACING_INFO_0_DE NULL
 #define XEMU_CPU_BOOST_LABEL_DE NULL
 #define XEMU_CPU_BOOST_INFO_0_DE NULL
 #define XEMU_HARD_FPU_LABEL_DE NULL
@@ -8225,6 +9879,12 @@ struct retro_core_options_v2 options_da = {
 #define OPTION_VAL_NO_GPL_DE "Keine Pipelinebibliotheken"
 #define OPTION_VAL_NO_DYN_DE "Keine dynamischen Zustände"
 #define OPTION_VAL_NONE_DE "Nein"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_DE NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_DE NULL
+#define OPTION_VAL_OWN_DE NULL
+#define OPTION_VAL_FRONTEND_DE NULL
+#define XEMU_VK_LOST_REPORT_LABEL_DE NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_DE NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_DE NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_DE NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_DE NULL
@@ -8493,6 +10153,35 @@ struct retro_core_option_v2_definition option_defs_de[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_DE,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_DE,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -8627,6 +10316,90 @@ struct retro_core_option_v2_definition option_defs_de[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_DE,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_DE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_DE,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_DE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_DE,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_DE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_DE,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_DE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_DE,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_DE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_DE,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_DE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_DE,
         NULL,
@@ -8672,6 +10445,37 @@ struct retro_core_option_v2_definition option_defs_de[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_DE,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_DE,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_DE },
+            { "frontend", OPTION_VAL_FRONTEND_DE },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_DE,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_DE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -8998,6 +10802,8 @@ struct retro_core_options_v2 options_de = {
 #define OPTION_VAL_8_EL NULL
 #define OPTION_VAL_9_EL NULL
 #define OPTION_VAL_10_EL NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_EL NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_EL NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_EL NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_EL NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_EL "Ντόπιος"
@@ -9024,6 +10830,18 @@ struct retro_core_options_v2 options_de = {
 #define XEMU_VP_WORKERS_INFO_0_EL NULL
 #define XEMU_MSPF_OVERLAY_LABEL_EL NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_EL NULL
+#define XEMU_PROF_VCPU_LABEL_EL NULL
+#define XEMU_PROF_VCPU_INFO_0_EL NULL
+#define XEMU_PROF_PFIFO_LABEL_EL NULL
+#define XEMU_PROF_PFIFO_INFO_0_EL NULL
+#define XEMU_PROF_COUNTERS_LABEL_EL NULL
+#define XEMU_PROF_COUNTERS_INFO_0_EL NULL
+#define XEMU_PROF_S2T_LABEL_EL NULL
+#define XEMU_PROF_S2T_INFO_0_EL NULL
+#define XEMU_PROF_SURF_LABEL_EL NULL
+#define XEMU_PROF_SURF_INFO_0_EL NULL
+#define XEMU_PROF_PACING_LABEL_EL NULL
+#define XEMU_PROF_PACING_INFO_0_EL NULL
 #define XEMU_CPU_BOOST_LABEL_EL NULL
 #define XEMU_CPU_BOOST_INFO_0_EL NULL
 #define XEMU_HARD_FPU_LABEL_EL NULL
@@ -9034,6 +10852,12 @@ struct retro_core_options_v2 options_de = {
 #define OPTION_VAL_NO_GPL_EL NULL
 #define OPTION_VAL_NO_DYN_EL NULL
 #define OPTION_VAL_NONE_EL "Κανείς"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_EL NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_EL NULL
+#define OPTION_VAL_OWN_EL NULL
+#define OPTION_VAL_FRONTEND_EL NULL
+#define XEMU_VK_LOST_REPORT_LABEL_EL NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_EL NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_EL NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_EL NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_EL NULL
@@ -9302,6 +11126,35 @@ struct retro_core_option_v2_definition option_defs_el[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_EL,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_EL,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -9436,6 +11289,90 @@ struct retro_core_option_v2_definition option_defs_el[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_EL,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_EL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_EL,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_EL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_EL,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_EL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_EL,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_EL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_EL,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_EL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_EL,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_EL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_EL,
         NULL,
@@ -9481,6 +11418,37 @@ struct retro_core_option_v2_definition option_defs_el[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_EL,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_EL,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_EL },
+            { "frontend", OPTION_VAL_FRONTEND_EL },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_EL,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_EL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -9807,6 +11775,8 @@ struct retro_core_options_v2 options_el = {
 #define OPTION_VAL_8_EN NULL
 #define OPTION_VAL_9_EN NULL
 #define OPTION_VAL_10_EN NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_EN NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_EN NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_EN NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_EN NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_EN NULL
@@ -9833,6 +11803,18 @@ struct retro_core_options_v2 options_el = {
 #define XEMU_VP_WORKERS_INFO_0_EN NULL
 #define XEMU_MSPF_OVERLAY_LABEL_EN NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_EN NULL
+#define XEMU_PROF_VCPU_LABEL_EN NULL
+#define XEMU_PROF_VCPU_INFO_0_EN NULL
+#define XEMU_PROF_PFIFO_LABEL_EN NULL
+#define XEMU_PROF_PFIFO_INFO_0_EN NULL
+#define XEMU_PROF_COUNTERS_LABEL_EN NULL
+#define XEMU_PROF_COUNTERS_INFO_0_EN NULL
+#define XEMU_PROF_S2T_LABEL_EN NULL
+#define XEMU_PROF_S2T_INFO_0_EN NULL
+#define XEMU_PROF_SURF_LABEL_EN NULL
+#define XEMU_PROF_SURF_INFO_0_EN NULL
+#define XEMU_PROF_PACING_LABEL_EN NULL
+#define XEMU_PROF_PACING_INFO_0_EN NULL
 #define XEMU_CPU_BOOST_LABEL_EN NULL
 #define XEMU_CPU_BOOST_INFO_0_EN NULL
 #define XEMU_HARD_FPU_LABEL_EN NULL
@@ -9843,6 +11825,12 @@ struct retro_core_options_v2 options_el = {
 #define OPTION_VAL_NO_GPL_EN NULL
 #define OPTION_VAL_NO_DYN_EN NULL
 #define OPTION_VAL_NONE_EN NULL
+#define XEMU_VK_RENDERER_QUEUE_LABEL_EN NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_EN NULL
+#define OPTION_VAL_OWN_EN NULL
+#define OPTION_VAL_FRONTEND_EN NULL
+#define XEMU_VK_LOST_REPORT_LABEL_EN NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_EN NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_EN NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_EN NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_EN NULL
@@ -10111,6 +12099,35 @@ struct retro_core_option_v2_definition option_defs_en[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_EN,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_EN,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -10245,6 +12262,90 @@ struct retro_core_option_v2_definition option_defs_en[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_EN,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_EN,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_EN,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_EN,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_EN,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_EN,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_EN,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_EN,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_EN,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_EN,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_EN,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_EN,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_EN,
         NULL,
@@ -10290,6 +12391,37 @@ struct retro_core_option_v2_definition option_defs_en[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_EN,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_EN,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_EN },
+            { "frontend", OPTION_VAL_FRONTEND_EN },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_EN,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_EN,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -10616,6 +12748,8 @@ struct retro_core_options_v2 options_en = {
 #define OPTION_VAL_8_EO NULL
 #define OPTION_VAL_9_EO NULL
 #define OPTION_VAL_10_EO NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_EO NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_EO NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_EO "Neizotropeca filtrado"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_EO NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_EO "Indiĝena"
@@ -10642,6 +12776,18 @@ struct retro_core_options_v2 options_en = {
 #define XEMU_VP_WORKERS_INFO_0_EO NULL
 #define XEMU_MSPF_OVERLAY_LABEL_EO NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_EO NULL
+#define XEMU_PROF_VCPU_LABEL_EO NULL
+#define XEMU_PROF_VCPU_INFO_0_EO NULL
+#define XEMU_PROF_PFIFO_LABEL_EO NULL
+#define XEMU_PROF_PFIFO_INFO_0_EO NULL
+#define XEMU_PROF_COUNTERS_LABEL_EO NULL
+#define XEMU_PROF_COUNTERS_INFO_0_EO NULL
+#define XEMU_PROF_S2T_LABEL_EO NULL
+#define XEMU_PROF_S2T_INFO_0_EO NULL
+#define XEMU_PROF_SURF_LABEL_EO NULL
+#define XEMU_PROF_SURF_INFO_0_EO NULL
+#define XEMU_PROF_PACING_LABEL_EO NULL
+#define XEMU_PROF_PACING_INFO_0_EO NULL
 #define XEMU_CPU_BOOST_LABEL_EO NULL
 #define XEMU_CPU_BOOST_INFO_0_EO NULL
 #define XEMU_HARD_FPU_LABEL_EO NULL
@@ -10652,6 +12798,12 @@ struct retro_core_options_v2 options_en = {
 #define OPTION_VAL_NO_GPL_EO NULL
 #define OPTION_VAL_NO_DYN_EO NULL
 #define OPTION_VAL_NONE_EO "Neniom"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_EO NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_EO NULL
+#define OPTION_VAL_OWN_EO NULL
+#define OPTION_VAL_FRONTEND_EO NULL
+#define XEMU_VK_LOST_REPORT_LABEL_EO NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_EO NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_EO NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_EO NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_EO NULL
@@ -10920,6 +13072,35 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_EO,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_EO,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -11054,6 +13235,90 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_EO,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_EO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_EO,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_EO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_EO,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_EO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_EO,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_EO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_EO,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_EO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_EO,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_EO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_EO,
         NULL,
@@ -11099,6 +13364,37 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_EO,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_EO,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_EO },
+            { "frontend", OPTION_VAL_FRONTEND_EO },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_EO,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_EO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -11366,11 +13662,11 @@ struct retro_core_options_v2 options_eo = {
 /* RETRO_LANGUAGE_ES */
 
 #define CATEGORY_SYSTEM_LABEL_ES "Sistema (es necesario reiniciar)"
-#define CATEGORY_SYSTEM_INFO_0_ES NULL
+#define CATEGORY_SYSTEM_INFO_0_ES "La máquina en sí misma: memoria, red, arranque e idioma. La configuración se aplicará al ejecutar un contenido (salvo Optimizar disco duro al cerrar)."
 #define CATEGORY_VIDEO_LABEL_ES "Vídeo"
 #define CATEGORY_VIDEO_INFO_0_ES "Configura el renderizado de vídeo."
 #define CATEGORY_DEBUG_LABEL_ES "Depuración"
-#define CATEGORY_DEBUG_INFO_0_ES NULL
+#define CATEGORY_DEBUG_INFO_0_ES "El perfilador y los conmutadores que sirven para averiguar qué ralentiza o rompe un juego: las rutas rápidas de CPU y GPU y los detalles del renderizador. Es mejor dejar estas opciones como están si no se van a usar con dicho fin."
 #define CATEGORY_AUDIO_LABEL_ES NULL
 #define CATEGORY_AUDIO_INFO_0_ES "Configura la emulación de audio."
 #define CATEGORY_CONTROLS_LABEL_ES "Controles"
@@ -11387,7 +13683,7 @@ struct retro_core_options_v2 options_eo = {
 #define XEMU_SKIP_BOOT_ANIM_LABEL_ES "Omitir animación de arranque"
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_ES "Omite la animación de arranque de Xbox."
 #define XEMU_LANGUAGE_LABEL_ES "Idioma del sistema"
-#define XEMU_LANGUAGE_INFO_0_ES NULL
+#define XEMU_LANGUAGE_INFO_0_ES "El idioma que indicará la configuración de la consola a los juegos, sustituyendo al ajuste de la interfaz Xbox. El valor automático es el idioma de RetroArch si existe en Xbox, en caso contrario, se usará el inglés."
 #define OPTION_VAL_AUTO_ES "Automática"
 #define OPTION_VAL_ENGLISH_ES "Inglés"
 #define OPTION_VAL_JAPANESE_ES "Japonés"
@@ -11405,14 +13701,14 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_VULKAN_ES NULL
 #define OPTION_VAL_OPENGL_ES NULL
 #define XEMU_VIDEO_ASPECT_LABEL_ES "Relación de aspecto del sistema (es necesario reiniciar)"
-#define XEMU_VIDEO_ASPECT_INFO_0_ES NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_ES "La forma de la imagen que declara la configuración de vídeo de la consola a los juegos, ignorando la configuración de la Interfaz de Xbox. Si seleccionas 16:9, aquellos juegos compatibles con el formato panorámico se mostrarán así; seleccionando 4:3 se mostrarán en 4:3. Elige la relación de aspecto de tu pantalla. Con bandas mostrará la relación a 4:3 de la interfaz y mostrará los juegos panorámicos con bandas negras."
 #define OPTION_VAL_4_3_ES NULL
 #define OPTION_VAL_16_9_ES NULL
 #define OPTION_VAL_LETTERBOX_ES "Con bandas"
 #define XEMU_ASPECT_RATIO_LABEL_ES "Relación de aspecto del núcleo"
 #define XEMU_ASPECT_RATIO_INFO_0_ES "La forma con la que se mostrará la imagen. Lo mejor es seleccionar el valor automático, que respetará lo que diga el juego: 16:9 si la consola está configurada en formato panorámico (ya sea con Relación de aspecto del sistema o dentro de la interfaz de la consola) y el juego pueda renderizarse a 16:9, o si se está utilizando un parche de imagen panorámica (con el nombre Widescreen, panorámico o 16-9), 4:3 en caso contrario y con juegos para Chihiro. 16:9 estirará un juego en 4:3 a una imagen panorámica."
 #define XEMU_OVERSCAN_CROP_LABEL_ES "Recortar sobrebarrido vertical"
-#define XEMU_OVERSCAN_CROP_INFO_0_ES "Algunos juegos muestran una imagen con 448 líneas dentro de las 480 que muestra Xbox, mostrando bandas negras por encima y por debajo. El valor automático recortará 16 líneas por encima y otras tantas por debajo en aquellos juegos que estén en la lista del núcleo y conservará la altura completa del resto para preservar la relación de aspecto."
+#define XEMU_OVERSCAN_CROP_INFO_0_ES "Algunos juegos muestran una imagen con 448 líneas con bandas negras por encima y por debajo dentro de las 480 que muestra Xbox. El valor automático recortará 16 líneas por encima y otras tantas por debajo en aquellos juegos que estén en la lista del núcleo y conservará la altura completa del resto para preservar la relación de aspecto."
 #define XEMU_SURFACE_SCALE_LABEL_ES "Escala de resolución interna (es necesario reiniciar)"
 #define XEMU_SURFACE_SCALE_INFO_0_ES "Escala la resolución interna de renderizado. Un valor más alto mejorará la calidad, pero reducirá el rendimiento."
 #define OPTION_VAL_1_ES "× 1 (640 × 480)"
@@ -11425,6 +13721,8 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_8_ES "× 8 (5120 × 3840)"
 #define OPTION_VAL_9_ES "× 9 (5760 × 4320)"
 #define OPTION_VAL_10_ES "× 10 (6400 × 4800)"
+#define XEMU_SCALE_THRESHOLD_LABEL_ES "Umbral de reescalado"
+#define XEMU_SCALE_THRESHOLD_INFO_0_ES "Si la escala de resolución interna es superior a × 1, todo objetivo de renderizado cuyo lado más largo tenga este tamaño o superior se dibujará a × 1. De esta forma, los búferes más pequeños, que podrían contener pasadas de resplandores, brillos o reflejos; tendrán el aspecto original en vez de convertirse en artefactos con exceso de definición y cuadrados. Solo para Vulkan. Al cambiar esta opción se regenerarán los objetivos de renderizado."
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_ES "Filtrado anisotrópico"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_ES "La cantidad mínima de filtro anisotrópico que se aplicará a las texturas suavizadas de los juegos, manteniéndolas nítidas cuando se muestren inclinadas. Nativo mantendrá el valor de cada juego, que está desactivado en la mayoría de juegos de Xbox."
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_ES "Nativa"
@@ -11441,29 +13739,47 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_VGA_ES NULL
 #define XEMU_AUDIO_THREAD_LABEL_ES "Hilo para audio (es necesario reiniciar)"
 #define XEMU_AUDIO_THREAD_INFO_0_ES "Envía el sonido al hilo de audio de RetroArch a medida que lo vaya mezclando la APU, tal y como lo reproduciría la aplicación en vez de enviar solo la cantidad de sonido que tendría un fotograma: el sonido seguirá reproduciéndose cuando haya parones de vídeo, como ocurriría durante la compilación de shaders. Toda compilación de RetroArch previa a noviembre de 2026 ralentizará el menú con esta opción si el regulador de fotogramas del menú de RetroArch utiliza la frecuencia de la pantalla, en este caso debes configurar la frecuencia de fotogramas del menú a Frecuencia de contenido."
-#define XEMU_USE_DSP_LABEL_ES NULL
-#define XEMU_USE_DSP_INFO_0_ES NULL
-#define XEMU_DSP_JIT_LABEL_ES NULL
-#define XEMU_DSP_JIT_INFO_0_ES NULL
+#define XEMU_USE_DSP_LABEL_ES "Emulación del DSP de la APU"
+#define XEMU_USE_DSP_INFO_0_ES "Emula el DSP de la APU, que se encarga de reproducir los efectos de sonido, la reverberación y buena parte de la música de los juegos: sin el DSP, todos los sonidos sonarán secos. Esta opción se aplicará inmediatamente."
+#define XEMU_DSP_JIT_LABEL_ES "JIT en el DSP"
+#define XEMU_DSP_JIT_INFO_0_ES "Ejecuta los programas de la emulación del DSP de la APU como código compilado en vez de interpretarlos: es más rápido, como haría el JIT en el DSP de la aplicación independiente. Solo hará efecto si se activa la emulación del DSP de la APU. Esta opción se aplicará inmediatamente."
 #define XEMU_HRTF_LABEL_ES "Función de transferencia relacionada con la cabeza (HRTF)"
 #define XEMU_HRTF_INFO_0_ES "Ubica las posiciones 3D de las voces en aquellos juegos compatibles con funciones de transferencia relacionadas con la cabeza, tal y como haría la consola. Para auriculares y altavoces estéreo."
 #define XEMU_VP_WORKERS_LABEL_ES "Hilos de procesamiento de voces (es necesario reiniciar)"
 #define XEMU_VP_WORKERS_INFO_0_ES "Los hilos usados por el procesador de voces de audio para mezclarlas. El valor automático utilizará un hilo por núcleo de la CPU."
-#define XEMU_MSPF_OVERLAY_LABEL_ES NULL
+#define XEMU_MSPF_OVERLAY_LABEL_ES "Perfilador (F10)"
 #define XEMU_MSPF_OVERLAY_INFO_0_ES NULL
-#define XEMU_CPU_BOOST_LABEL_ES NULL
-#define XEMU_CPU_BOOST_INFO_0_ES NULL
-#define XEMU_HARD_FPU_LABEL_ES NULL
-#define XEMU_HARD_FPU_INFO_0_ES NULL
+#define XEMU_PROF_VCPU_LABEL_ES NULL
+#define XEMU_PROF_VCPU_INFO_0_ES NULL
+#define XEMU_PROF_PFIFO_LABEL_ES "Perfilador: PFIFO/PGRAPH"
+#define XEMU_PROF_PFIFO_INFO_0_ES NULL
+#define XEMU_PROF_COUNTERS_LABEL_ES NULL
+#define XEMU_PROF_COUNTERS_INFO_0_ES NULL
+#define XEMU_PROF_S2T_LABEL_ES NULL
+#define XEMU_PROF_S2T_INFO_0_ES NULL
+#define XEMU_PROF_SURF_LABEL_ES NULL
+#define XEMU_PROF_SURF_INFO_0_ES NULL
+#define XEMU_PROF_PACING_LABEL_ES NULL
+#define XEMU_PROF_PACING_INFO_0_ES NULL
+#define XEMU_CPU_BOOST_LABEL_ES "Acelerar CPU (es necesario reiniciar)"
+#define XEMU_CPU_BOOST_INFO_0_ES "Rutas más rápidas para la CPU invitada y para el procesador de audio: SSE nativo y una mayor caché de saltos. Desactiva esta opción si un juego empieza a dar problemas. Esta opción se aplicará al iniciar un contenido."
+#define XEMU_HARD_FPU_LABEL_ES "Emulación de FPU de hardware (es necesario reiniciar)"
+#define XEMU_HARD_FPU_INFO_0_ES "Utiliza la FPU del host para emular el código x87. Es más rápido, pero tendrá pequeñas pérdidas de precisión. Esta opción se aplicará al iniciar un contenido."
 #define XEMU_VK_FAST_PATHS_LABEL_ES "Rutas rápidas de Vulkan (es necesario reiniciar)"
 #define XEMU_VK_FAST_PATHS_INFO_0_ES "Actualmente solo se ha confirmado que funcionan en tarjetas gráficas de Nvidia y que falla en las de AMD. Afecta a la velocidad de compilación de shaders con Vulkan. Todas es lo más rápido, pero puede provocar cuelgues en algunos juegos. El valor automático desactivará esta opción en tarjetas gráficas de AMD y usará todas las rutas en el resto de tarjetas."
 #define OPTION_VAL_ALL_ES "Todos"
 #define OPTION_VAL_NO_GPL_ES "Sin bibliotecas de canalización"
 #define OPTION_VAL_NO_DYN_ES "Sin estados dinámicos"
 #define OPTION_VAL_NONE_ES "No compartir"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_ES NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_ES NULL
+#define OPTION_VAL_OWN_ES NULL
+#define OPTION_VAL_FRONTEND_ES NULL
+#define XEMU_VK_LOST_REPORT_LABEL_ES NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_ES NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_ES "Compensación subpíxel de escalado"
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_ES "Si la escala de resolución interna es superior a × 1, se desplazará la imagen una fracción de píxel para que el resto de píxeles de la resolución original se mantengan alineados con los originales. Corrige el efecto fantasma (\"ghosting\") y los bordes en algunos juegos (Jade Empire, Blinx), pero hace que otros fallen (Splinter Cell). Desactiva esta opción para usar el comportamiento antiguo."
-#define XEMU_TLB_SKIP_IDLE_LABEL_ES NULL
+#define XEMU_TLB_SKIP_IDLE_LABEL_ES "Omitir modos TLB inactivos"
 #define XEMU_TLB_SKIP_IDLE_INFO_0_ES NULL
 #define XEMU_RUMBLE_P1_LABEL_ES "Vibración (jugador 1)"
 #define XEMU_RUMBLE_P1_INFO_0_ES "La vibración del mando del jugador 1, ya sea para juegos de Xbox o para el force feedback de un juego de conducción de Chihiro. Desactiva esta opción para que no haya vibración en ninguno de estos casos."
@@ -11729,6 +14045,35 @@ struct retro_core_option_v2_definition option_defs_es[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_ES,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_ES,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -11863,6 +14208,90 @@ struct retro_core_option_v2_definition option_defs_es[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_ES,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_ES,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_ES,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_ES,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_ES,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_ES,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_ES,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_ES,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_ES,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_ES,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_ES,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_ES,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_ES,
         NULL,
@@ -11908,6 +14337,37 @@ struct retro_core_option_v2_definition option_defs_es[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_ES,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_ES,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_ES },
+            { "frontend", OPTION_VAL_FRONTEND_ES },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_ES,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_ES,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -12234,6 +14694,8 @@ struct retro_core_options_v2 options_es = {
 #define OPTION_VAL_8_FA NULL
 #define OPTION_VAL_9_FA NULL
 #define OPTION_VAL_10_FA NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_FA NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_FA NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_FA NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_FA NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_FA NULL
@@ -12260,6 +14722,18 @@ struct retro_core_options_v2 options_es = {
 #define XEMU_VP_WORKERS_INFO_0_FA NULL
 #define XEMU_MSPF_OVERLAY_LABEL_FA NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_FA NULL
+#define XEMU_PROF_VCPU_LABEL_FA NULL
+#define XEMU_PROF_VCPU_INFO_0_FA NULL
+#define XEMU_PROF_PFIFO_LABEL_FA NULL
+#define XEMU_PROF_PFIFO_INFO_0_FA NULL
+#define XEMU_PROF_COUNTERS_LABEL_FA NULL
+#define XEMU_PROF_COUNTERS_INFO_0_FA NULL
+#define XEMU_PROF_S2T_LABEL_FA NULL
+#define XEMU_PROF_S2T_INFO_0_FA NULL
+#define XEMU_PROF_SURF_LABEL_FA NULL
+#define XEMU_PROF_SURF_INFO_0_FA NULL
+#define XEMU_PROF_PACING_LABEL_FA NULL
+#define XEMU_PROF_PACING_INFO_0_FA NULL
 #define XEMU_CPU_BOOST_LABEL_FA NULL
 #define XEMU_CPU_BOOST_INFO_0_FA NULL
 #define XEMU_HARD_FPU_LABEL_FA NULL
@@ -12270,6 +14744,12 @@ struct retro_core_options_v2 options_es = {
 #define OPTION_VAL_NO_GPL_FA NULL
 #define OPTION_VAL_NO_DYN_FA NULL
 #define OPTION_VAL_NONE_FA "هیچکدام"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_FA NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_FA NULL
+#define OPTION_VAL_OWN_FA NULL
+#define OPTION_VAL_FRONTEND_FA NULL
+#define XEMU_VK_LOST_REPORT_LABEL_FA NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_FA NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_FA NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_FA NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_FA NULL
@@ -12538,6 +15018,35 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_FA,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_FA,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -12672,6 +15181,90 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_FA,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_FA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_FA,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_FA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_FA,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_FA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_FA,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_FA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_FA,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_FA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_FA,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_FA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_FA,
         NULL,
@@ -12717,6 +15310,37 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_FA,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_FA,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_FA },
+            { "frontend", OPTION_VAL_FRONTEND_FA },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_FA,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_FA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -13043,6 +15667,8 @@ struct retro_core_options_v2 options_fa = {
 #define OPTION_VAL_8_FI NULL
 #define OPTION_VAL_9_FI NULL
 #define OPTION_VAL_10_FI NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_FI NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_FI NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_FI "Anisotrooppinen suodatus"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_FI NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_FI "Natiivi"
@@ -13069,6 +15695,18 @@ struct retro_core_options_v2 options_fa = {
 #define XEMU_VP_WORKERS_INFO_0_FI NULL
 #define XEMU_MSPF_OVERLAY_LABEL_FI NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_FI NULL
+#define XEMU_PROF_VCPU_LABEL_FI NULL
+#define XEMU_PROF_VCPU_INFO_0_FI NULL
+#define XEMU_PROF_PFIFO_LABEL_FI NULL
+#define XEMU_PROF_PFIFO_INFO_0_FI NULL
+#define XEMU_PROF_COUNTERS_LABEL_FI NULL
+#define XEMU_PROF_COUNTERS_INFO_0_FI NULL
+#define XEMU_PROF_S2T_LABEL_FI NULL
+#define XEMU_PROF_S2T_INFO_0_FI NULL
+#define XEMU_PROF_SURF_LABEL_FI NULL
+#define XEMU_PROF_SURF_INFO_0_FI NULL
+#define XEMU_PROF_PACING_LABEL_FI NULL
+#define XEMU_PROF_PACING_INFO_0_FI NULL
 #define XEMU_CPU_BOOST_LABEL_FI NULL
 #define XEMU_CPU_BOOST_INFO_0_FI NULL
 #define XEMU_HARD_FPU_LABEL_FI NULL
@@ -13079,6 +15717,12 @@ struct retro_core_options_v2 options_fa = {
 #define OPTION_VAL_NO_GPL_FI NULL
 #define OPTION_VAL_NO_DYN_FI NULL
 #define OPTION_VAL_NONE_FI "Ei mitään"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_FI NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_FI NULL
+#define OPTION_VAL_OWN_FI NULL
+#define OPTION_VAL_FRONTEND_FI NULL
+#define XEMU_VK_LOST_REPORT_LABEL_FI NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_FI NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_FI NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_FI NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_FI NULL
@@ -13347,6 +15991,35 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_FI,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_FI,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -13481,6 +16154,90 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_FI,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_FI,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_FI,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_FI,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_FI,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_FI,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_FI,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_FI,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_FI,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_FI,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_FI,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_FI,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_FI,
         NULL,
@@ -13526,6 +16283,37 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_FI,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_FI,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_FI },
+            { "frontend", OPTION_VAL_FRONTEND_FI },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_FI,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_FI,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -13852,6 +16640,8 @@ struct retro_core_options_v2 options_fi = {
 #define OPTION_VAL_8_FR "x8 (5120 x 3840)"
 #define OPTION_VAL_9_FR "x9 (5760 x 4320)"
 #define OPTION_VAL_10_FR "x10 (6400 x 4800)"
+#define XEMU_SCALE_THRESHOLD_LABEL_FR NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_FR NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_FR "Filtrage anisotrope"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_FR NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_FR NULL
@@ -13878,6 +16668,18 @@ struct retro_core_options_v2 options_fi = {
 #define XEMU_VP_WORKERS_INFO_0_FR NULL
 #define XEMU_MSPF_OVERLAY_LABEL_FR NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_FR NULL
+#define XEMU_PROF_VCPU_LABEL_FR NULL
+#define XEMU_PROF_VCPU_INFO_0_FR NULL
+#define XEMU_PROF_PFIFO_LABEL_FR NULL
+#define XEMU_PROF_PFIFO_INFO_0_FR NULL
+#define XEMU_PROF_COUNTERS_LABEL_FR NULL
+#define XEMU_PROF_COUNTERS_INFO_0_FR NULL
+#define XEMU_PROF_S2T_LABEL_FR NULL
+#define XEMU_PROF_S2T_INFO_0_FR NULL
+#define XEMU_PROF_SURF_LABEL_FR NULL
+#define XEMU_PROF_SURF_INFO_0_FR NULL
+#define XEMU_PROF_PACING_LABEL_FR NULL
+#define XEMU_PROF_PACING_INFO_0_FR NULL
 #define XEMU_CPU_BOOST_LABEL_FR NULL
 #define XEMU_CPU_BOOST_INFO_0_FR NULL
 #define XEMU_HARD_FPU_LABEL_FR NULL
@@ -13888,6 +16690,12 @@ struct retro_core_options_v2 options_fi = {
 #define OPTION_VAL_NO_GPL_FR NULL
 #define OPTION_VAL_NO_DYN_FR NULL
 #define OPTION_VAL_NONE_FR "Ne pas partager"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_FR NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_FR NULL
+#define OPTION_VAL_OWN_FR NULL
+#define OPTION_VAL_FRONTEND_FR NULL
+#define XEMU_VK_LOST_REPORT_LABEL_FR NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_FR NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_FR NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_FR NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_FR NULL
@@ -14156,6 +16964,35 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_FR,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_FR,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -14290,6 +17127,90 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_FR,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_FR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_FR,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_FR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_FR,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_FR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_FR,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_FR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_FR,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_FR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_FR,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_FR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_FR,
         NULL,
@@ -14335,6 +17256,37 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_FR,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_FR,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_FR },
+            { "frontend", OPTION_VAL_FRONTEND_FR },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_FR,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_FR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -14602,11 +17554,11 @@ struct retro_core_options_v2 options_fr = {
 /* RETRO_LANGUAGE_GA */
 
 #define CATEGORY_SYSTEM_LABEL_GA "Córas (Atosaigh)"
-#define CATEGORY_SYSTEM_INFO_0_GA NULL
+#define CATEGORY_SYSTEM_INFO_0_GA "An meaisín féin: cuimhne, líonra, tosú agus teanga. Gabhtar é seo nuair a thosaíonn an t-ábhar (feidhmítear 'Trim' ar an diosca crua nuair a dhúntar é)."
 #define CATEGORY_VIDEO_LABEL_GA "Físeán"
 #define CATEGORY_VIDEO_INFO_0_GA "Cumraigh socruithe rindreála físe."
 #define CATEGORY_DEBUG_LABEL_GA "Dífhabhtaigh"
-#define CATEGORY_DEBUG_INFO_0_GA NULL
+#define CATEGORY_DEBUG_INFO_0_GA "An próifíléir agus na lasca chun a fháil amach cad a chuireann moill ar chluiche nó a chuireann as feidhm é: na conairí gasta don LAP agus don LAPG, chomh maith le sonraí an rindreálaí. Is fearr iad a fhágáil mar atá siad, murach sin."
 #define CATEGORY_AUDIO_LABEL_GA "Fuaim"
 #define CATEGORY_AUDIO_INFO_0_GA "Cumraigh socruithe na haithrise fuaime."
 #define CATEGORY_CONTROLS_LABEL_GA "Rialuithe"
@@ -14623,7 +17575,7 @@ struct retro_core_options_v2 options_fr = {
 #define XEMU_SKIP_BOOT_ANIM_LABEL_GA "Scipeáil an Beochan Tosaithe"
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_GA "Scipeáil an beochan tosaithe Xbox."
 #define XEMU_LANGUAGE_LABEL_GA "Teanga an Chórais"
-#define XEMU_LANGUAGE_INFO_0_GA NULL
+#define XEMU_LANGUAGE_INFO_0_GA "An teanga a sholáthraíonn socruithe an chonsóil do chluichí, in áit na socruithe a bhaineann leis an deais. Ciallaíonn 'Auto' go n-úsáidtear an teanga atá socraithe in Xbox; mura bhfuil sin ann, úsáidtear an Béarla."
 #define OPTION_VAL_AUTO_GA "Uathoibríoch"
 #define OPTION_VAL_ENGLISH_GA "Béarla"
 #define OPTION_VAL_JAPANESE_GA "Seapáinis"
@@ -14641,7 +17593,7 @@ struct retro_core_options_v2 options_fr = {
 #define OPTION_VAL_VULKAN_GA NULL
 #define OPTION_VAL_OPENGL_GA NULL
 #define XEMU_VIDEO_ASPECT_LABEL_GA "Cóimheas Gné an Chórais (Atosaigh)"
-#define XEMU_VIDEO_ASPECT_INFO_0_GA NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_GA "Cinneann an socrú seo an cruth taispeána a thuairiscíonn an consól do chluichí, in áit an tsocraithe atá sa deais. Má roghnaítear 16:9, rithfidh cluichí a thacaíonn le scáileán leathan i bhformáid scáileáin leathain; má roghnaítear 4:3, rithfidh siad i bhformáid 4:3. Socraigh é de réir chruth do scáileáin. Is é Letterbox cóimheas 4:3 an phainéil le cluichí leathanscáileáin i mbosca litreacha."
 #define OPTION_VAL_4_3_GA NULL
 #define OPTION_VAL_16_9_GA NULL
 #define OPTION_VAL_LETTERBOX_GA "Bosca litreacha"
@@ -14661,6 +17613,8 @@ struct retro_core_options_v2 options_fr = {
 #define OPTION_VAL_8_GA NULL
 #define OPTION_VAL_9_GA NULL
 #define OPTION_VAL_10_GA NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_GA "Tairseach Méadaithe Scála"
+#define XEMU_SCALE_THRESHOLD_INFO_0_GA "Má tá an Scála Ta réitigh Inmheánaigh os cionn 1x, tarraingítear spriocanna rindreála, a bhfuil a dtaobh is faide cothrom leis an méid seo nó níos lú ná é, ag scála 1x. Ar an gcaoi sin, coinníonn maoláin bheaga — ar nós na cinn a úsáidtear le haghaidh éifeachtaí *bloom*, *glow*, nó machnaimh — an chuma bhunaidh, in áit a bheith ina n-eilimintí géara, blocacha. Vulkan amháin. Má dhéantar an socrú seo a athrú, atógfar na spriocanna rindreála."
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_GA "Scagadh Ainiseatrópach"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_GA "An scagadh is lú ainisotrópach a fhaigheann uigeachtaí réidh scagtha an chluiche, rud a choinníonn uigeachtaí ag claonadh géar. Fágann dúchasach féin an chluiche, rud nach bhfuil ann i gcás fhormhór na gcluichí Xbox."
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_GA "Dúchasach"
@@ -14677,30 +17631,48 @@ struct retro_core_options_v2 options_fr = {
 #define OPTION_VAL_VGA_GA NULL
 #define XEMU_AUDIO_THREAD_LABEL_GA "Snáithe Fuaime (Atosaigh)"
 #define XEMU_AUDIO_THREAD_INFO_0_GA "Tugann sé an fhuaim do shnáithe fuaime RetroArch agus an APU á mheascadh, agus é á sheinm go neamhspleách, seachas fráma amháin in aghaidh gach fráma: leanann an fhuaim ar aghaidh agus na frámaí ag stopadh, mar a tharlaíonn agus scáthaitheoirí á dtiomsú. Moillíonn tógálacha RetroArch ó roimh Shamhain 2026 a roghchlár leis nuair a bhíonn Ráta Fráma Roghchláir (Frame Throttle) de réir Ráta Taispeána; ansin, socraigh é go Ráta Ábhair."
-#define XEMU_USE_DSP_LABEL_GA NULL
-#define XEMU_USE_DSP_INFO_0_GA NULL
+#define XEMU_USE_DSP_LABEL_GA "Aithris DSP APU"
+#define XEMU_USE_DSP_INFO_0_GA "Déanann sé aithris ar DSP an APU, a sheinneann éifeachtaí na gcluichí, an t-athfhuaimniú agus cuid mhór den cheol iontu: gan é, bíonn an fhuaim gan bheocht. Tagann sé i bhfeidhm láithreach."
 #define XEMU_DSP_JIT_LABEL_GA NULL
-#define XEMU_DSP_JIT_INFO_0_GA NULL
+#define XEMU_DSP_JIT_INFO_0_GA "Ritheann sé cláir Aithriseoireachta DSP an APU mar chód tiomsaithe in áit iad a léirmhíniú: tá sé níos tapúla, cosúil le JIT DSP an fheidhmchláir neamhspleácha. Ní bhíonn éifeacht aige ach amháin nuair a bhíonn Aithriseoireacht DSP an APU casta air. Tagann an t-athrú i bhfeidhm láithreach."
 #define XEMU_HRTF_LABEL_GA NULL
 #define XEMU_HRTF_INFO_0_GA "Cuireann sé guthanna 3D i gcluichí a bhaineann úsáid astu ina n-ionad cuí, ag baint úsáide as feidhmeanna aistrithe a bhaineann leis an gceann — díreach mar a dhéantar ar an gconsól — le haghaidh cluasán agus callairí steirió."
 #define XEMU_VP_WORKERS_LABEL_GA "Snáitheanna Próiseálaí Gutha (Atosaigh)"
 #define XEMU_VP_WORKERS_INFO_0_GA "Snáitheanna a mheascann an próiseálaí gutha fuaime na guthanna orthu. Úsáideann an socrú uathoibríoch ceann amháin in aghaidh an chroíleacáin LAP."
-#define XEMU_MSPF_OVERLAY_LABEL_GA NULL
-#define XEMU_MSPF_OVERLAY_INFO_0_GA NULL
-#define XEMU_CPU_BOOST_LABEL_GA NULL
-#define XEMU_CPU_BOOST_INFO_0_GA NULL
-#define XEMU_HARD_FPU_LABEL_GA NULL
-#define XEMU_HARD_FPU_INFO_0_GA NULL
+#define XEMU_MSPF_OVERLAY_LABEL_GA "Próifíleoir (F10)"
+#define XEMU_MSPF_OVERLAY_INFO_0_GA "Taispeánann sé trí líne sa chúinne uachtarach ar chlé. FPS: na frámaí in aghaidh an tsoicind a thaispeánann an cluiche, mar atá i bhforleagan dífhabhtaithe físe xemu neamhspleách, thar a 60 fráma dheireanacha. GPU: an ráta fráma a d'fhéadfadh an cluiche a bhaint amach ón am a thógann sé fráma a tharraingt (MSPF an chluiche neamhspleách), meánaithe thar a 60 fráma dheireanacha agus nuashonraithe gach 20 fráma; bailí ach amháin nuair is é an GPU a chuireann teorainn leis an gcluiche. NV2A IDLE: an sciar ama ó casadh an próifíleoir air a d'fhan an snáithe GPU leis an gcluiche obair a sheoladh; ard agus an ráta fráma faoi bhun sprioc an chluiche ciallaíonn sé gurb é an LAP a chuireann teorainn leis. Casann F10 ar an méarchlár an próifíleoir air nó as, agus gach uair a thagann sé air, tosaíonn NV2A IDLE arís. Agus ceann de na roghanna Próifíleora thíos ar siúl, scríobhtar comhad chuig system/xemu/<commit> <game>.txt nuair a mhúchtar an próifíleoir (scríobhtar é arís leis an rith chéanna): leagan an chroíleacáin, an cluiche, na socruithe a bhfuil tábhacht leo maidir le luas agus meán-FPS, GPU agus NV2A IDLE an rithe, agus ansin cad a chuireann na roghanna sin leis. Mura bhfuil aon cheann acu ar siúl, níl ann ach an forleagan agus gan aon chomhad. Agus é ar siúl, scríobhann an croíleacán chuig log RetroArch gach 300 rith freisin maidir le conas a ailíníodh frámaí an aoi agus ritheanna an tosaigh. Tagann sé i bhfeidhm láithreach."
+#define XEMU_PROF_VCPU_LABEL_GA "Próifíleoir: vCPU"
+#define XEMU_PROF_VCPU_INFO_0_GA "Windows: nuair a bhíonn an próifíleoir ar siúl, tógtar samplaí a léiríonn cá háit a gcaitheann an t-aithris CPU a chuid ama (rud a chuireann moill bheag air); nuair a mhúchtar é, scríobhtar na scaireanna chuig logchomhad RetroArch, agus scríobhtar gach sampla aonair chuig an gcomhad próifíle. Féach an cur síos ar an méid a tharlaíonn nuair a chuirtear an próifíleoir ar siúl."
+#define XEMU_PROF_PFIFO_LABEL_GA "Próifíleoir: PFIFO/PGRAPH"
+#define XEMU_PROF_PFIFO_INFO_0_GA "Windows: nuair a bhíonn an próifíleoir ar siúl, déantar sampláil ar shnáithe an GPU (an *pushbuffer* agus an rindreálaí) chomh maith le heamulú an CPU. Cruthaítear rannóg sa chomhad próifíle don GPU — tar éis na rannóige don CPU — ina léirítear cá háit a gcaitheann sé a chuid ama agus cad a bhíonn sé ag fanacht leis. Féach an t-eolas faoin méid a tharlaíonn nuair a chuirtear an próifíleoir ar siúl."
+#define XEMU_PROF_COUNTERS_LABEL_GA "Próifíleoir: Cuntair an Rindreálaí"
+#define XEMU_PROF_COUNTERS_INFO_0_GA "Críochnaíonn an comhad próifíle le cuntair an rindreora in aghaidh an tsoicind thar an rith: tarraingtí, ceangail píblíne agus scáthaithe, uaslódálacha uigeachta, íoslódálacha dromchla, sioncrónú leis an GPU óstach agus cén fáth."
+#define XEMU_PROF_S2T_LABEL_GA "Próifíleoir: Spriocanna Rindreála ar Iarraidh"
+#define XEMU_PROF_S2T_INFO_0_GA "Vulkan: liostaíonn an comhad próifíle na huigeachtaí atá suite sa chuimhne a ndéanann an cluiche rindreáil inti, ach nach dtarraingítear ón sprioc-rindreála sin (téann siad trí RAM ina ionad sin, rud atá mall); taispeántar gach cás uair amháin, mar aon leis an líon uaireanta a tharla sé, chomh maith le seoladh, formáid, méid agus *pitch* na huigeachta agus na sprice rindreála."
+#define XEMU_PROF_SURF_LABEL_GA "Próifíleoir: Íoslódálacha agus Uaslódálacha ar an Dromchla"
+#define XEMU_PROF_SURF_INFO_0_GA "Vulkan: liostaíonn an comhad próifíle na spriocanna rindreála a léadh ar ais isteach sa RAM agus a scríobhadh ar ais chuig an GPU — arna ndéanamh ag an gcuid den rindreálaí a d’iarr é sin — mar aon le seoladh, méid agus formáid gach sprioc rindreála. Áirítear ann freisin na spriocanna rindreála a baineadh amach, an chúis a baineadh amach iad, agus an sprioc a tháinig ina n-áit."
+#define XEMU_PROF_PACING_LABEL_GA "Próifíleoir: Luas na bhFrámaí"
+#define XEMU_PROF_PACING_INFO_0_GA "Nuair a bhíonn an próifíleoir gníomhach, déanann an croí taifead ar am gach fráma a ghineann an cluiche agus gach fráma a sheoltar chuig RetroArch; áirítear leis seo líon na bhfrámaí cluiche nua a bhí i gceist i ngach cás, an t-am ar cuireadh tús leis an rith, agus an fad ama a caitheadh ​​ag fanacht leis an gcluiche agus leis an rindreálaí. Cuimsíonn an comhad próifíle histogramaí na n-eatramh, na heatraimh is faide, agus sonraí faoi gach fráma. Déantar taifead nuair a chuirtear an próifíleoir ar siúl."
+#define XEMU_CPU_BOOST_LABEL_GA "Treisiú LAP (Atosaigh)"
+#define XEMU_CPU_BOOST_INFO_0_GA "Bealaí níos tapúla don LAP aoi agus don phróiseálaí fuaime: SSE dúchasach agus taisce léimneach níos leithne. Múch é má bhíonn fadhbanna le cluiche. Socraítear é seo nuair a thosaíonn an t-ábhar."
+#define XEMU_HARD_FPU_LABEL_GA "Aithris Crua-earraí ar FPU (Atosaigh)"
+#define XEMU_HARD_FPU_INFO_0_GA "Bain úsáid as FPU an óstaigh le haghaidh insamhaladh x87. Tá sé níos tapúla, ach d’fhéadfadh míchruinneachtaí beaga a bheith i gceist. Gabhtar é seo nuair a thosaíonn an t-ábhar."
 #define XEMU_VK_FAST_PATHS_LABEL_GA "Conairí Tapa Vulkan (Atosaigh)"
 #define XEMU_VK_FAST_PATHS_INFO_0_GA "Deimhnithe faoi láthair nach n-oibríonn sé ach ar chártaí grafaicí Nvidia, briste ar AMD. Bíonn tionchar aige ar luas tiomsaithe scáthaithe ar Vulkan. Is é \"Uile\" an ceann is tapúla ach d'fhéadfadh sé roinnt cluichí a thuairteáil. Is é \"Uathoibríoch\" Gan Aon cheann ar chártaí grafaicí AMD agus Uile ar chártaí eile."
 #define OPTION_VAL_ALL_GA "Gach"
 #define OPTION_VAL_NO_GPL_GA "Gan Leabharlanna Píblíne"
 #define OPTION_VAL_NO_DYN_GA "Gan Stáit Dhinimiciúla"
 #define OPTION_VAL_NONE_GA "Dada"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_GA "Vulkan: scuaine Rindreálaí (Atosaigh)"
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_GA "Nuair a chuireann an t-inneall rindreála a chuid oibre GPU isteach, i gcás ina bhfuil an dara scuaine ag an GPU laistigh de theaghlach scuainí RetroArch. Úsáideann \"Own\" an dara scuaine sin, mar sin ní fhanann an rindreálaí fad is a chuireann RetroArch i láthair. Úsáideann an rogha \"RetroArch's\" an scuaine chéanna atá ag RetroArch; tá sé seo i gcomhair uirlisí a ghabhann frámaí (amhail RenderDoc) agus a d’fhéadfadh a bheith neamhábalta déileáil le dhá scuaine. Socraítear é seo nuair a thosaíonn an t-ábhar."
+#define OPTION_VAL_OWN_GA "Féin"
+#define OPTION_VAL_FRONTEND_GA NULL
+#define XEMU_VK_LOST_REPORT_LABEL_GA "Vulkan: Tuairisc ar Chaillteanas Gléis (Atosaigh)"
+#define XEMU_VK_LOST_REPORT_INFO_0_GA "Má chailltear an GPU (VK_ERROR_DEVICE_LOST), scríobhtar an comhad system/xemu/xemu_device_lost.txt: ina sonraítear an glao a theip, na seoltaí deireanacha, agus an obair a bhí ar siúl ag an GPU tráth a cailleadh é. Marcálann an rindreálaí gach oibríocht líníochta, glanta, uaslódála, tiontaithe agus pas rindreála i gcuimhne an GPU (trí úsáid a bhaint as marcóirí maoláin AMD nó pointí seiceála Nvidia), agus cuireann sé síos ar an earráid de réir mar a sholáthraíonn an tiománaí é. Cuireann sé moill bheag ar an rindreáil. Cruthaítear an comhad seo nuair a thosaíonn an t-ábhar."
 #define XEMU_SUBPIXEL_OFFSET_LABEL_GA "Scálú Fritháirimh Fho-phicteilín"
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_GA "Má shocraítear an Scála Taifigh Inmheánaigh (Internal Resolution Scale) os cionn 1x, bogfar an íomhá méid beag bídeach — codán de phicteilín — ionas go mbeidh picteilíní an taifigh níos airde ailínithe leis na cinn bhunaidh. Réitíonn sé seo fadhbanna ar nós íomhánna taibhseacha (ghosting) agus línte scoite i gcluichí áirithe (Jade Empire, Blinx), ach cruthaíonn sé fadhbanna i gcluichí eile (Splinter Cell). Má bhíonn an ghné múchta, fanann gach rud mar a bhí roimhe seo."
-#define XEMU_TLB_SKIP_IDLE_LABEL_GA NULL
-#define XEMU_TLB_SKIP_IDLE_INFO_0_GA NULL
+#define XEMU_TLB_SKIP_IDLE_LABEL_GA "Scipeáil Módanna TLB Díomhaoine"
+#define XEMU_TLB_SKIP_IDLE_INFO_0_GA "Nuair a athshocraíonn an t-aithriseoir an stát 'salach' (dirty state) de chuimhne an aoi i dtaisce seoltaí an LAP (an TLB), ní bhreathnaíonn sé ach ar na modhanna aistrithe seoltaí a úsáideann an Xbox i ndáiríre (ceann amháin nó dhá cheann as 22). Déanann sé cluichí áirithe níos tapúla (Crimson Skies, Virtua Cop 3), ach cruthaíonn sé mion-stuttering i gcluichí eile (Burnout 3, Ollie King, Otogi, Ninja Gaiden Black, Conker). Tagann sé i bhfeidhm láithreach."
 #define XEMU_RUMBLE_P1_LABEL_GA "Rumble (Imreoir 1)"
 #define XEMU_RUMBLE_P1_INFO_0_GA "Crithfidh rialtán Imreoir 1 — de bharr cluichí Xbox agus aiseolas fórsa ó chluiche rásaíochta Chihiro. Má bhíonn sé múchta, ní bheidh ceachtar acu i gceist."
 #define XEMU_RUMBLE_P2_LABEL_GA "Creathadh (Imreoir 2)"
@@ -14965,6 +17937,35 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_GA,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_GA,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -15099,6 +18100,90 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_GA,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_GA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_GA,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_GA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_GA,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_GA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_GA,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_GA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_GA,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_GA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_GA,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_GA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_GA,
         NULL,
@@ -15144,6 +18229,37 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_GA,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_GA,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_GA },
+            { "frontend", OPTION_VAL_FRONTEND_GA },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_GA,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_GA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -15470,6 +18586,8 @@ struct retro_core_options_v2 options_ga = {
 #define OPTION_VAL_8_GL NULL
 #define OPTION_VAL_9_GL NULL
 #define OPTION_VAL_10_GL NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_GL NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_GL NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_GL "Filtrado anisotrópico"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_GL NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_GL "Nativo"
@@ -15496,6 +18614,18 @@ struct retro_core_options_v2 options_ga = {
 #define XEMU_VP_WORKERS_INFO_0_GL NULL
 #define XEMU_MSPF_OVERLAY_LABEL_GL NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_GL NULL
+#define XEMU_PROF_VCPU_LABEL_GL NULL
+#define XEMU_PROF_VCPU_INFO_0_GL NULL
+#define XEMU_PROF_PFIFO_LABEL_GL NULL
+#define XEMU_PROF_PFIFO_INFO_0_GL NULL
+#define XEMU_PROF_COUNTERS_LABEL_GL NULL
+#define XEMU_PROF_COUNTERS_INFO_0_GL NULL
+#define XEMU_PROF_S2T_LABEL_GL NULL
+#define XEMU_PROF_S2T_INFO_0_GL NULL
+#define XEMU_PROF_SURF_LABEL_GL NULL
+#define XEMU_PROF_SURF_INFO_0_GL NULL
+#define XEMU_PROF_PACING_LABEL_GL NULL
+#define XEMU_PROF_PACING_INFO_0_GL NULL
 #define XEMU_CPU_BOOST_LABEL_GL NULL
 #define XEMU_CPU_BOOST_INFO_0_GL NULL
 #define XEMU_HARD_FPU_LABEL_GL NULL
@@ -15506,6 +18636,12 @@ struct retro_core_options_v2 options_ga = {
 #define OPTION_VAL_NO_GPL_GL NULL
 #define OPTION_VAL_NO_DYN_GL NULL
 #define OPTION_VAL_NONE_GL "Ningún"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_GL NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_GL NULL
+#define OPTION_VAL_OWN_GL NULL
+#define OPTION_VAL_FRONTEND_GL NULL
+#define XEMU_VK_LOST_REPORT_LABEL_GL NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_GL NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_GL NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_GL NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_GL NULL
@@ -15774,6 +18910,35 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_GL,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_GL,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -15908,6 +19073,90 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_GL,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_GL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_GL,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_GL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_GL,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_GL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_GL,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_GL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_GL,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_GL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_GL,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_GL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_GL,
         NULL,
@@ -15953,6 +19202,37 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_GL,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_GL,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_GL },
+            { "frontend", OPTION_VAL_FRONTEND_GL },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_GL,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_GL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -16227,7 +19507,7 @@ struct retro_core_options_v2 options_gl = {
 #define CATEGORY_DEBUG_INFO_0_HE NULL
 #define CATEGORY_AUDIO_LABEL_HE "שמע"
 #define CATEGORY_AUDIO_INFO_0_HE NULL
-#define CATEGORY_CONTROLS_LABEL_HE NULL
+#define CATEGORY_CONTROLS_LABEL_HE "פקדים"
 #define CATEGORY_CONTROLS_INFO_0_HE NULL
 #define CATEGORY_CHIHIRO_LABEL_HE NULL
 #define CATEGORY_CHIHIRO_INFO_0_HE NULL
@@ -16242,7 +19522,7 @@ struct retro_core_options_v2 options_gl = {
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_HE NULL
 #define XEMU_LANGUAGE_LABEL_HE NULL
 #define XEMU_LANGUAGE_INFO_0_HE NULL
-#define OPTION_VAL_AUTO_HE NULL
+#define OPTION_VAL_AUTO_HE "אוטומטי"
 #define OPTION_VAL_ENGLISH_HE NULL
 #define OPTION_VAL_JAPANESE_HE NULL
 #define OPTION_VAL_GERMAN_HE NULL
@@ -16279,9 +19559,11 @@ struct retro_core_options_v2 options_gl = {
 #define OPTION_VAL_8_HE NULL
 #define OPTION_VAL_9_HE NULL
 #define OPTION_VAL_10_HE NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_HE NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_HE NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_HE NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_HE NULL
-#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_HE NULL
+#define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_HE "מקורי"
 #define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_HE NULL
 #define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_HE NULL
 #define OPTION_VAL_8_XEMU_ANISOTROPIC_FILTERING_HE NULL
@@ -16305,16 +19587,34 @@ struct retro_core_options_v2 options_gl = {
 #define XEMU_VP_WORKERS_INFO_0_HE NULL
 #define XEMU_MSPF_OVERLAY_LABEL_HE NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_HE NULL
+#define XEMU_PROF_VCPU_LABEL_HE NULL
+#define XEMU_PROF_VCPU_INFO_0_HE NULL
+#define XEMU_PROF_PFIFO_LABEL_HE NULL
+#define XEMU_PROF_PFIFO_INFO_0_HE NULL
+#define XEMU_PROF_COUNTERS_LABEL_HE NULL
+#define XEMU_PROF_COUNTERS_INFO_0_HE NULL
+#define XEMU_PROF_S2T_LABEL_HE NULL
+#define XEMU_PROF_S2T_INFO_0_HE NULL
+#define XEMU_PROF_SURF_LABEL_HE NULL
+#define XEMU_PROF_SURF_INFO_0_HE NULL
+#define XEMU_PROF_PACING_LABEL_HE NULL
+#define XEMU_PROF_PACING_INFO_0_HE NULL
 #define XEMU_CPU_BOOST_LABEL_HE NULL
 #define XEMU_CPU_BOOST_INFO_0_HE NULL
 #define XEMU_HARD_FPU_LABEL_HE NULL
 #define XEMU_HARD_FPU_INFO_0_HE NULL
 #define XEMU_VK_FAST_PATHS_LABEL_HE NULL
 #define XEMU_VK_FAST_PATHS_INFO_0_HE NULL
-#define OPTION_VAL_ALL_HE NULL
+#define OPTION_VAL_ALL_HE "הכול"
 #define OPTION_VAL_NO_GPL_HE NULL
 #define OPTION_VAL_NO_DYN_HE NULL
-#define OPTION_VAL_NONE_HE NULL
+#define OPTION_VAL_NONE_HE "ללא"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_HE NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_HE NULL
+#define OPTION_VAL_OWN_HE NULL
+#define OPTION_VAL_FRONTEND_HE NULL
+#define XEMU_VK_LOST_REPORT_LABEL_HE NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_HE NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_HE NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_HE NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_HE NULL
@@ -16362,7 +19662,7 @@ struct retro_core_options_v2 options_gl = {
 #define XEMU_CHIHIRO_CROSSHAIR_INFO_0_HE NULL
 #define XEMU_CHIHIRO_STEERING_LABEL_HE NULL
 #define XEMU_CHIHIRO_STEERING_INFO_0_HE NULL
-#define OPTION_VAL_LINEAR_HE NULL
+#define OPTION_VAL_LINEAR_HE "לינארי"
 #define OPTION_VAL_LOGARITHMIC_HE NULL
 #define XEMU_CHIHIRO_STEERING_EFFECT_LABEL_HE NULL
 #define XEMU_CHIHIRO_STEERING_EFFECT_INFO_0_HE NULL
@@ -16583,6 +19883,35 @@ struct retro_core_option_v2_definition option_defs_he[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_HE,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_HE,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -16717,6 +20046,90 @@ struct retro_core_option_v2_definition option_defs_he[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_HE,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_HE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_HE,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_HE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_HE,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_HE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_HE,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_HE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_HE,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_HE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_HE,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_HE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_HE,
         NULL,
@@ -16762,6 +20175,37 @@ struct retro_core_option_v2_definition option_defs_he[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_HE,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_HE,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_HE },
+            { "frontend", OPTION_VAL_FRONTEND_HE },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_HE,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_HE,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -17088,6 +20532,8 @@ struct retro_core_options_v2 options_he = {
 #define OPTION_VAL_8_HR NULL
 #define OPTION_VAL_9_HR NULL
 #define OPTION_VAL_10_HR NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_HR NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_HR NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_HR "Anizotropno filtriranje"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_HR NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_HR NULL
@@ -17114,6 +20560,18 @@ struct retro_core_options_v2 options_he = {
 #define XEMU_VP_WORKERS_INFO_0_HR NULL
 #define XEMU_MSPF_OVERLAY_LABEL_HR NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_HR NULL
+#define XEMU_PROF_VCPU_LABEL_HR NULL
+#define XEMU_PROF_VCPU_INFO_0_HR NULL
+#define XEMU_PROF_PFIFO_LABEL_HR NULL
+#define XEMU_PROF_PFIFO_INFO_0_HR NULL
+#define XEMU_PROF_COUNTERS_LABEL_HR NULL
+#define XEMU_PROF_COUNTERS_INFO_0_HR NULL
+#define XEMU_PROF_S2T_LABEL_HR NULL
+#define XEMU_PROF_S2T_INFO_0_HR NULL
+#define XEMU_PROF_SURF_LABEL_HR NULL
+#define XEMU_PROF_SURF_INFO_0_HR NULL
+#define XEMU_PROF_PACING_LABEL_HR NULL
+#define XEMU_PROF_PACING_INFO_0_HR NULL
 #define XEMU_CPU_BOOST_LABEL_HR NULL
 #define XEMU_CPU_BOOST_INFO_0_HR NULL
 #define XEMU_HARD_FPU_LABEL_HR NULL
@@ -17124,6 +20582,12 @@ struct retro_core_options_v2 options_he = {
 #define OPTION_VAL_NO_GPL_HR NULL
 #define OPTION_VAL_NO_DYN_HR NULL
 #define OPTION_VAL_NONE_HR "Ništa"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_HR NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_HR NULL
+#define OPTION_VAL_OWN_HR NULL
+#define OPTION_VAL_FRONTEND_HR NULL
+#define XEMU_VK_LOST_REPORT_LABEL_HR NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_HR NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_HR NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_HR NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_HR NULL
@@ -17392,6 +20856,35 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_HR,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_HR,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -17526,6 +21019,90 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_HR,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_HR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_HR,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_HR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_HR,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_HR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_HR,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_HR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_HR,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_HR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_HR,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_HR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_HR,
         NULL,
@@ -17571,6 +21148,37 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_HR,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_HR,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_HR },
+            { "frontend", OPTION_VAL_FRONTEND_HR },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_HR,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_HR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -17897,6 +21505,8 @@ struct retro_core_options_v2 options_hr = {
 #define OPTION_VAL_8_HU NULL
 #define OPTION_VAL_9_HU NULL
 #define OPTION_VAL_10_HU NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_HU NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_HU NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_HU "Anizotróp szûrés"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_HU NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_HU "Eredeti"
@@ -17923,6 +21533,18 @@ struct retro_core_options_v2 options_hr = {
 #define XEMU_VP_WORKERS_INFO_0_HU NULL
 #define XEMU_MSPF_OVERLAY_LABEL_HU NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_HU NULL
+#define XEMU_PROF_VCPU_LABEL_HU NULL
+#define XEMU_PROF_VCPU_INFO_0_HU NULL
+#define XEMU_PROF_PFIFO_LABEL_HU NULL
+#define XEMU_PROF_PFIFO_INFO_0_HU NULL
+#define XEMU_PROF_COUNTERS_LABEL_HU NULL
+#define XEMU_PROF_COUNTERS_INFO_0_HU NULL
+#define XEMU_PROF_S2T_LABEL_HU NULL
+#define XEMU_PROF_S2T_INFO_0_HU NULL
+#define XEMU_PROF_SURF_LABEL_HU NULL
+#define XEMU_PROF_SURF_INFO_0_HU NULL
+#define XEMU_PROF_PACING_LABEL_HU NULL
+#define XEMU_PROF_PACING_INFO_0_HU NULL
 #define XEMU_CPU_BOOST_LABEL_HU NULL
 #define XEMU_CPU_BOOST_INFO_0_HU NULL
 #define XEMU_HARD_FPU_LABEL_HU NULL
@@ -17933,6 +21555,12 @@ struct retro_core_options_v2 options_hr = {
 #define OPTION_VAL_NO_GPL_HU NULL
 #define OPTION_VAL_NO_DYN_HU NULL
 #define OPTION_VAL_NONE_HU "Nincs"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_HU NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_HU NULL
+#define OPTION_VAL_OWN_HU NULL
+#define OPTION_VAL_FRONTEND_HU NULL
+#define XEMU_VK_LOST_REPORT_LABEL_HU NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_HU NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_HU NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_HU NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_HU NULL
@@ -18201,6 +21829,35 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_HU,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_HU,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -18335,6 +21992,90 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_HU,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_HU,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_HU,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_HU,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_HU,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_HU,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_HU,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_HU,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_HU,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_HU,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_HU,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_HU,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_HU,
         NULL,
@@ -18380,6 +22121,37 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_HU,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_HU,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_HU },
+            { "frontend", OPTION_VAL_FRONTEND_HU },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_HU,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_HU,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -18706,6 +22478,8 @@ struct retro_core_options_v2 options_hu = {
 #define OPTION_VAL_8_ID NULL
 #define OPTION_VAL_9_ID NULL
 #define OPTION_VAL_10_ID NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_ID NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_ID NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_ID "Penyaringan Anisotropic"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_ID NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_ID "Lokal"
@@ -18732,6 +22506,18 @@ struct retro_core_options_v2 options_hu = {
 #define XEMU_VP_WORKERS_INFO_0_ID NULL
 #define XEMU_MSPF_OVERLAY_LABEL_ID NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_ID NULL
+#define XEMU_PROF_VCPU_LABEL_ID NULL
+#define XEMU_PROF_VCPU_INFO_0_ID NULL
+#define XEMU_PROF_PFIFO_LABEL_ID NULL
+#define XEMU_PROF_PFIFO_INFO_0_ID NULL
+#define XEMU_PROF_COUNTERS_LABEL_ID NULL
+#define XEMU_PROF_COUNTERS_INFO_0_ID NULL
+#define XEMU_PROF_S2T_LABEL_ID NULL
+#define XEMU_PROF_S2T_INFO_0_ID NULL
+#define XEMU_PROF_SURF_LABEL_ID NULL
+#define XEMU_PROF_SURF_INFO_0_ID NULL
+#define XEMU_PROF_PACING_LABEL_ID NULL
+#define XEMU_PROF_PACING_INFO_0_ID NULL
 #define XEMU_CPU_BOOST_LABEL_ID NULL
 #define XEMU_CPU_BOOST_INFO_0_ID NULL
 #define XEMU_HARD_FPU_LABEL_ID NULL
@@ -18742,6 +22528,12 @@ struct retro_core_options_v2 options_hu = {
 #define OPTION_VAL_NO_GPL_ID NULL
 #define OPTION_VAL_NO_DYN_ID NULL
 #define OPTION_VAL_NONE_ID "Tak ada"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_ID NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_ID NULL
+#define OPTION_VAL_OWN_ID NULL
+#define OPTION_VAL_FRONTEND_ID NULL
+#define XEMU_VK_LOST_REPORT_LABEL_ID NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_ID NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_ID NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_ID NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_ID NULL
@@ -19010,6 +22802,35 @@ struct retro_core_option_v2_definition option_defs_id[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_ID,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_ID,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -19144,6 +22965,90 @@ struct retro_core_option_v2_definition option_defs_id[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_ID,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_ID,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_ID,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_ID,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_ID,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_ID,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_ID,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_ID,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_ID,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_ID,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_ID,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_ID,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_ID,
         NULL,
@@ -19189,6 +23094,37 @@ struct retro_core_option_v2_definition option_defs_id[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_ID,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_ID,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_ID },
+            { "frontend", OPTION_VAL_FRONTEND_ID },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_ID,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_ID,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -19485,9 +23421,9 @@ struct retro_core_options_v2 options_id = {
 #define OPTION_VAL_FRENCH_IT "Francese"
 #define OPTION_VAL_SPANISH_IT "Spagnolo"
 #define OPTION_VAL_ITALIAN_IT "Italiano"
-#define OPTION_VAL_KOREAN_IT NULL
-#define OPTION_VAL_CHINESE_IT NULL
-#define OPTION_VAL_PORTUGUESE_IT NULL
+#define OPTION_VAL_KOREAN_IT "Coreano"
+#define OPTION_VAL_CHINESE_IT "Cinese"
+#define OPTION_VAL_PORTUGUESE_IT "Portoghese"
 #define XEMU_HDD_TRIM_LABEL_IT NULL
 #define XEMU_HDD_TRIM_INFO_0_IT NULL
 #define XEMU_RENDERER_LABEL_IT NULL
@@ -19515,6 +23451,8 @@ struct retro_core_options_v2 options_id = {
 #define OPTION_VAL_8_IT NULL
 #define OPTION_VAL_9_IT NULL
 #define OPTION_VAL_10_IT NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_IT NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_IT NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_IT "Filtro Anisotropico"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_IT NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_IT "Nativo"
@@ -19541,6 +23479,18 @@ struct retro_core_options_v2 options_id = {
 #define XEMU_VP_WORKERS_INFO_0_IT NULL
 #define XEMU_MSPF_OVERLAY_LABEL_IT NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_IT NULL
+#define XEMU_PROF_VCPU_LABEL_IT NULL
+#define XEMU_PROF_VCPU_INFO_0_IT NULL
+#define XEMU_PROF_PFIFO_LABEL_IT NULL
+#define XEMU_PROF_PFIFO_INFO_0_IT NULL
+#define XEMU_PROF_COUNTERS_LABEL_IT NULL
+#define XEMU_PROF_COUNTERS_INFO_0_IT NULL
+#define XEMU_PROF_S2T_LABEL_IT NULL
+#define XEMU_PROF_S2T_INFO_0_IT NULL
+#define XEMU_PROF_SURF_LABEL_IT NULL
+#define XEMU_PROF_SURF_INFO_0_IT NULL
+#define XEMU_PROF_PACING_LABEL_IT NULL
+#define XEMU_PROF_PACING_INFO_0_IT NULL
 #define XEMU_CPU_BOOST_LABEL_IT NULL
 #define XEMU_CPU_BOOST_INFO_0_IT NULL
 #define XEMU_HARD_FPU_LABEL_IT NULL
@@ -19551,6 +23501,12 @@ struct retro_core_options_v2 options_id = {
 #define OPTION_VAL_NO_GPL_IT NULL
 #define OPTION_VAL_NO_DYN_IT NULL
 #define OPTION_VAL_NONE_IT "Nessuno"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_IT NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_IT NULL
+#define OPTION_VAL_OWN_IT NULL
+#define OPTION_VAL_FRONTEND_IT NULL
+#define XEMU_VK_LOST_REPORT_LABEL_IT NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_IT NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_IT NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_IT NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_IT NULL
@@ -19819,6 +23775,35 @@ struct retro_core_option_v2_definition option_defs_it[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_IT,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_IT,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -19953,6 +23938,90 @@ struct retro_core_option_v2_definition option_defs_it[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_IT,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_IT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_IT,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_IT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_IT,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_IT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_IT,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_IT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_IT,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_IT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_IT,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_IT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_IT,
         NULL,
@@ -19998,6 +24067,37 @@ struct retro_core_option_v2_definition option_defs_it[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_IT,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_IT,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_IT },
+            { "frontend", OPTION_VAL_FRONTEND_IT },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_IT,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_IT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -20324,6 +24424,8 @@ struct retro_core_options_v2 options_it = {
 #define OPTION_VAL_8_JA NULL
 #define OPTION_VAL_9_JA NULL
 #define OPTION_VAL_10_JA NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_JA NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_JA NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_JA "異方性フィルタリング"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_JA NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_JA "ネイティブ"
@@ -20350,6 +24452,18 @@ struct retro_core_options_v2 options_it = {
 #define XEMU_VP_WORKERS_INFO_0_JA NULL
 #define XEMU_MSPF_OVERLAY_LABEL_JA NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_JA NULL
+#define XEMU_PROF_VCPU_LABEL_JA NULL
+#define XEMU_PROF_VCPU_INFO_0_JA NULL
+#define XEMU_PROF_PFIFO_LABEL_JA NULL
+#define XEMU_PROF_PFIFO_INFO_0_JA NULL
+#define XEMU_PROF_COUNTERS_LABEL_JA NULL
+#define XEMU_PROF_COUNTERS_INFO_0_JA NULL
+#define XEMU_PROF_S2T_LABEL_JA NULL
+#define XEMU_PROF_S2T_INFO_0_JA NULL
+#define XEMU_PROF_SURF_LABEL_JA NULL
+#define XEMU_PROF_SURF_INFO_0_JA NULL
+#define XEMU_PROF_PACING_LABEL_JA NULL
+#define XEMU_PROF_PACING_INFO_0_JA NULL
 #define XEMU_CPU_BOOST_LABEL_JA NULL
 #define XEMU_CPU_BOOST_INFO_0_JA NULL
 #define XEMU_HARD_FPU_LABEL_JA NULL
@@ -20360,6 +24474,12 @@ struct retro_core_options_v2 options_it = {
 #define OPTION_VAL_NO_GPL_JA NULL
 #define OPTION_VAL_NO_DYN_JA NULL
 #define OPTION_VAL_NONE_JA "なし"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_JA NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_JA NULL
+#define OPTION_VAL_OWN_JA NULL
+#define OPTION_VAL_FRONTEND_JA NULL
+#define XEMU_VK_LOST_REPORT_LABEL_JA NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_JA NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_JA NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_JA NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_JA NULL
@@ -20628,6 +24748,35 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_JA,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_JA,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -20762,6 +24911,90 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_JA,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_JA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_JA,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_JA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_JA,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_JA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_JA,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_JA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_JA,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_JA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_JA,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_JA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_JA,
         NULL,
@@ -20807,6 +25040,37 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_JA,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_JA,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_JA },
+            { "frontend", OPTION_VAL_FRONTEND_JA },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_JA,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_JA,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -21133,6 +25397,8 @@ struct retro_core_options_v2 options_ja = {
 #define OPTION_VAL_8_KO NULL
 #define OPTION_VAL_9_KO NULL
 #define OPTION_VAL_10_KO NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_KO NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_KO NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_KO "비등방성 필터링"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_KO NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_KO "기본"
@@ -21159,6 +25425,18 @@ struct retro_core_options_v2 options_ja = {
 #define XEMU_VP_WORKERS_INFO_0_KO NULL
 #define XEMU_MSPF_OVERLAY_LABEL_KO NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_KO NULL
+#define XEMU_PROF_VCPU_LABEL_KO NULL
+#define XEMU_PROF_VCPU_INFO_0_KO NULL
+#define XEMU_PROF_PFIFO_LABEL_KO NULL
+#define XEMU_PROF_PFIFO_INFO_0_KO NULL
+#define XEMU_PROF_COUNTERS_LABEL_KO NULL
+#define XEMU_PROF_COUNTERS_INFO_0_KO NULL
+#define XEMU_PROF_S2T_LABEL_KO NULL
+#define XEMU_PROF_S2T_INFO_0_KO NULL
+#define XEMU_PROF_SURF_LABEL_KO NULL
+#define XEMU_PROF_SURF_INFO_0_KO NULL
+#define XEMU_PROF_PACING_LABEL_KO NULL
+#define XEMU_PROF_PACING_INFO_0_KO NULL
 #define XEMU_CPU_BOOST_LABEL_KO NULL
 #define XEMU_CPU_BOOST_INFO_0_KO NULL
 #define XEMU_HARD_FPU_LABEL_KO NULL
@@ -21169,6 +25447,12 @@ struct retro_core_options_v2 options_ja = {
 #define OPTION_VAL_NO_GPL_KO NULL
 #define OPTION_VAL_NO_DYN_KO NULL
 #define OPTION_VAL_NONE_KO "없음"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_KO NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_KO NULL
+#define OPTION_VAL_OWN_KO NULL
+#define OPTION_VAL_FRONTEND_KO NULL
+#define XEMU_VK_LOST_REPORT_LABEL_KO NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_KO NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_KO NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_KO NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_KO NULL
@@ -21437,6 +25721,35 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_KO,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_KO,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -21571,6 +25884,90 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_KO,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_KO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_KO,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_KO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_KO,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_KO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_KO,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_KO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_KO,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_KO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_KO,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_KO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_KO,
         NULL,
@@ -21616,6 +26013,37 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_KO,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_KO,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_KO },
+            { "frontend", OPTION_VAL_FRONTEND_KO },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_KO,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_KO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -21942,6 +26370,8 @@ struct retro_core_options_v2 options_ko = {
 #define OPTION_VAL_8_NL NULL
 #define OPTION_VAL_9_NL NULL
 #define OPTION_VAL_10_NL NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_NL NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_NL NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_NL NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_NL NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_NL "Standaard"
@@ -21968,6 +26398,18 @@ struct retro_core_options_v2 options_ko = {
 #define XEMU_VP_WORKERS_INFO_0_NL NULL
 #define XEMU_MSPF_OVERLAY_LABEL_NL NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_NL NULL
+#define XEMU_PROF_VCPU_LABEL_NL NULL
+#define XEMU_PROF_VCPU_INFO_0_NL NULL
+#define XEMU_PROF_PFIFO_LABEL_NL NULL
+#define XEMU_PROF_PFIFO_INFO_0_NL NULL
+#define XEMU_PROF_COUNTERS_LABEL_NL NULL
+#define XEMU_PROF_COUNTERS_INFO_0_NL NULL
+#define XEMU_PROF_S2T_LABEL_NL NULL
+#define XEMU_PROF_S2T_INFO_0_NL NULL
+#define XEMU_PROF_SURF_LABEL_NL NULL
+#define XEMU_PROF_SURF_INFO_0_NL NULL
+#define XEMU_PROF_PACING_LABEL_NL NULL
+#define XEMU_PROF_PACING_INFO_0_NL NULL
 #define XEMU_CPU_BOOST_LABEL_NL NULL
 #define XEMU_CPU_BOOST_INFO_0_NL NULL
 #define XEMU_HARD_FPU_LABEL_NL NULL
@@ -21978,6 +26420,12 @@ struct retro_core_options_v2 options_ko = {
 #define OPTION_VAL_NO_GPL_NL NULL
 #define OPTION_VAL_NO_DYN_NL NULL
 #define OPTION_VAL_NONE_NL "Geen"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_NL NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_NL NULL
+#define OPTION_VAL_OWN_NL NULL
+#define OPTION_VAL_FRONTEND_NL NULL
+#define XEMU_VK_LOST_REPORT_LABEL_NL NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_NL NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_NL NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_NL NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_NL NULL
@@ -22246,6 +26694,35 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_NL,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_NL,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -22380,6 +26857,90 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_NL,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_NL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_NL,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_NL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_NL,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_NL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_NL,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_NL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_NL,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_NL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_NL,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_NL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_NL,
         NULL,
@@ -22425,6 +26986,37 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_NL,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_NL,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_NL },
+            { "frontend", OPTION_VAL_FRONTEND_NL },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_NL,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_NL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -22751,6 +27343,8 @@ struct retro_core_options_v2 options_nl = {
 #define OPTION_VAL_8_NO NULL
 #define OPTION_VAL_9_NO NULL
 #define OPTION_VAL_10_NO NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_NO NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_NO NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_NO NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_NO NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_NO NULL
@@ -22777,6 +27371,18 @@ struct retro_core_options_v2 options_nl = {
 #define XEMU_VP_WORKERS_INFO_0_NO NULL
 #define XEMU_MSPF_OVERLAY_LABEL_NO NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_NO NULL
+#define XEMU_PROF_VCPU_LABEL_NO NULL
+#define XEMU_PROF_VCPU_INFO_0_NO NULL
+#define XEMU_PROF_PFIFO_LABEL_NO NULL
+#define XEMU_PROF_PFIFO_INFO_0_NO NULL
+#define XEMU_PROF_COUNTERS_LABEL_NO NULL
+#define XEMU_PROF_COUNTERS_INFO_0_NO NULL
+#define XEMU_PROF_S2T_LABEL_NO NULL
+#define XEMU_PROF_S2T_INFO_0_NO NULL
+#define XEMU_PROF_SURF_LABEL_NO NULL
+#define XEMU_PROF_SURF_INFO_0_NO NULL
+#define XEMU_PROF_PACING_LABEL_NO NULL
+#define XEMU_PROF_PACING_INFO_0_NO NULL
 #define XEMU_CPU_BOOST_LABEL_NO NULL
 #define XEMU_CPU_BOOST_INFO_0_NO NULL
 #define XEMU_HARD_FPU_LABEL_NO NULL
@@ -22787,6 +27393,12 @@ struct retro_core_options_v2 options_nl = {
 #define OPTION_VAL_NO_GPL_NO NULL
 #define OPTION_VAL_NO_DYN_NO NULL
 #define OPTION_VAL_NONE_NO "Ingen"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_NO NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_NO NULL
+#define OPTION_VAL_OWN_NO NULL
+#define OPTION_VAL_FRONTEND_NO NULL
+#define XEMU_VK_LOST_REPORT_LABEL_NO NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_NO NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_NO NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_NO NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_NO NULL
@@ -23055,6 +27667,35 @@ struct retro_core_option_v2_definition option_defs_no[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_NO,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_NO,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -23189,6 +27830,90 @@ struct retro_core_option_v2_definition option_defs_no[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_NO,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_NO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_NO,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_NO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_NO,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_NO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_NO,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_NO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_NO,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_NO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_NO,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_NO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_NO,
         NULL,
@@ -23234,6 +27959,37 @@ struct retro_core_option_v2_definition option_defs_no[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_NO,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_NO,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_NO },
+            { "frontend", OPTION_VAL_FRONTEND_NO },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_NO,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_NO,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -23560,6 +28316,8 @@ struct retro_core_options_v2 options_no = {
 #define OPTION_VAL_8_OR NULL
 #define OPTION_VAL_9_OR NULL
 #define OPTION_VAL_10_OR NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_OR NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_OR NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_OR NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_OR NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_OR NULL
@@ -23586,6 +28344,18 @@ struct retro_core_options_v2 options_no = {
 #define XEMU_VP_WORKERS_INFO_0_OR NULL
 #define XEMU_MSPF_OVERLAY_LABEL_OR NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_OR NULL
+#define XEMU_PROF_VCPU_LABEL_OR NULL
+#define XEMU_PROF_VCPU_INFO_0_OR NULL
+#define XEMU_PROF_PFIFO_LABEL_OR NULL
+#define XEMU_PROF_PFIFO_INFO_0_OR NULL
+#define XEMU_PROF_COUNTERS_LABEL_OR NULL
+#define XEMU_PROF_COUNTERS_INFO_0_OR NULL
+#define XEMU_PROF_S2T_LABEL_OR NULL
+#define XEMU_PROF_S2T_INFO_0_OR NULL
+#define XEMU_PROF_SURF_LABEL_OR NULL
+#define XEMU_PROF_SURF_INFO_0_OR NULL
+#define XEMU_PROF_PACING_LABEL_OR NULL
+#define XEMU_PROF_PACING_INFO_0_OR NULL
 #define XEMU_CPU_BOOST_LABEL_OR NULL
 #define XEMU_CPU_BOOST_INFO_0_OR NULL
 #define XEMU_HARD_FPU_LABEL_OR NULL
@@ -23596,6 +28366,12 @@ struct retro_core_options_v2 options_no = {
 #define OPTION_VAL_NO_GPL_OR NULL
 #define OPTION_VAL_NO_DYN_OR NULL
 #define OPTION_VAL_NONE_OR NULL
+#define XEMU_VK_RENDERER_QUEUE_LABEL_OR NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_OR NULL
+#define OPTION_VAL_OWN_OR NULL
+#define OPTION_VAL_FRONTEND_OR NULL
+#define XEMU_VK_LOST_REPORT_LABEL_OR NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_OR NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_OR NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_OR NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_OR NULL
@@ -23864,6 +28640,35 @@ struct retro_core_option_v2_definition option_defs_or[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_OR,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_OR,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -23998,6 +28803,90 @@ struct retro_core_option_v2_definition option_defs_or[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_OR,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_OR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_OR,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_OR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_OR,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_OR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_OR,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_OR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_OR,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_OR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_OR,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_OR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_OR,
         NULL,
@@ -24043,6 +28932,37 @@ struct retro_core_option_v2_definition option_defs_or[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_OR,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_OR,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_OR },
+            { "frontend", OPTION_VAL_FRONTEND_OR },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_OR,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_OR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -24369,6 +29289,8 @@ struct retro_core_options_v2 options_or = {
 #define OPTION_VAL_8_PL NULL
 #define OPTION_VAL_9_PL NULL
 #define OPTION_VAL_10_PL NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_PL NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_PL NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_PL "Filtrowanie anizotropowe"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_PL NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_PL "Natywny"
@@ -24395,6 +29317,18 @@ struct retro_core_options_v2 options_or = {
 #define XEMU_VP_WORKERS_INFO_0_PL NULL
 #define XEMU_MSPF_OVERLAY_LABEL_PL NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_PL NULL
+#define XEMU_PROF_VCPU_LABEL_PL NULL
+#define XEMU_PROF_VCPU_INFO_0_PL NULL
+#define XEMU_PROF_PFIFO_LABEL_PL NULL
+#define XEMU_PROF_PFIFO_INFO_0_PL NULL
+#define XEMU_PROF_COUNTERS_LABEL_PL NULL
+#define XEMU_PROF_COUNTERS_INFO_0_PL NULL
+#define XEMU_PROF_S2T_LABEL_PL NULL
+#define XEMU_PROF_S2T_INFO_0_PL NULL
+#define XEMU_PROF_SURF_LABEL_PL NULL
+#define XEMU_PROF_SURF_INFO_0_PL NULL
+#define XEMU_PROF_PACING_LABEL_PL NULL
+#define XEMU_PROF_PACING_INFO_0_PL NULL
 #define XEMU_CPU_BOOST_LABEL_PL NULL
 #define XEMU_CPU_BOOST_INFO_0_PL NULL
 #define XEMU_HARD_FPU_LABEL_PL NULL
@@ -24405,6 +29339,12 @@ struct retro_core_options_v2 options_or = {
 #define OPTION_VAL_NO_GPL_PL NULL
 #define OPTION_VAL_NO_DYN_PL NULL
 #define OPTION_VAL_NONE_PL "Brak"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_PL NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_PL NULL
+#define OPTION_VAL_OWN_PL NULL
+#define OPTION_VAL_FRONTEND_PL NULL
+#define XEMU_VK_LOST_REPORT_LABEL_PL NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_PL NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_PL NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_PL NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_PL NULL
@@ -24673,6 +29613,35 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_PL,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_PL,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -24807,6 +29776,90 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_PL,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_PL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_PL,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_PL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_PL,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_PL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_PL,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_PL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_PL,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_PL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_PL,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_PL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_PL,
         NULL,
@@ -24852,6 +29905,37 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_PL,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_PL,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_PL },
+            { "frontend", OPTION_VAL_FRONTEND_PL },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_PL,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_PL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -25178,6 +30262,8 @@ struct retro_core_options_v2 options_pl = {
 #define OPTION_VAL_8_PT_BR NULL
 #define OPTION_VAL_9_PT_BR NULL
 #define OPTION_VAL_10_PT_BR NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_PT_BR NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_PT_BR NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_PT_BR "Filtro anisotrópico"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_PT_BR NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_PT_BR "Nativo"
@@ -25204,6 +30290,18 @@ struct retro_core_options_v2 options_pl = {
 #define XEMU_VP_WORKERS_INFO_0_PT_BR NULL
 #define XEMU_MSPF_OVERLAY_LABEL_PT_BR NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_PT_BR NULL
+#define XEMU_PROF_VCPU_LABEL_PT_BR NULL
+#define XEMU_PROF_VCPU_INFO_0_PT_BR NULL
+#define XEMU_PROF_PFIFO_LABEL_PT_BR NULL
+#define XEMU_PROF_PFIFO_INFO_0_PT_BR NULL
+#define XEMU_PROF_COUNTERS_LABEL_PT_BR NULL
+#define XEMU_PROF_COUNTERS_INFO_0_PT_BR NULL
+#define XEMU_PROF_S2T_LABEL_PT_BR NULL
+#define XEMU_PROF_S2T_INFO_0_PT_BR NULL
+#define XEMU_PROF_SURF_LABEL_PT_BR NULL
+#define XEMU_PROF_SURF_INFO_0_PT_BR NULL
+#define XEMU_PROF_PACING_LABEL_PT_BR NULL
+#define XEMU_PROF_PACING_INFO_0_PT_BR NULL
 #define XEMU_CPU_BOOST_LABEL_PT_BR NULL
 #define XEMU_CPU_BOOST_INFO_0_PT_BR NULL
 #define XEMU_HARD_FPU_LABEL_PT_BR NULL
@@ -25214,6 +30312,12 @@ struct retro_core_options_v2 options_pl = {
 #define OPTION_VAL_NO_GPL_PT_BR NULL
 #define OPTION_VAL_NO_DYN_PT_BR NULL
 #define OPTION_VAL_NONE_PT_BR "Nenhum"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_PT_BR NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_PT_BR NULL
+#define OPTION_VAL_OWN_PT_BR NULL
+#define OPTION_VAL_FRONTEND_PT_BR NULL
+#define XEMU_VK_LOST_REPORT_LABEL_PT_BR NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_PT_BR NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_PT_BR NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_PT_BR NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_PT_BR NULL
@@ -25482,6 +30586,35 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_PT_BR,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_PT_BR,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -25616,6 +30749,90 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_PT_BR,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_PT_BR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_PT_BR,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_PT_BR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_PT_BR,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_PT_BR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_PT_BR,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_PT_BR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_PT_BR,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_PT_BR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_PT_BR,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_PT_BR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_PT_BR,
         NULL,
@@ -25661,6 +30878,37 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_PT_BR,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_PT_BR,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_PT_BR },
+            { "frontend", OPTION_VAL_FRONTEND_PT_BR },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_PT_BR,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_PT_BR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -25987,6 +31235,8 @@ struct retro_core_options_v2 options_pt_br = {
 #define OPTION_VAL_8_PT_PT NULL
 #define OPTION_VAL_9_PT_PT NULL
 #define OPTION_VAL_10_PT_PT NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_PT_PT NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_PT_PT NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_PT_PT NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_PT_PT NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_PT_PT NULL
@@ -26013,6 +31263,18 @@ struct retro_core_options_v2 options_pt_br = {
 #define XEMU_VP_WORKERS_INFO_0_PT_PT NULL
 #define XEMU_MSPF_OVERLAY_LABEL_PT_PT NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_PT_PT NULL
+#define XEMU_PROF_VCPU_LABEL_PT_PT NULL
+#define XEMU_PROF_VCPU_INFO_0_PT_PT NULL
+#define XEMU_PROF_PFIFO_LABEL_PT_PT NULL
+#define XEMU_PROF_PFIFO_INFO_0_PT_PT NULL
+#define XEMU_PROF_COUNTERS_LABEL_PT_PT NULL
+#define XEMU_PROF_COUNTERS_INFO_0_PT_PT NULL
+#define XEMU_PROF_S2T_LABEL_PT_PT NULL
+#define XEMU_PROF_S2T_INFO_0_PT_PT NULL
+#define XEMU_PROF_SURF_LABEL_PT_PT NULL
+#define XEMU_PROF_SURF_INFO_0_PT_PT NULL
+#define XEMU_PROF_PACING_LABEL_PT_PT NULL
+#define XEMU_PROF_PACING_INFO_0_PT_PT NULL
 #define XEMU_CPU_BOOST_LABEL_PT_PT NULL
 #define XEMU_CPU_BOOST_INFO_0_PT_PT NULL
 #define XEMU_HARD_FPU_LABEL_PT_PT NULL
@@ -26023,6 +31285,12 @@ struct retro_core_options_v2 options_pt_br = {
 #define OPTION_VAL_NO_GPL_PT_PT NULL
 #define OPTION_VAL_NO_DYN_PT_PT NULL
 #define OPTION_VAL_NONE_PT_PT "Não partilhar"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_PT_PT NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_PT_PT NULL
+#define OPTION_VAL_OWN_PT_PT NULL
+#define OPTION_VAL_FRONTEND_PT_PT NULL
+#define XEMU_VK_LOST_REPORT_LABEL_PT_PT NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_PT_PT NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_PT_PT NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_PT_PT NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_PT_PT NULL
@@ -26291,6 +31559,35 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_PT_PT,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_PT_PT,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -26425,6 +31722,90 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_PT_PT,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_PT_PT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_PT_PT,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_PT_PT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_PT_PT,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_PT_PT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_PT_PT,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_PT_PT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_PT_PT,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_PT_PT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_PT_PT,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_PT_PT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_PT_PT,
         NULL,
@@ -26470,6 +31851,37 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_PT_PT,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_PT_PT,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_PT_PT },
+            { "frontend", OPTION_VAL_FRONTEND_PT_PT },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_PT_PT,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_PT_PT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -26796,6 +32208,8 @@ struct retro_core_options_v2 options_pt_pt = {
 #define OPTION_VAL_8_RU NULL
 #define OPTION_VAL_9_RU NULL
 #define OPTION_VAL_10_RU NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_RU NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_RU NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_RU "Анизотропная фильтрация"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_RU NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_RU "Исходное"
@@ -26822,6 +32236,18 @@ struct retro_core_options_v2 options_pt_pt = {
 #define XEMU_VP_WORKERS_INFO_0_RU NULL
 #define XEMU_MSPF_OVERLAY_LABEL_RU NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_RU NULL
+#define XEMU_PROF_VCPU_LABEL_RU NULL
+#define XEMU_PROF_VCPU_INFO_0_RU NULL
+#define XEMU_PROF_PFIFO_LABEL_RU NULL
+#define XEMU_PROF_PFIFO_INFO_0_RU NULL
+#define XEMU_PROF_COUNTERS_LABEL_RU NULL
+#define XEMU_PROF_COUNTERS_INFO_0_RU NULL
+#define XEMU_PROF_S2T_LABEL_RU NULL
+#define XEMU_PROF_S2T_INFO_0_RU NULL
+#define XEMU_PROF_SURF_LABEL_RU NULL
+#define XEMU_PROF_SURF_INFO_0_RU NULL
+#define XEMU_PROF_PACING_LABEL_RU NULL
+#define XEMU_PROF_PACING_INFO_0_RU NULL
 #define XEMU_CPU_BOOST_LABEL_RU NULL
 #define XEMU_CPU_BOOST_INFO_0_RU NULL
 #define XEMU_HARD_FPU_LABEL_RU NULL
@@ -26832,6 +32258,12 @@ struct retro_core_options_v2 options_pt_pt = {
 #define OPTION_VAL_NO_GPL_RU NULL
 #define OPTION_VAL_NO_DYN_RU NULL
 #define OPTION_VAL_NONE_RU "Нет"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_RU NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_RU NULL
+#define OPTION_VAL_OWN_RU NULL
+#define OPTION_VAL_FRONTEND_RU NULL
+#define XEMU_VK_LOST_REPORT_LABEL_RU NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_RU NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_RU NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_RU NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_RU NULL
@@ -27100,6 +32532,35 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_RU,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_RU,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -27234,6 +32695,90 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_RU,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_RU,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_RU,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_RU,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_RU,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_RU,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_RU,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_RU,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_RU,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_RU,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_RU,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_RU,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_RU,
         NULL,
@@ -27279,6 +32824,37 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_RU,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_RU,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_RU },
+            { "frontend", OPTION_VAL_FRONTEND_RU },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_RU,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_RU,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -27605,8 +33181,10 @@ struct retro_core_options_v2 options_ru = {
 #define OPTION_VAL_8_SK NULL
 #define OPTION_VAL_9_SK NULL
 #define OPTION_VAL_10_SK NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_SK NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_SK NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_SK "Anizotropné filtrovanie"
-#define XEMU_ANISOTROPIC_FILTERING_INFO_0_SK "Najmenšie anizotropné filtrovanie, aké dostanú plynulo filtrované textúry hry; udrží ostré textúry pod uhlom. Natívne ponechá filtrovanie hry, ktoré je vo väčšine hier pre Xbox žiadne."
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_SK NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_SK "Natívne"
 #define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_SK NULL
 #define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_SK NULL
@@ -27631,6 +33209,18 @@ struct retro_core_options_v2 options_ru = {
 #define XEMU_VP_WORKERS_INFO_0_SK "Vlákna, na ktorých zvukový hlasový procesor mixuje hlasy. Auto použije jedno na každé jadro procesora."
 #define XEMU_MSPF_OVERLAY_LABEL_SK NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_SK NULL
+#define XEMU_PROF_VCPU_LABEL_SK NULL
+#define XEMU_PROF_VCPU_INFO_0_SK NULL
+#define XEMU_PROF_PFIFO_LABEL_SK NULL
+#define XEMU_PROF_PFIFO_INFO_0_SK NULL
+#define XEMU_PROF_COUNTERS_LABEL_SK NULL
+#define XEMU_PROF_COUNTERS_INFO_0_SK NULL
+#define XEMU_PROF_S2T_LABEL_SK NULL
+#define XEMU_PROF_S2T_INFO_0_SK NULL
+#define XEMU_PROF_SURF_LABEL_SK NULL
+#define XEMU_PROF_SURF_INFO_0_SK NULL
+#define XEMU_PROF_PACING_LABEL_SK NULL
+#define XEMU_PROF_PACING_INFO_0_SK NULL
 #define XEMU_CPU_BOOST_LABEL_SK NULL
 #define XEMU_CPU_BOOST_INFO_0_SK NULL
 #define XEMU_HARD_FPU_LABEL_SK NULL
@@ -27641,6 +33231,12 @@ struct retro_core_options_v2 options_ru = {
 #define OPTION_VAL_NO_GPL_SK "Bez knižníc pipeline"
 #define OPTION_VAL_NO_DYN_SK "Bez dynamických stavov"
 #define OPTION_VAL_NONE_SK "Žiadne"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_SK NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_SK NULL
+#define OPTION_VAL_OWN_SK NULL
+#define OPTION_VAL_FRONTEND_SK NULL
+#define XEMU_VK_LOST_REPORT_LABEL_SK NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_SK NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_SK "Škálovanie subpixelového posunu"
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_SK "Pri Mierke interného rozlíšenia nad 1x posunie obraz o zlomok pixelu, aby sa pixely vyššieho rozlíšenia zarovnali s pôvodnými. V niektorých hrách odstráni duchov a švy (Jade Empire, Blinx), iné pokazí (Splinter Cell). Vypnuté je ako predtým."
 #define XEMU_TLB_SKIP_IDLE_LABEL_SK NULL
@@ -27909,6 +33505,35 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_SK,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_SK,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -28043,6 +33668,90 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_SK,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_SK,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_SK,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_SK,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_SK,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_SK,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_SK,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_SK,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_SK,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_SK,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_SK,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_SK,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_SK,
         NULL,
@@ -28088,6 +33797,37 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_SK,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_SK,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_SK },
+            { "frontend", OPTION_VAL_FRONTEND_SK },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_SK,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_SK,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -28414,6 +34154,8 @@ struct retro_core_options_v2 options_sk = {
 #define OPTION_VAL_8_SR NULL
 #define OPTION_VAL_9_SR NULL
 #define OPTION_VAL_10_SR NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_SR NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_SR NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_SR NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_SR NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_SR NULL
@@ -28440,6 +34182,18 @@ struct retro_core_options_v2 options_sk = {
 #define XEMU_VP_WORKERS_INFO_0_SR NULL
 #define XEMU_MSPF_OVERLAY_LABEL_SR NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_SR NULL
+#define XEMU_PROF_VCPU_LABEL_SR NULL
+#define XEMU_PROF_VCPU_INFO_0_SR NULL
+#define XEMU_PROF_PFIFO_LABEL_SR NULL
+#define XEMU_PROF_PFIFO_INFO_0_SR NULL
+#define XEMU_PROF_COUNTERS_LABEL_SR NULL
+#define XEMU_PROF_COUNTERS_INFO_0_SR NULL
+#define XEMU_PROF_S2T_LABEL_SR NULL
+#define XEMU_PROF_S2T_INFO_0_SR NULL
+#define XEMU_PROF_SURF_LABEL_SR NULL
+#define XEMU_PROF_SURF_INFO_0_SR NULL
+#define XEMU_PROF_PACING_LABEL_SR NULL
+#define XEMU_PROF_PACING_INFO_0_SR NULL
 #define XEMU_CPU_BOOST_LABEL_SR NULL
 #define XEMU_CPU_BOOST_INFO_0_SR NULL
 #define XEMU_HARD_FPU_LABEL_SR NULL
@@ -28450,6 +34204,12 @@ struct retro_core_options_v2 options_sk = {
 #define OPTION_VAL_NO_GPL_SR NULL
 #define OPTION_VAL_NO_DYN_SR NULL
 #define OPTION_VAL_NONE_SR NULL
+#define XEMU_VK_RENDERER_QUEUE_LABEL_SR NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_SR NULL
+#define OPTION_VAL_OWN_SR NULL
+#define OPTION_VAL_FRONTEND_SR NULL
+#define XEMU_VK_LOST_REPORT_LABEL_SR NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_SR NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_SR NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_SR NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_SR NULL
@@ -28718,6 +34478,35 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_SR,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_SR,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -28852,6 +34641,90 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_SR,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_SR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_SR,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_SR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_SR,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_SR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_SR,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_SR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_SR,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_SR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_SR,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_SR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_SR,
         NULL,
@@ -28897,6 +34770,37 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_SR,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_SR,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_SR },
+            { "frontend", OPTION_VAL_FRONTEND_SR },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_SR,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_SR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -29164,11 +35068,11 @@ struct retro_core_options_v2 options_sr = {
 /* RETRO_LANGUAGE_SV */
 
 #define CATEGORY_SYSTEM_LABEL_SV "System (starta om)"
-#define CATEGORY_SYSTEM_INFO_0_SV NULL
+#define CATEGORY_SYSTEM_INFO_0_SV "Själva maskinen: minne, nätverk, start och språk. Inställningarna läses in när innehållet startar (Trim HDD on Close när det stängs)."
 #define CATEGORY_VIDEO_LABEL_SV NULL
 #define CATEGORY_VIDEO_INFO_0_SV "Konfigurera inställningar för videorendering."
 #define CATEGORY_DEBUG_LABEL_SV "Felsökning"
-#define CATEGORY_DEBUG_INFO_0_SV NULL
+#define CATEGORY_DEBUG_INFO_0_SV "Profileraren och reglagen för att hitta vad som gör ett spel långsamt eller får det att sluta fungera: processorns och grafikprocessorns snabba kodvägar samt renderarens detaljer. I övrigt bör de lämnas som de är."
 #define CATEGORY_AUDIO_LABEL_SV "Ljud"
 #define CATEGORY_AUDIO_INFO_0_SV "Konfigurera inställningar för ljudemulering."
 #define CATEGORY_CONTROLS_LABEL_SV "Spelkontroller"
@@ -29185,7 +35089,7 @@ struct retro_core_options_v2 options_sr = {
 #define XEMU_SKIP_BOOT_ANIM_LABEL_SV "Hoppa över startanimering"
 #define XEMU_SKIP_BOOT_ANIM_INFO_0_SV "Hoppa över Xbox-startanimeringen."
 #define XEMU_LANGUAGE_LABEL_SV "Systemspråk"
-#define XEMU_LANGUAGE_INFO_0_SV NULL
+#define XEMU_LANGUAGE_INFO_0_SV "Språket som konsolens inställningar anger för spel i stället för instrumentpanelens inställning. Med alternativet Automatiskt används RetroArchs språk när Xbox har det, annars engelska."
 #define OPTION_VAL_AUTO_SV "Automatiskt"
 #define OPTION_VAL_ENGLISH_SV "Engelska"
 #define OPTION_VAL_JAPANESE_SV "Japanska"
@@ -29203,7 +35107,7 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_VULKAN_SV NULL
 #define OPTION_VAL_OPENGL_SV NULL
 #define XEMU_VIDEO_ASPECT_LABEL_SV "Systemets bildförhållande (starta om)"
-#define XEMU_VIDEO_ASPECT_INFO_0_SV NULL
+#define XEMU_VIDEO_ASPECT_INFO_0_SV "Det bildformat som konsolens videoinställningar rapporterar till spel, i stället för instrumentpanelens inställning. Vid 16:9 körs spel med stöd för bredbild i bredbild; vid 4:3 körs de i 4:3. Ställ in det på din bildskärms bildformat. Letterbox är instrumentpanelens 4:3 med bredbildsspel i letterbox-format."
 #define OPTION_VAL_4_3_SV NULL
 #define OPTION_VAL_16_9_SV NULL
 #define OPTION_VAL_LETTERBOX_SV "Brevlådeformat"
@@ -29223,8 +35127,10 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_8_SV NULL
 #define OPTION_VAL_9_SV NULL
 #define OPTION_VAL_10_SV NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_SV NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_SV NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_SV "Anisotropisk filtrering"
-#define XEMU_ANISOTROPIC_FILTERING_INFO_0_SV "Den lägsta anisotropiska filtrering som spelets mjukt filtrerade texturer får, vilket håller snedställda texturer skarpa. Ursprungligt läge behåller spelets egen inställning, som saknas i de flesta Xbox-spel."
+#define XEMU_ANISOTROPIC_FILTERING_INFO_0_SV NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_SV "Inbyggd"
 #define OPTION_VAL_2_XEMU_ANISOTROPIC_FILTERING_SV NULL
 #define OPTION_VAL_4_XEMU_ANISOTROPIC_FILTERING_SV NULL
@@ -29239,30 +35145,48 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_VGA_SV NULL
 #define XEMU_AUDIO_THREAD_LABEL_SV "Ljudtråd (starta om)"
 #define XEMU_AUDIO_THREAD_INFO_0_SV "Lämnar ljudet till RetroArchs ljudtråd medan APU:n mixar det, som i den fristående versionen, i stället för en bildrutas ljud per bildruta: ljudet fortsätter medan bildrutorna stannar, till exempel medan shaders kompileras. RetroArch-byggen från före november 2026 gör menyerna långsammare med detta när Menybildfrekvens (Bildrutebegränsning) är Bildskärmsfrekvens; ställ där in den på Innehållsfrekvens."
-#define XEMU_USE_DSP_LABEL_SV NULL
-#define XEMU_USE_DSP_INFO_0_SV NULL
-#define XEMU_DSP_JIT_LABEL_SV NULL
-#define XEMU_DSP_JIT_INFO_0_SV NULL
+#define XEMU_USE_DSP_LABEL_SV "Emulering av APU-DSP"
+#define XEMU_USE_DSP_INFO_0_SV "Emulerar ljudprocessorns digitala signalprocessor, som återger spelens effekter, efterklang och mycket av musiken: utan den låter ljudet platt. Träder i kraft omedelbart."
+#define XEMU_DSP_JIT_LABEL_SV "DSP-JIT"
+#define XEMU_DSP_JIT_INFO_0_SV "Kör programmen för APU-DSP-emulering som kompilerad kod i stället för att tolka dem: snabbare, som den fristående versionens DSP-JIT. Har bara effekt när APU-DSP-emulering är aktiverad. Träder i kraft omedelbart."
 #define XEMU_HRTF_LABEL_SV NULL
 #define XEMU_HRTF_INFO_0_SV "Placerar 3D-röster i spel som använder dem med huvudrelaterade överföringsfunktioner, som på konsolen, för hörlurar och stereohögtalare."
 #define XEMU_VP_WORKERS_LABEL_SV "Trådar för röstprocessor (starta om)"
 #define XEMU_VP_WORKERS_INFO_0_SV "Antal trådar som ljudets röstprocessor mixar rösterna på. Auto använder en per processorkärna."
-#define XEMU_MSPF_OVERLAY_LABEL_SV NULL
+#define XEMU_MSPF_OVERLAY_LABEL_SV "Profilerare (F10)"
 #define XEMU_MSPF_OVERLAY_INFO_0_SV NULL
-#define XEMU_CPU_BOOST_LABEL_SV NULL
-#define XEMU_CPU_BOOST_INFO_0_SV NULL
-#define XEMU_HARD_FPU_LABEL_SV NULL
-#define XEMU_HARD_FPU_INFO_0_SV NULL
+#define XEMU_PROF_VCPU_LABEL_SV NULL
+#define XEMU_PROF_VCPU_INFO_0_SV NULL
+#define XEMU_PROF_PFIFO_LABEL_SV "Profilerare: PFIFO/PGRAPH"
+#define XEMU_PROF_PFIFO_INFO_0_SV "Windows: när profileraren är aktiverad samplas GPU-tråden (pushbufferten och renderaren) parallellt med CPU-emuleringen, och profilfilen får sitt avsnitt efter avsnittet om processorn: var den tillbringar tid och vad den väntar på. Läses in när profileraren aktiveras."
+#define XEMU_PROF_COUNTERS_LABEL_SV "Profilerare: renderarstatistik"
+#define XEMU_PROF_COUNTERS_INFO_0_SV "Profilfilen avslutas med renderarens räknare per sekund för körningen: ritanrop, pipeline- och shaderbindningar, texturuppladdningar, ytnedladdningar, synkroniseringar med värdens GPU och deras orsaker."
+#define XEMU_PROF_S2T_LABEL_SV "Profilerare: missade renderingsmål"
+#define XEMU_PROF_S2T_INFO_0_SV "Vulkan: profilfilen listar texturer som ligger i minne som spelet renderar till men inte hämtas från det renderingsmålet (de går i stället via RAM, vilket är långsamt), varje fall en gång med antal samt texturens och renderingsmålets adress, format, storlek och radsteg."
+#define XEMU_PROF_SURF_LABEL_SV "Profilerare: hämtning och överföring av ytor"
+#define XEMU_PROF_SURF_INFO_0_SV "Vulkan: profilfilen listar renderingsmålen som läses tillbaka till RAM och skrivs tillbaka till grafikprocessorn efter vilken del av renderaren som begärde det, med varje renderingsmåls adress, storlek och format. Den listar även renderingsmål som kastats ut, varför och målet som ersatte dem."
+#define XEMU_PROF_PACING_LABEL_SV NULL
+#define XEMU_PROF_PACING_INFO_0_SV NULL
+#define XEMU_CPU_BOOST_LABEL_SV "CPU-boost (omstart)"
+#define XEMU_CPU_BOOST_INFO_0_SV "Snabbare kodvägar för gästprocessorn och ljudprocessorn: inbyggd SSE och en större hoppcache. Stäng av om ett spel inte fungerar som det ska. Inställningen läses in när innehållet startar."
+#define XEMU_HARD_FPU_LABEL_SV "Maskinvaru-FPU-emulering (omstart)"
+#define XEMU_HARD_FPU_INFO_0_SV "Använd värdens FPU för x87-emulering. Snabbare men kan ge små felaktigheter. Inställningen läses in när innehållet startar."
 #define XEMU_VK_FAST_PATHS_LABEL_SV "Snabba Vulkan-kodvägar (omstart)"
-#define XEMU_VK_FAST_PATHS_INFO_0_SV NULL
+#define XEMU_VK_FAST_PATHS_INFO_0_SV "Det är för närvarande bara bekräftat att fungera på Nvidia-grafikkort och fungerar inte på AMD. Påverkar hastigheten för shaderkompilering i Vulkan. ”Alla” är snabbast men kan krascha vissa spel. ”Automatiskt” är Ingen på AMD-grafikkort och Alla på övriga."
 #define OPTION_VAL_ALL_SV "Alla"
 #define OPTION_VAL_NO_GPL_SV "Inga pipelinebibliotek"
 #define OPTION_VAL_NO_DYN_SV "Inga dynamiska tillstånd"
 #define OPTION_VAL_NONE_SV "Ingen"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_SV NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_SV NULL
+#define OPTION_VAL_OWN_SV NULL
+#define OPTION_VAL_FRONTEND_SV NULL
+#define XEMU_VK_LOST_REPORT_LABEL_SV NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_SV NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_SV "Skalning med subpixelförskjutning"
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_SV "Med en intern upplösningsskala över 1× flyttas bilden en bråkdel av en bildpunkt så att den högre upplösningens bildpunkter linjerar med de ursprungliga. Åtgärdar spökbilder och skarvar i vissa spel (Jade Empire, Blinx) men orsakar problem i andra (Splinter Cell). Av är som tidigare."
-#define XEMU_TLB_SKIP_IDLE_LABEL_SV NULL
-#define XEMU_TLB_SKIP_IDLE_INFO_0_SV NULL
+#define XEMU_TLB_SKIP_IDLE_LABEL_SV "Hoppa över inaktiva TLB-lägen"
+#define XEMU_TLB_SKIP_IDLE_INFO_0_SV "När emulatorn återställer statusen för ändrat gästdataminne i processorns adresscache (TLB) tittar den bara på de adressöversättningslägen som Xbox faktiskt använder (ett eller två av 22). Det gör vissa spel snabbare (Crimson Skies, Virtua Cop 3) och får andra att mikrostamma (Burnout 3, Ollie King, Otogi, Ninja Gaiden Black, Conker). Träder i kraft omedelbart."
 #define XEMU_RUMBLE_P1_LABEL_SV "Vibration (spelare 1)"
 #define XEMU_RUMBLE_P1_INFO_0_SV "Spelare 1:s handkontroll vibrerar både från Xbox-spelen och från force feedback i Chihiro-racingspel. Av stänger av båda."
 #define XEMU_RUMBLE_P2_LABEL_SV "Vibration (spelare 2)"
@@ -29527,6 +35451,35 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_SV,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_SV,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -29661,6 +35614,90 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_SV,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_SV,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_SV,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_SV,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_SV,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_SV,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_SV,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_SV,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_SV,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_SV,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_SV,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_SV,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_SV,
         NULL,
@@ -29706,6 +35743,37 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_SV,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_SV,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_SV },
+            { "frontend", OPTION_VAL_FRONTEND_SV },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_SV,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_SV,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -30032,6 +36100,8 @@ struct retro_core_options_v2 options_sv = {
 #define OPTION_VAL_8_TH NULL
 #define OPTION_VAL_9_TH NULL
 #define OPTION_VAL_10_TH NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_TH NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_TH NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_TH "การกรองพื้นผิวแบบAnisotropic"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_TH NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_TH "ดั้งเดิม"
@@ -30058,6 +36128,18 @@ struct retro_core_options_v2 options_sv = {
 #define XEMU_VP_WORKERS_INFO_0_TH NULL
 #define XEMU_MSPF_OVERLAY_LABEL_TH NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_TH NULL
+#define XEMU_PROF_VCPU_LABEL_TH NULL
+#define XEMU_PROF_VCPU_INFO_0_TH NULL
+#define XEMU_PROF_PFIFO_LABEL_TH NULL
+#define XEMU_PROF_PFIFO_INFO_0_TH NULL
+#define XEMU_PROF_COUNTERS_LABEL_TH NULL
+#define XEMU_PROF_COUNTERS_INFO_0_TH NULL
+#define XEMU_PROF_S2T_LABEL_TH NULL
+#define XEMU_PROF_S2T_INFO_0_TH NULL
+#define XEMU_PROF_SURF_LABEL_TH NULL
+#define XEMU_PROF_SURF_INFO_0_TH NULL
+#define XEMU_PROF_PACING_LABEL_TH NULL
+#define XEMU_PROF_PACING_INFO_0_TH NULL
 #define XEMU_CPU_BOOST_LABEL_TH NULL
 #define XEMU_CPU_BOOST_INFO_0_TH NULL
 #define XEMU_HARD_FPU_LABEL_TH NULL
@@ -30068,6 +36150,12 @@ struct retro_core_options_v2 options_sv = {
 #define OPTION_VAL_NO_GPL_TH NULL
 #define OPTION_VAL_NO_DYN_TH NULL
 #define OPTION_VAL_NONE_TH "ไม่แชร์อินพุต"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_TH NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_TH NULL
+#define OPTION_VAL_OWN_TH NULL
+#define OPTION_VAL_FRONTEND_TH NULL
+#define XEMU_VK_LOST_REPORT_LABEL_TH NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_TH NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_TH NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_TH NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_TH NULL
@@ -30336,6 +36424,35 @@ struct retro_core_option_v2_definition option_defs_th[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_TH,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_TH,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -30470,6 +36587,90 @@ struct retro_core_option_v2_definition option_defs_th[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_TH,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_TH,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_TH,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_TH,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_TH,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_TH,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_TH,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_TH,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_TH,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_TH,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_TH,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_TH,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_TH,
         NULL,
@@ -30515,6 +36716,37 @@ struct retro_core_option_v2_definition option_defs_th[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_TH,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_TH,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_TH },
+            { "frontend", OPTION_VAL_FRONTEND_TH },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_TH,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_TH,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -30841,6 +37073,8 @@ struct retro_core_options_v2 options_th = {
 #define OPTION_VAL_8_TR NULL
 #define OPTION_VAL_9_TR NULL
 #define OPTION_VAL_10_TR NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_TR NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_TR NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_TR "Eşyönsüz Filtreleme"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_TR NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_TR "Özgün"
@@ -30867,6 +37101,18 @@ struct retro_core_options_v2 options_th = {
 #define XEMU_VP_WORKERS_INFO_0_TR NULL
 #define XEMU_MSPF_OVERLAY_LABEL_TR NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_TR NULL
+#define XEMU_PROF_VCPU_LABEL_TR NULL
+#define XEMU_PROF_VCPU_INFO_0_TR NULL
+#define XEMU_PROF_PFIFO_LABEL_TR NULL
+#define XEMU_PROF_PFIFO_INFO_0_TR NULL
+#define XEMU_PROF_COUNTERS_LABEL_TR NULL
+#define XEMU_PROF_COUNTERS_INFO_0_TR NULL
+#define XEMU_PROF_S2T_LABEL_TR NULL
+#define XEMU_PROF_S2T_INFO_0_TR NULL
+#define XEMU_PROF_SURF_LABEL_TR NULL
+#define XEMU_PROF_SURF_INFO_0_TR NULL
+#define XEMU_PROF_PACING_LABEL_TR NULL
+#define XEMU_PROF_PACING_INFO_0_TR NULL
 #define XEMU_CPU_BOOST_LABEL_TR NULL
 #define XEMU_CPU_BOOST_INFO_0_TR NULL
 #define XEMU_HARD_FPU_LABEL_TR NULL
@@ -30877,6 +37123,12 @@ struct retro_core_options_v2 options_th = {
 #define OPTION_VAL_NO_GPL_TR NULL
 #define OPTION_VAL_NO_DYN_TR NULL
 #define OPTION_VAL_NONE_TR "Yok"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_TR NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_TR NULL
+#define OPTION_VAL_OWN_TR NULL
+#define OPTION_VAL_FRONTEND_TR NULL
+#define XEMU_VK_LOST_REPORT_LABEL_TR NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_TR NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_TR NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_TR NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_TR NULL
@@ -31145,6 +37397,35 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_TR,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_TR,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -31279,6 +37560,90 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_TR,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_TR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_TR,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_TR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_TR,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_TR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_TR,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_TR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_TR,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_TR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_TR,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_TR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_TR,
         NULL,
@@ -31324,6 +37689,37 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_TR,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_TR,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_TR },
+            { "frontend", OPTION_VAL_FRONTEND_TR },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_TR,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_TR,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -31650,6 +38046,8 @@ struct retro_core_options_v2 options_tr = {
 #define OPTION_VAL_8_TT NULL
 #define OPTION_VAL_9_TT NULL
 #define OPTION_VAL_10_TT NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_TT NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_TT NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_TT NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_TT NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_TT NULL
@@ -31676,6 +38074,18 @@ struct retro_core_options_v2 options_tr = {
 #define XEMU_VP_WORKERS_INFO_0_TT NULL
 #define XEMU_MSPF_OVERLAY_LABEL_TT NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_TT NULL
+#define XEMU_PROF_VCPU_LABEL_TT NULL
+#define XEMU_PROF_VCPU_INFO_0_TT NULL
+#define XEMU_PROF_PFIFO_LABEL_TT NULL
+#define XEMU_PROF_PFIFO_INFO_0_TT NULL
+#define XEMU_PROF_COUNTERS_LABEL_TT NULL
+#define XEMU_PROF_COUNTERS_INFO_0_TT NULL
+#define XEMU_PROF_S2T_LABEL_TT NULL
+#define XEMU_PROF_S2T_INFO_0_TT NULL
+#define XEMU_PROF_SURF_LABEL_TT NULL
+#define XEMU_PROF_SURF_INFO_0_TT NULL
+#define XEMU_PROF_PACING_LABEL_TT NULL
+#define XEMU_PROF_PACING_INFO_0_TT NULL
 #define XEMU_CPU_BOOST_LABEL_TT NULL
 #define XEMU_CPU_BOOST_INFO_0_TT NULL
 #define XEMU_HARD_FPU_LABEL_TT NULL
@@ -31686,6 +38096,12 @@ struct retro_core_options_v2 options_tr = {
 #define OPTION_VAL_NO_GPL_TT NULL
 #define OPTION_VAL_NO_DYN_TT NULL
 #define OPTION_VAL_NONE_TT NULL
+#define XEMU_VK_RENDERER_QUEUE_LABEL_TT NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_TT NULL
+#define OPTION_VAL_OWN_TT NULL
+#define OPTION_VAL_FRONTEND_TT NULL
+#define XEMU_VK_LOST_REPORT_LABEL_TT NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_TT NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_TT NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_TT NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_TT NULL
@@ -31954,6 +38370,35 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_TT,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_TT,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -32088,6 +38533,90 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_TT,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_TT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_TT,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_TT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_TT,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_TT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_TT,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_TT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_TT,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_TT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_TT,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_TT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_TT,
         NULL,
@@ -32133,6 +38662,37 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_TT,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_TT,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_TT },
+            { "frontend", OPTION_VAL_FRONTEND_TT },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_TT,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_TT,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -32459,6 +39019,8 @@ struct retro_core_options_v2 options_tt = {
 #define OPTION_VAL_8_UK NULL
 #define OPTION_VAL_9_UK NULL
 #define OPTION_VAL_10_UK NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_UK NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_UK NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_UK "Анізотропна фільтрація"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_UK NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_UK "Рідний"
@@ -32485,6 +39047,18 @@ struct retro_core_options_v2 options_tt = {
 #define XEMU_VP_WORKERS_INFO_0_UK NULL
 #define XEMU_MSPF_OVERLAY_LABEL_UK NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_UK NULL
+#define XEMU_PROF_VCPU_LABEL_UK NULL
+#define XEMU_PROF_VCPU_INFO_0_UK NULL
+#define XEMU_PROF_PFIFO_LABEL_UK NULL
+#define XEMU_PROF_PFIFO_INFO_0_UK NULL
+#define XEMU_PROF_COUNTERS_LABEL_UK NULL
+#define XEMU_PROF_COUNTERS_INFO_0_UK NULL
+#define XEMU_PROF_S2T_LABEL_UK NULL
+#define XEMU_PROF_S2T_INFO_0_UK NULL
+#define XEMU_PROF_SURF_LABEL_UK NULL
+#define XEMU_PROF_SURF_INFO_0_UK NULL
+#define XEMU_PROF_PACING_LABEL_UK NULL
+#define XEMU_PROF_PACING_INFO_0_UK NULL
 #define XEMU_CPU_BOOST_LABEL_UK NULL
 #define XEMU_CPU_BOOST_INFO_0_UK NULL
 #define XEMU_HARD_FPU_LABEL_UK NULL
@@ -32495,6 +39069,12 @@ struct retro_core_options_v2 options_tt = {
 #define OPTION_VAL_NO_GPL_UK NULL
 #define OPTION_VAL_NO_DYN_UK NULL
 #define OPTION_VAL_NONE_UK "Немає"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_UK NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_UK NULL
+#define OPTION_VAL_OWN_UK NULL
+#define OPTION_VAL_FRONTEND_UK NULL
+#define XEMU_VK_LOST_REPORT_LABEL_UK NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_UK NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_UK NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_UK NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_UK NULL
@@ -32763,6 +39343,35 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_UK,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_UK,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -32897,6 +39506,90 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_UK,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_UK,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_UK,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_UK,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_UK,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_UK,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_UK,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_UK,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_UK,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_UK,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_UK,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_UK,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_UK,
         NULL,
@@ -32942,6 +39635,37 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_UK,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_UK,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_UK },
+            { "frontend", OPTION_VAL_FRONTEND_UK },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_UK,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_UK,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -33268,6 +39992,8 @@ struct retro_core_options_v2 options_uk = {
 #define OPTION_VAL_8_VAL NULL
 #define OPTION_VAL_9_VAL NULL
 #define OPTION_VAL_10_VAL NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_VAL NULL
+#define XEMU_SCALE_THRESHOLD_INFO_0_VAL NULL
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_VAL NULL
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_VAL NULL
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_VAL NULL
@@ -33294,6 +40020,18 @@ struct retro_core_options_v2 options_uk = {
 #define XEMU_VP_WORKERS_INFO_0_VAL NULL
 #define XEMU_MSPF_OVERLAY_LABEL_VAL NULL
 #define XEMU_MSPF_OVERLAY_INFO_0_VAL NULL
+#define XEMU_PROF_VCPU_LABEL_VAL NULL
+#define XEMU_PROF_VCPU_INFO_0_VAL NULL
+#define XEMU_PROF_PFIFO_LABEL_VAL NULL
+#define XEMU_PROF_PFIFO_INFO_0_VAL NULL
+#define XEMU_PROF_COUNTERS_LABEL_VAL NULL
+#define XEMU_PROF_COUNTERS_INFO_0_VAL NULL
+#define XEMU_PROF_S2T_LABEL_VAL NULL
+#define XEMU_PROF_S2T_INFO_0_VAL NULL
+#define XEMU_PROF_SURF_LABEL_VAL NULL
+#define XEMU_PROF_SURF_INFO_0_VAL NULL
+#define XEMU_PROF_PACING_LABEL_VAL NULL
+#define XEMU_PROF_PACING_INFO_0_VAL NULL
 #define XEMU_CPU_BOOST_LABEL_VAL NULL
 #define XEMU_CPU_BOOST_INFO_0_VAL NULL
 #define XEMU_HARD_FPU_LABEL_VAL NULL
@@ -33304,6 +40042,12 @@ struct retro_core_options_v2 options_uk = {
 #define OPTION_VAL_NO_GPL_VAL NULL
 #define OPTION_VAL_NO_DYN_VAL NULL
 #define OPTION_VAL_NONE_VAL "Cap"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_VAL NULL
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_VAL NULL
+#define OPTION_VAL_OWN_VAL NULL
+#define OPTION_VAL_FRONTEND_VAL NULL
+#define XEMU_VK_LOST_REPORT_LABEL_VAL NULL
+#define XEMU_VK_LOST_REPORT_INFO_0_VAL NULL
 #define XEMU_SUBPIXEL_OFFSET_LABEL_VAL NULL
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_VAL NULL
 #define XEMU_TLB_SKIP_IDLE_LABEL_VAL NULL
@@ -33572,6 +40316,35 @@ struct retro_core_option_v2_definition option_defs_val[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_VAL,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_VAL,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -33706,6 +40479,90 @@ struct retro_core_option_v2_definition option_defs_val[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_VAL,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_VAL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_VAL,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_VAL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_VAL,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_VAL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_VAL,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_VAL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_VAL,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_VAL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_VAL,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_VAL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_VAL,
         NULL,
@@ -33751,6 +40608,37 @@ struct retro_core_option_v2_definition option_defs_val[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_VAL,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_VAL,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_VAL },
+            { "frontend", OPTION_VAL_FRONTEND_VAL },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_VAL,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_VAL,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {
@@ -34077,6 +40965,8 @@ struct retro_core_options_v2 options_val = {
 #define OPTION_VAL_8_VN NULL
 #define OPTION_VAL_9_VN NULL
 #define OPTION_VAL_10_VN NULL
+#define XEMU_SCALE_THRESHOLD_LABEL_VN "Ngưỡng nâng độ phân giải"
+#define XEMU_SCALE_THRESHOLD_INFO_0_VN "Khi Tỷ lệ độ phân giải nội bộ lớn hơn 1x, các vùng kết xuất có cạnh dài nhất nhỏ hơn hoặc bằng kích thước này sẽ được vẽ ở mức 1x. Các vùng đệm nhỏ như hiệu ứng quầng sáng, phát sáng hoặc phản chiếu sẽ giữ được hình ảnh giống bản gốc thay vì biến thành các hình ảnh nhiễu dạng khối sắc cạnh. Chỉ hỗ trợ Vulkan. Thay đổi thiết lập này sẽ tạo lại các vùng kết xuất."
 #define XEMU_ANISOTROPIC_FILTERING_LABEL_VN "Lọc dị hướng"
 #define XEMU_ANISOTROPIC_FILTERING_INFO_0_VN "Mức lọc bất đẳng hướng tối thiểu áp dụng cho các kết cấu được trò chơi lọc mượt, giúp các kết cấu hiển thị ở góc nghiêng vẫn sắc nét. Nguyên bản giữ nguyên thiết lập của trò chơi, vốn không sử dụng tính năng này đối với hầu hết trò chơi Xbox."
 #define OPTION_VAL_1_XEMU_ANISOTROPIC_FILTERING_VN "Nguyên bản"
@@ -34100,9 +40990,21 @@ struct retro_core_options_v2 options_val = {
 #define XEMU_HRTF_LABEL_VN "Mô phỏng âm thanh theo đặc tính truyền âm của đầu người"
 #define XEMU_HRTF_INFO_0_VN "Định vị âm thanh ba chiều của trò chơi có hỗ trợ bằng cách sử dụng hàm truyền đạt liên quan đến đầu người, giống như trên máy chơi game gốc, dành cho tai nghe và loa âm thanh nổi."
 #define XEMU_VP_WORKERS_LABEL_VN "Số luồng xử lý giọng nói (khởi động lại)"
-#define XEMU_VP_WORKERS_INFO_0_VN "Số luồng dùng để xử lý và phối trộn các âm thanh giọng nói. Tự động sử dụng một luồng cho mỗi lõi bộ xử lý."
+#define XEMU_VP_WORKERS_INFO_0_VN "Số luồng dùng để xử lý và phối trộn các âm thanh giọng nói. Tự động sử dụng một luồng cho mỗi trình giả lập bộ xử lý."
 #define XEMU_MSPF_OVERLAY_LABEL_VN "Bộ phân tích hiệu năng (F10)"
-#define XEMU_MSPF_OVERLAY_INFO_0_VN "Hiển thị ba dòng thông tin ở góc trên bên trái màn hình. FPS: số khung hình mỗi giây mà trò chơi hiển thị, tương tự lớp phủ gỡ lỗi hình ảnh của xemu bản độc lập, được tính trong 60 khung hình gần nhất. GPU: tốc độ khung hình mà trò chơi có thể đạt được dựa trên thời gian kết xuất một khung hình (MSPF của bản độc lập), lấy trung bình trong 60 khung hình gần nhất và cập nhật sau mỗi 20 khung hình; chỉ có giá trị khi bộ xử lý đồ họa là yếu tố giới hạn tốc độ trò chơi. NV2A IDLE: tỷ lệ thời gian kể từ khi bật bộ phân tích hiệu năng mà luồng xử lý đồ họa phải chờ trò chơi gửi công việc; nếu tỷ lệ này cao trong khi tốc độ khung hình thấp hơn mục tiêu của trò chơi, nghĩa là bộ xử lý chính là yếu tố giới hạn hiệu năng. Nhấn F10 trên bàn phím để bật hoặc tắt bộ phân tích hiệu năng; mỗi lần bật lại, bộ đếm NV2A IDLE sẽ được đặt lại. Trên Windows, khi tính năng này được bật, trình giả lập cũng ghi nhận vị trí thời gian xử lý của bộ xử lý chính trong quá trình mô phỏng (điều này làm giảm nhẹ tốc độ), và khi tắt, sẽ ghi các tỷ lệ vào nhật ký của RetroArch cùng toàn bộ dữ liệu ghi nhận vào tệp `system/xemu/<commit> <game>.txt` (chạy lại cùng một lượt sẽ ghi đè lên tệp này). Trên mọi hệ máy, tệp này bắt đầu bằng phiên bản của trình giả lập, trò chơi, các thiết lập ảnh hưởng đến tốc độ và FPS trung bình của lượt chạy, GPU và trạng thái nhàn rỗi NV2A, sau đó là các bộ đếm hoạt động mỗi giây của bộ kết xuất (số lần vẽ, số lần liên kết quy trình xử lý và bộ đổ bóng, số lần tải kết cấu lên, số lần tải bề mặt xuống, số lần đồng bộ với GPU của máy chủ và nguyên nhân đồng bộ). Khi được bật, cứ mỗi 300 lượt chạy, trình giả lập cũng ghi vào nhật ký của RetroArch thông tin về mức độ đồng bộ giữa các khung hình của hệ máy được mô phỏng và số lượt chạy của giao diện chính. Có hiệu lực ngay lập tức."
+#define XEMU_MSPF_OVERLAY_INFO_0_VN "Hiển thị ba dòng ở góc trên bên trái. FPS: số khung hình mỗi giây mà trò chơi hiển thị, tương tự lớp phủ gỡ lỗi video của xemu chạy độc lập, được tính trong 60 khung hình gần nhất. GPU: tốc độ khung hình mà trò chơi có thể đạt được dựa trên thời gian cần thiết để vẽ một khung hình (MSPF của bản chạy độc lập), tính trung bình trong 60 khung hình gần nhất và cập nhật sau mỗi 20 khung hình; chỉ có giá trị khi GPU là thành phần giới hạn tốc độ của trò chơi. NV2A IDLE: tỷ lệ thời gian kể từ khi bật công cụ đo hiệu năng mà luồng GPU phải chờ trò chơi gửi công việc; nếu tỷ lệ này cao trong khi tốc độ khung hình thấp hơn mục tiêu của trò chơi, điều đó có nghĩa là CPU đang là thành phần giới hạn hiệu năng. Nhấn F10 trên bàn phím để bật hoặc tắt công cụ đo hiệu năng, mỗi lần bật lại, giá trị NV2A IDLE sẽ được tính lại từ đầu. Khi một trong các tùy chọn Công cụ đo hiệu năng bên dưới được bật, việc tắt công cụ đo hiệu năng sẽ tạo một tệp tại system/xemu/<commit> <game>.txt (lần chạy tiếp theo sẽ ghi đè lên tệp này): phiên bản của trình giả lập, trò chơi, các thiết lập ảnh hưởng đến tốc độ và giá trị FPS, GPU, NV2A IDLE trung bình của lần chạy, sau đó là thông tin bổ sung tương ứng với các tùy chọn đó. Nếu không bật tùy chọn nào trong số này, chỉ có lớp phủ hiển thị và không tạo tệp. Khi được bật, trình giả lập cũng ghi vào nhật ký của RetroArch sau mỗi 300 lần chạy thông tin về mức độ đồng bộ giữa các khung hình của máy được mô phỏng và số lần chạy của giao diện chính. Có hiệu lực ngay lập tức."
+#define XEMU_PROF_VCPU_LABEL_VN "Bộ phân tích hiệu năng: Cpu ảo"
+#define XEMU_PROF_VCPU_INFO_0_VN "Windows: khi bật bộ phân tích hiệu năng, trình giả lập sẽ lấy mẫu để xác định CPU dành thời gian xử lý ở đâu (điều này khiến tốc độ chậm đi đôi chút). Khi tắt, các tỷ lệ thời gian được ghi vào nhật ký của RetroArch và mọi mẫu được ghi vào tệp phân tích hiệu năng. Đọc tệp này khi bật bộ phân tích hiệu năng."
+#define XEMU_PROF_PFIFO_LABEL_VN "Phân tích hiệu năng: PFIFO/PGRAPH"
+#define XEMU_PROF_PFIFO_INFO_0_VN "Windows: khi trình phân tích hiệu năng được bật, luồng GPU (bộ đệm lệnh và bộ dựng hình) cũng được lấy mẫu cùng với quá trình mô phỏng CPU, và phần tương ứng sẽ được thêm vào tệp phân tích hiệu năng sau phần CPU: thông tin về những hoạt động mà luồng này thực hiện và những thứ nó phải chờ. Đọc thông tin này khi trình phân tích hiệu năng được bật."
+#define XEMU_PROF_COUNTERS_LABEL_VN "Phân tích hiệu năng: bộ đếm của bộ dựng hình"
+#define XEMU_PROF_COUNTERS_INFO_0_VN "Cuối tệp phân tích hiệu năng là các bộ đếm của bộ dựng hình tính theo giây trong suốt lần chạy: số lượt vẽ, số lần liên kết quy trình xử lý và bộ đổ bóng, số lần tải kết cấu lên, số lần tải dữ liệu bề mặt xuống, số lần đồng bộ với GPU của máy chủ và nguyên nhân gây ra chúng."
+#define XEMU_PROF_S2T_LABEL_VN "Phân tích hiệu năng: mục tiêu dựng hình bị bỏ lỡ"
+#define XEMU_PROF_S2T_INFO_0_VN "Vulkan: tệp phân tích hiệu năng liệt kê các kết cấu nằm trong vùng bộ nhớ mà trò chơi dùng để dựng hình nhưng không được đọc trực tiếp từ mục tiêu dựng hình đó (thay vào đó, chúng được đọc qua RAM, khiến tốc độ xử lý chậm hơn). Mỗi trường hợp chỉ được liệt kê một lần, kèm theo số lần xảy ra và địa chỉ, định dạng, kích thước cùng độ rộng hàng dữ liệu của kết cấu và mục tiêu dựng hình."
+#define XEMU_PROF_SURF_LABEL_VN "Phân tích hiệu năng: tải dữ liệu bề mặt xuống và tải lên"
+#define XEMU_PROF_SURF_INFO_0_VN "Vulkan: tệp hồ sơ liệt kê các mục tiêu kết xuất được đọc ngược vào RAM rồi ghi trở lại GPU bởi thành phần của bộ kết xuất đã yêu cầu thao tác này, kèm theo địa chỉ, kích thước và định dạng của từng mục tiêu kết xuất. Tệp cũng liệt kê các mục tiêu kết xuất bị loại khỏi bộ nhớ đệm, lý do loại bỏ và mục tiêu kết xuất thay thế chúng."
+#define XEMU_PROF_PACING_LABEL_VN "Bộ phân tích hiệu năng: Điều phối khung hình"
+#define XEMU_PROF_PACING_INFO_0_VN "Khi bật công cụ phân tích hiệu năng, trình giả lập ghi lại thời gian của từng khung hình mà trò chơi chuyển đổi và từng khung hình được gửi đến RetroArch, cùng với số khung hình mới của trò chơi được hiển thị trong mỗi lần, thời điểm quá trình chạy bắt đầu và khoảng thời gian chờ trò chơi cũng như bộ kết xuất. Tệp phân tích hiệu năng sẽ lưu biểu đồ phân bố thời gian của các khoảng chờ, những khoảng chờ dài nhất và dữ liệu của từng khung hình. Đọc dữ liệu khi công cụ phân tích hiệu năng được bật."
 #define XEMU_CPU_BOOST_LABEL_VN "Tăng tốc CPU (Cần khởi động lại)"
 #define XEMU_CPU_BOOST_INFO_0_VN "Sử dụng các phương thức xử lý nhanh hơn cho CPU và bộ xử lý âm thanh của máy được mô phỏng: tập lệnh SSE gốc và bộ nhớ đệm lệnh nhảy mở rộng. Tắt tùy chọn này nếu trò chơi hoạt động không bình thường. Thiết lập được áp dụng khi nội dung bắt đầu chạy."
 #define XEMU_HARD_FPU_LABEL_VN "Mô phỏng bộ xử lý dấu phẩy động bằng phần cứng (Cần khởi động lại)"
@@ -34113,6 +41015,12 @@ struct retro_core_options_v2 options_val = {
 #define OPTION_VAL_NO_GPL_VN "Không dùng thư viện quy trình xử lý"
 #define OPTION_VAL_NO_DYN_VN "Không dùng trạng thái động"
 #define OPTION_VAL_NONE_VN "Không"
+#define XEMU_VK_RENDERER_QUEUE_LABEL_VN "Vulkan: Hàng đợi bộ kết xuất (Khởi động lại)"
+#define XEMU_VK_RENDERER_QUEUE_INFO_0_VN "Nơi bộ kết xuất gửi các tác vụ xử lý đồ họa đến GPU khi GPU có hàng đợi thứ hai trong nhóm hàng đợi của RetroArch. \"Riêng\" sử dụng hàng đợi thứ hai đó, nhờ vậy bộ kết xuất không phải chờ trong khi RetroArch xuất hình ảnh ra màn hình. \"Của RetroArch\" dùng chung hàng đợi của RetroArch, dành cho các công cụ ghi lại khung hình (RenderDoc) có thể không xử lý được hai hàng đợi cùng lúc. Thiết lập được áp dụng khi nội dung bắt đầu chạy."
+#define OPTION_VAL_OWN_VN "Riêng"
+#define OPTION_VAL_FRONTEND_VN "Của RetroArch"
+#define XEMU_VK_LOST_REPORT_LABEL_VN "Vulkan: Báo cáo lỗi mất kết nối thiết bị (Khởi động lại)"
+#define XEMU_VK_LOST_REPORT_INFO_0_VN "Khi GPU bị mất kết nối (VK_ERROR_DEVICE_LOST), ghi tệp system/xemu/xemu_device_lost.txt: lệnh gọi bị lỗi, những lần gửi tác vụ gần nhất và các tác vụ GPU đang xử lý tại thời điểm xảy ra lỗi. Bộ kết xuất đánh dấu từng lệnh vẽ, xóa, tải dữ liệu lên, chuyển đổi và lượt kết xuất trong bộ nhớ GPU để phục vụ việc này (dấu đánh dấu bộ đệm của AMD, điểm kiểm tra của Nvidia), đồng thời bổ sung mô tả lỗi của trình điều khiển nếu có. Làm giảm nhẹ tốc độ kết xuất. Thiết lập được áp dụng khi nội dung bắt đầu chạy."
 #define XEMU_SUBPIXEL_OFFSET_LABEL_VN "Điều chỉnh độ lệch điểm ảnh phụ"
 #define XEMU_SUBPIXEL_OFFSET_INFO_0_VN "Khi Tỷ lệ độ phân giải nội bộ lớn hơn 1x, dịch chuyển hình ảnh một phần nhỏ của điểm ảnh để các điểm ảnh ở độ phân giải cao hơn khớp với các điểm ảnh ban đầu. Khắc phục hiện tượng bóng mờ và đường nối trong một số trò chơi (Jade Empire, Blinx), nhưng gây lỗi ở những trò chơi khác (Splinter Cell). Tắt sẽ giữ nguyên cách hoạt động trước đây."
 #define XEMU_TLB_SKIP_IDLE_LABEL_VN "Bỏ qua các chế độ TLB nhàn rỗi"
@@ -34381,6 +41289,35 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
         },
         "1"
     },
+    /* Off by default; a test option for now: which sizes help is for the
+     * testers to find out (NNshi) */
+    {
+        "xemu_scale_threshold",
+        XEMU_SCALE_THRESHOLD_LABEL_VN,
+        NULL,
+        XEMU_SCALE_THRESHOLD_INFO_0_VN,
+        NULL,
+        "video",
+        {
+            { "0",   "OFF" },
+            { "16",  "16" },
+            { "32",  "32" },
+            { "64",  "64" },
+            { "96",  "96" },
+            { "128", "128" },
+            { "160", "160" },
+            { "192", "192" },
+            { "256", "256" },
+            { "320", "320" },
+            { "384", "384" },
+            { "448", "448" },
+            { "512", "512" },
+            { "640", "640" },
+            { "720", "720" },
+            { NULL, NULL },
+        },
+        "0"
+    },
     /* NNshi, xemu-project/xemu#409: most games filter with no anisotropy */
     {
         "xemu_anisotropic_filtering",
@@ -34515,6 +41452,90 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
         "disabled"
     },
     {
+        "xemu_prof_vcpu",
+        XEMU_PROF_VCPU_LABEL_VN,
+        NULL,
+        XEMU_PROF_VCPU_INFO_0_VN,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pfifo",
+        XEMU_PROF_PFIFO_LABEL_VN,
+        NULL,
+        XEMU_PROF_PFIFO_INFO_0_VN,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_counters",
+        XEMU_PROF_COUNTERS_LABEL_VN,
+        NULL,
+        XEMU_PROF_COUNTERS_INFO_0_VN,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_s2t",
+        XEMU_PROF_S2T_LABEL_VN,
+        NULL,
+        XEMU_PROF_S2T_INFO_0_VN,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_surf",
+        XEMU_PROF_SURF_LABEL_VN,
+        NULL,
+        XEMU_PROF_SURF_INFO_0_VN,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_prof_pacing",
+        XEMU_PROF_PACING_LABEL_VN,
+        NULL,
+        XEMU_PROF_PACING_INFO_0_VN,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_cpu_boost",
         XEMU_CPU_BOOST_LABEL_VN,
         NULL,
@@ -34560,6 +41581,37 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
             { NULL, NULL },
         },
         "auto"
+    },
+    /* Own by default: the frontend holds its queue's lock while it presents,
+     * and the renderer submits many times a frame */
+    {
+        "xemu_vk_renderer_queue",
+        XEMU_VK_RENDERER_QUEUE_LABEL_VN,
+        NULL,
+        XEMU_VK_RENDERER_QUEUE_INFO_0_VN,
+        NULL,
+        "debug",
+        {
+            { "own",      OPTION_VAL_OWN_VN },
+            { "frontend", OPTION_VAL_FRONTEND_VN },
+            { NULL, NULL },
+        },
+        "own"
+    },
+    /* Off by default: a diagnostic, it slows rendering a little (NNshi) */
+    {
+        "xemu_vk_lost_report",
+        XEMU_VK_LOST_REPORT_LABEL_VN,
+        NULL,
+        XEMU_VK_LOST_REPORT_INFO_0_VN,
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
     },
     /* Off by default: it helps some games and breaks others (NNshi) */
     {

@@ -2122,7 +2122,8 @@ static void update_variables(void)
                  !strcmp(var.value, "triangle_quads") ? 4 :
                  !strcmp(var.value, "native2d") ? 5 :
                  !strcmp(var.value, "triangle_content") ? 6 :
-                 !strcmp(var.value, "axis_content") ? 7 : 0;
+                 !strcmp(var.value, "axis_content") ? 7 :
+                 !strcmp(var.value, "axis_flat") ? 8 : 0;
         qatomic_set(&xemu_libretro_half_pixel, hp);
     }
 

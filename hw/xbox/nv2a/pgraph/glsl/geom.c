@@ -70,7 +70,7 @@ static unsigned int draw_vertices(PGRAPHState *pg)
  * it away from where it is at 1x. */
 bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode)
 {
-    if (mode == 3 || mode == 6 || mode == 7) {
+    if (mode == 3 || mode == 6 || mode == 7 || mode == 8) {
         return true;
     }
     if (mode != 4) {
@@ -97,6 +97,9 @@ int pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
     }
     if (mode == 7) {
         return 4;   /* "Per Axis, Content Kept", see pgraph_glsl_gen_geom */
+    }
+    if (mode == 8) {
+        return 5;   /* "Per Axis, Flat, Content Kept", see pgraph_glsl_gen_geom */
     }
     return pgraph_glsl_half_pixel_draw(pg, mode) ? 1 : 0;
 }
@@ -470,7 +473,15 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
      * has its top and bottom on y n.5 and its sides elsewhere (the panels
      * scroll sideways): "Per Triangle" left it, and above its top edge a
      * strip of what lay under it showed, a white line (NNshi). */
-    const bool per_axis = state->half_pixel == 4;
+    /* "Per Axis, Flat, Content Kept" (half_pixel 5): as 4, but only for a
+     * flat primitive, all three corners at one w (2D, UI, full-screen
+     * passes, Orta's splash). A 3D triangle with its corners on one pixel
+     * row or column - shadow volumes along a building's straight edge -
+     * moved in that axis while its neighbour didn't, and the crack between
+     * them showed as lines in JSRF's shadows and flashes in other games
+     * (NNshi). */
+    const bool per_axis = state->half_pixel == 4 || state->half_pixel == 5;
+    const bool per_axis_flat = state->half_pixel == 5;
     const bool hp_keep = (state->half_pixel == 3 || per_axis) && num_in >= 3;
     const char *pos_pre = "gl_in[", *pos_post = "].gl_Position";
     char hp_body[48] = "";
@@ -478,6 +489,14 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
         pos_pre = "gsClip[";
         pos_post = "]";
         if (per_axis) {
+            /* flat: every corner at the first one's w */
+            char flat_test[192];
+            snprintf(flat_test, sizeof(flat_test),
+                     "  for (int i = 1; i < %d; i++) {\n"
+                     "    if (v_vtxPos0[i].w != v_vtxPos0[0].w) {\n"
+                     "      hit = bvec2(false);\n"
+                     "    }\n"
+                     "  }\n", num_in);
             mstring_append_fmt(output,
                 "vec4 gsPos[%d];\n"
                 "vec4 gsClip[%d];\n"
@@ -487,6 +506,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                 "    hit = bvec2(hit.x && fract(v_vtxPos0[i].x) == 0.5,\n"
                 "                hit.y && fract(v_vtxPos0[i].y) == 0.5);\n"
                 "  }\n"
+                "%s"
                 "  vec2 hm = vec2(hit);\n"
                 "  for (int i = 0; i < %d; i++) {\n"
                 "    gsPos[i] = v_vtxPos0[i];\n"
@@ -496,7 +516,9 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                 "  }\n"
                 "%s"
                 "}\n",
-                num_in, num_in, num_in, num_in,
+                num_in, num_in, num_in,
+                per_axis_flat ? flat_test : "",
+                num_in,
                 hp_keep ? "  hp_keep(hm);\n" : "");
         } else {
             mstring_append_fmt(output,

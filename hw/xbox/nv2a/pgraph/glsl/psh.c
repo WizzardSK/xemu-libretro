@@ -1993,7 +1993,27 @@ static MString* psh_convert(struct PixelShader *ps)
                  * pixel right and down of 1x with mode 4: 1x took the texel
                  * after the edge there (NNshi). Two games, one each way: a
                  * test of whether w is what decides it. */
+                /* 6 "1x Pixel Centres, Game's Filter": as 4, but a 1:1 draw
+                 * is read at the 1x pixel's centre through the game's own
+                 * sampler instead of at the centre of the texel that centre
+                 * falls in. Bilinear 1:1 draws whose 1x centres sit exactly
+                 * on texel edges show at 1x an even blend of two texels;
+                 * mode 4 read one texel sharp, and Onimusha's "hard disk"
+                 * and "memory unit" sat half a 1x pixel right and down of
+                 * 1x (NNshi). Point-sampled draws take the same texel as
+                 * with 4. The coordinate stays inside the texels the
+                 * triangle spans, as 4 keeps its texel there. */
                 if (ps->state->clamp_tex_mode >= 4) {
+                    char filtered[384] = "";
+                    if (ps->state->clamp_tex_mode == 6) {
+                        snprintf(filtered, sizeof(filtered),
+                            "        if (one) {\n"
+                            "            vec2 blo = floor(tlo + 1.0 / 64.0);\n"
+                            "            vec2 bhi = max(ceil(thi - 1.0 / 64.0), blo + 1.0);\n"
+                            "            return textureGrad(texSamp%d, clamp(t, blo + 1.0 / 128.0,\n"
+                            "                bhi - 1.0 / 128.0) / sz, gx / s, gy / s);\n"
+                            "        }\n", i);
+                    }
                     mstring_append_fmt(preflight,
                         "    vec2 ax = abs(dx), ay = abs(dy);\n"
                         "    bool axis = min(ax.x, ax.y) <= 1e-3 * max(ax.x, ax.y) &&\n"
@@ -2012,6 +2032,7 @@ static MString* psh_convert(struct PixelShader *ps)
                         "        thi = max(max(t0, t1), t2);\n"
                         "        vec2 o = (floor(gl_FragCoord.xy * s) + 0.5) / s - gl_FragCoord.xy;\n"
                         "        t = round((t + dx * o.x + dy * o.y) * 64.0) / 64.0 %s;\n"
+                        "%s"
                         "        if (!one) {\n"
                         "            return textureGrad(texSamp%d, t / sz, gx / s, gy / s);\n"
                         "        }\n"
@@ -2019,7 +2040,7 @@ static MString* psh_convert(struct PixelShader *ps)
                         ps->state->clamp_tex_mode == 5 ?
                             "+ (vtxPos0.w == 1.0 ? -1.0 : 1.0) / 128.0" :
                             "- 1.0 / 128.0",
-                        i);
+                        filtered, i);
                 }
                 if (ps->state->clamp_tex_mode == 2 ||
                     ps->state->clamp_tex_mode == 3) {

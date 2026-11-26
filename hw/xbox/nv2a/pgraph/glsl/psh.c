@@ -330,8 +330,8 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
             (min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_LOD0 ||
              min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_NEARESTLOD ||
              min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_TENT_LOD);
-        /* Clamp Textures "1x Pixel Centres, Game's Filter": bit 4 + n of
-         * clamp_tex_rt, unit n is read with a filtering (not point) mag
+        /* Clamp Textures "1x Pixel Centres, Game's Filter" (and its
+         * ", Fine"): bit 4 + n of clamp_tex_rt, unit n is read with a filtering (not point) mag
          * filter - unless Texture Filtering forces Nearest Neighbor (its
          * sampler is point then); the 1x centre then gets no tie bias */
         if (state->clamp_tex_scale && mag_filter != 1 &&
@@ -2020,9 +2020,19 @@ static MString* psh_convert(struct PixelShader *ps)
                  * the pixel's alpha is no longer 0, so the game's alpha
                  * kill keeps it: a dark line above Onimusha's "o", from
                  * the "_" above it in the atlas (NNshi). */
+                /* 7 "1x Pixel Centres, Game's Filter, Fine": as 6, with the
+                 * 1x centre's coordinate rounded to 1/512 of a texel (not
+                 * 1/64) and a tie bias of 1/1024 (not 1/128). A draw that
+                 * maps 255 texel rows onto 256 pixels (GTA San Andreas'
+                 * scanline overlay, 16x256, point) has its last 1x centres
+                 * 1/256 and 2/256 of a texel past the edge: 1x reads the
+                 * texel after it, the 1/64 rounding put them on the edge and
+                 * the bias before it, and the overlay's bottom line was
+                 * gone (NNshi). */
                 if (ps->state->clamp_tex_mode >= 4) {
+                    const bool fine = ps->state->clamp_tex_mode == 7;
                     char filtered[384] = "";
-                    if (ps->state->clamp_tex_mode == 6) {
+                    if (ps->state->clamp_tex_mode >= 6) {
                         snprintf(filtered, sizeof(filtered),
                             "        if (one) {\n"
                             "            vec2 blo = floor(tlo + 1.0 / 64.0);\n"
@@ -2048,17 +2058,18 @@ static MString* psh_convert(struct PixelShader *ps)
                         "        tlo = min(min(t0, t1), t2);\n"
                         "        thi = max(max(t0, t1), t2);\n"
                         "        vec2 o = (floor(gl_FragCoord.xy * s) + 0.5) / s - gl_FragCoord.xy;\n"
-                        "        t = round((t + dx * o.x + dy * o.y) * 64.0) / 64.0 %s;\n"
+                        "        t = round((t + dx * o.x + dy * o.y) * %s) / %s %s;\n"
                         "%s"
                         "        if (!one) {\n"
                         "            return textureGrad(texSamp%d, t / sz, gx / s, gy / s);\n"
                         "        }\n"
                         "    }\n",
+                        fine ? "512.0" : "64.0", fine ? "512.0" : "64.0",
                         ps->state->clamp_tex_mode == 5 ?
                             "+ (vtxPos0.w == 1.0 ? -1.0 : 1.0) / 128.0" :
-                        ps->state->clamp_tex_mode == 6 &&
+                        ps->state->clamp_tex_mode >= 6 &&
                             (ps->state->clamp_tex_rt & (1 << (4 + i))) ? "" :
-                            "- 1.0 / 128.0",
+                        fine ? "- 1.0 / 1024.0" : "- 1.0 / 128.0",
                         filtered, i);
                 }
                 if (ps->state->clamp_tex_mode == 2 ||

@@ -70,7 +70,7 @@ static unsigned int draw_vertices(PGRAPHState *pg)
  * it away from where it is at 1x. */
 bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode)
 {
-    if (mode == 3 || (mode >= 6 && mode <= 9)) {
+    if (mode == 3 || (mode >= 6 && mode <= 10)) {
         return true;
     }
     if (mode != 4) {
@@ -103,6 +103,9 @@ int pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
     }
     if (mode == 9) {
         return 6;   /* "Per Axis, Flat, Either Axis", see pgraph_glsl_gen_geom */
+    }
+    if (mode == 10) {
+        return 7;   /* "Per Axis, Flat, Either Axis, Unrotated", see pgraph_glsl_gen_geom */
     }
     return pgraph_glsl_half_pixel_draw(pg, mode) ? 1 : 0;
 }
@@ -490,9 +493,18 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
      * against 1x, and one red part with all y on n.5 moved up out of the
      * outline (NNshi). With HPO off the whole bar is half a 1x pixel right and
      * down, so the game expects the offset in both axes. */
-    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 6;
-    const bool per_axis_flat = state->half_pixel == 5 || state->half_pixel == 6;
-    const bool either_axis = state->half_pixel == 6;
+    /* "Per Axis, Flat, Either Axis, Unrotated" (half_pixel 7): as 6, but
+     * not for a triangle whose texture is mapped rotated (u changing along
+     * y or v along x). GTA San Andreas' minimap is the map texture rotated
+     * onto slivers of a circle; a sliver whose corners happened to have x
+     * on n.5 moved half a 1x pixel left while the circle's mask didn't, and
+     * the map showed as a line beside the circle. "Per Triangle" left it,
+     * as it needs both axes (NNshi). UI, bars and full-screen passes map
+     * their textures straight; untextured ones have nothing to rotate. */
+    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 7;
+    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 7;
+    const bool either_axis = state->half_pixel == 6 || state->half_pixel == 7;
+    const bool unrotated = state->half_pixel == 7;
     const bool hp_keep = (state->half_pixel == 3 || per_axis) && num_in >= 3;
     const char *pos_pre = "gl_in[", *pos_post = "].gl_Position";
     char hp_body[48] = "";
@@ -501,14 +513,32 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
         pos_post = "]";
         if (per_axis) {
             /* flat: every corner at the first one's w; either axis: one
-             * axis on n.5 moves both */
-            char flat_test[256];
+             * axis on n.5 moves both; unrotated: dT0/dx has no v and
+             * dT0/dy no u (the plane through the three corners) */
+            const char *rot_test =
+                "  if (any(hit)) {\n"
+                "    vec2 e1 = v_vtxPos0[1].xy - v_vtxPos0[0].xy;\n"
+                "    vec2 e2 = v_vtxPos0[2].xy - v_vtxPos0[0].xy;\n"
+                "    vec2 f1 = v_vtxT0[1].xy - v_vtxT0[0].xy;\n"
+                "    vec2 f2 = v_vtxT0[2].xy - v_vtxT0[0].xy;\n"
+                "    float det = e1.x * e2.y - e1.y * e2.x;\n"
+                "    if (abs(det) > 1e-6) {\n"
+                "      vec2 tx = (f1 * e2.y - f2 * e1.y) / det;\n"
+                "      vec2 ty = (f2 * e1.x - f1 * e2.x) / det;\n"
+                "      float m = 1e-3 * max(abs(tx.x), abs(ty.y));\n"
+                "      if (abs(tx.y) > m || abs(ty.x) > m) {\n"
+                "        hit = bvec2(false);\n"
+                "      }\n"
+                "    }\n"
+                "  }\n";
+            char flat_test[1024];
             snprintf(flat_test, sizeof(flat_test),
                      "  for (int i = 1; i < %d; i++) {\n"
                      "    if (v_vtxPos0[i].w != v_vtxPos0[0].w) {\n"
                      "      hit = bvec2(false);\n"
                      "    }\n"
-                     "  }\n%s", num_in,
+                     "  }\n%s%s", num_in,
+                     unrotated && num_in >= 3 ? rot_test : "",
                      either_axis ? "  hit = bvec2(any(hit));\n" : "");
             mstring_append_fmt(output,
                 "vec4 gsPos[%d];\n"

@@ -2124,7 +2124,8 @@ static void update_variables(void)
                  !strcmp(var.value, "triangle_content") ? 6 :
                  !strcmp(var.value, "axis_content") ? 7 :
                  !strcmp(var.value, "axis_flat") ? 8 :
-                 !strcmp(var.value, "axis_either") ? 9 : 0;
+                 !strcmp(var.value, "axis_either") ? 9 :
+                 !strcmp(var.value, "axis_unrot") ? 10 : 0;
         qatomic_set(&xemu_libretro_half_pixel, hp);
     }
 
@@ -2137,7 +2138,8 @@ static void update_variables(void)
                  !strcmp(var.value, "lowres") ? 3 :
                  !strcmp(var.value, "centres") ? 4 :
                  !strcmp(var.value, "centres_w") ? 5 :
-                 !strcmp(var.value, "centres_f") ? 6 : 0;
+                 !strcmp(var.value, "centres_f") ? 6 :
+                 !strcmp(var.value, "centres_ff") ? 7 : 0;
         qatomic_set(&xemu_libretro_clamp_textures, ct);
     }
 

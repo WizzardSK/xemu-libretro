@@ -70,7 +70,7 @@ static unsigned int draw_vertices(PGRAPHState *pg)
  * it away from where it is at 1x. */
 bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode)
 {
-    if (mode == 3 || (mode >= 6 && mode <= 10)) {
+    if (mode == 3 || (mode >= 6 && mode <= 12)) {
         return true;
     }
     if (mode != 4) {
@@ -106,6 +106,12 @@ int pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
     }
     if (mode == 10) {
         return 7;   /* "Per Axis, Flat, Either Axis, Unrotated", see pgraph_glsl_gen_geom */
+    }
+    if (mode == 11) {
+        return 8;   /* "Per Axis, Flat, Rects", see pgraph_glsl_gen_geom */
+    }
+    if (mode == 12) {
+        return 9;   /* "Per Axis, Flat, Rects, Touched Axis", see pgraph_glsl_gen_geom */
     }
     return pgraph_glsl_half_pixel_draw(pg, mode) ? 1 : 0;
 }
@@ -501,10 +507,25 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
      * the map showed as a line beside the circle. "Per Triangle" left it,
      * as it needs both axes (NNshi). UI, bars and full-screen passes map
      * their textures straight; untextured ones have nothing to rotate. */
-    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 7;
-    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 7;
+    /* "Per Axis, Flat, Rects" (half_pixel 8): as 5, but only for a
+     * triangle that is half of an axis-aligned rectangle (two corners
+     * share x, two share y). The rotation test of 7 read texture
+     * coordinates that untextured draws carry as leftovers, and moved
+     * JSRF's letterbox and DW3's dialog boxes off again (NNshi). Bars, UI,
+     * letterboxes and full-screen passes are rectangles; the slivers of
+     * GTA San Andreas' rotating minimap are not. */
+    /* "Per Axis, Flat, Rects, Touched Axis" (half_pixel 9): as 8, and an
+     * axis whose corners are all on n.5 also moves the other axis if at
+     * least one corner is on n.5 there: GTA San Andreas' health bar (x all
+     * n.5, y top 86.5, bottom 88.625). "Either Axis" moved the other axis
+     * with no n.5 corner in it at all, and shifted JSRF's grey bar, the
+     * Breakdown menu and KOTOR's text (NNshi). */
+    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 9;
+    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 9;
     const bool either_axis = state->half_pixel == 6 || state->half_pixel == 7;
     const bool unrotated = state->half_pixel == 7;
+    const bool rects = state->half_pixel == 8 || state->half_pixel == 9;
+    const bool touched = state->half_pixel == 9;
     const bool hp_keep = (state->half_pixel == 3 || per_axis) && num_in >= 3;
     const char *pos_pre = "gl_in[", *pos_post = "].gl_Position";
     char hp_body[48] = "";
@@ -531,15 +552,43 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                 "      }\n"
                 "    }\n"
                 "  }\n";
-            char flat_test[1024];
+            /* touched: the other axis too, with one corner on n.5 there;
+             * rects: two corners share x and two share y */
+            char touch_test[512], rect_test[512];
+            snprintf(touch_test, sizeof(touch_test),
+                "  {\n"
+                "    bvec2 touch = bvec2(false);\n"
+                "    for (int i = 0; i < %d; i++) {\n"
+                "      touch = bvec2(touch.x || fract(v_vtxPos0[i].x) == 0.5,\n"
+                "                    touch.y || fract(v_vtxPos0[i].y) == 0.5);\n"
+                "    }\n"
+                "    hit = bvec2(hit.x || (hit.y && touch.x),\n"
+                "                hit.y || (hit.x && touch.y));\n"
+                "  }\n", num_in);
+            snprintf(rect_test, sizeof(rect_test),
+                "  if (any(hit)) {\n"
+                "    bool sx = false, sy = false;\n"
+                "    for (int i = 0; i < %d; i++) {\n"
+                "      for (int j = i + 1; j < %d; j++) {\n"
+                "        sx = sx || v_vtxPos0[i].x == v_vtxPos0[j].x;\n"
+                "        sy = sy || v_vtxPos0[i].y == v_vtxPos0[j].y;\n"
+                "      }\n"
+                "    }\n"
+                "    if (!(sx && sy)) {\n"
+                "      hit = bvec2(false);\n"
+                "    }\n"
+                "  }\n", num_in, num_in);
+            char flat_test[2048];
             snprintf(flat_test, sizeof(flat_test),
                      "  for (int i = 1; i < %d; i++) {\n"
                      "    if (v_vtxPos0[i].w != v_vtxPos0[0].w) {\n"
                      "      hit = bvec2(false);\n"
                      "    }\n"
-                     "  }\n%s%s", num_in,
+                     "  }\n%s%s%s%s", num_in,
                      unrotated && num_in >= 3 ? rot_test : "",
-                     either_axis ? "  hit = bvec2(any(hit));\n" : "");
+                     either_axis ? "  hit = bvec2(any(hit));\n" : "",
+                     touched ? touch_test : "",
+                     rects && num_in >= 3 ? rect_test : "");
             mstring_append_fmt(output,
                 "vec4 gsPos[%d];\n"
                 "vec4 gsClip[%d];\n"

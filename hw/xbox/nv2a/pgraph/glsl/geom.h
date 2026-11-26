@@ -47,7 +47,10 @@ typedef struct {
      * Flat, Content Kept", as 4 for flat primitives only (one w); 6 "Per Axis,
      * Flat, Either Axis", as 5 but one axis on a half pixel moves both; 7 "Per
      * Axis, Flat, Either Axis, Unrotated", as 6 but not for a texture mapped
-     * rotated. Takes the high byte of the old
+     * rotated; 8 "Per Axis, Flat, Rects", as 5 for halves of axis-aligned
+     * rectangles only; 9 "Per Axis, Flat, Rects, Touched Axis", as 8 and an
+     * axis all on n.5 also moves the other one if a corner touches n.5
+     * there. Takes the high byte of the old
      * short tri_rot0 (always 0), so the key keeps its size and old seeds
      * read as off. */
     uint8_t half_pixel;

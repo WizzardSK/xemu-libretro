@@ -70,7 +70,7 @@ static unsigned int draw_vertices(PGRAPHState *pg)
  * it away from where it is at 1x. */
 bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode)
 {
-    if (mode == 3 || (mode >= 6 && mode <= 12)) {
+    if (mode == 3 || (mode >= 6 && mode <= 13)) {
         return true;
     }
     if (mode != 4) {
@@ -112,6 +112,12 @@ int pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
     }
     if (mode == 12) {
         return 9;   /* "Per Axis, Flat, Rects, Touched Axis", see pgraph_glsl_gen_geom */
+    }
+    if (mode == 13) {
+        /* "Per Axis, Flat, Touched Axis, Unrotated": 11 when texture 0 is
+         * read (the rotation test needs real texture coordinates), 10
+         * when not, see pgraph_glsl_gen_geom */
+        return pgraph_is_texture_enabled(pg, 0) ? 11 : 10;
     }
     return pgraph_glsl_half_pixel_draw(pg, mode) ? 1 : 0;
 }
@@ -520,12 +526,21 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
      * n.5, y top 86.5, bottom 88.625). "Either Axis" moved the other axis
      * with no n.5 corner in it at all, and shifted JSRF's grey bar, the
      * Breakdown menu and KOTOR's text (NNshi). */
-    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 9;
-    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 9;
+    /* "Per Axis, Flat, Touched Axis, Unrotated" (half_pixel 10, and 11
+     * for a draw that reads texture 0): as 5 with the touched axis of 9,
+     * and with 7's rotation test, only for a draw that reads texture 0.
+     * GTA San Andreas' minimap is drawn as axis-aligned strips with the
+     * map rotated on them, so 8's rectangle test let them through
+     * (NNshi); 7's rotation test caught them but also read the leftover
+     * texture coordinates of untextured draws (JSRF's letterbox, DW3's
+     * dialog boxes). */
+    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 11;
+    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 11;
     const bool either_axis = state->half_pixel == 6 || state->half_pixel == 7;
-    const bool unrotated = state->half_pixel == 7;
+    const bool unrotated = state->half_pixel == 7 || state->half_pixel == 11;
     const bool rects = state->half_pixel == 8 || state->half_pixel == 9;
-    const bool touched = state->half_pixel == 9;
+    const bool touched = state->half_pixel == 9 || state->half_pixel == 10 ||
+                         state->half_pixel == 11;
     const bool hp_keep = (state->half_pixel == 3 || per_axis) && num_in >= 3;
     const char *pos_pre = "gl_in[", *pos_post = "].gl_Position";
     char hp_body[48] = "";

@@ -70,7 +70,7 @@ static unsigned int draw_vertices(PGRAPHState *pg)
  * it away from where it is at 1x. */
 bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode)
 {
-    if (mode == 3 || (mode >= 6 && mode <= 15)) {
+    if (mode == 3 || (mode >= 6 && mode <= 16)) {
         return true;
     }
     if (mode != 4) {
@@ -128,6 +128,10 @@ int pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
         /* "Per Axis, Flat, Touched Axis, Unrotated 90, Whole Pixels Stay":
          * 15 with texture 0, 14 without */
         return pgraph_is_texture_enabled(pg, 0) ? 15 : 14;
+    }
+    if (mode == 16) {
+        /* "..., Whole Pixels Stay, Thin": 17 with texture 0, 16 without */
+        return pgraph_is_texture_enabled(pg, 0) ? 17 : 16;
     }
     return pgraph_glsl_half_pixel_draw(pg, mode) ? 1 : 0;
 }
@@ -555,15 +559,24 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
      * whole pixel; Touched Axis moved it in x and it came out short of 1x
      * (NNshi). GTA San Andreas' health bar has its y edges at 86.5 and
      * 88.625 and still moves. */
-    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 15;
-    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 15;
+    /* "..., Whole Pixels Stay, Thin" (half_pixel 16, and 17 with texture
+     * 0): as 14/15, and the touched axis moves only for a primitive at most
+     * 4 pixels across in that axis. Panzer Dragoon Orta's scrolling clouds
+     * and GTA San Andreas' growing loading bar have an x edge that slides
+     * through n.5 now and then: on that frame the whole quad moved half a
+     * pixel, a seam travelled across the clouds and a column flickered
+     * beside the bar (NNshi). GTA's health bar is 2.125 pixels tall. */
+    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 17;
+    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 17;
     const bool either_axis = state->half_pixel == 6 || state->half_pixel == 7;
-    const bool quarter_ok = state->half_pixel >= 12 && state->half_pixel <= 15;
+    const bool quarter_ok = state->half_pixel >= 12 && state->half_pixel <= 17;
     const bool unrotated = state->half_pixel == 7 || state->half_pixel == 11 ||
-                           state->half_pixel == 13 || state->half_pixel == 15;
+                           state->half_pixel == 13 || state->half_pixel == 15 ||
+                           state->half_pixel == 17;
     const bool rects = state->half_pixel == 8 || state->half_pixel == 9;
-    const bool whole_stay = state->half_pixel == 14 || state->half_pixel == 15;
-    const bool touched = state->half_pixel >= 9 && state->half_pixel <= 15;
+    const bool whole_stay = state->half_pixel >= 14 && state->half_pixel <= 17;
+    const bool thin = state->half_pixel == 16 || state->half_pixel == 17;
+    const bool touched = state->half_pixel >= 9 && state->half_pixel <= 17;
     const bool hp_keep = (state->half_pixel == 3 || per_axis) && num_in >= 3;
     const char *pos_pre = "gl_in[", *pos_post = "].gl_Position";
     char hp_body[48] = "";
@@ -613,11 +626,21 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                 "  }\n";
             /* touched: the other axis too, with one corner on n.5 there;
              * rects: two corners share x and two share y */
-            char touch_test[1024], rect_test[512], whole_test[256];
+            char touch_test[1536], rect_test[512], whole_test[256];
+            char thin_test[512];
             snprintf(whole_test, sizeof(whole_test),
                 "    for (int i = 0; i < %d; i++) {\n"
                 "      touch = bvec2(touch.x && fract(v_vtxPos0[i].x) != 0.0,\n"
                 "                    touch.y && fract(v_vtxPos0[i].y) != 0.0);\n"
+                "    }\n", num_in);
+            snprintf(thin_test, sizeof(thin_test),
+                "    {\n"
+                "      vec2 lo = v_vtxPos0[0].xy, hi = lo;\n"
+                "      for (int i = 1; i < %d; i++) {\n"
+                "        lo = min(lo, v_vtxPos0[i].xy);\n"
+                "        hi = max(hi, v_vtxPos0[i].xy);\n"
+                "      }\n"
+                "      touch = touch && lessThanEqual(hi - lo, vec2(4.0));\n"
                 "    }\n", num_in);
             snprintf(touch_test, sizeof(touch_test),
                 "  {\n"
@@ -626,11 +649,11 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                 "      touch = bvec2(touch.x || fract(v_vtxPos0[i].x) == 0.5,\n"
                 "                    touch.y || fract(v_vtxPos0[i].y) == 0.5);\n"
                 "    }\n"
-                "%s"
+                "%s%s"
                 "    hit = bvec2(hit.x || (hit.y && touch.x),\n"
                 "                hit.y || (hit.x && touch.y));\n"
                 "  }\n", num_in,
-                whole_stay ? whole_test : "");
+                whole_stay ? whole_test : "", thin ? thin_test : "");
             snprintf(rect_test, sizeof(rect_test),
                 "  if (any(hit)) {\n"
                 "    bool sx = false, sy = false;\n"
@@ -644,7 +667,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                 "      hit = bvec2(false);\n"
                 "    }\n"
                 "  }\n", num_in, num_in);
-            char flat_test[2048];
+            char flat_test[3072];
             snprintf(flat_test, sizeof(flat_test),
                      "  for (int i = 1; i < %d; i++) {\n"
                      "    if (v_vtxPos0[i].w != v_vtxPos0[0].w) {\n"

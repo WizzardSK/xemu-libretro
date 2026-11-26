@@ -56,7 +56,8 @@ typedef struct {
      * Flat, Touched Axis, Unrotated 90", as 10/11 with a quarter-turned
      * texture counted as straight; 14/15 "..., Whole Pixels Stay", as
      * 12/13, and the touched axis moves only without corners on a whole
-     * pixel. Takes the high byte of the old
+     * pixel; 16/17 "..., Thin", as 14/15 and the touched axis only for a
+     * primitive at most 4 pixels across in it. Takes the high byte of the old
      * short tri_rot0 (always 0), so the key keeps its size and old seeds
      * read as off. */
     uint8_t half_pixel;

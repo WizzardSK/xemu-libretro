@@ -2059,8 +2059,15 @@ static MString* psh_convert(struct PixelShader *ps)
                         clamp_mode >= 6 &&
                             (ps->state->clamp_tex_rt & (1 << (4 + i))) ? "" :
                         fine ? "- 1.0 / 1024.0" : "- 1.0 / 128.0";
-                    char smooth[1024] = "";
-                    if (clamp_mode == 9) {
+                    /* 10 "..., Fine, Smooth, Inside": as 9, but each of the
+                     * four reads is kept half a texel inside the texels the
+                     * triangle spans. A 1x centre beside a glyph's quad
+                     * was clamped onto the quad's edge, where a bilinear
+                     * read takes half of the texel past it: the next glyph
+                     * in Onimusha's font atlas bled into the text again
+                     * (NNshi). */
+                    char smooth[1280] = "";
+                    if (clamp_mode == 9 || clamp_mode == 10) {
                         snprintf(smooth, sizeof(smooth),
                             "        if (!one) {\n"
                             "            vec2 q = gl_FragCoord.xy * s - 0.5;\n"
@@ -2069,13 +2076,18 @@ static MString* psh_convert(struct PixelShader *ps)
                             "            for (int k = 0; k < 4; k++) {\n"
                             "                vec2 kk = vec2(float(k & 1), float(k >> 1));\n"
                             "                vec2 oc = (b + kk + 0.5) / s - gl_FragCoord.xy;\n"
-                            "                vec2 tc = clamp(tf + dx * oc.x + dy * oc.y, tlo, thi);\n"
+                            "                vec2 tc = clamp(tf + dx * oc.x + dy * oc.y, %s);\n"
                             "                tc = round(tc * 512.0) / 512.0 %s;\n"
                             "                vec2 wk = mix(1.0 - w, w, kk);\n"
                             "                acc += wk.x * wk.y * textureGrad(texSamp%d, tc / sz, gx / s, gy / s);\n"
                             "            }\n"
                             "            return acc;\n"
-                            "        }\n", bias, i);
+                            "        }\n",
+                            clamp_mode == 10 ?
+                                "floor(tlo + 1.0 / 64.0) + 0.5,\n"
+                                "                    max(ceil(thi - 1.0 / 64.0) - 0.5, floor(tlo + 1.0 / 64.0) + 0.5)" :
+                                "tlo, thi",
+                            bias, i);
                     }
                     char filtered[384] = "";
                     if (clamp_mode >= 6) {
@@ -2112,7 +2124,7 @@ static MString* psh_convert(struct PixelShader *ps)
                         "            return textureGrad(texSamp%d, t / sz, gx / s, gy / s);\n"
                         "        }\n"
                         "    }\n",
-                        clamp_mode == 9 ? "        vec2 tf = t;\n" : "",
+                        clamp_mode >= 9 ? "        vec2 tf = t;\n" : "",
                         fine ? "512.0" : "64.0", fine ? "512.0" : "64.0",
                         bias, filtered, smooth, i);
                 }

@@ -92,7 +92,8 @@ typedef struct PshState {
      * axis-aligned draw without perspective (one w), 1:1 and minified
      * included, takes its texture coordinate at the 1x pixel's centre; 8
      * as 7 without textures that have mipmaps, whose units are bits 4-7; 9
-     * as 7 with a scaled draw's four nearest 1x centre reads blended */
+     * as 7 with a scaled draw's four nearest 1x centre reads blended; 10
+     * as 9 with those reads half a texel inside the triangle's texels */
     uint8_t clamp_tex_mode;
     /* Half-Pixel Offset "Native Edges, 2D" above 1x, for filled triangles
      * and quads: a flat primitive keeps only the fine pixels of the native

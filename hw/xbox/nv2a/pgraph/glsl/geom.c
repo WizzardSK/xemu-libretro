@@ -70,7 +70,7 @@ static unsigned int draw_vertices(PGRAPHState *pg)
  * it away from where it is at 1x. */
 bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode)
 {
-    if (mode == 3 || (mode >= 6 && mode <= 16)) {
+    if (mode == 3 || (mode >= 6 && mode <= 17)) {
         return true;
     }
     if (mode != 4) {
@@ -132,6 +132,10 @@ int pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
     if (mode == 16) {
         /* "..., Whole Pixels Stay, Thin": 17 with texture 0, 16 without */
         return pgraph_is_texture_enabled(pg, 0) ? 17 : 16;
+    }
+    if (mode == 17) {
+        /* "Per Vertex, Flat, Unrotated 90": 19 with texture 0, 18 without */
+        return pgraph_is_texture_enabled(pg, 0) ? 19 : 18;
     }
     return pgraph_glsl_half_pixel_draw(pg, mode) ? 1 : 0;
 }
@@ -566,13 +570,24 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
      * through n.5 now and then: on that frame the whole quad moved half a
      * pixel, a seam travelled across the clouds and a column flickered
      * beside the bar (NNshi). GTA's health bar is 2.125 pixels tall. */
-    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 17;
-    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 17;
+    /* "Per Vertex, Flat, Unrotated 90" (half_pixel 18, and 19 with texture
+     * 0): each corner coordinate on n.5 moves on its own, the rest stay;
+     * flat and rotation tests as 12/13, content kept per corner. At 1x an
+     * edge on n.5 covers the pixel beside it up to the whole pixel line, so
+     * moving that edge, and only that one, gives the 1x coverage: one edge
+     * of a bar on n.5 and the other not (JSRF's grey bar, GTA San Andreas'
+     * health and loading bars, the letterboxes of MM3 and DW3). Corners
+     * shared by neighbouring primitives move alike, so no seams open
+     * (Panzer Dragoon Orta's clouds). Replaces Touched Axis, Whole Pixels
+     * Stay and Thin (NNshi). */
+    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 19;
+    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 19;
+    const bool per_vertex = state->half_pixel == 18 || state->half_pixel == 19;
     const bool either_axis = state->half_pixel == 6 || state->half_pixel == 7;
-    const bool quarter_ok = state->half_pixel >= 12 && state->half_pixel <= 17;
+    const bool quarter_ok = state->half_pixel >= 12 && state->half_pixel <= 19;
     const bool unrotated = state->half_pixel == 7 || state->half_pixel == 11 ||
                            state->half_pixel == 13 || state->half_pixel == 15 ||
-                           state->half_pixel == 17;
+                           state->half_pixel == 17 || state->half_pixel == 19;
     const bool rects = state->half_pixel == 8 || state->half_pixel == 9;
     const bool whole_stay = state->half_pixel >= 14 && state->half_pixel <= 17;
     const bool thin = state->half_pixel == 16 || state->half_pixel == 17;
@@ -679,6 +694,28 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                      either_axis ? "  hit = bvec2(any(hit));\n" : "",
                      touched ? touch_test : "",
                      rects && num_in >= 3 ? rect_test : "");
+            if (per_vertex) {
+                /* hit: the primitive may move (flat, not rotated); each
+                 * corner then moves in the axes it has on n.5 */
+                mstring_append_fmt(output,
+                    "vec2 gsHm[%d];\n"
+                    "vec4 gsPos[%d];\n"
+                    "vec4 gsClip[%d];\n"
+                    "void hp_init() {\n"
+                    "  bvec2 hit = bvec2(true);\n"
+                    "%s"
+                    "  for (int i = 0; i < %d; i++) {\n"
+                    "    gsHm[i] = vec2(hit) * vec2(equal(fract(v_vtxPos0[i].xy), vec2(0.5)));\n"
+                    "    gsPos[i] = v_vtxPos0[i];\n"
+                    "    gsClip[i] = gl_in[i].gl_Position;\n"
+                    "    gsPos[i].xy -= v_vtxPos1[i].zw * gsHm[i];\n"
+                    "    gsClip[i].xy -= v_vtxPos1[i].xy * gsClip[i].w * gsHm[i];\n"
+                    "  }\n"
+                    "%s"
+                    "}\n",
+                    num_in, num_in, num_in, flat_test, num_in,
+                    hp_keep ? "  hp_keep();\n" : "");
+            } else
             mstring_append_fmt(output,
                 "vec4 gsPos[%d];\n"
                 "vec4 gsClip[%d];\n"
@@ -728,7 +765,37 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
             /* declared before hp_init, which calls it; flat colours come
              * from one vertex and stay as they are */
             const char *col = state->smooth_shading ? "HP_COLOR" : "HP_FLAT";
-            MString *keep = mstring_from_fmt(
+            MString *keep = per_vertex ? mstring_from_fmt(
+                "vec4 gsvtxD0[%d], gsvtxD1[%d], gsvtxB0[%d], gsvtxB1[%d];\n"
+                "vec4 gsvtxT0[%d], gsvtxT1[%d], gsvtxT2[%d], gsvtxT3[%d];\n"
+                "float gsFog[%d];\n"
+                "#define HP_AT(a, i) (a[i] + st.x * (a[1] - a[0]) + st.y * (a[2] - a[0]))\n"
+                "#define HP_COLOR(a, i) clamp(HP_AT(a, i), 0.0, 1.0)\n"
+                "#define HP_FLAT(a, i) a[i]\n"
+                "void hp_keep() {\n"
+                "  vec2 e1 = v_vtxPos0[1].xy - v_vtxPos0[0].xy;\n"
+                "  vec2 e2 = v_vtxPos0[2].xy - v_vtxPos0[0].xy;\n"
+                "  float det = e1.x * e2.y - e1.y * e2.x;\n"
+                "  for (int i = 0; i < %d; i++) {\n"
+                "    vec2 st = vec2(0.0);\n"
+                "    vec2 m = -v_vtxPos1[i].zw * gsHm[i];\n"
+                "    if (any(notEqual(m, vec2(0.0))) && abs(det) > 1e-6) {\n"
+                "      st = vec2(m.x * e2.y - m.y * e2.x,\n"
+                "                e1.x * m.y - e1.y * m.x) / det;\n"
+                "    }\n"
+                "    gsvtxD0[i] = %s(v_vtxD0, i);\n"
+                "    gsvtxD1[i] = %s(v_vtxD1, i);\n"
+                "    gsvtxB0[i] = %s(v_vtxB0, i);\n"
+                "    gsvtxB1[i] = %s(v_vtxB1, i);\n"
+                "    gsvtxT0[i] = HP_AT(v_vtxT0, i);\n"
+                "    gsvtxT1[i] = HP_AT(v_vtxT1, i);\n"
+                "    gsvtxT2[i] = HP_AT(v_vtxT2, i);\n"
+                "    gsvtxT3[i] = HP_AT(v_vtxT3, i);\n"
+                "    gsFog[i] = HP_AT(v_vtxFog, i);\n"
+                "  }\n"
+                "}\n",
+                num_in, num_in, num_in, num_in, num_in, num_in, num_in,
+                num_in, num_in, num_in, col, col, col, col) : mstring_from_fmt(
                 "vec4 gsvtxD0[%d], gsvtxD1[%d], gsvtxB0[%d], gsvtxB1[%d];\n"
                 "vec4 gsvtxT0[%d], gsvtxT1[%d], gsvtxT2[%d], gsvtxT3[%d];\n"
                 "float gsFog[%d];\n"

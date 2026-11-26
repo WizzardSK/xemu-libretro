@@ -194,6 +194,14 @@ static int xemu_libretro_clamp_textures;
 static int xemu_libretro_half_pixel;
 #endif
 
+bool pgraph_glsl_clamp_additive(PGRAPHState *pg)
+{
+    uint32_t blend = pgraph_reg_r(pg, NV_PGRAPH_BLEND);
+    return (blend & NV_PGRAPH_BLEND_EN) &&
+           GET_MASK(blend, NV_PGRAPH_BLEND_DFACTOR) ==
+               NV_PGRAPH_BLEND_DFACTOR_ONE;
+}
+
 void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
 {
     state->clamp_tex_scale =
@@ -202,6 +210,16 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
     state->clamp_tex_mode = state->clamp_tex_scale ?
                             qatomic_read(&xemu_libretro_clamp_textures) : 0;
     state->clamp_tex_rt = state->clamp_tex_scale ? pg->tex_units_rt : 0;
+    /* "..., Fine, Not Additive" (mode 11): a draw blended additively
+     * (destination factor one: glare, light, fire) is not clamped at all;
+     * bits 4-7 of the mode leave every unit out, as mode 8 does per unit.
+     * Glare over headlights is a flat, unrotated sprite like UI, and read
+     * at 1x centres it came out blocky (GTA San Andreas, TimeSplitters,
+     * NNshi); UI is drawn with ordinary alpha blending or none. */
+    if (state->clamp_tex_scale && state->clamp_tex_mode == 11 &&
+        pgraph_glsl_clamp_additive(pg)) {
+        state->clamp_tex_mode |= 0xf0;
+    }
     {
         enum ShaderPrimitiveMode prim = pg->primitive_mode;
         bool fill = GET_MASK(pgraph_reg_r(pg, NV_PGRAPH_SETUPRASTER),
@@ -2124,7 +2142,8 @@ static MString* psh_convert(struct PixelShader *ps)
                         "            return textureGrad(texSamp%d, t / sz, gx / s, gy / s);\n"
                         "        }\n"
                         "    }\n",
-                        clamp_mode >= 9 ? "        vec2 tf = t;\n" : "",
+                        clamp_mode == 9 || clamp_mode == 10 ?
+                            "        vec2 tf = t;\n" : "",
                         fine ? "512.0" : "64.0", fine ? "512.0" : "64.0",
                         bias, filtered, smooth, i);
                 }

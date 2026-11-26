@@ -149,6 +149,13 @@ bool pgraph_glsl_check_shader_state_dirty(PGRAPHState *pg,
         pg->tex_units_rt != (state->psh.clamp_tex_rt & 0xf)) {
         return true;
     }
+    /* Clamp Textures "..., Not Additive" follows the blend state */
+    if (state->psh.clamp_tex_scale &&
+        (state->psh.clamp_tex_mode & 15) == 11 &&
+        pgraph_glsl_clamp_additive(pg) !=
+            ((state->psh.clamp_tex_mode & 0xf0) == 0xf0)) {
+        return true;
+    }
 
     for (int i = 0; i < 4; i++) {
         if (pgraph_is_reg_dirty(pg, NV_PGRAPH_TEXCTL0_0 + i * 4) ||

@@ -93,7 +93,8 @@ typedef struct PshState {
      * included, takes its texture coordinate at the 1x pixel's centre; 8
      * as 7 without textures that have mipmaps, whose units are bits 4-7; 9
      * as 7 with a scaled draw's four nearest 1x centre reads blended; 10
-     * as 9 with those reads half a texel inside the triangle's texels */
+     * as 9 with those reads half a texel inside the triangle's texels; 11
+     * as 7, but an additively blended draw (bits 4-7 all set) is left out */
     uint8_t clamp_tex_mode;
     /* Half-Pixel Offset "Native Edges, 2D" above 1x, for filled triangles
      * and quads: a flat primitive keeps only the fine pixels of the native
@@ -108,6 +109,7 @@ typedef struct PshState {
 } PshState;
 
 void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state);
+bool pgraph_glsl_clamp_additive(PGRAPHState *pg);
 
 bool pgraph_glsl_psh_dynamic_pending_take(PshState *out);
 void pgraph_glsl_psh_dynamic_ready(const PshState *state);

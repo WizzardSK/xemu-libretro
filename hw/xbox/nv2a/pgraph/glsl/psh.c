@@ -338,6 +338,16 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
             !qatomic_read(&xemu_libretro_texture_nearest)) {
             state->clamp_tex_rt |= 1 << (4 + i);
         }
+        /* Clamp Textures "..., No Mipmaps" (mode 8): bit 4 + n of
+         * clamp_tex_mode, unit n's texture has mipmaps and is left alone.
+         * Glare over headlights and torches is drawn from mipmapped
+         * textures, flat and unrotated, and read at 1x centres it came out
+         * blocky (NNshi). In the mode's free high bits: modes 1-7 keep their
+         * key. */
+        if (state->clamp_tex_scale && (state->clamp_tex_mode & 15) == 8 &&
+            GET_MASK(tex_fmt, NV_PGRAPH_TEXFMT0_MIPMAP_LEVELS) > 1) {
+            state->clamp_tex_mode |= 1 << (4 + i);
+        }
         bool mixed_filter =
             (mag_filter == 1 && min_filter == NV_PGRAPH_TEXFILTER0_MIN_TENT_LOD0) ||
             (mag_filter == 2 && min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_LOD0);
@@ -1928,8 +1938,10 @@ static MString* psh_convert(struct PixelShader *ps)
              * Splinter Cell's LCD grid) keeps repeating. Every other draw samples as
              * the game asks. Off, the shader text is what it was without
              * the option. */
+            const int clamp_mode = ps->state->clamp_tex_mode & 15;
             if (ps->state->clamp_tex_scale &&
                 !(ps->state->clamp_tex_rt & (1 << i)) &&
+                !(ps->state->clamp_tex_mode & (1 << (4 + i))) &&
                 ps->tex_modes[i] == PS_TEXTUREMODES_PROJECT2D &&
                 !ps->state->shadow_map[i] && ps->state->dim_tex[i] == 2 &&
                 !ps->state->tex_cubemap[i] &&
@@ -2029,10 +2041,10 @@ static MString* psh_convert(struct PixelShader *ps)
                  * texel after it, the 1/64 rounding put them on the edge and
                  * the bias before it, and the overlay's bottom line was
                  * gone (NNshi). */
-                if (ps->state->clamp_tex_mode >= 4) {
-                    const bool fine = ps->state->clamp_tex_mode == 7;
+                if (clamp_mode >= 4) {
+                    const bool fine = clamp_mode == 7 || clamp_mode == 8;
                     char filtered[384] = "";
-                    if (ps->state->clamp_tex_mode >= 6) {
+                    if (clamp_mode >= 6) {
                         snprintf(filtered, sizeof(filtered),
                             "        if (one) {\n"
                             "            vec2 blo = floor(tlo + 1.0 / 64.0);\n"
@@ -2065,15 +2077,15 @@ static MString* psh_convert(struct PixelShader *ps)
                         "        }\n"
                         "    }\n",
                         fine ? "512.0" : "64.0", fine ? "512.0" : "64.0",
-                        ps->state->clamp_tex_mode == 5 ?
+                        clamp_mode == 5 ?
                             "+ (vtxPos0.w == 1.0 ? -1.0 : 1.0) / 128.0" :
-                        ps->state->clamp_tex_mode >= 6 &&
+                        clamp_mode >= 6 &&
                             (ps->state->clamp_tex_rt & (1 << (4 + i))) ? "" :
                         fine ? "- 1.0 / 1024.0" : "- 1.0 / 128.0",
                         filtered, i);
                 }
-                if (ps->state->clamp_tex_mode == 2 ||
-                    ps->state->clamp_tex_mode == 3) {
+                if (clamp_mode == 2 ||
+                    clamp_mode == 3) {
                     mstring_append_fmt(preflight,
                         "    vec2 ax = abs(dx), ay = abs(dy);\n"
                         "    bool axis = min(ax.x, ax.y) <= 1e-3 * max(ax.x, ax.y) &&\n"
@@ -2086,7 +2098,7 @@ static MString* psh_convert(struct PixelShader *ps)
                         "        return textureGrad(texSamp%d, uv + gx * o.x + gy * o.y,\n"
                         "                           gx / s, gy / s);\n"
                         "    }\n",
-                        ps->state->clamp_tex_mode == 3 ?
+                        clamp_mode == 3 ?
                             " &&\n        max(length(dx), length(dy)) <= 1.5 * s" : "",
                         i);
                 }
@@ -2096,7 +2108,7 @@ static MString* psh_convert(struct PixelShader *ps)
                     "    vec2 c = one ? (f + 0.5) / sz : uv;\n"
                     "    return textureGrad(texSamp%d, c, dFdx(uv), dFdy(uv));\n"
                     "}\n",
-                    ps->state->clamp_tex_mode >= 4 ?
+                    clamp_mode >= 4 ?
                         "    vec2 flo = floor(tlo + 1.0 / 64.0);\n"
                         "    f = clamp(f, flo, max(ceil(thi - 1.0 / 64.0) - 1.0, flo));\n" :
                         "    f = mix(f, fc, lessThanEqual(abs(f - fc), vec2(1.0)));\n",

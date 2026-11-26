@@ -90,7 +90,8 @@ typedef struct PshState {
      * 3 "Scaled 2D, Low-Res": 2 for textures of at most 1.5 texels per 1x
      * pixel only (not upscaled render targets); 4 "1x Pixel Centres": every
      * axis-aligned draw without perspective (one w), 1:1 and minified
-     * included, takes its texture coordinate at the 1x pixel's centre */
+     * included, takes its texture coordinate at the 1x pixel's centre; 8
+     * as 7 without textures that have mipmaps, whose units are bits 4-7 */
     uint8_t clamp_tex_mode;
     /* Half-Pixel Offset "Native Edges, 2D" above 1x, for filled triangles
      * and quads: a flat primitive keeps only the fine pixels of the native

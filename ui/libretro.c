@@ -2147,7 +2147,8 @@ static void update_variables(void)
                  !strcmp(var.value, "centres_w") ? 5 :
                  !strcmp(var.value, "centres_f") ? 6 :
                  !strcmp(var.value, "centres_ff") ? 7 :
-                 !strcmp(var.value, "centres_nomip") ? 8 : 0;
+                 !strcmp(var.value, "centres_nomip") ? 8 :
+                 !strcmp(var.value, "centres_smooth") ? 9 : 0;
         qatomic_set(&xemu_libretro_clamp_textures, ct);
     }
 

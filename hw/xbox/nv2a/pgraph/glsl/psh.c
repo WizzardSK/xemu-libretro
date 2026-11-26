@@ -2043,8 +2043,40 @@ static MString* psh_convert(struct PixelShader *ps)
                  * texel after it, the 1/64 rounding put them on the edge and
                  * the bias before it, and the overlay's bottom line was
                  * gone (NNshi). */
+                /* 9 "..., Fine, Smooth": as 7, but a draw not at one texel per
+                 * 1x pixel blends the reads at the four 1x pixel centres
+                 * around each fine pixel by its place between them, each
+                 * read as 7 reads it and kept inside the texels the
+                 * triangle spans: the draw as 1x shows it, scaled up
+                 * linearly. Read at its own 1x centre only, a magnified
+                 * texture turned into blocks of N x N fine pixels: glare
+                 * over headlights (GTA San Andreas, TimeSplitters) and
+                 * smooth menus (R: Racing Evolution) (NNshi). */
                 if (clamp_mode >= 4) {
-                    const bool fine = clamp_mode == 7 || clamp_mode == 8;
+                    const bool fine = clamp_mode >= 7;
+                    const char *bias = clamp_mode == 5 ?
+                            "+ (vtxPos0.w == 1.0 ? -1.0 : 1.0) / 128.0" :
+                        clamp_mode >= 6 &&
+                            (ps->state->clamp_tex_rt & (1 << (4 + i))) ? "" :
+                        fine ? "- 1.0 / 1024.0" : "- 1.0 / 128.0";
+                    char smooth[1024] = "";
+                    if (clamp_mode == 9) {
+                        snprintf(smooth, sizeof(smooth),
+                            "        if (!one) {\n"
+                            "            vec2 q = gl_FragCoord.xy * s - 0.5;\n"
+                            "            vec2 b = floor(q), w = q - b;\n"
+                            "            vec4 acc = vec4(0.0);\n"
+                            "            for (int k = 0; k < 4; k++) {\n"
+                            "                vec2 kk = vec2(float(k & 1), float(k >> 1));\n"
+                            "                vec2 oc = (b + kk + 0.5) / s - gl_FragCoord.xy;\n"
+                            "                vec2 tc = clamp(tf + dx * oc.x + dy * oc.y, tlo, thi);\n"
+                            "                tc = round(tc * 512.0) / 512.0 %s;\n"
+                            "                vec2 wk = mix(1.0 - w, w, kk);\n"
+                            "                acc += wk.x * wk.y * textureGrad(texSamp%d, tc / sz, gx / s, gy / s);\n"
+                            "            }\n"
+                            "            return acc;\n"
+                            "        }\n", bias, i);
+                    }
                     char filtered[384] = "";
                     if (clamp_mode >= 6) {
                         snprintf(filtered, sizeof(filtered),
@@ -2072,19 +2104,17 @@ static MString* psh_convert(struct PixelShader *ps)
                         "        tlo = min(min(t0, t1), t2);\n"
                         "        thi = max(max(t0, t1), t2);\n"
                         "        vec2 o = (floor(gl_FragCoord.xy * s) + 0.5) / s - gl_FragCoord.xy;\n"
+                        "%s"
                         "        t = round((t + dx * o.x + dy * o.y) * %s) / %s %s;\n"
+                        "%s"
                         "%s"
                         "        if (!one) {\n"
                         "            return textureGrad(texSamp%d, t / sz, gx / s, gy / s);\n"
                         "        }\n"
                         "    }\n",
+                        clamp_mode == 9 ? "        vec2 tf = t;\n" : "",
                         fine ? "512.0" : "64.0", fine ? "512.0" : "64.0",
-                        clamp_mode == 5 ?
-                            "+ (vtxPos0.w == 1.0 ? -1.0 : 1.0) / 128.0" :
-                        clamp_mode >= 6 &&
-                            (ps->state->clamp_tex_rt & (1 << (4 + i))) ? "" :
-                        fine ? "- 1.0 / 1024.0" : "- 1.0 / 128.0",
-                        filtered, i);
+                        bias, filtered, smooth, i);
                 }
                 if (clamp_mode == 2 ||
                     clamp_mode == 3) {

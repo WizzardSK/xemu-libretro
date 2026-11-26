@@ -244,9 +244,9 @@ void pgraph_glsl_set_vsh_state(PGRAPHState *pg, VshState *vsh)
     if (vsh->half_pixel_shift == 4) {
         vsh->half_pixel_shift = 3;
     }
-    /* Modes 6-13 ("Per Triangle, Content Kept" and the Per Axis ones) too: their geometry shader also
+    /* Modes 6-15 ("Per Triangle, Content Kept" and the Per Axis ones) too: their geometry shader also
      * gives the moved vertices the content of their new place */
-    if (vsh->half_pixel_shift >= 6 && vsh->half_pixel_shift <= 13) {
+    if (vsh->half_pixel_shift >= 6 && vsh->half_pixel_shift <= 15) {
         vsh->half_pixel_shift = 3;
     }
     /* Mode 5 ("Native Edges, 2D") moves nothing: the geometry and pixel

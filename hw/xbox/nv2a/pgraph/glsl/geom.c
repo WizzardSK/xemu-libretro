@@ -70,7 +70,7 @@ static unsigned int draw_vertices(PGRAPHState *pg)
  * it away from where it is at 1x. */
 bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode)
 {
-    if (mode == 3 || (mode >= 6 && mode <= 13)) {
+    if (mode == 3 || (mode >= 6 && mode <= 15)) {
         return true;
     }
     if (mode != 4) {
@@ -118,6 +118,16 @@ int pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
          * read (the rotation test needs real texture coordinates), 10
          * when not, see pgraph_glsl_gen_geom */
         return pgraph_is_texture_enabled(pg, 0) ? 11 : 10;
+    }
+    if (mode == 14) {
+        /* "Per Axis, Flat, Touched Axis, Unrotated 90": 13 with texture 0,
+         * 12 without */
+        return pgraph_is_texture_enabled(pg, 0) ? 13 : 12;
+    }
+    if (mode == 15) {
+        /* "Per Axis, Flat, Touched Axis, Unrotated 90, Whole Pixels Stay":
+         * 15 with texture 0, 14 without */
+        return pgraph_is_texture_enabled(pg, 0) ? 15 : 14;
     }
     return pgraph_glsl_half_pixel_draw(pg, mode) ? 1 : 0;
 }
@@ -534,13 +544,26 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
      * (NNshi); 7's rotation test caught them but also read the leftover
      * texture coordinates of untextured draws (JSRF's letterbox, DW3's
      * dialog boxes). */
-    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 11;
-    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 11;
+    /* "Per Axis, Flat, Touched Axis, Unrotated 90" (half_pixel 12, and 13
+     * with texture 0): as 10/11, but a texture turned by a quarter (u along
+     * y, v along x) counts as straight: KOTOR's name entry outlines map
+     * their corner texture that way and 11 left them unmoved (NNshi); the
+     * minimap's map is turned by any angle, u and v both change along x. */
+    /* "..., Whole Pixels Stay" (half_pixel 14, and 15 with texture 0): as
+     * 12/13, and the touched axis moves only if none of its corners is on a
+     * whole pixel. JSRF's grey bar has one x edge on n.5 and the other on a
+     * whole pixel; Touched Axis moved it in x and it came out short of 1x
+     * (NNshi). GTA San Andreas' health bar has its y edges at 86.5 and
+     * 88.625 and still moves. */
+    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 15;
+    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 15;
     const bool either_axis = state->half_pixel == 6 || state->half_pixel == 7;
-    const bool unrotated = state->half_pixel == 7 || state->half_pixel == 11;
+    const bool quarter_ok = state->half_pixel >= 12 && state->half_pixel <= 15;
+    const bool unrotated = state->half_pixel == 7 || state->half_pixel == 11 ||
+                           state->half_pixel == 13 || state->half_pixel == 15;
     const bool rects = state->half_pixel == 8 || state->half_pixel == 9;
-    const bool touched = state->half_pixel == 9 || state->half_pixel == 10 ||
-                         state->half_pixel == 11;
+    const bool whole_stay = state->half_pixel == 14 || state->half_pixel == 15;
+    const bool touched = state->half_pixel >= 9 && state->half_pixel <= 15;
     const bool hp_keep = (state->half_pixel == 3 || per_axis) && num_in >= 3;
     const char *pos_pre = "gl_in[", *pos_post = "].gl_Position";
     char hp_body[48] = "";
@@ -567,9 +590,35 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                 "      }\n"
                 "    }\n"
                 "  }\n";
+            /* the same, but a quarter turn (only u along y, v along x) is
+             * straight too */
+            const char *rot90_test =
+                "  if (any(hit)) {\n"
+                "    vec2 e1 = v_vtxPos0[1].xy - v_vtxPos0[0].xy;\n"
+                "    vec2 e2 = v_vtxPos0[2].xy - v_vtxPos0[0].xy;\n"
+                "    vec2 f1 = v_vtxT0[1].xy - v_vtxT0[0].xy;\n"
+                "    vec2 f2 = v_vtxT0[2].xy - v_vtxT0[0].xy;\n"
+                "    float det = e1.x * e2.y - e1.y * e2.x;\n"
+                "    if (abs(det) > 1e-6) {\n"
+                "      vec2 tx = (f1 * e2.y - f2 * e1.y) / det;\n"
+                "      vec2 ty = (f2 * e1.x - f1 * e2.x) / det;\n"
+                "      float m = 1e-3 * max(max(abs(tx.x), abs(ty.y)),\n"
+                "                           max(abs(tx.y), abs(ty.x)));\n"
+                "      bool straight = abs(tx.y) <= m && abs(ty.x) <= m;\n"
+                "      bool quarter = abs(tx.x) <= m && abs(ty.y) <= m;\n"
+                "      if (!straight && !quarter) {\n"
+                "        hit = bvec2(false);\n"
+                "      }\n"
+                "    }\n"
+                "  }\n";
             /* touched: the other axis too, with one corner on n.5 there;
              * rects: two corners share x and two share y */
-            char touch_test[512], rect_test[512];
+            char touch_test[1024], rect_test[512], whole_test[256];
+            snprintf(whole_test, sizeof(whole_test),
+                "    for (int i = 0; i < %d; i++) {\n"
+                "      touch = bvec2(touch.x && fract(v_vtxPos0[i].x) != 0.0,\n"
+                "                    touch.y && fract(v_vtxPos0[i].y) != 0.0);\n"
+                "    }\n", num_in);
             snprintf(touch_test, sizeof(touch_test),
                 "  {\n"
                 "    bvec2 touch = bvec2(false);\n"
@@ -577,9 +626,11 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                 "      touch = bvec2(touch.x || fract(v_vtxPos0[i].x) == 0.5,\n"
                 "                    touch.y || fract(v_vtxPos0[i].y) == 0.5);\n"
                 "    }\n"
+                "%s"
                 "    hit = bvec2(hit.x || (hit.y && touch.x),\n"
                 "                hit.y || (hit.x && touch.y));\n"
-                "  }\n", num_in);
+                "  }\n", num_in,
+                whole_stay ? whole_test : "");
             snprintf(rect_test, sizeof(rect_test),
                 "  if (any(hit)) {\n"
                 "    bool sx = false, sy = false;\n"
@@ -600,7 +651,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                      "      hit = bvec2(false);\n"
                      "    }\n"
                      "  }\n%s%s%s%s", num_in,
-                     unrotated && num_in >= 3 ? rot_test : "",
+                     unrotated && num_in >= 3 ? (quarter_ok ? rot90_test : rot_test) : "",
                      either_axis ? "  hit = bvec2(any(hit));\n" : "",
                      touched ? touch_test : "",
                      rects && num_in >= 3 ? rect_test : "");

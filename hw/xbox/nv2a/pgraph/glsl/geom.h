@@ -52,7 +52,11 @@ typedef struct {
      * axis all on n.5 also moves the other one if a corner touches n.5
      * there; 10 "Per Axis, Flat, Touched Axis, Unrotated" for a draw
      * without texture 0, 5 with the touched axis of 9; 11 the same for a
-     * draw with texture 0, which also gets 7's rotation test. Takes the high byte of the old
+     * draw with texture 0, which also gets 7's rotation test; 12/13 "Per Axis,
+     * Flat, Touched Axis, Unrotated 90", as 10/11 with a quarter-turned
+     * texture counted as straight; 14/15 "..., Whole Pixels Stay", as
+     * 12/13, and the touched axis moves only without corners on a whole
+     * pixel. Takes the high byte of the old
      * short tri_rot0 (always 0), so the key keeps its size and old seeds
      * read as off. */
     uint8_t half_pixel;

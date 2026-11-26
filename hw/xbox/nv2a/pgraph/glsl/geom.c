@@ -640,7 +640,8 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                 "        lo = min(lo, v_vtxPos0[i].xy);\n"
                 "        hi = max(hi, v_vtxPos0[i].xy);\n"
                 "      }\n"
-                "      touch = touch && lessThanEqual(hi - lo, vec2(4.0));\n"
+                "      touch = bvec2(touch.x && hi.x - lo.x <= 4.0,\n"
+                "                    touch.y && hi.y - lo.y <= 4.0);\n"
                 "    }\n", num_in);
             snprintf(touch_test, sizeof(touch_test),
                 "  {\n"

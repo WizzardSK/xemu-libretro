@@ -1667,9 +1667,11 @@ static MString* psh_convert(struct PixelShader *ps)
                              * exactly that. */
                             /* the same test as for clampTex's definition
                              * below: a render target has none (the shader
-                             * failed to compile, NNshi) */
+                             * failed to compile, NNshi), nor a mipmapped
+                             * texture in "No Mipmaps" (Burnout 3, NNshi) */
                             if (ps->state->clamp_tex_scale &&
-                                !(ps->state->clamp_tex_rt & (1 << i))) {
+                                !(ps->state->clamp_tex_rt & (1 << i)) &&
+                                !(ps->state->clamp_tex_mode & (1 << (4 + i)))) {
                                 mstring_append_fmt(
                                     vars,
                                     "vec3 tp%d = %s(pT%d.xyw);\n"

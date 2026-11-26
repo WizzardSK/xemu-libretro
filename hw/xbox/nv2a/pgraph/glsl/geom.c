@@ -70,7 +70,7 @@ static unsigned int draw_vertices(PGRAPHState *pg)
  * it away from where it is at 1x. */
 bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode)
 {
-    if (mode == 3 || mode == 6 || mode == 7 || mode == 8) {
+    if (mode == 3 || (mode >= 6 && mode <= 9)) {
         return true;
     }
     if (mode != 4) {
@@ -100,6 +100,9 @@ int pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
     }
     if (mode == 8) {
         return 5;   /* "Per Axis, Flat, Content Kept", see pgraph_glsl_gen_geom */
+    }
+    if (mode == 9) {
+        return 6;   /* "Per Axis, Flat, Either Axis", see pgraph_glsl_gen_geom */
     }
     return pgraph_glsl_half_pixel_draw(pg, mode) ? 1 : 0;
 }
@@ -480,8 +483,16 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
      * moved in that axis while its neighbour didn't, and the crack between
      * them showed as lines in JSRF's shadows and flashes in other games
      * (NNshi). */
-    const bool per_axis = state->half_pixel == 4 || state->half_pixel == 5;
-    const bool per_axis_flat = state->half_pixel == 5;
+    /* "Per Axis, Flat, Either Axis" (half_pixel 6): as 5, but a flat
+     * primitive with all corners on n.5 in one axis is moved in both. GTA
+     * San Andreas' health bar has its x edges on n.5 and its y edges not
+     * (bottom at 88.625): 5 moved it in x only, so it sat half a 1x pixel low
+     * against 1x, and one red part with all y on n.5 moved up out of the
+     * outline (NNshi). With HPO off the whole bar is half a 1x pixel right and
+     * down, so the game expects the offset in both axes. */
+    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 6;
+    const bool per_axis_flat = state->half_pixel == 5 || state->half_pixel == 6;
+    const bool either_axis = state->half_pixel == 6;
     const bool hp_keep = (state->half_pixel == 3 || per_axis) && num_in >= 3;
     const char *pos_pre = "gl_in[", *pos_post = "].gl_Position";
     char hp_body[48] = "";
@@ -489,14 +500,16 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
         pos_pre = "gsClip[";
         pos_post = "]";
         if (per_axis) {
-            /* flat: every corner at the first one's w */
-            char flat_test[192];
+            /* flat: every corner at the first one's w; either axis: one
+             * axis on n.5 moves both */
+            char flat_test[256];
             snprintf(flat_test, sizeof(flat_test),
                      "  for (int i = 1; i < %d; i++) {\n"
                      "    if (v_vtxPos0[i].w != v_vtxPos0[0].w) {\n"
                      "      hit = bvec2(false);\n"
                      "    }\n"
-                     "  }\n", num_in);
+                     "  }\n%s", num_in,
+                     either_axis ? "  hit = bvec2(any(hit));\n" : "");
             mstring_append_fmt(output,
                 "vec4 gsPos[%d];\n"
                 "vec4 gsClip[%d];\n"

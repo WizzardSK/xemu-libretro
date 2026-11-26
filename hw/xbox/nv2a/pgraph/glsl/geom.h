@@ -44,7 +44,8 @@ typedef struct {
      * Triangle, Content Kept", shifted as 1 with texture coordinates, colours
      * and fog taken from the new place (only the edges move); 4 "Per Axis,
      * Content Kept", as 3 with x and y decided each on its own; 5 "Per Axis,
-     * Flat, Content Kept", as 4 for flat primitives only (one w). Takes the high byte of the old
+     * Flat, Content Kept", as 4 for flat primitives only (one w); 6 "Per Axis,
+     * Flat, Either Axis", as 5 but one axis on a half pixel moves both. Takes the high byte of the old
      * short tri_rot0 (always 0), so the key keeps its size and old seeds
      * read as off. */
     uint8_t half_pixel;

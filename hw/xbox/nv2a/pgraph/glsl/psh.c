@@ -216,7 +216,9 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
      * Glare over headlights is a flat, unrotated sprite like UI, and read
      * at 1x centres it came out blocky (GTA San Andreas, TimeSplitters,
      * NNshi); UI is drawn with ordinary alpha blending or none. */
-    if (state->clamp_tex_scale && state->clamp_tex_mode == 11 &&
+    /* "..., Exact, Not Additive" (mode 12) leaves the same draws out. */
+    if (state->clamp_tex_scale &&
+        (state->clamp_tex_mode == 11 || state->clamp_tex_mode == 12) &&
         pgraph_glsl_clamp_additive(pg)) {
         state->clamp_tex_mode |= 0xf0;
     }
@@ -2071,9 +2073,26 @@ static MString* psh_convert(struct PixelShader *ps)
                  * texture turned into blocks of N x N fine pixels: glare
                  * over headlights (GTA San Andreas, TimeSplitters) and
                  * smooth menus (R: Racing Evolution) (NNshi). */
+                /* 12 "..., Exact, Not Additive": as 11, but the 1x centre's
+                 * coordinate is rounded to 1/8192 of a texel and a
+                 * point-sampled read takes the texel it falls in, an exact
+                 * texel edge the texel after it (as floor does), nudged by
+                 * 1/16384 so the host's own nearest rounding cannot tie.
+                 * 1x reads floor(u) at its pixel centre: a corner exactly
+                 * on a texel edge (GV's HUD at u 492.0002 / v 128.0,
+                 * Onimusha's transition screens at 192.0) takes the texel
+                 * after it, KOTOR's glyphs, 1/4096 before the edge
+                 * (95.9997), the one before. 11's 1/512 rounding put KOTOR on
+                 * the edge and its tie bias took the texel before, right for
+                 * KOTOR and one texel off for GV and Onimusha (NNshi's
+                 * captures). Filtered reads get no bias, as in 6. */
                 if (clamp_mode >= 4) {
                     const bool fine = clamp_mode >= 7;
-                    const char *bias = clamp_mode == 5 ?
+                    const bool exact = clamp_mode == 12;
+                    const char *bias = exact ?
+                            ((ps->state->clamp_tex_rt & (1 << (4 + i))) ?
+                                 "" : "+ 1.0 / 16384.0") :
+                        clamp_mode == 5 ?
                             "+ (vtxPos0.w == 1.0 ? -1.0 : 1.0) / 128.0" :
                         clamp_mode >= 6 &&
                             (ps->state->clamp_tex_rt & (1 << (4 + i))) ? "" :
@@ -2145,7 +2164,8 @@ static MString* psh_convert(struct PixelShader *ps)
                         "    }\n",
                         clamp_mode == 9 || clamp_mode == 10 ?
                             "        vec2 tf = t;\n" : "",
-                        fine ? "512.0" : "64.0", fine ? "512.0" : "64.0",
+                        exact ? "8192.0" : fine ? "512.0" : "64.0",
+                        exact ? "8192.0" : fine ? "512.0" : "64.0",
                         bias, filtered, smooth, i);
                 }
                 if (clamp_mode == 2 ||

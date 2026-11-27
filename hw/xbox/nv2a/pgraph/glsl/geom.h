@@ -61,7 +61,8 @@ typedef struct {
      * Unrotated 90", each corner coordinate on n.5 moves on its own, with
      * the flat and rotation tests of 12/13; 20/21 the same for 2D
      * primitives only (each corner where its input put it), n.5 +- 1/16
-     * counting as n.5. Takes the high byte of the old
+     * counting as n.5; 22/23 every corner of such a 2D primitive moves.
+     * Takes the high byte of the old
      * short tri_rot0 (always 0), so the key keeps its size and old seeds
      * read as off. */
     uint8_t half_pixel;

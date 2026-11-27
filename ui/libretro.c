@@ -2133,7 +2133,8 @@ static void update_variables(void)
                  !strcmp(var.value, "axis_touched_whole") ? 15 :
                  !strcmp(var.value, "axis_touched_thin") ? 16 :
                  !strcmp(var.value, "vertex_flat_unrot90") ? 17 :
-                 !strcmp(var.value, "vertex_2d_near") ? 18 : 0;
+                 !strcmp(var.value, "vertex_2d_near") ? 18 :
+                 !strcmp(var.value, "vertex_2d_any") ? 19 : 0;
         qatomic_set(&xemu_libretro_half_pixel, hp);
     }
 

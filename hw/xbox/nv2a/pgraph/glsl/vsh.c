@@ -249,9 +249,10 @@ void pgraph_glsl_set_vsh_state(PGRAPHState *pg, VshState *vsh)
     if (vsh->half_pixel_shift >= 6 && vsh->half_pixel_shift <= 17) {
         vsh->half_pixel_shift = 3;
     }
-    /* Mode 18 ("..., 2D, Near Half Pixel") as 3, and the vertex also hands
-     * its input position to the geometry shader for the 2D test (6) */
-    if (vsh->half_pixel_shift == 18) {
+    /* Modes 18 and 19 ("..., 2D, Near Half Pixel / Any Position") as 3, and
+     * the vertex also hands its input position to the geometry shader for
+     * the 2D test (6) */
+    if (vsh->half_pixel_shift == 18 || vsh->half_pixel_shift == 19) {
         vsh->half_pixel_shift = 6;
     }
     /* Mode 5 ("Native Edges, 2D") moves nothing: the geometry and pixel

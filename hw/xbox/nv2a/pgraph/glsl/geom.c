@@ -70,7 +70,7 @@ static unsigned int draw_vertices(PGRAPHState *pg)
  * it away from where it is at 1x. */
 bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode)
 {
-    if (mode == 3 || (mode >= 6 && mode <= 19)) {
+    if (mode == 3 || (mode >= 6 && mode <= 18)) {
         return true;
     }
     if (mode != 4) {
@@ -141,11 +141,6 @@ int pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
         /* "Per Vertex, Flat, Unrotated 90, 2D, Near Half Pixel": 21 with
          * texture 0, 20 without */
         return pgraph_is_texture_enabled(pg, 0) ? 21 : 20;
-    }
-    if (mode == 19) {
-        /* "Per Vertex, Flat, Unrotated 90, 2D, Any Position": 23 with
-         * texture 0, 22 without */
-        return pgraph_is_texture_enabled(pg, 0) ? 23 : 22;
     }
     return pgraph_glsl_half_pixel_draw(pg, mode) ? 1 : 0;
 }
@@ -598,22 +593,16 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
      * chance, moved in its flat triangles but not in the others beside
      * them, and split open; MM3's "EDIT LICENSE PLATE" text sits on n.4375
      * (NNshi). */
-    /* "..., 2D, Any Position" (half_pixel 22, and 23 with texture 0): as
-     * 20/21, but every corner of such a 2D primitive moves, wherever it is.
-     * Gunvalkyrie draws its HUD at n.0625, never on n.5, and it came out
-     * shifted right and down as the 3D picture is, beside the bars on n.5
-     * that moved (NNshi). */
-    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 23;
-    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 23;
-    const bool per_vertex = state->half_pixel >= 18 && state->half_pixel <= 23;
+    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 21;
+    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 21;
+    const bool per_vertex = state->half_pixel >= 18 && state->half_pixel <= 21;
     const bool twod_near = state->half_pixel == 20 || state->half_pixel == 21;
-    const bool twod_any = state->half_pixel == 22 || state->half_pixel == 23;
     const bool either_axis = state->half_pixel == 6 || state->half_pixel == 7;
-    const bool quarter_ok = state->half_pixel >= 12 && state->half_pixel <= 23;
+    const bool quarter_ok = state->half_pixel >= 12 && state->half_pixel <= 21;
     const bool unrotated = state->half_pixel == 7 || state->half_pixel == 11 ||
                            state->half_pixel == 13 || state->half_pixel == 15 ||
                            state->half_pixel == 17 || state->half_pixel == 19 ||
-                           state->half_pixel == 21 || state->half_pixel == 23;
+                           state->half_pixel == 21;
     const bool rects = state->half_pixel == 8 || state->half_pixel == 9;
     const bool whole_stay = state->half_pixel >= 14 && state->half_pixel <= 17;
     const bool thin = state->half_pixel == 16 || state->half_pixel == 17;
@@ -726,7 +715,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                  * corner where its input put it (v_vtxPos2 carries v0.xy,
                  * vsh.c) */
                 char twod_test[512] = "";
-                if (twod_near || twod_any) {
+                if (twod_near) {
                     snprintf(twod_test, sizeof(twod_test),
                         "  for (int i = 0; i < %d; i++) {\n"
                         "    if (any(greaterThan(abs(v_vtxPos0[i].xy - v_vtxPos2[i].xy), vec2(0.5625)))) {\n"
@@ -751,7 +740,6 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                     "%s"
                     "}\n",
                     num_in, num_in, num_in, flat_test, twod_test, num_in,
-                    twod_any ? "vec2(1.0)" :
                     twod_near ?
                         "vec2(lessThanEqual(abs(fract(v_vtxPos0[i].xy) - 0.5), vec2(0.0625)))" :
                         "vec2(equal(fract(v_vtxPos0[i].xy), vec2(0.5)))",

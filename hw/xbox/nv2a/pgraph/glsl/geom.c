@@ -70,7 +70,7 @@ static unsigned int draw_vertices(PGRAPHState *pg)
  * it away from where it is at 1x. */
 bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode)
 {
-    if (mode == 3 || (mode >= 6 && mode <= 17)) {
+    if (mode == 3 || (mode >= 6 && mode <= 18)) {
         return true;
     }
     if (mode != 4) {
@@ -136,6 +136,11 @@ int pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
     if (mode == 17) {
         /* "Per Vertex, Flat, Unrotated 90": 19 with texture 0, 18 without */
         return pgraph_is_texture_enabled(pg, 0) ? 19 : 18;
+    }
+    if (mode == 18) {
+        /* "Per Vertex, Flat, Unrotated 90, 2D, Near Half Pixel": 21 with
+         * texture 0, 20 without */
+        return pgraph_is_texture_enabled(pg, 0) ? 21 : 20;
     }
     return pgraph_glsl_half_pixel_draw(pg, mode) ? 1 : 0;
 }
@@ -580,14 +585,24 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
      * shared by neighbouring primitives move alike, so no seams open
      * (Panzer Dragoon Orta's clouds). Replaces Touched Axis, Whole Pixels
      * Stay and Thin (NNshi). */
-    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 19;
-    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 19;
-    const bool per_vertex = state->half_pixel == 18 || state->half_pixel == 19;
+    /* "..., 2D, Near Half Pixel" (half_pixel 20, and 21 with texture 0): as
+     * 18/19, but only in a primitive whose corners are all where the input
+     * put them (|pos - v0.xy| <= 0.5625, the "2D Only" test: pre-transformed
+     * 2D, never a transformed 3D model), and a coordinate within 1/16 of
+     * n.5 counts as on it. BGDA's 3D "LOADING" model had corners on n.5 by
+     * chance, moved in its flat triangles but not in the others beside
+     * them, and split open; MM3's "EDIT LICENSE PLATE" text sits on n.4375
+     * (NNshi). */
+    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 21;
+    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 21;
+    const bool per_vertex = state->half_pixel >= 18 && state->half_pixel <= 21;
+    const bool twod_near = state->half_pixel == 20 || state->half_pixel == 21;
     const bool either_axis = state->half_pixel == 6 || state->half_pixel == 7;
-    const bool quarter_ok = state->half_pixel >= 12 && state->half_pixel <= 19;
+    const bool quarter_ok = state->half_pixel >= 12 && state->half_pixel <= 21;
     const bool unrotated = state->half_pixel == 7 || state->half_pixel == 11 ||
                            state->half_pixel == 13 || state->half_pixel == 15 ||
-                           state->half_pixel == 17 || state->half_pixel == 19;
+                           state->half_pixel == 17 || state->half_pixel == 19 ||
+                           state->half_pixel == 21;
     const bool rects = state->half_pixel == 8 || state->half_pixel == 9;
     const bool whole_stay = state->half_pixel >= 14 && state->half_pixel <= 17;
     const bool thin = state->half_pixel == 16 || state->half_pixel == 17;
@@ -696,16 +711,27 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                      rects && num_in >= 3 ? rect_test : "");
             if (per_vertex) {
                 /* hit: the primitive may move (flat, not rotated); each
-                 * corner then moves in the axes it has on n.5 */
+                 * corner then moves in the axes it has on n.5. 2D: every
+                 * corner where its input put it (v_vtxPos2 carries v0.xy,
+                 * vsh.c) */
+                char twod_test[512] = "";
+                if (twod_near) {
+                    snprintf(twod_test, sizeof(twod_test),
+                        "  for (int i = 0; i < %d; i++) {\n"
+                        "    if (any(greaterThan(abs(v_vtxPos0[i].xy - v_vtxPos2[i].xy), vec2(0.5625)))) {\n"
+                        "      hit = bvec2(false);\n"
+                        "    }\n"
+                        "  }\n", num_in);
+                }
                 mstring_append_fmt(output,
                     "vec2 gsHm[%d];\n"
                     "vec4 gsPos[%d];\n"
                     "vec4 gsClip[%d];\n"
                     "void hp_init() {\n"
                     "  bvec2 hit = bvec2(true);\n"
-                    "%s"
+                    "%s%s"
                     "  for (int i = 0; i < %d; i++) {\n"
-                    "    gsHm[i] = vec2(hit) * vec2(equal(fract(v_vtxPos0[i].xy), vec2(0.5)));\n"
+                    "    gsHm[i] = vec2(hit) * %s;\n"
                     "    gsPos[i] = v_vtxPos0[i];\n"
                     "    gsClip[i] = gl_in[i].gl_Position;\n"
                     "    gsPos[i].xy -= v_vtxPos1[i].zw * gsHm[i];\n"
@@ -713,7 +739,10 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                     "  }\n"
                     "%s"
                     "}\n",
-                    num_in, num_in, num_in, flat_test, num_in,
+                    num_in, num_in, num_in, flat_test, twod_test, num_in,
+                    twod_near ?
+                        "vec2(lessThanEqual(abs(fract(v_vtxPos0[i].xy) - 0.5), vec2(0.0625)))" :
+                        "vec2(equal(fract(v_vtxPos0[i].xy), vec2(0.5)))",
                     hp_keep ? "  hp_keep();\n" : "");
             } else
             mstring_append_fmt(output,

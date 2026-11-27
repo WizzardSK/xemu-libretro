@@ -34,110 +34,47 @@ extern int xemu_libretro_half_pixel;
 static int xemu_libretro_half_pixel;
 #endif
 
-/* The vertices the pending draw sends, whichever way it sends them */
-static unsigned int draw_vertices(PGRAPHState *pg)
-{
-    if (pg->draw_arrays_length) {
-        unsigned int n = 0;
-        for (unsigned int i = 0; i < pg->draw_arrays_length; i++) {
-            n += pg->draw_arrays_count[i];
-        }
-        return n;
-    }
-    if (pg->inline_elements_length) {
-        return pg->inline_elements_length;
-    }
-    if (pg->inline_buffer_length) {
-        return pg->inline_buffer_length;
-    }
-    if (pg->inline_array_length) {
-        unsigned int size = 0;
-        for (int i = 0; i < NV2A_VERTEXSHADER_ATTRIBUTES; i++) {
-            if (pg->vertex_attributes[i].count) {
-                size += pgraph_inline_attr_size(&pg->vertex_attributes[i]);
-            }
-        }
-        return size ? pg->inline_array_length * 4 / size : 0;
-    }
-    return 0;
-}
-
-/* Mode 4 narrows mode 3 to the draws NNshi's captures showed needing it: a
- * single quad (at most 4 vertices: a full-screen pass, DW3's menu strips,
- * JSRF's shadow pass) or a draw reading an upscaled surface (WMMT2's car).
- * A batch of quads from normal textures is a sprite list the game already
- * put on the pixel grid (JSRF's HUD, its spray-can count): moving it moved
- * it away from where it is at 1x. */
-bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode)
-{
-    if (mode == 3 || (mode >= 6 && mode <= 17)) {
-        return true;
-    }
-    if (mode != 4) {
-        return false;
-    }
-    if (pg->half_pixel_reads_scaled) {
-        return true;
-    }
-    unsigned int n = draw_vertices(pg);
-    return n > 0 && n <= 4;
-}
-
+/* The HPO options (ui/libretro.c packs them, HPO_SET_*) for the pending
+ * draw: the rotation check only when the draw reads texture 0 (it needs real
+ * texture coordinates; untextured draws carry leftovers, which moved JSRF's
+ * letterbox and DW3's dialog boxes off, NNshi), and "Kept When Linear"
+ * resolved by texture 0's magnification filter. Point sampled, a texel that
+ * fills the 1x pixel beside an edge on n.5 fills half a 1x pixel further
+ * right and down above 1x, so its content has to move with the edge
+ * (Gunvalkyrie's HUD); filtered, texel centres stay where they are at any
+ * scale and moving the content shifts it (JSRF's "00", NNshi). */
 int pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
 {
-    int mode = qatomic_read(&xemu_libretro_half_pixel);
-    if (pg->surface_scale_factor <= 1) {
+    int set = qatomic_read(&xemu_libretro_half_pixel);
+    int strategy = HPO_SET_STRATEGY(set);
+    if (pg->surface_scale_factor <= 1 || !strategy) {
         return 0;
     }
-    if (mode == 5) {
-        return 2;   /* "Native Edges, 2D", see pgraph_glsl_gen_geom */
+    if (strategy == HPO_NATIVE) {
+        return GEOM_HP_NATIVE;  /* see pgraph_glsl_gen_geom */
     }
-    if (mode == 6) {
-        return 3;   /* "Per Triangle, Content Kept", see pgraph_glsl_gen_geom */
+    bool tex0 = pgraph_is_texture_enabled(pg, 0);
+    int b = strategy;
+    if (HPO_SET_FLAT(set)) {
+        b |= GEOM_HP_FLAT;
     }
-    if (mode == 7) {
-        return 4;   /* "Per Axis, Content Kept", see pgraph_glsl_gen_geom */
+    if (strategy == HPO_AXIS) {
+        b |= HPO_SET_AXIS(set) << 3;
     }
-    if (mode == 8) {
-        return 5;   /* "Per Axis, Flat, Content Kept", see pgraph_glsl_gen_geom */
+    if (tex0) {
+        b |= HPO_SET_ROT(set) << 5;
     }
-    if (mode == 9) {
-        return 6;   /* "Per Axis, Flat, Either Axis", see pgraph_glsl_gen_geom */
+    int content = HPO_SET_CONTENT(set);
+    if (content == 2) {
+        /* magnification filter 1 is point sampling, the others filter */
+        content = !tex0 ||
+                  GET_MASK(pgraph_reg_r(pg, NV_PGRAPH_TEXFILTER0),
+                           NV_PGRAPH_TEXFILTER0_MAG) != 1;
     }
-    if (mode == 10) {
-        return 7;   /* "Per Axis, Flat, Either Axis, Unrotated", see pgraph_glsl_gen_geom */
+    if (content) {
+        b |= GEOM_HP_KEEP;
     }
-    if (mode == 11) {
-        return 8;   /* "Per Axis, Flat, Rects", see pgraph_glsl_gen_geom */
-    }
-    if (mode == 12) {
-        return 9;   /* "Per Axis, Flat, Rects, Touched Axis", see pgraph_glsl_gen_geom */
-    }
-    if (mode == 13) {
-        /* "Per Axis, Flat, Touched Axis, Unrotated": 11 when texture 0 is
-         * read (the rotation test needs real texture coordinates), 10
-         * when not, see pgraph_glsl_gen_geom */
-        return pgraph_is_texture_enabled(pg, 0) ? 11 : 10;
-    }
-    if (mode == 14) {
-        /* "Per Axis, Flat, Touched Axis, Unrotated 90": 13 with texture 0,
-         * 12 without */
-        return pgraph_is_texture_enabled(pg, 0) ? 13 : 12;
-    }
-    if (mode == 15) {
-        /* "Per Axis, Flat, Touched Axis, Unrotated 90, Whole Pixels Stay":
-         * 15 with texture 0, 14 without */
-        return pgraph_is_texture_enabled(pg, 0) ? 15 : 14;
-    }
-    if (mode == 16) {
-        /* "..., Whole Pixels Stay, Thin": 17 with texture 0, 16 without */
-        return pgraph_is_texture_enabled(pg, 0) ? 17 : 16;
-    }
-    if (mode == 17) {
-        /* "Per Vertex, Flat, Unrotated 90": 19 with texture 0, 18 without */
-        return pgraph_is_texture_enabled(pg, 0) ? 19 : 18;
-    }
-    return pgraph_glsl_half_pixel_draw(pg, mode) ? 1 : 0;
+    return b;
 }
 
 void pgraph_glsl_set_geom_state(PGRAPHState *pg, GeomState *state)
@@ -480,242 +417,139 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                              "  float gl_PointSize;\n"
                              "};\n\n",
                          layout_in, layout_out,
-                         (state->half_pixel == 1 || state->half_pixel >= 3) ?
+                         GEOM_HP_STRATEGY(state->half_pixel) ?
                              "gsPos" : "v_vtxPos0");
     pgraph_glsl_get_vtx_header(output, opts.vulkan || opts.locations,
                                state->smooth_shading, true, true, true);
     pgraph_glsl_get_vtx_header(output, opts.vulkan || opts.locations,
                                state->smooth_shading, false, false, false);
 
-    /* Half-Pixel Offset "Per Triangle": the vertex shader leaves the
-     * positions unshifted and passes the shift in vtxPos1 (xy: clip space per
-     * unit of w, zw: native pixels; the geometry shader rewrites vtxPos1
-     * anyway). Shifted only when every vertex of the primitive has x and y
-     * on n.5: a screen-aligned quad has all its corners there, a moving 3D
-     * triangle almost never all three at once (NNshi). */
-    /* "Per Triangle, Content Kept" (half_pixel 3) moves the primitive the
-     * same way, and gives each moved vertex the texture coordinates, colours
-     * and fog the primitive had at its new place: only the edges move, every
-     * pixel inside reads what it read unmoved. Moving the content too pulled
-     * textured UI half a 1x pixel up and left of where 1x draws it (JSRF's
-     * HUD), while an untextured bar has only edges to move (JSRF's
-     * letterbox). The values come from the plane through the first three
-     * vertices, in screen space, without perspective: exact for a flat 2D
-     * primitive (one w), which is what the rule catches; a line has no plane
-     * and moves whole. */
-    /* "Per Axis, Content Kept" (half_pixel 4): as 3, but each axis on its
-     * own - a primitive whose corners all have y on n.5 is moved in y, one
-     * whose corners all have x on n.5 in x. Panzer Dragoon Orta's splash
-     * has its top and bottom on y n.5 and its sides elsewhere (the panels
-     * scroll sideways): "Per Triangle" left it, and above its top edge a
-     * strip of what lay under it showed, a white line (NNshi). */
-    /* "Per Axis, Flat, Content Kept" (half_pixel 5): as 4, but only for a
-     * flat primitive, all three corners at one w (2D, UI, full-screen
-     * passes, Orta's splash). A 3D triangle with its corners on one pixel
-     * row or column - shadow volumes along a building's straight edge -
-     * moved in that axis while its neighbour didn't, and the crack between
-     * them showed as lines in JSRF's shadows and flashes in other games
-     * (NNshi). */
-    /* "Per Axis, Flat, Either Axis" (half_pixel 6): as 5, but a flat
-     * primitive with all corners on n.5 in one axis is moved in both. GTA
-     * San Andreas' health bar has its x edges on n.5 and its y edges not
-     * (bottom at 88.625): 5 moved it in x only, so it sat half a 1x pixel low
-     * against 1x, and one red part with all y on n.5 moved up out of the
-     * outline (NNshi). With HPO off the whole bar is half a 1x pixel right and
-     * down, so the game expects the offset in both axes. */
-    /* "Per Axis, Flat, Either Axis, Unrotated" (half_pixel 7): as 6, but
-     * not for a triangle whose texture is mapped rotated (u changing along
-     * y or v along x). GTA San Andreas' minimap is the map texture rotated
-     * onto slivers of a circle; a sliver whose corners happened to have x
-     * on n.5 moved half a 1x pixel left while the circle's mask didn't, and
-     * the map showed as a line beside the circle. "Per Triangle" left it,
-     * as it needs both axes (NNshi). UI, bars and full-screen passes map
-     * their textures straight; untextured ones have nothing to rotate. */
-    /* "Per Axis, Flat, Rects" (half_pixel 8): as 5, but only for a
-     * triangle that is half of an axis-aligned rectangle (two corners
-     * share x, two share y). The rotation test of 7 read texture
-     * coordinates that untextured draws carry as leftovers, and moved
-     * JSRF's letterbox and DW3's dialog boxes off again (NNshi). Bars, UI,
-     * letterboxes and full-screen passes are rectangles; the slivers of
-     * GTA San Andreas' rotating minimap are not. */
-    /* "Per Axis, Flat, Rects, Touched Axis" (half_pixel 9): as 8, and an
-     * axis whose corners are all on n.5 also moves the other axis if at
-     * least one corner is on n.5 there: GTA San Andreas' health bar (x all
-     * n.5, y top 86.5, bottom 88.625). "Either Axis" moved the other axis
-     * with no n.5 corner in it at all, and shifted JSRF's grey bar, the
-     * Breakdown menu and KOTOR's text (NNshi). */
-    /* "Per Axis, Flat, Touched Axis, Unrotated" (half_pixel 10, and 11
-     * for a draw that reads texture 0): as 5 with the touched axis of 9,
-     * and with 7's rotation test, only for a draw that reads texture 0.
-     * GTA San Andreas' minimap is drawn as axis-aligned strips with the
-     * map rotated on them, so 8's rectangle test let them through
-     * (NNshi); 7's rotation test caught them but also read the leftover
-     * texture coordinates of untextured draws (JSRF's letterbox, DW3's
-     * dialog boxes). */
-    /* "Per Axis, Flat, Touched Axis, Unrotated 90" (half_pixel 12, and 13
-     * with texture 0): as 10/11, but a texture turned by a quarter (u along
-     * y, v along x) counts as straight: KOTOR's name entry outlines map
-     * their corner texture that way and 11 left them unmoved (NNshi); the
-     * minimap's map is turned by any angle, u and v both change along x. */
-    /* "..., Whole Pixels Stay" (half_pixel 14, and 15 with texture 0): as
-     * 12/13, and the touched axis moves only if none of its corners is on a
-     * whole pixel. JSRF's grey bar has one x edge on n.5 and the other on a
-     * whole pixel; Touched Axis moved it in x and it came out short of 1x
-     * (NNshi). GTA San Andreas' health bar has its y edges at 86.5 and
-     * 88.625 and still moves. */
-    /* "..., Whole Pixels Stay, Thin" (half_pixel 16, and 17 with texture
-     * 0): as 14/15, and the touched axis moves only for a primitive at most
-     * 4 pixels across in that axis. Panzer Dragoon Orta's scrolling clouds
-     * and GTA San Andreas' growing loading bar have an x edge that slides
-     * through n.5 now and then: on that frame the whole quad moved half a
-     * pixel, a seam travelled across the clouds and a column flickered
-     * beside the bar (NNshi). GTA's health bar is 2.125 pixels tall. */
-    /* "Per Vertex, Flat, Unrotated 90" (half_pixel 18, and 19 with texture
-     * 0): each corner coordinate on n.5 moves on its own, the rest stay;
-     * flat and rotation tests as 12/13, content kept per corner. At 1x an
-     * edge on n.5 covers the pixel beside it up to the whole pixel line, so
-     * moving that edge, and only that one, gives the 1x coverage: one edge
-     * of a bar on n.5 and the other not (JSRF's grey bar, GTA San Andreas'
-     * health and loading bars, the letterboxes of MM3 and DW3). Corners
-     * shared by neighbouring primitives move alike, so no seams open
-     * (Panzer Dragoon Orta's clouds). Replaces Touched Axis, Whole Pixels
-     * Stay and Thin (NNshi). */
-    const bool per_axis = state->half_pixel >= 4 && state->half_pixel <= 19;
-    const bool per_axis_flat = state->half_pixel >= 5 && state->half_pixel <= 19;
-    const bool per_vertex = state->half_pixel == 18 || state->half_pixel == 19;
-    const bool either_axis = state->half_pixel == 6 || state->half_pixel == 7;
-    const bool quarter_ok = state->half_pixel >= 12 && state->half_pixel <= 19;
-    const bool unrotated = state->half_pixel == 7 || state->half_pixel == 11 ||
-                           state->half_pixel == 13 || state->half_pixel == 15 ||
-                           state->half_pixel == 17 || state->half_pixel == 19;
-    const bool rects = state->half_pixel == 8 || state->half_pixel == 9;
-    const bool whole_stay = state->half_pixel >= 14 && state->half_pixel <= 17;
-    const bool thin = state->half_pixel == 16 || state->half_pixel == 17;
-    const bool touched = state->half_pixel >= 9 && state->half_pixel <= 17;
-    const bool hp_keep = (state->half_pixel == 3 || per_axis) && num_in >= 3;
+    /* Half-Pixel Offset (GEOM_HP_*): the vertex shader leaves the positions
+     * unshifted and passes the shift in vtxPos1 (xy: clip space per unit of
+     * w, zw: native pixels; the geometry shader rewrites vtxPos1 anyway),
+     * and hp_init() decides here which corners move, in which axes:
+     * - Per Triangle: the primitive moves only when every corner has x and y
+     *   on n.5. A screen-aligned quad has all its corners there, a moving 3D
+     *   triangle almost never all three at once (NNshi).
+     * - Per Axis: each axis on its own: corners all with y on n.5 move in y,
+     *   all with x on n.5 in x. Panzer Dragoon Orta's splash has its top and
+     *   bottom on n.5 and its sides elsewhere (NNshi). Axis "Either": one
+     *   axis on n.5 moves both (GTA San Andreas' health bar, whose sides are
+     *   on n.5 and its bottom at 88.625); "Touched": an axis all on n.5 also
+     *   moves the other one if a corner is on n.5 there ("Either" shifted
+     *   JSRF's grey bar, the Breakdown menu and KOTOR's text, NNshi).
+     * - Per Vertex: each corner coordinate on n.5 moves on its own. At 1x an
+     *   edge on n.5 covers the pixel beside it up to the pixel line, so
+     *   moving that edge, and only that one, gives the 1x coverage (JSRF's
+     *   grey bar); corners shared by neighbours move alike, so no seams open
+     *   (Orta's clouds, NNshi).
+     * Flat check: only primitives with every corner at the first one's w (2D,
+     * UI, full-screen passes): 3D shadow volumes along a straight edge moved
+     * in one axis while their neighbours didn't, and the cracks showed in
+     * JSRF's shadows (NNshi). Rotation check: not a primitive whose texture
+     * is mapped rotated, u changing along y or v along x (GTA San Andreas'
+     * minimap, the map rotated onto slivers of a circle); "Only 90" counts a
+     * quarter turn as straight (KOTOR's name entry outlines, NNshi).
+     * Content kept: each moved corner takes the texture coordinates, colours
+     * and fog the primitive had at its new place, from the plane through the
+     * first three corners in screen space (exact for a flat primitive, one
+     * w); only the edges move. A line has no plane and moves whole. */
+    const int hp_strategy = GEOM_HP_STRATEGY(state->half_pixel);
+    const bool per_vertex = hp_strategy == HPO_VERTEX;
+    const bool hp_flat = state->half_pixel & GEOM_HP_FLAT;
+    const int hp_axis = hp_strategy == HPO_AXIS ?
+                        GEOM_HP_AXIS(state->half_pixel) : 0;
+    const int hp_rot = GEOM_HP_ROT(state->half_pixel);
+    const bool hp_keep = hp_strategy && (state->half_pixel & GEOM_HP_KEEP) &&
+                         num_in >= 3;
     const char *pos_pre = "gl_in[", *pos_post = "].gl_Position";
     char hp_body[48] = "";
-    if (state->half_pixel == 1 || state->half_pixel >= 3) {
+    if (hp_strategy) {
         pos_pre = "gsClip[";
         pos_post = "]";
-        if (per_axis) {
-            /* flat: every corner at the first one's w; either axis: one
-             * axis on n.5 moves both; unrotated: dT0/dx has no v and
-             * dT0/dy no u (the plane through the three corners) */
-            const char *rot_test =
-                "  if (any(hit)) {\n"
-                "    vec2 e1 = v_vtxPos0[1].xy - v_vtxPos0[0].xy;\n"
-                "    vec2 e2 = v_vtxPos0[2].xy - v_vtxPos0[0].xy;\n"
-                "    vec2 f1 = v_vtxT0[1].xy - v_vtxT0[0].xy;\n"
-                "    vec2 f2 = v_vtxT0[2].xy - v_vtxT0[0].xy;\n"
-                "    float det = e1.x * e2.y - e1.y * e2.x;\n"
-                "    if (abs(det) > 1e-6) {\n"
-                "      vec2 tx = (f1 * e2.y - f2 * e1.y) / det;\n"
-                "      vec2 ty = (f2 * e1.x - f1 * e2.x) / det;\n"
-                "      float m = 1e-3 * max(abs(tx.x), abs(ty.y));\n"
-                "      if (abs(tx.y) > m || abs(ty.x) > m) {\n"
-                "        hit = bvec2(false);\n"
-                "      }\n"
-                "    }\n"
-                "  }\n";
-            /* the same, but a quarter turn (only u along y, v along x) is
-             * straight too */
-            const char *rot90_test =
-                "  if (any(hit)) {\n"
-                "    vec2 e1 = v_vtxPos0[1].xy - v_vtxPos0[0].xy;\n"
-                "    vec2 e2 = v_vtxPos0[2].xy - v_vtxPos0[0].xy;\n"
-                "    vec2 f1 = v_vtxT0[1].xy - v_vtxT0[0].xy;\n"
-                "    vec2 f2 = v_vtxT0[2].xy - v_vtxT0[0].xy;\n"
-                "    float det = e1.x * e2.y - e1.y * e2.x;\n"
-                "    if (abs(det) > 1e-6) {\n"
-                "      vec2 tx = (f1 * e2.y - f2 * e1.y) / det;\n"
-                "      vec2 ty = (f2 * e1.x - f1 * e2.x) / det;\n"
-                "      float m = 1e-3 * max(max(abs(tx.x), abs(ty.y)),\n"
-                "                           max(abs(tx.y), abs(ty.x)));\n"
-                "      bool straight = abs(tx.y) <= m && abs(ty.x) <= m;\n"
-                "      bool quarter = abs(tx.x) <= m && abs(ty.y) <= m;\n"
-                "      if (!straight && !quarter) {\n"
-                "        hit = bvec2(false);\n"
-                "      }\n"
-                "    }\n"
-                "  }\n";
-            /* touched: the other axis too, with one corner on n.5 there;
-             * rects: two corners share x and two share y */
-            char touch_test[1536], rect_test[512], whole_test[256];
-            char thin_test[512];
-            snprintf(whole_test, sizeof(whole_test),
-                "    for (int i = 0; i < %d; i++) {\n"
-                "      touch = bvec2(touch.x && fract(v_vtxPos0[i].x) != 0.0,\n"
-                "                    touch.y && fract(v_vtxPos0[i].y) != 0.0);\n"
-                "    }\n", num_in);
-            snprintf(thin_test, sizeof(thin_test),
-                "    {\n"
-                "      vec2 lo = v_vtxPos0[0].xy, hi = lo;\n"
-                "      for (int i = 1; i < %d; i++) {\n"
-                "        lo = min(lo, v_vtxPos0[i].xy);\n"
-                "        hi = max(hi, v_vtxPos0[i].xy);\n"
-                "      }\n"
-                "      touch = bvec2(touch.x && hi.x - lo.x <= 4.0,\n"
-                "                    touch.y && hi.y - lo.y <= 4.0);\n"
-                "    }\n", num_in);
-            snprintf(touch_test, sizeof(touch_test),
-                "  {\n"
-                "    bvec2 touch = bvec2(false);\n"
-                "    for (int i = 0; i < %d; i++) {\n"
-                "      touch = bvec2(touch.x || fract(v_vtxPos0[i].x) == 0.5,\n"
-                "                    touch.y || fract(v_vtxPos0[i].y) == 0.5);\n"
-                "    }\n"
-                "%s%s"
-                "    hit = bvec2(hit.x || (hit.y && touch.x),\n"
-                "                hit.y || (hit.x && touch.y));\n"
-                "  }\n", num_in,
-                whole_stay ? whole_test : "", thin ? thin_test : "");
-            snprintf(rect_test, sizeof(rect_test),
-                "  if (any(hit)) {\n"
-                "    bool sx = false, sy = false;\n"
-                "    for (int i = 0; i < %d; i++) {\n"
-                "      for (int j = i + 1; j < %d; j++) {\n"
-                "        sx = sx || v_vtxPos0[i].x == v_vtxPos0[j].x;\n"
-                "        sy = sy || v_vtxPos0[i].y == v_vtxPos0[j].y;\n"
-                "      }\n"
-                "    }\n"
-                "    if (!(sx && sy)) {\n"
-                "      hit = bvec2(false);\n"
-                "    }\n"
-                "  }\n", num_in, num_in);
-            char flat_test[3072];
-            snprintf(flat_test, sizeof(flat_test),
-                     "  for (int i = 1; i < %d; i++) {\n"
-                     "    if (v_vtxPos0[i].w != v_vtxPos0[0].w) {\n"
-                     "      hit = bvec2(false);\n"
-                     "    }\n"
-                     "  }\n%s%s%s%s", num_in,
-                     unrotated && num_in >= 3 ? (quarter_ok ? rot90_test : rot_test) : "",
-                     either_axis ? "  hit = bvec2(any(hit));\n" : "",
-                     touched ? touch_test : "",
-                     rects && num_in >= 3 ? rect_test : "");
-            if (per_vertex) {
-                /* hit: the primitive may move (flat, not rotated); each
-                 * corner then moves in the axes it has on n.5 */
-                mstring_append_fmt(output,
-                    "vec2 gsHm[%d];\n"
-                    "vec4 gsPos[%d];\n"
-                    "vec4 gsClip[%d];\n"
-                    "void hp_init() {\n"
-                    "  bvec2 hit = bvec2(true);\n"
-                    "%s"
-                    "  for (int i = 0; i < %d; i++) {\n"
-                    "    gsHm[i] = vec2(hit) * vec2(equal(fract(v_vtxPos0[i].xy), vec2(0.5)));\n"
-                    "    gsPos[i] = v_vtxPos0[i];\n"
-                    "    gsClip[i] = gl_in[i].gl_Position;\n"
-                    "    gsPos[i].xy -= v_vtxPos1[i].zw * gsHm[i];\n"
-                    "    gsClip[i].xy -= v_vtxPos1[i].xy * gsClip[i].w * gsHm[i];\n"
-                    "  }\n"
-                    "%s"
-                    "}\n",
-                    num_in, num_in, num_in, flat_test, num_in,
-                    hp_keep ? "  hp_keep();\n" : "");
-            } else
+        /* dT0/dx has no v and dT0/dy no u (the plane through the corners) */
+        const char *rot_test =
+            "  if (any(hit)) {\n"
+            "    vec2 e1 = v_vtxPos0[1].xy - v_vtxPos0[0].xy;\n"
+            "    vec2 e2 = v_vtxPos0[2].xy - v_vtxPos0[0].xy;\n"
+            "    vec2 f1 = v_vtxT0[1].xy - v_vtxT0[0].xy;\n"
+            "    vec2 f2 = v_vtxT0[2].xy - v_vtxT0[0].xy;\n"
+            "    float det = e1.x * e2.y - e1.y * e2.x;\n"
+            "    if (abs(det) > 1e-6) {\n"
+            "      vec2 tx = (f1 * e2.y - f2 * e1.y) / det;\n"
+            "      vec2 ty = (f2 * e1.x - f1 * e2.x) / det;\n"
+            "      float m = 1e-3 * max(abs(tx.x), abs(ty.y));\n"
+            "      if (abs(tx.y) > m || abs(ty.x) > m) {\n"
+            "        hit = bvec2(false);\n"
+            "      }\n"
+            "    }\n"
+            "  }\n";
+        /* the same, but a quarter turn (only u along y, v along x) is
+         * straight too */
+        const char *rot90_test =
+            "  if (any(hit)) {\n"
+            "    vec2 e1 = v_vtxPos0[1].xy - v_vtxPos0[0].xy;\n"
+            "    vec2 e2 = v_vtxPos0[2].xy - v_vtxPos0[0].xy;\n"
+            "    vec2 f1 = v_vtxT0[1].xy - v_vtxT0[0].xy;\n"
+            "    vec2 f2 = v_vtxT0[2].xy - v_vtxT0[0].xy;\n"
+            "    float det = e1.x * e2.y - e1.y * e2.x;\n"
+            "    if (abs(det) > 1e-6) {\n"
+            "      vec2 tx = (f1 * e2.y - f2 * e1.y) / det;\n"
+            "      vec2 ty = (f2 * e1.x - f1 * e2.x) / det;\n"
+            "      float m = 1e-3 * max(max(abs(tx.x), abs(ty.y)),\n"
+            "                           max(abs(tx.y), abs(ty.x)));\n"
+            "      bool straight = abs(tx.y) <= m && abs(ty.x) <= m;\n"
+            "      bool quarter = abs(tx.x) <= m && abs(ty.y) <= m;\n"
+            "      if (!straight && !quarter) {\n"
+            "        hit = bvec2(false);\n"
+            "      }\n"
+            "    }\n"
+            "  }\n";
+        char flat_test[256], touch_test[512], tests[2048];
+        snprintf(flat_test, sizeof(flat_test),
+            "  for (int i = 1; i < %d; i++) {\n"
+            "    if (v_vtxPos0[i].w != v_vtxPos0[0].w) {\n"
+            "      hit = bvec2(false);\n"
+            "    }\n"
+            "  }\n", num_in);
+        snprintf(touch_test, sizeof(touch_test),
+            "  {\n"
+            "    bvec2 touch = bvec2(false);\n"
+            "    for (int i = 0; i < %d; i++) {\n"
+            "      touch = bvec2(touch.x || fract(v_vtxPos0[i].x) == 0.5,\n"
+            "                    touch.y || fract(v_vtxPos0[i].y) == 0.5);\n"
+            "    }\n"
+            "    hit = bvec2(hit.x || (hit.y && touch.x),\n"
+            "                hit.y || (hit.x && touch.y));\n"
+            "  }\n", num_in);
+        snprintf(tests, sizeof(tests), "%s%s%s%s",
+                 hp_flat ? flat_test : "",
+                 hp_rot && num_in >= 3 ?
+                     (hp_rot == 2 ? rot90_test : rot_test) : "",
+                 hp_axis == 1 ? "  hit = bvec2(any(hit));\n" : "",
+                 hp_axis == 2 ? touch_test : "");
+        if (per_vertex) {
+            /* hit: the primitive may move (flat, not rotated); each corner
+             * then moves in the axes it has on n.5 */
+            mstring_append_fmt(output,
+                "vec2 gsHm[%d];\n"
+                "vec4 gsPos[%d];\n"
+                "vec4 gsClip[%d];\n"
+                "void hp_init() {\n"
+                "  bvec2 hit = bvec2(true);\n"
+                "%s"
+                "  for (int i = 0; i < %d; i++) {\n"
+                "    gsHm[i] = vec2(hit) * vec2(equal(fract(v_vtxPos0[i].xy), vec2(0.5)));\n"
+                "    gsPos[i] = v_vtxPos0[i];\n"
+                "    gsClip[i] = gl_in[i].gl_Position;\n"
+                "    gsPos[i].xy -= v_vtxPos1[i].zw * gsHm[i];\n"
+                "    gsClip[i].xy -= v_vtxPos1[i].xy * gsClip[i].w * gsHm[i];\n"
+                "  }\n"
+                "%s"
+                "}\n",
+                num_in, num_in, num_in, tests, num_in,
+                hp_keep ? "  hp_keep();\n" : "");
+        } else {
             mstring_append_fmt(output,
                 "vec4 gsPos[%d];\n"
                 "vec4 gsClip[%d];\n"
@@ -725,6 +559,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                 "    hit = bvec2(hit.x && fract(v_vtxPos0[i].x) == 0.5,\n"
                 "                hit.y && fract(v_vtxPos0[i].y) == 0.5);\n"
                 "  }\n"
+                "%s"
                 "%s"
                 "  vec2 hm = vec2(hit);\n"
                 "  for (int i = 0; i < %d; i++) {\n"
@@ -736,30 +571,9 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                 "%s"
                 "}\n",
                 num_in, num_in, num_in,
-                per_axis_flat ? flat_test : "",
-                num_in,
+                hp_strategy == HPO_TRIANGLE ? "  hit = bvec2(all(hit));\n" : "",
+                tests, num_in,
                 hp_keep ? "  hp_keep(hm);\n" : "");
-        } else {
-            mstring_append_fmt(output,
-                "vec4 gsPos[%d];\n"
-                "vec4 gsClip[%d];\n"
-                "void hp_init() {\n"
-                "  bool hit = true;\n"
-                "  for (int i = 0; i < %d; i++) {\n"
-                "    hit = hit && all(equal(fract(v_vtxPos0[i].xy), vec2(0.5)));\n"
-                "  }\n"
-                "  for (int i = 0; i < %d; i++) {\n"
-                "    gsPos[i] = v_vtxPos0[i];\n"
-                "    gsClip[i] = gl_in[i].gl_Position;\n"
-                "    if (hit) {\n"
-                "      gsPos[i].xy -= v_vtxPos1[i].zw;\n"
-                "      gsClip[i].xy -= v_vtxPos1[i].xy * gsClip[i].w;\n"
-                "    }\n"
-                "  }\n"
-                "%s"
-                "}\n",
-                num_in, num_in, num_in, num_in,
-                hp_keep ? "  hp_keep(hit);\n" : "");
         }
         if (hp_keep) {
             /* declared before hp_init, which calls it; flat colours come
@@ -828,9 +642,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
                 "}\n",
                 num_in, num_in, num_in, num_in, num_in, num_in, num_in,
                 num_in, num_in,
-                per_axis ? "vec2 hm" : "bool hit",
-                per_axis ? "any(notEqual(hm, vec2(0.0)))" : "hit",
-                per_axis ? " * hm" : "",
+                "vec2 hm", "any(notEqual(hm, vec2(0.0)))", " * hm",
                 num_in, col, col, col, col);
             /* hp_init was just appended: put hp_keep in front of it */
             const char *all = mstring_get_str(output);
@@ -956,7 +768,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
         }
     }
 
-    /* "Native Edges, 2D" (half_pixel 2): a flat filled triangle (one z and
+    /* "Native Edges" (GEOM_HP_NATIVE): a flat filled triangle (one z and
      * w at all corners: UI, 2D) is grown by half a native pixel on every
      * side, its outputs extrapolated to the new corners (linear: one w), so
      * that every fine pixel of a native pixel whose centre lies inside is
@@ -966,7 +778,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
      * native pixel uncovered (JSRF's letterbox, NNshi). Nothing moves: the
      * texture stays where the geometry puts it. */
     char *native_body = NULL;
-    if (state->half_pixel == 2 && strstr(body, "emit_vertex(")) {
+    if (state->half_pixel == GEOM_HP_NATIVE && strstr(body, "emit_vertex(")) {
         native_body = native_edges_body(body);
         body = native_body;
         /* colours as emit_vertex takes them: interpolated, or the provoking

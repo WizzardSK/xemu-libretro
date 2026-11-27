@@ -237,30 +237,17 @@ void pgraph_glsl_set_vsh_state(PGRAPHState *pg, VshState *vsh)
     }
 
     vsh->is_fixed_function = fixed_function;
-    vsh->half_pixel_shift = pg->surface_scale_factor > 1 ?
-                            qatomic_read(&xemu_libretro_half_pixel) : 0;
-    /* Mode 4 ("Per Triangle, Quads / Render Targets") shares mode 3's vertex
-     * shader; the geometry shader state decides which draws move (geom.c) */
-    if (vsh->half_pixel_shift == 4) {
-        vsh->half_pixel_shift = 3;
-    }
-    /* Modes 6-17 ("Per Triangle, Content Kept" and the Per Axis ones) too: their geometry shader also
-     * gives the moved vertices the content of their new place */
-    if (vsh->half_pixel_shift >= 6 && vsh->half_pixel_shift <= 17) {
-        vsh->half_pixel_shift = 3;
-    }
-    /* Mode 5 ("Native Edges, 2D") moves nothing: the geometry and pixel
-     * shaders reproduce the 1x coverage instead */
-    if (vsh->half_pixel_shift == 5) {
-        vsh->half_pixel_shift = 0;
-    }
-    /* "Per Triangle" needs the geometry shader, which points don't get:
-     * a point is its own primitive, so the per-vertex rule is the same -
-     * in mode 4 only for a draw that qualifies. */
-    if (vsh->half_pixel_shift == 3 &&
-        pg->primitive_mode == PRIM_TYPE_POINTS) {
-        vsh->half_pixel_shift = pgraph_glsl_half_pixel_draw(pg,
-            qatomic_read(&xemu_libretro_half_pixel)) ? 1 : 0;
+    /* HPO Strategy Per Triangle, Per Axis and Per Vertex: the vertex shader
+     * passes the shift, the geometry shader decides what moves (geom.c).
+     * Native Edges moves nothing: the geometry and pixel shaders reproduce
+     * the 1x coverage instead. Points get no geometry shader: a point is
+     * its own primitive, moved when both its coordinates are on n.5. */
+    {
+        int strategy = pg->surface_scale_factor > 1 ?
+            HPO_SET_STRATEGY(qatomic_read(&xemu_libretro_half_pixel)) : 0;
+        vsh->half_pixel_shift =
+            strategy < HPO_TRIANGLE || strategy > HPO_VERTEX ? 0 :
+            pg->primitive_mode == PRIM_TYPE_POINTS ? 1 : 3;
     }
     if (fixed_function) {
         set_fixed_function_vsh_state(pg, &vsh->fixed_function);
@@ -425,12 +412,10 @@ MString *pgraph_glsl_gen_vsh(const VshState *state, GenVshGlslOptions opts)
      * moved by D3D's half-pixel offset (screen-aligned quads: UI,
      * post-process passes, render-target copies). It is moved as Subpixel
      * Offset Scaling moves the whole picture, so its edges and texture reads
-     * line up as at 1x. 1 "x and y": both coordinates on n.5 (one alone hit
-     * moving 3D vertices: flicker, wobble). 2 "2D only": also the vertex left
-     * where its input put it (|pos - v0.xy| <= 0.5): a pre-transformed
-     * quad, never a transformed 3D vertex. 3 "per triangle": the vertex
-     * stays where it is and passes the shift in vtxPos1; the geometry shader
-     * moves the primitive only when all its vertices are on n.5 (geom.c).
+     * line up as at 1x. 1 (points): moved when both coordinates are on
+     * n.5. 3 (other primitives): the vertex stays where it is and passes
+     * the shift in vtxPos1; the geometry shader decides what moves (the HPO
+     * options, geom.c).
      * Off, the shader text is what it was without the option (NNshi). */
     if (state->half_pixel_shift == 3) {
         mstring_append(header,
@@ -438,15 +423,13 @@ MString *pgraph_glsl_gen_vsh(const VshState *state, GenVshGlslOptions opts)
             "  return vec2((0.5 * (pointScale - 1.0) + 0.25) / pointScale);\n"
             "}\n");
     } else if (state->half_pixel_shift) {
-        mstring_append_fmt(header,
+        mstring_append(header,
             "vec2 halfPixelShift(vec2 pos, vec2 inPos) {\n"
             "  vec2 d = vec2((0.5 * (pointScale - 1.0) + 0.25) / pointScale);\n"
-            "  bool hit = all(equal(fract(pos), vec2(0.5)))%s;\n"
+            "  bool hit = all(equal(fract(pos), vec2(0.5)));\n"
             "  return hit ? pos - d : pos;\n"
             "}\n"
-            "#define roundScreenCoords(p) halfPixelShift(roundScreenCoords(p), v0.xy)\n",
-            state->half_pixel_shift == 2 ?
-                " &&\n      all(lessThanEqual(abs(pos - inPos), vec2(0.5625)))" : "");
+            "#define roundScreenCoords(p) halfPixelShift(roundScreenCoords(p), v0.xy)\n");
     }
 
     pgraph_glsl_get_vtx_header(header, opts.vulkan || opts.locations,

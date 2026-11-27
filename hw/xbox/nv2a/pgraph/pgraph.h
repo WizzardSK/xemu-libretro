@@ -338,12 +338,9 @@ typedef struct PGRAPHState {
     /* The scale of the render target being drawn (Vulkan: the bound
      * target's own scale, see surface_scale_base) */
     unsigned int surface_scale_factor;
-    /* Half-Pixel Offset "Per Triangle, Quads / Render Targets": a bound
-     * texture of the next draw is an upscaled surface (set by the renderer
-     * with its textures, before the shaders) */
-    bool half_pixel_reads_scaled;
     /* Clamp Textures: bit n, texture unit n of the next draw reads a render
-     * target, at any scale (set with half_pixel_reads_scaled) */
+     * target, at any scale (set by the renderer with its textures, before
+     * the shaders) */
     uint8_t tex_units_rt;
     /* Vulkan: the configured internal resolution, and the size up to which
      * a render target (its larger side) is drawn at 1x instead (0 = off) */

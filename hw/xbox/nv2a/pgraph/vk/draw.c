@@ -1886,15 +1886,10 @@ static void create_pipeline(PGRAPHState *pg)
     PGRAPHVkState *r = pg->vk_renderer_state;
 
     pgraph_vk_bind_textures(d);
-    /* Half-Pixel Offset mode 4 moves draws that read an upscaled surface */
-    pg->half_pixel_reads_scaled = false;
     pg->tex_units_rt = 0;
     for (int i = 0; i < NV2A_MAX_TEXTURES; i++) {
         if (!pgraph_is_texture_enabled(pg, i) || !r->texture_bindings[i]) {
             continue;
-        }
-        if (r->texture_bindings[i]->key.scale > 1) {
-            pg->half_pixel_reads_scaled = true;
         }
         if (r->texture_bindings[i]->from_surface) {
             pg->tex_units_rt |= 1 << i;

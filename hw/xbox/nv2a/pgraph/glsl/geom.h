@@ -37,34 +37,34 @@ typedef struct {
      * padding byte: the key keeps its size and every recorded seed. */
     bool wide_lines;
     int8_t tri_rot0;
-    /* Half-Pixel Offset: 1 "Per Triangle", the primitive is shifted only
-     * when all its vertices are on a half pixel; 2 "Native Edges, 2D", a flat
-     * filled primitive is grown by half a native pixel (the pixel shader
-     * keeps the fine pixels of native pixels whose centre is inside); 3 "Per
-     * Triangle, Content Kept", shifted as 1 with texture coordinates, colours
-     * and fog taken from the new place (only the edges move); 4 "Per Axis,
-     * Content Kept", as 3 with x and y decided each on its own; 5 "Per Axis,
-     * Flat, Content Kept", as 4 for flat primitives only (one w); 6 "Per Axis,
-     * Flat, Either Axis", as 5 but one axis on a half pixel moves both; 7 "Per
-     * Axis, Flat, Either Axis, Unrotated", as 6 but not for a texture mapped
-     * rotated; 8 "Per Axis, Flat, Rects", as 5 for halves of axis-aligned
-     * rectangles only; 9 "Per Axis, Flat, Rects, Touched Axis", as 8 and an
-     * axis all on n.5 also moves the other one if a corner touches n.5
-     * there; 10 "Per Axis, Flat, Touched Axis, Unrotated" for a draw
-     * without texture 0, 5 with the touched axis of 9; 11 the same for a
-     * draw with texture 0, which also gets 7's rotation test; 12/13 "Per Axis,
-     * Flat, Touched Axis, Unrotated 90", as 10/11 with a quarter-turned
-     * texture counted as straight; 14/15 "..., Whole Pixels Stay", as
-     * 12/13, and the touched axis moves only without corners on a whole
-     * pixel; 16/17 "..., Thin", as 14/15 and the touched axis only for a
-     * primitive at most 4 pixels across in it; 18/19 "Per Vertex, Flat,
-     * Unrotated 90", each corner coordinate on n.5 moves on its own, with
-     * the flat and rotation tests of 12/13. Takes the high byte of the old
-     * short tri_rot0 (always 0), so the key keeps its size and old seeds
-     * read as off. */
+    /* Half-Pixel Offset for this draw (GEOM_HP_*), 0 off: the HPO options
+     * resolved for the draw's texture 0 (its rotation check and, for "Kept
+     * When Linear", its filter). Takes the high byte of the old short
+     * tri_rot0 (always 0), so the key keeps its size and old seeds read as
+     * off. */
     uint8_t half_pixel;
     short tri_rot1;
 } GeomState;
+
+/* xemu_libretro_half_pixel: the HPO options as ui/libretro.c packs them,
+ * 0 off */
+#define HPO_SET_STRATEGY(s) ((s) & 7)   /* HPO_TRIANGLE ... HPO_NATIVE */
+#define HPO_SET_FLAT(s)     (((s) >> 3) & 1)
+#define HPO_SET_AXIS(s)     (((s) >> 4) & 3) /* 0 both, 1 either, 2 touched */
+#define HPO_SET_ROT(s)      (((s) >> 6) & 3) /* 0 off, 1 on, 2 only 90 */
+#define HPO_SET_CONTENT(s)  (((s) >> 8) & 3) /* 0 moved, 1 kept, 2 linear */
+enum { HPO_TRIANGLE = 1, HPO_AXIS = 2, HPO_VERTEX = 3, HPO_NATIVE = 4 };
+
+/* GeomState.half_pixel: bits 0-1 the strategy that moves corners
+ * (HPO_TRIANGLE, HPO_AXIS, HPO_VERTEX), bit 2 flat check, bits 3-4 axis
+ * (Per Axis only), bits 5-6 rotation check, bit 7 content kept. Native
+ * Edges, which moves nothing, is GEOM_HP_NATIVE alone. */
+#define GEOM_HP_STRATEGY(b) ((b) & 3)
+#define GEOM_HP_FLAT        0x04
+#define GEOM_HP_AXIS(b)     (((b) >> 3) & 3)
+#define GEOM_HP_ROT(b)      (((b) >> 5) & 3)
+#define GEOM_HP_KEEP        0x80
+#define GEOM_HP_NATIVE      0x80
 
 typedef struct GenGeomGlslOptions {
     bool vulkan;
@@ -72,12 +72,9 @@ typedef struct GenGeomGlslOptions {
 } GenGeomGlslOptions;
 
 void pgraph_glsl_set_geom_state(PGRAPHState *pg, GeomState *geom);
-/* Half-Pixel Offset "Per Triangle" (3), "Per Triangle, Quads / Render
- * Targets" (4) and "Per Triangle, Content Kept" (6): whether this draw may be
- * moved at all */
-bool pgraph_glsl_half_pixel_draw(PGRAPHState *pg, int mode);
-/* GeomState.half_pixel for the pending draw: in mode 4 it changes from draw
- * to draw without any register changing (shaders.c checks it) */
+/* GeomState.half_pixel for the pending draw: it changes with texture 0
+ * (rotation check, filter) without the geometry registers changing
+ * (shaders.c checks it) */
 int pgraph_glsl_geom_half_pixel(PGRAPHState *pg);
 
 bool pgraph_glsl_need_geom(const GeomState *state);

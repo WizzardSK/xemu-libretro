@@ -1620,7 +1620,7 @@ int xemu_libretro_subpixel_offset;
 unsigned int xemu_libretro_scale_threshold;
 /* Texture Filtering: Nearest Neighbor (Vulkan, texture.c) */
 int xemu_libretro_texture_nearest;
-/* Half-Pixel Offset (pgraph/glsl/vsh.c) */
+/* Half-Pixel Offset, the HPO options packed (pgraph/glsl/geom.c) */
 int xemu_libretro_half_pixel;
 /* Clamp Textures (pgraph/glsl/psh.c) */
 int xemu_libretro_clamp_textures;
@@ -2112,28 +2112,42 @@ static void update_variables(void)
         opt_vk_dynamic = !strcmp(var.value, "all") || !strcmp(var.value, "no_gpl");
     }
 
-    var.key = "xemu_half_pixel_offset";
-    var.value = NULL;
+    /* The five HPO options, packed into one word (decoded in
+     * pgraph/glsl/geom.c, HPO_SET_*): bits 0-2 strategy (1 Per Triangle,
+     * 2 Per Axis, 3 Per Vertex, 4 Native Edges), bit 3 flat check, bits 4-5
+     * axis (0 both, 1 either, 2 touched), bits 6-7 rotation check (0 off,
+     * 1 on, 2 only 90), bits 8-9 content (0 moved, 1 kept, 2 kept when
+     * linear). 0: off. */
     {
-        int hp = 0;
+        int hp = 0, flat = 0, axis = 0, rot = 0, content = 0;
+        var.key = "xemu_hpo_strategy";
+        var.value = NULL;
         if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
-            hp = !strcmp(var.value, "enabled") ? 1 : !strcmp(var.value, "2d") ? 2 :
-                 !strcmp(var.value, "triangle") ? 3 :
-                 !strcmp(var.value, "triangle_quads") ? 4 :
-                 !strcmp(var.value, "native2d") ? 5 :
-                 !strcmp(var.value, "triangle_content") ? 6 :
-                 !strcmp(var.value, "axis_content") ? 7 :
-                 !strcmp(var.value, "axis_flat") ? 8 :
-                 !strcmp(var.value, "axis_either") ? 9 :
-                 !strcmp(var.value, "axis_unrot") ? 10 :
-                 !strcmp(var.value, "axis_rects") ? 11 :
-                 !strcmp(var.value, "axis_touched") ? 12 :
-                 !strcmp(var.value, "axis_touched_unrot") ? 13 :
-                 !strcmp(var.value, "axis_touched_unrot90") ? 14 :
-                 !strcmp(var.value, "axis_touched_whole") ? 15 :
-                 !strcmp(var.value, "axis_touched_thin") ? 16 :
-                 !strcmp(var.value, "vertex_flat_unrot90") ? 17 : 0;
-        qatomic_set(&xemu_libretro_half_pixel, hp);
+            hp = !strcmp(var.value, "triangle") ? 1 :
+                 !strcmp(var.value, "axis") ? 2 :
+                 !strcmp(var.value, "vertex") ? 3 :
+                 !strcmp(var.value, "native") ? 4 : 0;
+        var.key = "xemu_hpo_flat";
+        var.value = NULL;
+        if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+            flat = !strcmp(var.value, "enabled");
+        var.key = "xemu_hpo_axis";
+        var.value = NULL;
+        if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+            axis = !strcmp(var.value, "either") ? 1 :
+                   !strcmp(var.value, "touched") ? 2 : 0;
+        var.key = "xemu_hpo_rotation";
+        var.value = NULL;
+        if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+            rot = !strcmp(var.value, "enabled") ? 1 :
+                  !strcmp(var.value, "only90") ? 2 : 0;
+        var.key = "xemu_hpo_content";
+        var.value = NULL;
+        if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+            content = !strcmp(var.value, "kept") ? 1 :
+                      !strcmp(var.value, "linear") ? 2 : 0;
+        qatomic_set(&xemu_libretro_half_pixel,
+                    hp ? hp | flat << 3 | axis << 4 | rot << 6 | content << 8 : 0);
     }
 
     var.key = "xemu_clamp_textures";

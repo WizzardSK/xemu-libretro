@@ -88,8 +88,9 @@ typedef struct {
     FixedFunctionVshState fixed_function;
     ProgrammableVshState programmable;
 
-    /* Half-Pixel Offset (libretro option), set only above 1x: 0 off,
-     * 1 x and y on a half pixel, 2 that and the vertex not transformed */
+    /* Half-Pixel Offset (the HPO options), set only above 1x: 0 off,
+     * 1 a point with x and y on a half pixel moves, 3 the geometry shader
+     * decides (geom.c) */
     uint8_t half_pixel_shift;
 } VshState;
 

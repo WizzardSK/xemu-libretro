@@ -319,37 +319,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
     },
     /* Off by default: a test switch for upscaling artifacts (NNshi) */
     {
-        "xemu_half_pixel_offset",
-        "Half-Pixel Offset",
-        NULL,
-        "With an Internal Resolution Scale above 1x, vertices that lie exactly on a half pixel - where games put screen-aligned quads for UI, post-processing and render-target copies, following Direct3D's half-pixel offset - are moved the way Subpixel Offset Scaling moves the whole picture, so their edges and texture reads line up as at 1x. \"X and Y\": vertices with both coordinates on a half pixel. \"2D Only\": those that are also where the game put them, without a 3D transform (pre-transformed screen-space quads). \"Per Triangle\": a triangle (or line, or quad) whose vertices all have both coordinates on a half pixel is moved as a whole. \"Per Triangle, Quads / Render Targets\": the same, only in draws of a single quad or draws that read an upscaled render target, not in batches of sprites from normal textures (HUDs). \"Native Edges, 2D\" moves nothing: a flat primitive (one depth, UI and 2D) covers exactly the 1x pixels whose centre it contains, as at 1x, while its content is drawn at the internal resolution. \"Per Triangle, Content Kept\": moved as \"Per Triangle\", but its texture, colours and fog stay where they were, so only its edges move. \"Per Axis, Content Kept\": the same, with each axis on its own: a primitive whose corners all have y on a half pixel moves in y, one whose corners all have x there moves in x. \"Per Axis, Flat, Content Kept\": the same for flat primitives only, all corners at one depth (2D, UI, full-screen passes), never 3D. \"Per Axis, Flat, Either Axis\": as \"Per Axis, Flat, Content Kept\", but a flat primitive whose corners all have one axis on a half pixel moves in both axes, as the whole picture would. \"Per Axis, Flat, Either Axis, Unrotated\": the same, but not for a primitive whose texture is mapped rotated (a rotating map). \"Per Axis, Flat, Rects\": as \"Per Axis, Flat, Content Kept\", but only triangles that are halves of axis-aligned rectangles (UI, bars, letterboxes, full-screen passes). \"Per Axis, Flat, Rects, Touched Axis\": the same, and an axis with all corners on a half pixel also moves the other axis when at least one corner is on a half pixel there. \"Per Axis, Flat, Touched Axis, Unrotated\": \"Per Axis, Flat, Content Kept\" with the touched axis, without the rectangle test, and a primitive that reads a texture mapped rotated (a rotating map) is never moved; untextured ones are not checked for rotation. \"Per Axis, Flat, Touched Axis, Unrotated 90\": the same, but a texture turned by a quarter counts as straight. \"..., Whole Pixels Stay\": the same, and the other axis moves only if none of its corners is on a whole pixel. \"..., Thin\": the same, and the other axis moves only for primitives at most 4 pixels across in it (bars, outlines), not for scrolling or growing ones. \"Per Vertex, Flat, Unrotated 90\": in a flat primitive that is not textured rotated, each corner coordinate on a half pixel moves on its own and the others stay, so an edge on a half pixel covers what it covers at 1x and neighbouring primitives stay joined. Other geometry stays where it is. Changing it compiles new shaders.",
-        NULL,
-        "video",
-        {
-            { "disabled", "OFF" },
-            { "enabled",  "X and Y" },
-            { "2d",       "2D Only" },
-            { "triangle", "Per Triangle" },
-            { "triangle_quads", "Per Triangle, Quads / Render Targets" },
-            { "native2d", "Native Edges, 2D" },
-            { "triangle_content", "Per Triangle, Content Kept" },
-            { "axis_content", "Per Axis, Content Kept" },
-            { "axis_flat", "Per Axis, Flat, Content Kept" },
-            { "axis_either", "Per Axis, Flat, Either Axis" },
-            { "axis_unrot", "Per Axis, Flat, Either Axis, Unrotated" },
-            { "axis_rects", "Per Axis, Flat, Rects" },
-            { "axis_touched", "Per Axis, Flat, Rects, Touched Axis" },
-            { "axis_touched_unrot", "Per Axis, Flat, Touched Axis, Unrotated" },
-            { "axis_touched_unrot90", "Per Axis, Flat, Touched Axis, Unrotated 90" },
-            { "axis_touched_whole", "Per Axis, Flat, Touched Axis, Unrotated 90, Whole Pixels Stay" },
-            { "axis_touched_thin", "Per Axis, Flat, Touched Axis, Unrotated 90, Whole Pixels Stay, Thin" },
-            { "vertex_flat_unrot90", "Per Vertex, Flat, Unrotated 90" },
-            { NULL, NULL },
-        },
-        "disabled"
-    },
-    /* Off by default: a test switch for upscaling artifacts (NNshi) */
-    {
         "xemu_clamp_textures",
         "Clamp Textures",
         NULL,
@@ -407,6 +376,85 @@ struct retro_core_option_v2_definition option_defs_us[] = {
             { NULL, NULL },
         },
         "hdtv"
+    },
+    /* Half-Pixel Offset, one switch per rule (NNshi), off by default: a
+     * test switch for upscaling artifacts. Read in ui/libretro.c, applied in
+     * pgraph/glsl/geom.c. */
+    {
+        "xemu_hpo_strategy",
+        "HPO Strategy",
+        NULL,
+        "Half-Pixel Offset: with an Internal Resolution Scale above 1x, corners that lie exactly on a half pixel - where Direct3D games put screen-aligned quads for UI, post-processing and render-target copies - are moved the way Subpixel Offset Scaling moves the whole picture, so their edges line up as at 1x. \"Per Triangle\": a triangle, line or quad moves only when all its corners have both coordinates on a half pixel. \"Per Axis\": each axis on its own: a primitive whose corners all have y on a half pixel moves in y, one whose corners all have x there moves in x. \"Per Vertex\": each corner coordinate on a half pixel moves on its own and the others stay, so an edge on a half pixel covers what it covers at 1x and neighbouring primitives stay joined. \"Native Edges\" moves nothing: a flat filled primitive (one depth: UI, 2D) covers exactly the 1x pixels whose centre it contains, as at 1x, while its content is drawn at the internal resolution; the switches below do not apply to it. Changing it compiles new shaders.",
+        NULL,
+        "video",
+        {
+            { "disabled", "OFF" },
+            { "triangle", "Per Triangle" },
+            { "axis",     "Per Axis" },
+            { "vertex",   "Per Vertex" },
+            { "native",   "Native Edges" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hpo_flat",
+        "HPO: Flat Check",
+        NULL,
+        "With an HPO Strategy that moves corners: ON moves only flat primitives, all corners at one depth (2D, UI, full-screen passes), never 3D ones, whose corners pass a half pixel now and then as they move.",
+        NULL,
+        "video",
+        {
+            { "disabled", "OFF" },
+            { "enabled",  "ON" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hpo_axis",
+        "HPO: Axis",
+        NULL,
+        "With HPO Strategy \"Per Axis\" only. \"Both\": each axis whose corners are all on a half pixel moves, the other stays. \"Either\": a primitive with all corners on a half pixel in one axis moves in both. \"Touched\": an axis with all corners on a half pixel also moves the other axis when at least one corner is on a half pixel there.",
+        NULL,
+        "video",
+        {
+            { "both",    "Both" },
+            { "either",  "Either" },
+            { "touched", "Touched" },
+            { NULL, NULL },
+        },
+        "both"
+    },
+    {
+        "xemu_hpo_rotation",
+        "HPO: Rotation Check",
+        NULL,
+        "With an HPO Strategy that moves corners: ON never moves a primitive whose texture is mapped rotated (a rotating map). \"Only 90\": the same, but a texture turned by a quarter counts as straight. Checked only when the draw reads texture 0; untextured primitives have nothing to rotate.",
+        NULL,
+        "video",
+        {
+            { "disabled", "OFF" },
+            { "enabled",  "ON" },
+            { "only90",   "Only 90" },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
+        "xemu_hpo_content",
+        "HPO: Content",
+        NULL,
+        "With an HPO Strategy that moves corners: what happens to the texture, colours and fog of a moved primitive. \"Moved\": they move with the corners. \"Kept\": they stay where they were, so only the edges move and every pixel inside shows what it showed unmoved. \"Kept When Linear\": kept when the draw reads texture 0 through a linear filter, moved when it reads it point sampled; a point-sampled texture lands half a 1x pixel off when only its edges move, a linear one does not. Untextured primitives count as \"Kept\".",
+        NULL,
+        "video",
+        {
+            { "moved",  "Moved" },
+            { "kept",   "Kept" },
+            { "linear", "Kept When Linear" },
+            { NULL, NULL },
+        },
+        "moved"
     },
     /* On by default: the sound keeps its pace while shaders compile, as
      * standalone's own SDL thread keeps it (NNshi, OutRun 2 from a cold

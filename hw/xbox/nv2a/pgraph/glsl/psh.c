@@ -226,7 +226,8 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
                              NV_PGRAPH_SETUPRASTER_FRONTFACEMODE) ==
                     POLY_MODE_FILL;
         state->native_edges =
-            qatomic_read(&xemu_libretro_half_pixel) == 5 &&
+            HPO_SET_STRATEGY(qatomic_read(&xemu_libretro_half_pixel)) ==
+                HPO_NATIVE &&
             pg->surface_scale_factor > 1 && fill &&
             (prim == PRIM_TYPE_TRIANGLES || prim == PRIM_TYPE_TRIANGLE_STRIP ||
              prim == PRIM_TYPE_TRIANGLE_FAN || prim == PRIM_TYPE_QUADS ||

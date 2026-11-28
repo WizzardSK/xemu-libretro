@@ -1613,8 +1613,6 @@ static bool opt_overscan_crop = true; /* Auto */
 /* Lines of every 480 Crop Vertical Overscan takes off the top and the bottom
  * of the frame handed to the frontend (pgraph/vk/libretro_shared.h) */
 int xemu_libretro_overscan_crop;
-/* Subpixel Offset Scaling, read by both renderers when they draw */
-int xemu_libretro_subpixel_offset;
 /* Upscaling Threshold: render targets up to this size drawn at 1x (Vulkan,
  * pgraph_vk_reload_surface_scale_factor) */
 unsigned int xemu_libretro_scale_threshold;
@@ -1932,12 +1930,6 @@ static void update_variables(void)
     opt_overscan_crop = !(environ_cb &&
                           environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
                           var.value && !strcmp(var.value, "off"));
-
-    var.key = "xemu_subpixel_offset";
-    var.value = NULL;
-    qatomic_set(&xemu_libretro_subpixel_offset,
-                environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
-                var.value && !strcmp(var.value, "on"));
 
     var.key = "xemu_scale_threshold";
     var.value = NULL;
@@ -4501,7 +4493,7 @@ static char *prof_file(char **header)
         "# core %s, commit %s\n"
         "# game %s, title ID %08X\n"
         "# renderer %s, internal resolution %dx, Vulkan fast paths %s, "
-        "anisotropic %ux, subpixel offset %s\n"
+        "anisotropic %ux, half-pixel offset %s, native 2D sampling %s\n"
         "# CPU boost %s, hardware FPU %s, memory %d MB, APU DSP %s, DSP JIT %s\n"
         "# run: %.1f s, average FPS %.2f, GPU (MSPF as a frame rate) %.2f, NV2A idle %u.%u%%\n"
         "# profiler: vCPU %s, PFIFO waits %s, renderer counters %s, missed render targets %s, "
@@ -4509,7 +4501,8 @@ static char *prof_file(char **header)
         xemu_version, commit, base, (unsigned)qatomic_read(&guest_title_id),
         use_vulkan ? "Vulkan" : "OpenGL", opt_surface_scale, fast,
         qatomic_read(&xemu_min_anisotropy),
-        qatomic_read(&xemu_libretro_subpixel_offset) ? "on" : "off",
+        qatomic_read(&xemu_libretro_half_pixel) ? "on" : "off",
+        qatomic_read(&xemu_libretro_native_2d) ? "on" : "off",
         opt_cpu_boost ? "on" : "off", opt_hard_fpu ? "on" : "off",
         opt_memory_mb, opt_use_dsp ? "on" : "off", opt_dsp_jit ? "on" : "off",
         span > 0 ? span / 1e9 : 0.0,

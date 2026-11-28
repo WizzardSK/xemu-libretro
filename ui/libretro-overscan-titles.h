@@ -12,6 +12,8 @@
 #include <stdint.h>
 
 static const uint32_t libretro_overscan_titles[] = {
+    0x43430001, /* Genma Onimusha */
+    0x43430006, /* Genma Onimusha */
     0x4541005B, /* Burnout 3: Takedown */
     0x45410076, /* Burnout Revenge */
     0x45410081, /* Burnout Revenge */

@@ -7,10 +7,18 @@
  * every request in the cache range to the "game" image (one per game) and
  * everything else to "file", the common image (dashboard, saves, F:). Both
  * images keep the disk's offsets, so they are sparse qcow2 images of at least
- * the range they serve.
+ * the range they serve. Without a game image (the dashboard) the cache range
+ * is the common image's own.
+ *
+ * QEMU's machine is built once in the core's process, so the game image is
+ * swapped when the next content starts (xbox_split_set_game), with the
+ * machine stopped.
  *
  * The common image is the primary child: the disk's length, and QEMU's own
- * snapshots (savevm), are its. The game's child is not called "cache":
+ * qcow2 snapshots (savevm; Trim HDD looks for them), are its. The snapshot
+ * calls are passed to it here: QEMU's own fallback refuses a node with a
+ * second data child, and would reopen the game image the disk was opened
+ * with. The game's child is not called "cache":
  * "cache." is the prefix of the block layer's own options (cache.direct,
  * cache.no-flush), which would end up in that child's options.
  *
@@ -21,6 +29,7 @@
 #include "qapi/error.h"
 #include "block/block-io.h"
 #include "block/block_int.h"
+#include "block/snapshot.h"
 #include "qobject/qdict.h"
 #include "qemu/cutils.h"
 #include "qemu/module.h"
@@ -36,6 +45,7 @@ typedef struct {
 static int xbox_split_open(BlockDriverState *bs, QDict *options, int flags,
                            Error **errp)
 {
+    ERRP_GUARD();
     BDRVXboxSplitState *s = bs->opaque;
     int ret;
 
@@ -44,8 +54,8 @@ static int xbox_split_open(BlockDriverState *bs, QDict *options, int flags,
         return ret;
     }
     s->cache = bdrv_open_child(NULL, options, "game", bs, &child_of_bds,
-                               BDRV_CHILD_DATA, false, errp);
-    if (!s->cache) {
+                               BDRV_CHILD_DATA, true, errp);
+    if (*errp) {
         return -EINVAL;
     }
     bs->supported_write_flags = BDRV_REQ_FUA;
@@ -57,10 +67,12 @@ static void xbox_split_close(BlockDriverState *bs)
 {
     BDRVXboxSplitState *s = bs->opaque;
 
-    bdrv_graph_wrlock_drained();
-    bdrv_unref_child(bs, s->cache);
-    s->cache = NULL;
-    bdrv_graph_wrunlock();
+    if (s->cache) {
+        bdrv_graph_wrlock_drained();
+        bdrv_unref_child(bs, s->cache);
+        s->cache = NULL;
+        bdrv_graph_wrunlock();
+    }
 }
 
 static int64_t coroutine_fn GRAPH_RDLOCK
@@ -79,7 +91,7 @@ static BdrvChild *xbox_split_route(BlockDriverState *bs, int64_t offset,
         *len = MIN(bytes, XBOX_CACHE_START - offset);
         return bs->file;
     }
-    if (offset < XBOX_CACHE_END) {
+    if (offset < XBOX_CACHE_END && s->cache) {
         *len = MIN(bytes, XBOX_CACHE_END - offset);
         return s->cache;
     }
@@ -171,10 +183,108 @@ xbox_split_co_pdiscard(BlockDriverState *bs, int64_t offset, int64_t bytes)
 static int coroutine_fn GRAPH_RDLOCK xbox_split_co_flush(BlockDriverState *bs)
 {
     BDRVXboxSplitState *s = bs->opaque;
-    int ret = bdrv_co_flush(s->cache->bs);
+    int ret = s->cache ? bdrv_co_flush(s->cache->bs) : 0;
     int ret2 = bdrv_co_flush(bs->file->bs);
 
     return ret < 0 ? ret : ret2;
+}
+
+/* A game's cache image, created empty when it is not there yet: the Xbox
+ * formats a cache partition it does not recognise when the game mounts it.
+ * Sparse, as long as the range it serves. Needs QEMU's main loop. */
+int xbox_split_create_game(const char *path, Error **errp)
+{
+    ERRP_GUARD();
+
+    if (g_file_test(path, G_FILE_TEST_EXISTS)) {
+        return 0;
+    }
+    bdrv_img_create(path, "qcow2", NULL, NULL, NULL, XBOX_CACHE_END, 0, true,
+                    errp);
+    return *errp ? -1 : 0;
+}
+
+/* Puts the game image at path (NULL: none, the dashboard) in place of the
+ * one the disk has, for the next content on the machine that is there.
+ * Called with the BQL held and the machine stopped. */
+int xbox_split_set_game(BlockDriverState *bs, const char *path, Error **errp)
+{
+    BDRVXboxSplitState *s;
+    BlockDriverState *game = NULL;
+
+    GLOBAL_STATE_CODE();
+    if (!bs || !bs->drv || strcmp(bs->drv->format_name, "xbox-split")) {
+        error_setg(errp, "the hard disk is not an xbox-split node");
+        return -1;
+    }
+    s = bs->opaque;
+    if (path) {
+        QDict *opts;
+
+        if (xbox_split_create_game(path, errp) < 0) {
+            return -1;
+        }
+        opts = qdict_new();
+        qdict_put_str(opts, "driver", "qcow2");
+        game = bdrv_open(path, NULL, opts, BDRV_O_RDWR, errp);
+        if (!game) {
+            return -1;
+        }
+    }
+
+    bdrv_graph_wrlock_drained();
+    if (s->cache) {
+        bdrv_unref_child(bs, s->cache);
+        s->cache = NULL;
+    }
+    if (game) {
+        /* takes over the reference bdrv_open gave */
+        s->cache = bdrv_attach_child(bs, game, "game", &child_of_bds,
+                                     BDRV_CHILD_DATA, errp);
+    }
+    bdrv_graph_wrunlock();
+    return game && !s->cache ? -1 : 0;
+}
+
+static int GRAPH_RDLOCK
+xbox_split_snapshot_create(BlockDriverState *bs, QEMUSnapshotInfo *sn_info)
+{
+    return bdrv_snapshot_create(bs->file->bs, sn_info);
+}
+
+static int GRAPH_UNLOCKED
+xbox_split_snapshot_goto(BlockDriverState *bs, const char *snapshot_id)
+{
+    Error *err = NULL;
+    BlockDriverState *file;
+    int ret;
+
+    bdrv_graph_rdlock_main_loop();
+    file = bs->file->bs;
+    bdrv_graph_rdunlock_main_loop();
+    ret = bdrv_snapshot_goto(file, snapshot_id, &err);
+    error_free(err);
+    return ret;
+}
+
+static int GRAPH_RDLOCK
+xbox_split_snapshot_delete(BlockDriverState *bs, const char *snapshot_id,
+                           const char *name, Error **errp)
+{
+    return bdrv_snapshot_delete(bs->file->bs, snapshot_id, name, errp);
+}
+
+static int GRAPH_RDLOCK
+xbox_split_snapshot_list(BlockDriverState *bs, QEMUSnapshotInfo **psn_info)
+{
+    return bdrv_snapshot_list(bs->file->bs, psn_info);
+}
+
+static int GRAPH_RDLOCK
+xbox_split_snapshot_load_tmp(BlockDriverState *bs, const char *snapshot_id,
+                             const char *name, Error **errp)
+{
+    return bdrv_snapshot_load_tmp(bs->file->bs, snapshot_id, name, errp);
 }
 
 static char *xbox_split_dirname(BlockDriverState *bs, Error **errp)
@@ -198,6 +308,12 @@ static BlockDriver bdrv_xbox_split = {
     .bdrv_co_pwrite_zeroes      = xbox_split_co_pwrite_zeroes,
     .bdrv_co_pdiscard           = xbox_split_co_pdiscard,
     .bdrv_co_flush              = xbox_split_co_flush,
+
+    .bdrv_snapshot_create       = xbox_split_snapshot_create,
+    .bdrv_snapshot_goto         = xbox_split_snapshot_goto,
+    .bdrv_snapshot_delete       = xbox_split_snapshot_delete,
+    .bdrv_snapshot_list         = xbox_split_snapshot_list,
+    .bdrv_snapshot_load_tmp     = xbox_split_snapshot_load_tmp,
 };
 
 static void bdrv_xbox_split_init(void)

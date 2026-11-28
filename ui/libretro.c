@@ -2445,6 +2445,28 @@ static void *emu_thread_func(void *opaque)
                 LRLOG_ERROR("[xemu] Disc not loaded: %s\n", error_get_pretty(err));
                 error_free(err);
             }
+            /* The disk was opened with the first content's cache image: this
+             * content's goes in its place (none for the dashboard), or the
+             * next game wrote into the first one's (NNshi) */
+            DriveInfo *hdd = drive_get(IF_IDE, 0, 0);
+            BlockBackend *hdd_blk = hdd ? blk_by_legacy_dinfo(hdd) : NULL;
+            if (hdd_blk && blk_bs(hdd_blk) &&
+                !g_strcmp0(bdrv_get_format_name(blk_bs(hdd_blk)), "xbox-split")) {
+                extern int xbox_split_set_game(BlockDriverState *bs, const char *path,
+                                               Error **errp);
+                if (xbox_split_set_game(blk_bs(hdd_blk),
+                        xemu_libretro_hdd_cache_path[0] ? xemu_libretro_hdd_cache_path : NULL,
+                        &err) < 0) {
+                    LRLOG_ERROR("[xemu] Game cache not attached: %s\n",
+                                err ? error_get_pretty(err) : "?");
+                    error_free(err);
+                    err = NULL;
+                } else {
+                    LRLOG_INFO("[xemu] Game cache now: %s\n",
+                               xemu_libretro_hdd_cache_path[0] ? xemu_libretro_hdd_cache_path
+                                                               : "the common disk's own");
+                }
+            }
         }
         qemu_libretro_clear_shutdown_request();
         apply_eeprom_settings();
@@ -3672,12 +3694,23 @@ static bool hdd_copy_used(BlockBackend *blk, const char *path, int64_t size)
     return ok;
 }
 
-static BlockDriverState *hdd_open(const char *path, int flags)
+/* The common image, as the drive had it: under an xbox-split node (without
+ * a game image: Trim runs only after the dashboard) when it was one, so the
+ * next content can put its cache image in again */
+static BlockDriverState *hdd_open(const char *path, int flags, bool split)
 {
     Error *err = NULL;
     QDict *opts = qdict_new();
-    qdict_put_str(opts, "driver", "qcow2");
-    BlockDriverState *bs = bdrv_open(path, NULL, opts, flags, &err);
+    BlockDriverState *bs;
+    if (split) {
+        qdict_put_str(opts, "driver", "xbox-split");
+        qdict_put_str(opts, "file.driver", "qcow2");
+        qdict_put_str(opts, "file.file.filename", path);
+        bs = bdrv_open(NULL, NULL, opts, flags, &err);
+    } else {
+        qdict_put_str(opts, "driver", "qcow2");
+        bs = bdrv_open(path, NULL, opts, flags, &err);
+    }
     if (!bs) {
         LRLOG_ERROR("[xemu] Trim HDD: cannot open %s: %s\n", path, error_get_pretty(err));
         error_free(err);
@@ -3721,6 +3754,7 @@ static void hdd_trim(void)
 
     /* The new image in the old one's place, under the same drive */
     const int flags = bdrv_get_flags(bs);
+    const bool split = !g_strcmp0(bdrv_get_format_name(bs), "xbox-split");
     blk_remove_bs(blk);
     bool replaced = g_rename(path, bak) == 0;
     if (replaced && g_rename(tmp, path) != 0) {
@@ -3731,7 +3765,7 @@ static void hdd_trim(void)
         LRLOG_ERROR("[xemu] Trim HDD: cannot replace the image, the old one is kept\n");
         g_remove(tmp);
     }
-    BlockDriverState *nbs = hdd_open(path, flags);
+    BlockDriverState *nbs = hdd_open(path, flags, split);
     Error *err = NULL;
     if (!nbs || blk_insert_bs(blk, nbs, &err) < 0) {
         if (err) {
@@ -3747,7 +3781,7 @@ static void hdd_trim(void)
             LRLOG_ERROR("[xemu] Trim HDD: the new image did not open, the old one is put back\n");
             g_remove(path);
             g_rename(bak, path);
-            nbs = hdd_open(path, flags);
+            nbs = hdd_open(path, flags, split);
             if (nbs) {
                 blk_insert_bs(blk, nbs, NULL);
             }

@@ -3411,17 +3411,20 @@ void qemu_init(int argc, char **argv)
             fake_argv[fake_argc++] = strdup("-drive");
             char *escaped_hdd_path = strdup_double_commas(hdd_path);
 #ifdef LIBRETRO
-            /* The game's own cache image (ui/libretro.c): the disk is the
-             * common image with the cache partitions X, Y and Z taken from
-             * it (block/xbox-split.c) */
+            /* The disk is the common image with the cache partitions X, Y
+             * and Z taken from the game's own image, when the content has
+             * one (ui/libretro.c, block/xbox-split.c); with a qcow2 common
+             * image always this driver, so the next content can put its own
+             * in */
             extern char xemu_libretro_hdd_cache_path[];
-            if (xemu_libretro_hdd_cache_path[0]) {
+            if (g_str_has_suffix(hdd_path, ".qcow2")) {
                 char *escaped_cache = strdup_double_commas(xemu_libretro_hdd_cache_path);
                 fake_argv[fake_argc++] = g_strdup_printf(
-                    "index=0,media=disk,driver=xbox-split,"
-                    "file.driver=qcow2,file.file.filename=%s,"
-                    "game.driver=qcow2,game.file.filename=%s",
-                    escaped_hdd_path, escaped_cache);
+                    "index=0,media=disk,locked=on,driver=xbox-split,"
+                    "file.driver=qcow2,file.file.filename=%s%s%s",
+                    escaped_hdd_path,
+                    escaped_cache[0] ? ",game.driver=qcow2,game.file.filename=" : "",
+                    escaped_cache);
                 free(escaped_cache);
             } else
 #endif
@@ -4401,21 +4404,14 @@ void qemu_init(int argc, char **argv)
     cpu_timers_init();
 #ifdef LIBRETRO
     {
-        /* A new game's cache image (ui/libretro.c, block/xbox-split.c),
-         * before the drives open and once the main loop the block layer runs
-         * in is there. It starts empty: the Xbox formats a cache
-         * partition it does not recognise when the game mounts it. Sparse,
-         * as long as the range it serves. */
+        /* A new game's cache image (block/xbox-split.c), before the drives
+         * open and once the main loop the block layer runs in is there */
         extern char xemu_libretro_hdd_cache_path[];
+        extern int xbox_split_create_game(const char *path, Error **errp);
+        Error *err = NULL;
         if (xemu_libretro_hdd_cache_path[0] &&
-            !g_file_test(xemu_libretro_hdd_cache_path, G_FILE_TEST_EXISTS)) {
-            Error *err = NULL;
-            bdrv_img_create(xemu_libretro_hdd_cache_path, "qcow2", NULL, NULL,
-                            NULL, 0x00080000LL + 3 * 0x2EE00000LL, 0, true,
-                            &err);
-            if (err) {
-                error_report_err(err);
-            }
+            xbox_split_create_game(xemu_libretro_hdd_cache_path, &err) < 0) {
+            error_report_err(err);
         }
     }
 #endif

@@ -4,13 +4,15 @@
  * The Xbox finds its partitions at fixed offsets of its one IDE disk: the
  * config area at 0, the cache partitions X, Y and Z (750 MB each) from
  * 0x80000, then C, E and F. This driver shows the guest one disk and sends
- * every request in the cache range to the "cache" image (one per game) and
+ * every request in the cache range to the "game" image (one per game) and
  * everything else to "file", the common image (dashboard, saves, F:). Both
  * images keep the disk's offsets, so they are sparse qcow2 images of at least
  * the range they serve.
  *
  * The common image is the primary child: the disk's length, and QEMU's own
- * snapshots (savevm), are its.
+ * snapshots (savevm), are its. The game's child is not called "cache":
+ * "cache." is the prefix of the block layer's own options (cache.direct,
+ * cache.no-flush), which would end up in that child's options.
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -41,7 +43,7 @@ static int xbox_split_open(BlockDriverState *bs, QDict *options, int flags,
     if (ret < 0) {
         return ret;
     }
-    s->cache = bdrv_open_child(NULL, options, "cache", bs, &child_of_bds,
+    s->cache = bdrv_open_child(NULL, options, "game", bs, &child_of_bds,
                                BDRV_CHILD_DATA, false, errp);
     if (!s->cache) {
         return -EINVAL;

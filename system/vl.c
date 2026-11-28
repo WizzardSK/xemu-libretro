@@ -3420,7 +3420,7 @@ void qemu_init(int argc, char **argv)
                 fake_argv[fake_argc++] = g_strdup_printf(
                     "index=0,media=disk,driver=xbox-split,"
                     "file.driver=qcow2,file.file.filename=%s,"
-                    "cache.driver=qcow2,cache.file.filename=%s",
+                    "game.driver=qcow2,game.file.filename=%s",
                     escaped_hdd_path, escaped_cache);
                 free(escaped_cache);
             } else
@@ -3538,25 +3538,6 @@ void qemu_init(int argc, char **argv)
 #endif
 
     qemu_init_subsystems();
-#ifdef LIBRETRO
-    {
-        /* A new game's cache image (ui/libretro.c, block/xbox-split.c),
-         * before the drives open. It starts empty: the Xbox formats a cache
-         * partition it does not recognise when the game mounts it. Sparse,
-         * as long as the range it serves. */
-        extern char xemu_libretro_hdd_cache_path[];
-        if (xemu_libretro_hdd_cache_path[0] &&
-            !g_file_test(xemu_libretro_hdd_cache_path, G_FILE_TEST_EXISTS)) {
-            Error *err = NULL;
-            bdrv_img_create(xemu_libretro_hdd_cache_path, "qcow2", NULL, NULL,
-                            NULL, 0x00080000LL + 3 * 0x2EE00000LL, 0, true,
-                            &err);
-            if (err) {
-                error_report_err(err);
-            }
-        }
-    }
-#endif
 
     /* first pass of option parsing */
     optind = 1;
@@ -4418,6 +4399,26 @@ void qemu_init(int argc, char **argv)
 
     qemu_init_main_loop(&error_fatal);
     cpu_timers_init();
+#ifdef LIBRETRO
+    {
+        /* A new game's cache image (ui/libretro.c, block/xbox-split.c),
+         * before the drives open and once the main loop the block layer runs
+         * in is there. It starts empty: the Xbox formats a cache
+         * partition it does not recognise when the game mounts it. Sparse,
+         * as long as the range it serves. */
+        extern char xemu_libretro_hdd_cache_path[];
+        if (xemu_libretro_hdd_cache_path[0] &&
+            !g_file_test(xemu_libretro_hdd_cache_path, G_FILE_TEST_EXISTS)) {
+            Error *err = NULL;
+            bdrv_img_create(xemu_libretro_hdd_cache_path, "qcow2", NULL, NULL,
+                            NULL, 0x00080000LL + 3 * 0x2EE00000LL, 0, true,
+                            &err);
+            if (err) {
+                error_report_err(err);
+            }
+        }
+    }
+#endif
 
     user_register_global_props();
     replay_configure(icount_opts);

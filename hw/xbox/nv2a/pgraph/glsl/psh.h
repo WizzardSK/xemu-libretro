@@ -80,9 +80,20 @@ typedef struct PshState {
 
     unsigned int surface_zeta_format;
     enum PshDepthFormat depth_format;
+
+    /* Native 2D Sampling (libretro option): the Internal Resolution Scale
+     * while it applies (on, above 1x, the draw not additive), else 0 */
+    uint8_t clamp_tex_scale;
+    /* Native 2D Sampling: bit n, texture unit n is a render target (bloom,
+     * blur, the 3D picture), read as the game asks (NNshi); bit 4 + n, unit
+     * n is read with a filtering mag filter (no tie nudge) */
+    uint8_t clamp_tex_rt;
 } PshState;
 
 void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state);
+/* PshState.clamp_tex_scale for the pending draw (shaders.c checks it: the
+ * blend state and the target's scale change without the shader registers) */
+int pgraph_glsl_native_2d_scale(PGRAPHState *pg);
 
 bool pgraph_glsl_psh_dynamic_pending_take(PshState *out);
 void pgraph_glsl_psh_dynamic_ready(const PshState *state);

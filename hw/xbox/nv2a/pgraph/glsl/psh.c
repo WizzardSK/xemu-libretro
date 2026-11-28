@@ -183,8 +183,44 @@ static uint32_t get_color_key_mask_for_texture(PGRAPHState *pg, int i)
     return get_colorkey_mask(color_format);
 }
 
+#ifdef LIBRETRO
+/* Native 2D Sampling (ui/libretro.c) */
+extern int xemu_libretro_native_2d;
+#else
+static int xemu_libretro_native_2d;
+#endif
+
+/* An additively blended draw (destination factor one: glare, lights,
+ * fire). Native 2D Sampling leaves it alone: glare over headlights is a
+ * flat, unrotated sprite like UI, and read at 1x centres it came out blocky
+ * (GTA San Andreas, TimeSplitters, NNshi); UI is drawn with ordinary alpha
+ * blending or none. */
+static bool native_2d_additive(PGRAPHState *pg)
+{
+    uint32_t blend = pgraph_reg_r(pg, NV_PGRAPH_BLEND);
+    return (blend & NV_PGRAPH_BLEND_EN) &&
+           GET_MASK(blend, NV_PGRAPH_BLEND_DFACTOR) ==
+               NV_PGRAPH_BLEND_DFACTOR_ONE;
+}
+
+/* PshState.clamp_tex_scale for the pending draw: the Internal Resolution
+ * Scale while Native 2D Sampling applies (on, above 1x, not additive), else
+ * 0 */
+int pgraph_glsl_native_2d_scale(PGRAPHState *pg)
+{
+    if (!qatomic_read(&xemu_libretro_native_2d) ||
+        pg->surface_scale_factor <= 1 || native_2d_additive(pg)) {
+        return 0;
+    }
+    return MIN(pg->surface_scale_factor, 255);
+}
+
 void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
 {
+    state->clamp_tex_scale = pgraph_glsl_native_2d_scale(pg);
+    /* the game's own render targets (bloom, blur, the 3D picture) are read
+     * as the game asks (NNshi) */
+    state->clamp_tex_rt = state->clamp_tex_scale ? pg->tex_units_rt : 0;
     state->window_clip_exclusive = pgraph_reg_r(pg, NV_PGRAPH_SETUPRASTER) &
                                    NV_PGRAPH_SETUPRASTER_WINDOWCLIPTYPE;
     state->combiner_control = pgraph_reg_r(pg, NV_PGRAPH_COMBINECTL);
@@ -301,6 +337,12 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
             (min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_LOD0 ||
              min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_NEARESTLOD ||
              min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_TENT_LOD);
+        /* Native 2D Sampling: bit 4 + n of clamp_tex_rt, unit n is read
+         * with a filtering (not point) mag filter, which takes the 1x
+         * centre as it is (clampTex below) */
+        if (state->clamp_tex_scale && mag_filter != 1) {
+            state->clamp_tex_rt |= 1 << (4 + i);
+        }
         bool mixed_filter =
             (mag_filter == 1 && min_filter == NV_PGRAPH_TEXFILTER0_MIN_TENT_LOD0) ||
             (mag_filter == 2 && min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_LOD0);
@@ -1598,12 +1640,25 @@ static MString* psh_convert(struct PixelShader *ps)
                              * edge (VC3 decor lightmaps). Clamping the
                              * divisor to a positive minimum reproduces
                              * exactly that. */
-                            mstring_append_fmt(
-                                vars,
-                                "vec3 tp%d = %s(pT%d.xyw);\n"
-                                "vec4 t%d = texture(texSamp%d,"
-                                " tp%d.xy / max(tp%d.z, 1e-15));\n",
-                                i, tex_remap, i, i, i, i, i);
+                            /* Native 2D Sampling: the same test as for
+                             * clampTex's definition below (a render target
+                             * has none) */
+                            if (ps->state->clamp_tex_scale &&
+                                !(ps->state->clamp_tex_rt & (1 << i))) {
+                                mstring_append_fmt(
+                                    vars,
+                                    "vec3 tp%d = %s(pT%d.xyw);\n"
+                                    "vec4 t%d = clampTex%d("
+                                    "tp%d.xy / max(tp%d.z, 1e-15));\n",
+                                    i, tex_remap, i, i, i, i, i);
+                            } else {
+                                mstring_append_fmt(
+                                    vars,
+                                    "vec3 tp%d = %s(pT%d.xyw);\n"
+                                    "vec4 t%d = texture(texSamp%d,"
+                                    " tp%d.xy / max(tp%d.z, 1e-15));\n",
+                                    i, tex_remap, i, i, i, i, i);
+                            }
                         }
                     } else if (ps->state->dim_tex[i] == 3) {
                         mstring_append_fmt(vars, "vec4 t%d = textureProj(texSamp%d, vec4(pT%d.xy, 0.0, pT%d.w));\n",
@@ -1843,6 +1898,98 @@ static MString* psh_convert(struct PixelShader *ps)
                 mstring_append_fmt(preflight, "layout(binding = %d) ", ps->opts.tex_binding + i);
             }
             mstring_append_fmt(preflight, "uniform %s texSamp%d;\n", sampler_type, i);
+
+            /* Native 2D Sampling: above 1x, an unrotated draw without
+             * perspective (its three corners at one w: UI, menus, text,
+             * full-screen images) takes its texture coordinate at the centre
+             * of the native (1x) pixel, so it picks the texels 1x picks:
+             * read at every fine pixel, a point-sampled draw whose 1x
+             * centres sit on texel edges showed the texel beside it in half
+             * of each 1x pixel (KOTOR's menu text moved half a pixel), and
+             * neighbours in an atlas or the far side of a repeating texture
+             * bled into the edges (Splinter Cell's icons, DW3's stripes).
+             * - The 1x centre's coordinate is rounded to 1/8192 of a texel,
+             *   as 1x computes it, and a point-sampled read takes the texel
+             *   it falls in, an exact texel edge the one after it (floor at
+             *   1x), nudged by 1/16384 so the host's nearest rounding
+             *   cannot tie: Gunvalkyrie's HUD and Onimusha's transitions
+             *   have corners exactly on texel edges (1x shows the texel
+             *   after), KOTOR's glyphs 1/4096 before one (1x shows the
+             *   texel before) (NNshi's captures).
+             * - A filtered read (bit 4 + n of clamp_tex_rt) takes the 1x
+             *   centre through the game's own sampler, unbiased: bilinear
+             *   1:1 draws on texel edges blend two texels at 1x (Onimusha's
+             *   "hard disk"), and a bias blended in a transparent row's
+             *   neighbour (a line above Onimusha's "o").
+             * - The read stays inside the texels the triangle spans (tlo,
+             *   thi): fine pixels just inside a bottom or right edge on a
+             *   1x centre took the next glyph in KOTOR's atlas.
+             * - A draw at one texel per 1x pixel ("one") reads the centre of
+             *   that texel; a scaled one reads at the 1x centre with the 1x
+             *   gradients, the 1x picture scaled up.
+             * Render targets, additive draws (see native_2d_additive),
+             * projected, cube, 3D, shadow and convolution reads are left
+             * alone. Tried on the texture-upscale branch and dropped:
+             * coarser rounding with a tie bias, blending four 1x reads,
+             * leaving out mipmapped textures (NNshi's tests). */
+            if (ps->state->clamp_tex_scale &&
+                !(ps->state->clamp_tex_rt & (1 << i)) &&
+                ps->tex_modes[i] == PS_TEXTUREMODES_PROJECT2D &&
+                !ps->state->shadow_map[i] && ps->state->dim_tex[i] == 2 &&
+                !ps->state->tex_cubemap[i] &&
+                ps->state->conv_tex[i] != CONVOLUTION_FILTER_GAUSSIAN &&
+                ps->state->conv_tex[i] != CONVOLUTION_FILTER_QUINCUNX) {
+                const char *bias =
+                    (ps->state->clamp_tex_rt & (1 << (4 + i))) ?
+                        "" : "+ 1.0 / 16384.0";
+                mstring_append_fmt(preflight,
+                    "vec4 clampTex%d(vec2 uv) {\n"
+                    "    vec2 sz = vec2(textureSize(texSamp%d, 0));\n"
+                    "    vec2 t = uv * sz, dx = dFdx(t), dy = dFdy(t);\n"
+                    "    float s = 1.0 / %d.0, e = 0.01 * s;\n"
+                    "    bool one = abs(length(dx) - s) < e &&\n"
+                    "               abs(length(dy) - s) < e &&\n"
+                    "               min(abs(dx.x), abs(dx.y)) < e &&\n"
+                    "               min(abs(dy.x), abs(dy.y)) < e;\n",
+                    i, i, ps->state->clamp_tex_scale);
+                mstring_append_fmt(preflight,
+                    "    vec2 ax = abs(dx), ay = abs(dy);\n"
+                    "    bool axis = min(ax.x, ax.y) <= 1e-3 * max(ax.x, ax.y) &&\n"
+                    "                min(ay.x, ay.y) <= 1e-3 * max(ay.x, ay.y);\n"
+                    "    bool flat2d = vtxPos0.w == vtxPos1.w && vtxPos1.w == vtxPos2.w;\n"
+                    "    vec2 gx = dFdx(uv), gy = dFdy(uv);\n"
+                    "    vec2 tlo = vec2(-1e9), thi = vec2(1e9);\n"
+                    "    if (axis && flat2d) {\n"
+                    "        vec2 e0 = vtxPos0.xy / s - gl_FragCoord.xy;\n"
+                    "        vec2 e1 = vtxPos1.xy / s - gl_FragCoord.xy;\n"
+                    "        vec2 e2 = vtxPos2.xy / s - gl_FragCoord.xy;\n"
+                    "        vec2 t0 = t + dx * e0.x + dy * e0.y;\n"
+                    "        vec2 t1 = t + dx * e1.x + dy * e1.y;\n"
+                    "        vec2 t2 = t + dx * e2.x + dy * e2.y;\n"
+                    "        tlo = min(min(t0, t1), t2);\n"
+                    "        thi = max(max(t0, t1), t2);\n"
+                    "        vec2 o = (floor(gl_FragCoord.xy * s) + 0.5) / s - gl_FragCoord.xy;\n"
+                    "        t = round((t + dx * o.x + dy * o.y) * %s) / %s %s;\n"
+                    "        if (one) {\n"
+                    "            vec2 blo = floor(tlo + 1.0 / 64.0);\n"
+                    "            vec2 bhi = max(ceil(thi - 1.0 / 64.0), blo + 1.0);\n"
+                    "            return textureGrad(texSamp%d, clamp(t, blo + 1.0 / 128.0,\n"
+                    "                bhi - 1.0 / 128.0) / sz, gx / s, gy / s);\n"
+                    "        }\n"
+                    "        if (!one) {\n"
+                    "            return textureGrad(texSamp%d, t / sz, gx / s, gy / s);\n"
+                    "        }\n"
+                    "    }\n",
+                    "8192.0", "8192.0", bias, i, i);
+                mstring_append_fmt(preflight,
+                    "    vec2 f = floor(t), fc = clamp(f, vec2(0.0), sz - 1.0);\n"
+                    "    vec2 flo = floor(tlo + 1.0 / 64.0);\n"
+                    "    f = clamp(f, flo, max(ceil(thi - 1.0 / 64.0) - 1.0, flo));\n"
+                    "    vec2 c = one ? (f + 0.5) / sz : uv;\n"
+                    "    return textureGrad(texSamp%d, c, dFdx(uv), dFdy(uv));\n"
+                    "}\n",
+                    i);
+            }
 
             /* As this means a texture fetch does happen, do alphakill */
             if (ps->state->alpha_dynamic) {

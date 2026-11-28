@@ -642,6 +642,21 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "enabled"
     },
+    /* On by default (NNshi): it reads differently only above 1x */
+    {
+        "xemu_native_2d_sampling",
+        "Native 2D Sampling",
+        NULL,
+        "With an Internal Resolution Scale above 1x, flat unrotated 2D draws (UI, menus, text, full-screen images) read their textures at the centre of the original 1x pixel, so they show the texels the game shows at 1x: no text half a pixel off, no neighbouring images of a texture atlas bleeding into the edges. The game's own render targets and additively blended effects (glare, lights) are read as the game asks. Changing it compiles new shaders.",
+        NULL,
+        "debug",
+        {
+            { "enabled",  "ON" },
+            { "disabled", "OFF" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_rumble_p1",
         "Rumble (Player 1)",

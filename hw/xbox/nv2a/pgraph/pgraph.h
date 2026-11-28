@@ -338,6 +338,10 @@ typedef struct PGRAPHState {
     /* The scale of the render target being drawn (Vulkan: the bound
      * target's own scale, see surface_scale_base) */
     unsigned int surface_scale_factor;
+    /* Native 2D Sampling: bit n, texture unit n of the next draw reads a
+     * render target, at any scale (set by the renderer with its textures,
+     * before the shaders) */
+    uint8_t tex_units_rt;
     /* Vulkan: the configured internal resolution, and the size up to which
      * a render target (its larger side) is drawn at 1x instead (0 = off) */
     unsigned int surface_scale_base;

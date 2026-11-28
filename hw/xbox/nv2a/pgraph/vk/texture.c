@@ -2046,6 +2046,7 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
     }
 
     if (binding_found) {
+        snode->from_surface = surface_to_texture_cube || surface_to_texture;
         if (surface_to_texture_cube) {
             unsigned int maxdt = 0;
             for (int f = 0; f < 6; f++) {
@@ -2184,6 +2185,7 @@ static void create_texture(PGRAPHState *pg, int texture_idx)
     set_texture_label(pg, snode);
 
     r->texture_bindings[texture_idx] = snode;
+    snode->from_surface = surface_to_texture_cube || s2t_borrow || surface_to_texture;
 
     if (surface_to_texture_cube) {
         copy_cube_faces_to_texture(pg, cube_faces, snode);

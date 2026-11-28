@@ -142,6 +142,17 @@ bool pgraph_glsl_check_shader_state_dirty(PGRAPHState *pg,
         return true;
     }
 
+    /* Native 2D Sampling follows the option, the target's scale and the
+     * blend state, and leaves render targets alone: a unit that switches
+     * between one and a normal texture needs the other shader (the low 4
+     * bits; the high 4 follow the mag filter, which the TEXFILTER check
+     * below covers) */
+    if (pgraph_glsl_native_2d_scale(pg) != state->psh.clamp_tex_scale ||
+        (state->psh.clamp_tex_scale &&
+         pg->tex_units_rt != (state->psh.clamp_tex_rt & 0xf))) {
+        return true;
+    }
+
     for (int i = 0; i < 4; i++) {
         if (pgraph_is_reg_dirty(pg, NV_PGRAPH_TEXCTL0_0 + i * 4) ||
             signed_g8b8_address_dirty(pg, i) ||

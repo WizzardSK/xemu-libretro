@@ -277,6 +277,11 @@ typedef struct TextureBinding {
     /* In-place sampling: the image is the surface's own (never destroy it);
      * image_view is a private view on it, owned by this binding. */
     bool s2t_borrowed;
+    /* The image comes from a render target (a surface copied, borrowed or
+     * its cube faces), not from RAM: Native 2D Sampling leaves it alone,
+     * whatever its scale (bloom buffers are small enough to stay at 1x
+     * under the Upscaling Threshold, NNshi) */
+    bool from_surface;
     bool logo; /* doge mode: the SEGABOOT logo replaced */
     VkImageCreateInfo image_ci; /* creation parameters (image pool key) */
 } TextureBinding;

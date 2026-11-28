@@ -2104,17 +2104,18 @@ static void update_variables(void)
         opt_vk_dynamic = !strcmp(var.value, "all") || !strcmp(var.value, "no_gpl");
     }
 
+    /* both opt-in: on only when the option says so */
     var.key = "xemu_half_pixel_offset";
     var.value = NULL;
     qatomic_set(&xemu_libretro_half_pixel,
-                !(environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
-                  var.value && !strcmp(var.value, "disabled")));
+                environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
+                var.value && !strcmp(var.value, "enabled"));
 
     var.key = "xemu_native_2d_sampling";
     var.value = NULL;
     qatomic_set(&xemu_libretro_native_2d,
-                !(environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
-                  var.value && !strcmp(var.value, "disabled")));
+                environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
+                var.value && !strcmp(var.value, "enabled"));
 
     var.key = "xemu_texture_upscaling";
     var.value = NULL;

@@ -4256,7 +4256,9 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
         char base_path[4096];
         snprintf(base_path, sizeof(base_path), "%s/xemu/", system_dir);
         extern void libretro_settings_set_base_path(const char *path);
+        extern void libretro_settings_set_cache_chihiro(bool chihiro);
         libretro_settings_set_base_path(base_path);
+        libretro_settings_set_cache_chihiro(chihiro);
         LRLOG_INFO("[xemu] Shader cache base path: %s\n", base_path);
     }
 

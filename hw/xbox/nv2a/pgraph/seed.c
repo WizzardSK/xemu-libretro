@@ -51,7 +51,9 @@ static char *seed_path(void)
         return NULL;
     }
     char *dir = g_strdup_printf("%sshader_seeds",
-                                xemu_settings_get_base_path());
+                                xemu_settings_get_cache_path(
+                                    g_config.display.renderer ==
+                                    CONFIG_DISPLAY_RENDERER_VULKAN));
     qemu_mkdir(dir);
     char *path = g_strdup_printf("%s/%s.seed", dir, tag);
     g_free(dir);
@@ -64,7 +66,9 @@ void pgraph_seed_rename(const char *from, const char *to)
         return;
     }
     char *dir = g_strdup_printf("%sshader_seeds",
-                                xemu_settings_get_base_path());
+                                xemu_settings_get_cache_path(
+                                    g_config.display.renderer ==
+                                    CONFIG_DISPLAY_RENDERER_VULKAN));
     char *old_path = g_strdup_printf("%s/%s.seed", dir, from);
     char *new_path = g_strdup_printf("%s/%s.seed", dir, to);
     if (g_file_test(old_path, G_FILE_TEST_EXISTS) &&

@@ -181,7 +181,7 @@ static void init_pipeline_cache(PGRAPHState *pg)
     gchar *pc_blob = NULL;
     gsize pc_len = 0;
     char *pc_path = g_strdup_printf("%s/vk_pipeline_cache.bin",
-                                    xemu_settings_get_base_path());
+                                    xemu_settings_get_cache_path(true));
     g_file_get_contents(pc_path, &pc_blob, &pc_len, NULL);
     g_free(pc_path);
 
@@ -240,7 +240,7 @@ static void pcache_save_now(PGRAPHVkState *r)
     if (vkGetPipelineCacheData(r->device, r->vk_pipeline_cache, &pc_len,
                                pc_blob) == VK_SUCCESS) {
         char *pc_path = g_strdup_printf("%s/vk_pipeline_cache.bin",
-                                        xemu_settings_get_base_path());
+                                        xemu_settings_get_cache_path(true));
         g_file_set_contents(pc_path, pc_blob, pc_len, NULL);
         g_free(pc_path);
         r->pcache_saved_len = pc_len;

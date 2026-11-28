@@ -151,7 +151,7 @@ static char *spv_cache_path(glslang_stage_t stage, const char *glsl_source)
     /* The module also depends on the SPIR-V target and the debug info: a
      * cache carried to another GPU or driver must not hand over the other. */
     return g_strdup_printf("%s/vk_shader_cache/%02d_%s%s_%016" PRIx64 ".spv",
-                           xemu_settings_get_base_path(), (int)stage,
+                           xemu_settings_get_cache_path(true), (int)stage,
                            pgraph_vk_spirv_1_6 ? "v16" : "v15",
                            g_config.display.vulkan.debug_shaders ? "d" : "",
                            h);

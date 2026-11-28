@@ -182,7 +182,7 @@ static void update_shader_uniform_locs(ShaderBinding *binding)
 static char *module_get_dir(uint64_t hash)
 {
     return g_strdup_printf("%s/shader_modules/%04x",
-                           xemu_settings_get_base_path(),
+                           xemu_settings_get_cache_path(false),
                            (uint32_t)(hash >> 48));
 }
 
@@ -329,7 +329,7 @@ static void module_save_to_disk(ShaderModuleCacheEntry *module, uint64_t hash)
     }
 
     char *parent = g_strdup_printf("%s/shader_modules",
-                                   xemu_settings_get_base_path());
+                                   xemu_settings_get_cache_path(false));
     qemu_mkdir(parent);
     g_free(parent);
 
@@ -782,7 +782,7 @@ static const char *shader_gl_version = NULL;
 static void shader_create_cache_folder(void)
 {
     char *shader_path = g_strdup_printf("%sshaders_boost",
-                                        xemu_settings_get_base_path());
+                                        xemu_settings_get_cache_path(false));
     qemu_mkdir(shader_path);
     g_free(shader_path);
 }
@@ -792,7 +792,7 @@ static void shader_create_cache_folder(void)
 static char *shader_get_lru_cache_path(void)
 {
     return g_strdup_printf("%s/shader_cache_list_boost",
-                           xemu_settings_get_base_path());
+                           xemu_settings_get_cache_path(false));
 }
 
 /* Cold-boot shader seeds (file I/O in pgraph/seed.c). The disk caches hold
@@ -952,7 +952,7 @@ bool pgraph_gl_shader_load_from_memory(ShaderBinding *binding)
 
 static char *shader_get_bin_directory(uint64_t hash)
 {
-    const char *cfg_dir = xemu_settings_get_base_path();
+    const char *cfg_dir = xemu_settings_get_cache_path(false);
     char *shader_bin_dir =
         g_strdup_printf("%s/shaders_boost/%04x", cfg_dir,
                         (uint32_t)(hash >> 48));
@@ -2133,7 +2133,7 @@ static void module_prewarm_scan(PGRAPHGLState *r)
         return;
     }
     char *base = g_strdup_printf("%s/shader_modules",
-                                 xemu_settings_get_base_path());
+                                 xemu_settings_get_cache_path(false));
     GPtrArray *arr = g_ptr_array_new();
     GDir *d1 = g_dir_open(base, 0, NULL);
     if (d1) {

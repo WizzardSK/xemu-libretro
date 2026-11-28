@@ -642,7 +642,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "disabled"
     },
-    /* On by default (NNshi): the moves only happen above 1x */
+    /* Off by default, opt-in (NNshi): it still has misses and false
+     * positives in some games, not yet an improvement everywhere */
     {
         "xemu_half_pixel_offset",
         "Half-Pixel Offset",
@@ -651,13 +652,13 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         NULL,
         "debug",
         {
-            { "enabled",  "ON" },
             { "disabled", "OFF" },
+            { "enabled",  "ON" },
             { NULL, NULL },
         },
-        "enabled"
+        "disabled"
     },
-    /* On by default (NNshi): it reads differently only above 1x */
+    /* Off by default, opt-in (NNshi), as Half-Pixel Offset */
     {
         "xemu_native_2d_sampling",
         "Native 2D Sampling",
@@ -666,11 +667,11 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         NULL,
         "debug",
         {
-            { "enabled",  "ON" },
             { "disabled", "OFF" },
+            { "enabled",  "ON" },
             { NULL, NULL },
         },
-        "enabled"
+        "disabled"
     },
     {
         "xemu_rumble_p1",

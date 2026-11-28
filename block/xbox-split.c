@@ -10,6 +10,13 @@
  * the range they serve. Without a game image (the dashboard) the cache range
  * is the common image's own.
  *
+ * The game image also takes sector 4 of the config area, the table of which
+ * title has which of X, Y and Z: shared in the common image, it still handed
+ * the three partitions round among the games played last, so a game found
+ * its entry gone or moved to another partition, formatted that one and built
+ * its cache again beside the old one, and its image kept growing (NNshi,
+ * Ninja Gaiden Black). With a table of its own a game keeps its partition.
+ *
  * QEMU's machine is built once in the core's process, so the game image is
  * swapped when the next content starts (xbox_split_set_game), with the
  * machine stopped.
@@ -35,6 +42,9 @@
 #include "qemu/module.h"
 #include "qemu/option.h"
 
+/* Sector 4: the table of which title has which cache partition */
+#define XBOX_CACHE_TABLE 0x00000800LL
+#define XBOX_CACHE_TABLE_END 0x00001000LL
 #define XBOX_CACHE_START 0x00080000LL              /* X, then Y and Z */
 #define XBOX_CACHE_END   (XBOX_CACHE_START + 3 * 0x2EE00000LL)
 
@@ -129,6 +139,14 @@ static BdrvChild *xbox_split_route(BlockDriverState *bs, int64_t offset,
 {
     BDRVXboxSplitState *s = bs->opaque;
 
+    if (offset < XBOX_CACHE_TABLE) {
+        *len = MIN(bytes, XBOX_CACHE_TABLE - offset);
+        return bs->file;
+    }
+    if (offset < XBOX_CACHE_TABLE_END) {
+        *len = MIN(bytes, XBOX_CACHE_TABLE_END - offset);
+        return s->cache ? s->cache : bs->file;
+    }
     if (offset < XBOX_CACHE_START) {
         *len = MIN(bytes, XBOX_CACHE_START - offset);
         return bs->file;

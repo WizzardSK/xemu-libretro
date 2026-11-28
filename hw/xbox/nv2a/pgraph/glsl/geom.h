@@ -37,12 +37,16 @@ typedef struct {
      * padding byte: the key keeps its size and every recorded seed. */
     bool wide_lines;
     int8_t tri_rot0;
-    /* Half-Pixel Offset for this draw: 1 on (above 1x), 0 off. Takes the
-     * high byte of the old short tri_rot0 (always 0), so the key keeps its
-     * size and old seeds read as off. */
+    /* Half-Pixel Offset for this draw: GEOM_HP_ON (above 1x), with
+     * GEOM_HP_ROT90 when the draw reads texture 0; 0 off. Takes the high
+     * byte of the old short tri_rot0 (always 0), so the key keeps its size
+     * and old seeds read as off. */
     uint8_t half_pixel;
     short tri_rot1;
 } GeomState;
+
+#define GEOM_HP_ON    1
+#define GEOM_HP_ROT90 2 /* the rotation check, quarter turns straight */
 
 typedef struct GenGeomGlslOptions {
     bool vulkan;

@@ -35,11 +35,18 @@ static int xemu_libretro_half_pixel;
 #endif
 
 /* GeomState.half_pixel for the pending draw: on only above 1x, where the
- * half-pixel offset a game applies no longer lands on a pixel edge */
+ * half-pixel offset a game applies no longer lands on a pixel edge; the
+ * rotation check only when the draw reads texture 0, as it needs real
+ * texture coordinates (untextured draws carry leftovers, which moved JSRF's
+ * letterbox and DW3's dialog boxes off on the texture-upscale branch) */
 int pgraph_glsl_geom_half_pixel(PGRAPHState *pg)
 {
-    return qatomic_read(&xemu_libretro_half_pixel) &&
-           pg->surface_scale_factor > 1;
+    if (!qatomic_read(&xemu_libretro_half_pixel) ||
+        pg->surface_scale_factor <= 1) {
+        return 0;
+    }
+    return GEOM_HP_ON |
+           (pgraph_is_texture_enabled(pg, 0) ? GEOM_HP_ROT90 : 0);
 }
 
 void pgraph_glsl_set_geom_state(PGRAPHState *pg, GeomState *state)
@@ -380,18 +387,46 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
      * through the first three corners in screen space (exact for a flat
      * primitive), so only the edges move. A line has no plane and moves
      * whole; points are moved by the vertex shader (vsh.c).
+     * - not in a primitive whose texture 0 is mapped rotated, u changing
+     *   along y or v along x, other than by a quarter turn ("Only 90" on
+     *   the texture-upscale branch): rotating and swirling flat textures in
+     *   DW3 and OutRun2 moved, and GTA San Andreas' minimap, the map rotated
+     *   onto slivers of a circle; a quarter turn counts as straight (KOTOR's
+     *   name entry outlines, NNshi).
      * Tried on the texture-upscale branch and dropped (NNshi's tests):
-     * moving a triangle or an axis only when all its corners are on n.5, a
-     * check for rotated texture mapping, moving the content with the
-     * corners, and growing flat primitives to the 1x coverage instead. */
+     * moving a triangle or an axis only when all its corners are on n.5,
+     * moving the content with the corners, and growing flat primitives to
+     * the 1x coverage instead. */
     const bool hp_keep = state->half_pixel && num_in >= 3;
     const char *pos_pre = "gl_in[", *pos_post = "].gl_Position";
     char hp_body[48] = "";
     if (state->half_pixel) {
         pos_pre = "gsClip[";
         pos_post = "]";
-        /* hit: the primitive may move (it is flat); each corner then moves
-         * in the axes it has on n.5 (gsHm) */
+        /* hit: the primitive may move (it is flat and its texture not
+         * rotated); each corner then moves in the axes it has on n.5 (gsHm).
+         * Rotation: dT0/dx has no v and dT0/dy no u (the plane through the
+         * corners), or the other way round for a quarter turn. */
+        const char *rot90_test =
+            (state->half_pixel & GEOM_HP_ROT90) && num_in >= 3 ?
+            "  if (any(hit)) {\n"
+            "    vec2 e1 = v_vtxPos0[1].xy - v_vtxPos0[0].xy;\n"
+            "    vec2 e2 = v_vtxPos0[2].xy - v_vtxPos0[0].xy;\n"
+            "    vec2 f1 = v_vtxT0[1].xy - v_vtxT0[0].xy;\n"
+            "    vec2 f2 = v_vtxT0[2].xy - v_vtxT0[0].xy;\n"
+            "    float det = e1.x * e2.y - e1.y * e2.x;\n"
+            "    if (abs(det) > 1e-6) {\n"
+            "      vec2 tx = (f1 * e2.y - f2 * e1.y) / det;\n"
+            "      vec2 ty = (f2 * e1.x - f1 * e2.x) / det;\n"
+            "      float m = 1e-3 * max(max(abs(tx.x), abs(ty.y)),\n"
+            "                           max(abs(tx.y), abs(ty.x)));\n"
+            "      bool straight = abs(tx.y) <= m && abs(ty.x) <= m;\n"
+            "      bool quarter = abs(tx.x) <= m && abs(ty.y) <= m;\n"
+            "      if (!straight && !quarter) {\n"
+            "        hit = bvec2(false);\n"
+            "      }\n"
+            "    }\n"
+            "  }\n" : "";
         mstring_append_fmt(output,
             "vec2 gsHm[%d];\n"
             "vec4 gsPos[%d];\n"
@@ -403,6 +438,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
             "      hit = bvec2(false);\n"
             "    }\n"
             "  }\n"
+            "%s"
             "  for (int i = 0; i < %d; i++) {\n"
             "    gsHm[i] = vec2(hit) * vec2(equal(fract(v_vtxPos0[i].xy), vec2(0.5)));\n"
             "    gsPos[i] = v_vtxPos0[i];\n"
@@ -412,7 +448,7 @@ MString *pgraph_glsl_gen_geom(const GeomState *state, GenGeomGlslOptions opts)
             "  }\n"
             "%s"
             "}\n",
-            num_in, num_in, num_in, num_in, num_in,
+            num_in, num_in, num_in, num_in, rot90_test, num_in,
             hp_keep ? "  hp_keep();\n" : "");
         if (hp_keep) {
             /* declared before hp_init, which calls it; st: where the moved

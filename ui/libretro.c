@@ -220,6 +220,10 @@ static bool snapshot_sem_initialized = false;
 static char opt_bootrom_path[4096] = "";
 static char opt_bios_path[4096] = "";
 static char opt_hdd_path[4096] = "";
+/* The running game's cache image, system/xemu/cache/<content name>.qcow2:
+ * its cache partitions X, Y and Z live there instead of in the common hard
+ * disk (system/vl.c, block/xbox-split.c); empty for the dashboard */
+char xemu_libretro_hdd_cache_path[4096] = "";
 /* Trim HDD on Close (hdd_trim) */
 static bool opt_hdd_trim = false;
 /* Profiler (F10) (ui/libretro-osd.h) */
@@ -2547,7 +2551,9 @@ static void *emu_thread_func(void *opaque)
         if (environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
             opt_hdd_trim = !strcmp(var.value, "enabled");
     }
-    if (opt_hdd_trim && !xemu_chihiro_mode()) {
+    /* Not with a game cache image: the cache is not in the common disk, and
+     * the trim copies the whole disk the guest saw into it */
+    if (opt_hdd_trim && !xemu_chihiro_mode() && !xemu_libretro_hdd_cache_path[0]) {
         hdd_trim();
     }
 
@@ -4333,6 +4339,28 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
         }
         fclose(f);
         LRLOG_INFO("[xemu] Found hdd: %s\n", opt_hdd_path);
+    }
+
+    /* Each game keeps its cache partitions (X, Y, Z) in an image of its own,
+     * named after the content, so other games never overwrite them (all
+     * games shared three 750 MB partitions in the common disk, and Ninja
+     * Gaiden Black kept losing its cache, NNshi). The common disk keeps the
+     * dashboard, the saves on E: and F:; the cache already in it is left
+     * there unused. Only with a qcow2 common disk (the bundled one is), and
+     * not for the dashboard (no content) nor a Chihiro (no hard disk). */
+    xemu_libretro_hdd_cache_path[0] = 0;
+    if (content[0] && !chihiro && system_dir[0] &&
+        g_str_has_suffix(opt_hdd_path, ".qcow2")) {
+        g_autofree char *base = g_path_get_basename(content);
+        char *dot = strrchr(base, '.');
+        if (dot && dot != base) {
+            *dot = 0;
+        }
+        g_autofree char *dir = g_strdup_printf("%s/xemu/cache", system_dir);
+        g_mkdir_with_parents(dir, 0755);
+        snprintf(xemu_libretro_hdd_cache_path, sizeof(xemu_libretro_hdd_cache_path),
+                 "%s/%s.qcow2", dir, base);
+        LRLOG_INFO("[xemu] Game cache (X, Y, Z): %s\n", xemu_libretro_hdd_cache_path);
     }
 
     /* Query the frontend's preferred HW render context */

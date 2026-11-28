@@ -21,7 +21,7 @@ Put these files into RetroArch's system directory, under `system/xemu/`:
 |---|---|
 | `mcpx_1.0.bin` | the MCPX boot ROM, 512 bytes, MD5 `d49c52a4102f6df7bcf8d0617ac475ed` |
 | `Complex_4627v1.03.bin` | the flash BIOS, a 1 MB or 256 KB image |
-| `xbox_hdd.qcow2` | optional: the hard disk. Without one the core writes the ready-made image it carries, [xemu-dashboard](https://github.com/xemu-project/xemu-dashboard)'s (MIT, an unsigned dashboard and no Microsoft software), the same one xemu offers |
+| `xbox_hdd.qcow2` | optional: the hard disk. Without one the core writes the ready-made image it carries, [xemu-dashboard](https://github.com/xemu-project/xemu-dashboard)'s (MIT, an unsigned dashboard and no Microsoft software), the same one xemu offers. It keeps the dashboard and the saves (E:); each game's cache partitions (X, Y, Z) are kept in `cache/<content name>.qcow2`, created empty the first time the game runs, so games never overwrite each other's cache. Deleting a game's file there clears its cache |
 
 The boot ROM and the BIOS are Microsoft's and have to be dumped from your own console; see xemu's [required files](https://xemu.app/docs/required-files/). Other names and locations can be set in the core options. The EEPROM (`xbox_eeprom.bin`) is created in the same folder when it is missing. The language and the display shape it gives games come from the core options System Language (RetroArch's by default) and System Aspect Ratio, set at each start; the file keeps what the dashboard set.
 

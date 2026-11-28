@@ -3410,6 +3410,21 @@ void qemu_init(int argc, char **argv)
         } else {
             fake_argv[fake_argc++] = strdup("-drive");
             char *escaped_hdd_path = strdup_double_commas(hdd_path);
+#ifdef LIBRETRO
+            /* The game's own cache image (ui/libretro.c): the disk is the
+             * common image with the cache partitions X, Y and Z taken from
+             * it (block/xbox-split.c) */
+            extern char xemu_libretro_hdd_cache_path[];
+            if (xemu_libretro_hdd_cache_path[0]) {
+                char *escaped_cache = strdup_double_commas(xemu_libretro_hdd_cache_path);
+                fake_argv[fake_argc++] = g_strdup_printf(
+                    "index=0,media=disk,driver=xbox-split,"
+                    "file.driver=qcow2,file.file.filename=%s,"
+                    "cache.driver=qcow2,cache.file.filename=%s",
+                    escaped_hdd_path, escaped_cache);
+                free(escaped_cache);
+            } else
+#endif
             fake_argv[fake_argc++] = g_strdup_printf("index=0,media=disk,file=%s%s",
                 escaped_hdd_path,
                 strlen(escaped_hdd_path) > 0 ? ",locked=on" : "");
@@ -3523,6 +3538,25 @@ void qemu_init(int argc, char **argv)
 #endif
 
     qemu_init_subsystems();
+#ifdef LIBRETRO
+    {
+        /* A new game's cache image (ui/libretro.c, block/xbox-split.c),
+         * before the drives open. It starts empty: the Xbox formats a cache
+         * partition it does not recognise when the game mounts it. Sparse,
+         * as long as the range it serves. */
+        extern char xemu_libretro_hdd_cache_path[];
+        if (xemu_libretro_hdd_cache_path[0] &&
+            !g_file_test(xemu_libretro_hdd_cache_path, G_FILE_TEST_EXISTS)) {
+            Error *err = NULL;
+            bdrv_img_create(xemu_libretro_hdd_cache_path, "qcow2", NULL, NULL,
+                            NULL, 0x00080000LL + 3 * 0x2EE00000LL, 0, true,
+                            &err);
+            if (err) {
+                error_report_err(err);
+            }
+        }
+    }
+#endif
 
     /* first pass of option parsing */
     optind = 1;

@@ -7,6 +7,7 @@ block_ss.add(files(
   'blkdebug.c',
   'blklogwrites.c',
   'blkverify.c',
+  'xbox-split.c',
   'block-backend.c',
   'block-copy.c',
   'commit.c',

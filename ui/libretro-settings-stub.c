@@ -39,6 +39,30 @@ const char *xemu_settings_get_base_path(void)
     return settings_base_path;
 }
 
+/* Shader caches by renderer and machine (NNshi): <base>opengl/ or
+ * <base>vulkan/, with chihiro/ inside for a Chihiro game. A session runs one
+ * renderer and one machine (switching either needs a restart), so a cache is
+ * never shared between them. */
+static bool settings_cache_chihiro;
+
+void libretro_settings_set_cache_chihiro(bool chihiro)
+{
+    settings_cache_chihiro = chihiro;
+}
+
+const char *xemu_settings_get_cache_path(bool vulkan)
+{
+    static char path[2][4200];
+    char *p = path[vulkan ? 1 : 0];
+    snprintf(p, sizeof(path[0]), "%s%s/%s", settings_base_path,
+             vulkan ? "vulkan" : "opengl",
+             settings_cache_chihiro ? "chihiro/" : "");
+    if (settings_base_path[0]) {
+        g_mkdir_with_parents(p, 0755);
+    }
+    return p;
+}
+
 const char *xemu_settings_get_path(void)
 {
     return settings_path;

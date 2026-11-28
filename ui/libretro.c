@@ -366,6 +366,49 @@ static void pace_dump(const char *path)
 static bool opt_prof_counters;
 /* Debug > Profiler: Frame Pacing and Profiler: vCPU */
 static bool opt_prof_pacing, opt_prof_vcpu;
+/* Profiler: Game Cache Disk (block/xbox-split.c counts) */
+static bool opt_prof_hdd;
+extern int xbox_split_stats_on;
+extern uint64_t xbox_split_stats[3][4];
+
+static void hdd_stats_start(void)
+{
+    memset(xbox_split_stats, 0, sizeof(xbox_split_stats));
+    qatomic_set(&xbox_split_stats_on, opt_prof_hdd);
+}
+
+/* What the game did with its cache partitions while the profiler ran: much
+ * read where its image holds nothing (never written) means it did not find
+ * the cache it wrote before, and writes it anew (NNshi's question) */
+static void hdd_stats_dump(const char *path)
+{
+    static const char *const part[] = { "X", "Y", "Z" };
+    if (!qatomic_read(&xbox_split_stats_on)) {
+        return;
+    }
+    qatomic_set(&xbox_split_stats_on, 0);
+    if (!path || !*path) {
+        return;
+    }
+    FILE *f = g_fopen(path, "a");
+    if (!f) {
+        return;
+    }
+    fprintf(f, "# game cache disk (%s), MB over the run: read, read where "
+               "the image holds nothing (never written), written, zeroed\n",
+            xemu_libretro_hdd_cache_path[0] ? xemu_libretro_hdd_cache_path
+                                            : "the common disk's own X/Y/Z");
+    for (int i = 0; i < 3; i++) {
+        uint64_t *v = xbox_split_stats[i];
+        fprintf(f, "hdd %s read %.1f fresh %.1f written %.1f zeroed %.1f\n",
+                part[i], __atomic_load_n(&v[0], __ATOMIC_RELAXED) / 1048576.0,
+                __atomic_load_n(&v[1], __ATOMIC_RELAXED) / 1048576.0,
+                __atomic_load_n(&v[2], __ATOMIC_RELAXED) / 1048576.0,
+                __atomic_load_n(&v[3], __ATOMIC_RELAXED) / 1048576.0);
+    }
+    fclose(f);
+}
+
 static void nv2a_totals_dump(const char *path)
 {
     extern uint64_t nv2a_profile_totals[NV2A_PROF__COUNT];
@@ -1978,9 +2021,10 @@ static void update_variables(void)
         static const char *const keys[] = {
             "xemu_prof_pfifo", "xemu_prof_counters", "xemu_prof_s2t",
             "xemu_prof_surf", "xemu_prof_pacing", "xemu_prof_vcpu",
+            "xemu_prof_hdd",
         };
-        bool on[6];
-        for (int i = 0; i < 6; i++) {
+        bool on[7];
+        for (int i = 0; i < 7; i++) {
             var.key = keys[i];
             var.value = NULL;
             on[i] = environ_cb &&
@@ -1993,6 +2037,7 @@ static void update_variables(void)
         qatomic_set(&nv2a_prof_surf_on, on[3]);
         opt_prof_pacing = on[4];
         opt_prof_vcpu = on[5];
+        opt_prof_hdd = on[6];
     }
 
     var.key = "xemu_video_aspect";
@@ -4559,7 +4604,7 @@ static char *prof_file(char **header)
         "# CPU boost %s, hardware FPU %s, memory %d MB, APU DSP %s, DSP JIT %s\n"
         "# run: %.1f s, average FPS %.2f, GPU (MSPF as a frame rate) %.2f, NV2A idle %u.%u%%\n"
         "# profiler: vCPU %s, PFIFO waits %s, renderer counters %s, missed render targets %s, "
-        "surface downloads and uploads %s, frame pacing %s\n",
+        "surface downloads and uploads %s, frame pacing %s, game cache disk %s\n",
         xemu_version, commit, base, (unsigned)qatomic_read(&guest_title_id),
         use_vulkan ? "Vulkan" : "OpenGL", opt_surface_scale, fast,
         qatomic_read(&xemu_min_anisotropy),
@@ -4576,7 +4621,8 @@ static char *prof_file(char **header)
         opt_prof_counters ? "on" : "off",
         qatomic_read(&nv2a_prof_s2t_on) ? "on" : "off",
         qatomic_read(&nv2a_prof_surf_on) ? "on" : "off",
-        opt_prof_pacing ? "on" : "off");
+        opt_prof_pacing ? "on" : "off",
+        opt_prof_hdd ? "on" : "off");
     return g_build_filename(dir, name, NULL);
 }
 
@@ -4587,6 +4633,7 @@ static char *prof_file(char **header)
 static void prof_end(void)
 {
     const bool file = opt_prof_vcpu || opt_prof_pacing || opt_prof_counters ||
+                      opt_prof_hdd ||
                       qatomic_read(&xemu_lr_prof_pfifo_on) ||
                       qatomic_read(&nv2a_prof_s2t_on) ||
                       qatomic_read(&nv2a_prof_surf_on);
@@ -4596,6 +4643,7 @@ static void prof_end(void)
     xemu_lr_prof_stop(prof_log, path, header);
     nv2a_totals_dump(path);
     pace_dump(path);
+    hdd_stats_dump(path);
     __atomic_store_n(&pace_on, false, __ATOMIC_RELAXED);
 }
 
@@ -4873,6 +4921,7 @@ RETRO_API void retro_run(void)
             qatomic_set(&xemu_lr_prof_vcpu_on, opt_prof_vcpu);
             xemu_lr_prof_start();
             nv2a_totals_reset();
+            hdd_stats_start();
             __atomic_store_n(&pace_on, opt_prof_pacing, __ATOMIC_RELAXED);
             if (opt_prof_pacing) {
                 pace_reset();

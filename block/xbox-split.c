@@ -42,6 +42,48 @@ typedef struct {
     BdrvChild *cache;
 } BDRVXboxSplitState;
 
+/* Profiler: Game Cache Disk (ui/libretro.c): per cache partition (X, Y, Z),
+ * the bytes read, the bytes read where the image holding the partition has
+ * nothing (never written: a game that does not find its cache reads there),
+ * the bytes written and the bytes zeroed. Counted while
+ * xbox_split_stats_on. */
+int xbox_split_stats_on;
+uint64_t xbox_split_stats[3][4];
+enum { XS_READ, XS_FRESH, XS_WRITE, XS_ZERO };
+
+static int xbox_split_part(int64_t offset)
+{
+    return MIN(2, (offset - XBOX_CACHE_START) / 0x2EE00000LL);
+}
+
+static void xbox_split_count(int64_t offset, int64_t bytes, int what)
+{
+    if (offset >= XBOX_CACHE_START && offset < XBOX_CACHE_END) {
+        __atomic_add_fetch(&xbox_split_stats[xbox_split_part(offset)][what],
+                           bytes, __ATOMIC_RELAXED);
+    }
+}
+
+/* the part of [offset, offset + bytes) the child holds no data for */
+static int64_t coroutine_fn GRAPH_RDLOCK
+xbox_split_unallocated(BdrvChild *c, int64_t offset, int64_t bytes)
+{
+    int64_t fresh = 0;
+    while (bytes > 0) {
+        int64_t pnum = 0;
+        int ret = bdrv_co_is_allocated(c->bs, offset, bytes, &pnum);
+        if (ret < 0 || pnum <= 0) {
+            break;
+        }
+        if (!ret) {
+            fresh += pnum;
+        }
+        offset += pnum;
+        bytes -= pnum;
+    }
+    return fresh;
+}
+
 static int xbox_split_open(BlockDriverState *bs, QDict *options, int flags,
                            Error **errp)
 {
@@ -111,6 +153,15 @@ xbox_split_co_preadv(BlockDriverState *bs, int64_t offset, int64_t bytes,
         QEMUIOVector part;
         int ret;
 
+        if (qatomic_read(&xbox_split_stats_on)) {
+            xbox_split_count(offset + done, len, XS_READ);
+            if (offset + done >= XBOX_CACHE_START &&
+                offset + done < XBOX_CACHE_END) {
+                xbox_split_count(offset + done,
+                                 xbox_split_unallocated(c, offset + done, len),
+                                 XS_FRESH);
+            }
+        }
         qemu_iovec_init_slice(&part, qiov, done, len);
         ret = bdrv_co_preadv(c, offset + done, len, &part, flags);
         qemu_iovec_destroy(&part);
@@ -134,6 +185,9 @@ xbox_split_co_pwritev(BlockDriverState *bs, int64_t offset, int64_t bytes,
         QEMUIOVector part;
         int ret;
 
+        if (qatomic_read(&xbox_split_stats_on)) {
+            xbox_split_count(offset + done, len, XS_WRITE);
+        }
         qemu_iovec_init_slice(&part, qiov, done, len);
         ret = bdrv_co_pwritev(c, offset + done, len, &part, flags);
         qemu_iovec_destroy(&part);
@@ -154,7 +208,11 @@ xbox_split_co_pwrite_zeroes(BlockDriverState *bs, int64_t offset,
     while (done < bytes) {
         int64_t len;
         BdrvChild *c = xbox_split_route(bs, offset + done, bytes - done, &len);
-        int ret = bdrv_co_pwrite_zeroes(c, offset + done, len, flags);
+        int ret;
+        if (qatomic_read(&xbox_split_stats_on)) {
+            xbox_split_count(offset + done, len, XS_ZERO);
+        }
+        ret = bdrv_co_pwrite_zeroes(c, offset + done, len, flags);
         if (ret < 0) {
             return ret;
         }

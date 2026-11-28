@@ -493,6 +493,20 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         "disabled"
     },
     {
+        "xemu_prof_hdd",
+        "Profiler: Game Cache Disk",
+        NULL,
+        "The profile file ends with what the game did with its cache partitions X, Y and Z over the run, in MB each: read, read where its cache image holds nothing (never written, as when a game does not find the cache it wrote before), written and zeroed.",
+        NULL,
+        "debug",
+        {
+            { "disabled", NULL },
+            { "enabled",  NULL },
+            { NULL, NULL },
+        },
+        "disabled"
+    },
+    {
         "xemu_prof_s2t",
         "Profiler: Missed Render Targets",
         NULL,

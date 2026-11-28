@@ -1654,6 +1654,13 @@ static void sampler_cache_destroy(PGRAPHVkState *r)
 /* Resolve the unit's sampler for the texture just bound. Both exits of
  * create_texture must call it, the cache hit too, or the unit keeps the
  * sampler of the last texture created on it. */
+#ifdef LIBRETRO
+/* Texture Filtering: Nearest Neighbor (ui/libretro.c) */
+extern int xemu_libretro_texture_nearest;
+#else
+static int xemu_libretro_texture_nearest;
+#endif
+
 static void resolve_unit_sampler(PGRAPHState *pg, int texture_idx,
                                  const TextureShape *state, uint32_t filter,
                                  uint32_t address,
@@ -1661,6 +1668,22 @@ static void resolve_unit_sampler(PGRAPHState *pg, int texture_idx,
                                  uint32_t max_anisotropy)
 {
     PGRAPHVkState *r = pg->vk_renderer_state;
+
+    /* Texture Filtering, Nearest Neighbor: at any resolution every texture
+     * is read with the box filter (nearest) instead of the game's, magnified
+     * and minified, its mipmap mode kept (tent 2/4/6 -> box 1/3/5, the
+     * convolution -> box). A render target (bloom, blur, the 3D picture)
+     * keeps the game's filter (NNshi) - a test switch to tell artifacts of
+     * bilinear sampling from the rest. Only the sampler changes, not the
+     * shaders; the sampler cache keys on the filter, so it applies at once. */
+    if (qatomic_read(&xemu_libretro_texture_nearest) &&
+        !(r->texture_bindings[texture_idx] &&
+          r->texture_bindings[texture_idx]->from_surface)) {
+        static const uint8_t box_min[8] = { 0, 1, 1, 3, 3, 5, 5, 1 };
+        unsigned int min = GET_MASK(filter, NV_PGRAPH_TEXFILTER0_MIN);
+        SET_MASK(filter, NV_PGRAPH_TEXFILTER0_MAG, 1);
+        SET_MASK(filter, NV_PGRAPH_TEXFILTER0_MIN, box_min[min & 7]);
+    }
 
     /* Sampler state (filter, address, border, anisotropy) stays out of the
      * image key, as on GL: one image serves every sampler it is read with. */

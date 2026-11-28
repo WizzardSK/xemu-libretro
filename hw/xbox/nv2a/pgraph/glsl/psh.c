@@ -184,10 +184,12 @@ static uint32_t get_color_key_mask_for_texture(PGRAPHState *pg, int i)
 }
 
 #ifdef LIBRETRO
-/* Native 2D Sampling (ui/libretro.c) */
+/* Native 2D Sampling, Texture Filtering (ui/libretro.c) */
 extern int xemu_libretro_native_2d;
+extern int xemu_libretro_texture_nearest;
 #else
 static int xemu_libretro_native_2d;
+static int xemu_libretro_texture_nearest;
 #endif
 
 /* An additively blended draw (destination factor one: glare, lights,
@@ -339,8 +341,10 @@ void pgraph_glsl_set_psh_state(PGRAPHState *pg, PshState *state)
              min_filter == NV_PGRAPH_TEXFILTER0_MIN_BOX_TENT_LOD);
         /* Native 2D Sampling: bit 4 + n of clamp_tex_rt, unit n is read
          * with a filtering (not point) mag filter, which takes the 1x
-         * centre as it is (clampTex below) */
-        if (state->clamp_tex_scale && mag_filter != 1) {
+         * centre as it is (clampTex below) - unless Texture Filtering forces
+         * Nearest Neighbor, whose sampler is point */
+        if (state->clamp_tex_scale && mag_filter != 1 &&
+            !qatomic_read(&xemu_libretro_texture_nearest)) {
             state->clamp_tex_rt |= 1 << (4 + i);
         }
         bool mixed_filter =

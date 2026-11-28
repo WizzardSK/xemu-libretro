@@ -36,7 +36,11 @@ typedef struct {
      * geometry shader draws each segment as a rectangle. Lives in the
      * padding byte: the key keeps its size and every recorded seed. */
     bool wide_lines;
-    short tri_rot0;
+    int8_t tri_rot0;
+    /* Half-Pixel Offset for this draw: 1 on (above 1x), 0 off. Takes the
+     * high byte of the old short tri_rot0 (always 0), so the key keeps its
+     * size and old seeds read as off. */
+    uint8_t half_pixel;
     short tri_rot1;
 } GeomState;
 
@@ -46,6 +50,10 @@ typedef struct GenGeomGlslOptions {
 } GenGeomGlslOptions;
 
 void pgraph_glsl_set_geom_state(PGRAPHState *pg, GeomState *geom);
+/* GeomState.half_pixel for the pending draw: the option and the render
+ * target's scale, which change without the geometry registers changing
+ * (shaders.c checks it) */
+int pgraph_glsl_geom_half_pixel(PGRAPHState *pg);
 
 bool pgraph_glsl_need_geom(const GeomState *state);
 

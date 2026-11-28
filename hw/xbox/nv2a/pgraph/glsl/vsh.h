@@ -87,6 +87,11 @@ typedef struct {
     bool is_fixed_function;
     FixedFunctionVshState fixed_function;
     ProgrammableVshState programmable;
+
+    /* Half-Pixel Offset, set only above 1x: 0 off,
+     * 1 a point with x and y on a half pixel moves, 3 the geometry shader
+     * decides (geom.c) */
+    uint8_t half_pixel_shift;
 } VshState;
 
 void pgraph_glsl_set_vsh_state(PGRAPHState *pg, VshState *state);

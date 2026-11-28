@@ -1618,6 +1618,8 @@ int xemu_libretro_subpixel_offset;
 /* Upscaling Threshold: render targets up to this size drawn at 1x (Vulkan,
  * pgraph_vk_reload_surface_scale_factor) */
 unsigned int xemu_libretro_scale_threshold;
+/* Half-Pixel Offset (pgraph/glsl/geom.c, vsh.c) */
+int xemu_libretro_half_pixel;
 /* set from the frontend thread, applied by the emulation loop, which holds
  * the BQL that nv2a_set_surface_scale_factor lets go of */
 static bool scale_threshold_changed;
@@ -2105,6 +2107,12 @@ static void update_variables(void)
         opt_vk_gpl = !strcmp(var.value, "all") || !strcmp(var.value, "no_dyn");
         opt_vk_dynamic = !strcmp(var.value, "all") || !strcmp(var.value, "no_gpl");
     }
+
+    var.key = "xemu_half_pixel_offset";
+    var.value = NULL;
+    qatomic_set(&xemu_libretro_half_pixel,
+                !(environ_cb && environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) &&
+                  var.value && !strcmp(var.value, "disabled")));
 
     var.key = "xemu_vk_lost_report";
     var.value = NULL;

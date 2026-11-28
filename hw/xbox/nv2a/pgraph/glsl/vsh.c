@@ -187,6 +187,13 @@ static void set_programmable_vsh_state(PGRAPHState *pg,
     }
 }
 
+#ifdef LIBRETRO
+/* Half-Pixel Offset (ui/libretro.c) */
+extern int xemu_libretro_half_pixel;
+#else
+static int xemu_libretro_half_pixel;
+#endif
+
 void pgraph_glsl_set_vsh_state(PGRAPHState *pg, VshState *vsh)
 {
     bool vertex_program = GET_MASK(pgraph_reg_r(pg, NV_PGRAPH_CSV0_D),
@@ -230,6 +237,14 @@ void pgraph_glsl_set_vsh_state(PGRAPHState *pg, VshState *vsh)
     }
 
     vsh->is_fixed_function = fixed_function;
+    /* Half-Pixel Offset: the vertex shader passes the shift, the geometry
+     * shader decides what moves (geom.c). Points get no geometry shader: a
+     * point is its own primitive, moved when both its coordinates are on
+     * n.5. */
+    vsh->half_pixel_shift =
+        !qatomic_read(&xemu_libretro_half_pixel) ||
+                pg->surface_scale_factor <= 1 ? 0 :
+        pg->primitive_mode == PRIM_TYPE_POINTS ? 1 : 3;
     if (fixed_function) {
         set_fixed_function_vsh_state(pg, &vsh->fixed_function);
     } else {
@@ -389,6 +404,30 @@ MString *pgraph_glsl_gen_vsh(const VshState *state, GenVshGlslOptions opts)
         "vec2 roundScreenCoords(vec2 pos) {\n"
         "  return trunc(pos * 16.0f) / 16.0f;\n"
         "}\n");
+    /* Half-Pixel Offset: above 1x, a vertex on a half pixel is one the game
+     * moved by D3D's half-pixel offset (screen-aligned quads: UI,
+     * post-process passes, render-target copies). It is moved up and left
+     * by 0.5 * (scale - 1) + 0.25 fine pixels, which puts the fine pixel
+     * centres it covers where the native ones are, so its edges line up as
+     * at 1x (upstream xemu PR #3065 moves the whole picture by this amount).
+     * 1 (points): moved when both coordinates are on
+     * n.5. 3 (other primitives): the vertex stays where it is and passes
+     * the shift in vtxPos1; the geometry shader decides what moves (geom.c).
+     * Off, the shader text is what it was without the option (NNshi). */
+    if (state->half_pixel_shift == 3) {
+        mstring_append(header,
+            "vec2 halfPixelD() {\n"
+            "  return vec2((0.5 * (pointScale - 1.0) + 0.25) / pointScale);\n"
+            "}\n");
+    } else if (state->half_pixel_shift) {
+        mstring_append(header,
+            "vec2 halfPixelShift(vec2 pos, vec2 inPos) {\n"
+            "  vec2 d = vec2((0.5 * (pointScale - 1.0) + 0.25) / pointScale);\n"
+            "  bool hit = all(equal(fract(pos), vec2(0.5)));\n"
+            "  return hit ? pos - d : pos;\n"
+            "}\n"
+            "#define roundScreenCoords(p) halfPixelShift(roundScreenCoords(p), v0.xy)\n");
+    }
 
     pgraph_glsl_get_vtx_header(header, opts.vulkan || opts.locations,
                                state->smooth_shading, false,
@@ -601,6 +640,11 @@ MString *pgraph_glsl_gen_vsh(const VshState *state, GenVshGlslOptions opts)
                    "  triMZ = 0.0;\n"
                    "  gl_PointSize = oPts.x;\n"
     );
+    if (state->half_pixel_shift == 3) {
+        mstring_append(body,
+                       "  vtxPos1 = vec4(2.0 * halfPixelD() / surfaceSize,\n"
+                       "                 halfPixelD());\n");
+    }
 
     if (state->is_fixed_function && state->fixed_function.csv0c_dynamic) {
         mstring_append(body,

@@ -627,6 +627,21 @@ struct retro_core_option_v2_definition option_defs_us[] = {
         },
         "disabled"
     },
+    /* On by default (NNshi): the moves only happen above 1x */
+    {
+        "xemu_half_pixel_offset",
+        "Half-Pixel Offset",
+        NULL,
+        "With an Internal Resolution Scale above 1x, the corners of flat 2D primitives (UI, menus, full-screen images and passes) that the game put on a half pixel are moved so their edges cover the pixels they cover at 1x: no thin seams, gaps or doubled lines at bars, letterboxes and screen-aligned images. The texture stays where it is. Changing it compiles new shaders.",
+        NULL,
+        "debug",
+        {
+            { "enabled",  "ON" },
+            { "disabled", "OFF" },
+            { NULL, NULL },
+        },
+        "enabled"
+    },
     {
         "xemu_rumble_p1",
         "Rumble (Player 1)",
